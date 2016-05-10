@@ -1,0 +1,164 @@
+body{
+    -webkit-user-select:initial;
+    user-select:initial;
+    background-color: #fff;   
+    font-size: 14px;
+    line-height: 1.7;
+    color: #222;
+    background: #f2f2f2;
+    font-family: "Helvetica Neue",Helvetica,"Hiragino Sans GB","Microsoft YaHei",Arial,sans-serif;
+    word-wrap: break-word;
+}
+h1{
+    font-size: 24px
+}
+h2,h3,h4,h5,h6{
+    font-size: 16px;
+    font-weight: 700;
+    text-indent: 2em
+}
+blockquote {
+    padding: 5px 20px;
+    font-size: inherit;
+}
+.module-header{
+    padding: 5px 5px;
+    font-size: 16px;
+    color: #9F9F9F
+}
+.module{
+    background: #fff;
+    padding: 5px;
+    margin-bottom: 15px;
+}
+.module img{
+    max-width: 100%;
+    margin: 5px 0 0
+}
+.module .post-title{
+    font-weight: 700;    
+}
+.module .post-content p{
+    text-indent: 2em;
+}
+.post-content .attach-desc{
+    color: #ccc;
+    text-indent:0
+}
+.ui-list-img{
+    width: 120px;
+    height: 90px;    
+}
+.ui-list li h4{
+    font-size: 15px;
+    font-weight: 700;
+}
+.ui-list-info p{
+    color: #777;
+    font-size: 13px;
+}
+.ui-list>li{
+    margin-left: 5px
+}
+.tags-container{
+    margin-top: -5px;
+    margin-bottom: 15px;
+}
+.tags-container span{
+    background: #f2f2f2;
+    padding: 6px 7px
+}
+.tags-container span a{
+    color: #9F9F9F
+}
+.comment-author{
+    font-weight: 700
+}
+.comment-actions{
+    float: right
+}
+.post-comments .ui-list-info{
+    padding-right: 0
+}
+.add-comments .ui-btn-wrap{
+    padding: 5px 5px 5px 0
+}
+.add-comments .ui-btn-lg {
+    font-size: 14px;
+    height: 38px;
+    line-height: 38px;
+    display: block;
+    width: 100%;
+    border-radius: 0;
+
+}
+.reply-one{
+    background: #00a5e0;
+    color: #fff;
+    padding: 2px 5px;
+}
+.reply-one i{
+    display: inline-block;
+    font-size: 15px;
+    line-height: 15px;
+    color: #fff
+}
+.toggle-area{
+    display: none
+}
+
+
+
+.ui-footer{
+    background: #fff;
+    text-align: center;   
+    color: #9F9F9F
+}
+.ui-footer i{
+    line-height: 24px;
+    font-size: 18px;
+    display: block;
+    padding-top: 5px;
+}
+.ui-footer .active{
+    color: #337ab7
+}
+/**
+*bootstrap样式
+*/
+.form-group {
+    margin-bottom: 5px;
+    padding-right: 15px;
+}
+.form-group label {
+    cursor: pointer;
+}
+.form-group label {
+    display: inline-block;
+    max-width: 100%;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+.form-control {
+    display: block;
+    width: 100%;
+    height: 34px;
+    padding: 3px;
+    font-size: 14px;
+    line-height: 1.7;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #f8f8f8;
+    border-radius: 0;
+    -webkit-appearance: none;
+
+}
+textarea.form-control {
+    height: auto;
+}
+.zmf-tips{
+    text-align: center;
+    padding: 15px 0;
+    color: #9F9F9F
+}

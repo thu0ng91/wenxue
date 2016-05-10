@@ -1,0 +1,76 @@
+ALTER table pre_comments add username varchar(255) not null comment '用户名';
+ALTER table pre_comments add email varchar(255) not null comment '邮箱';
+
+DROP TABLE IF EXISTS `pre_favorites`;
+CREATE TABLE `pre_favorites` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `uid` int(11) unsigned NOT NULL,
+  `logid` int(11) unsigned NOT NULL,
+  `classify` char(32) NOT NULL,
+  `ip` char(16) NOT NULL,
+  `ipInfo` char(255) NOT NULL,
+  `cTime` int(11) unsigned NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+ALTER table pre_comments add ip varchar(16) not null comment 'IP';
+ALTER table pre_comments add ipInfo varchar(255) not null comment 'IP信息';
+
+DROP TABLE IF EXISTS `pre_feedback`;
+CREATE TABLE `pre_feedback` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '意见反馈ID',
+  `uid` int(10) unsigned NOT NULL COMMENT '作者ID',
+  `contact` varchar(255) NOT NULL COMMENT '联系方式',
+  `appinfo` varchar(255) NOT NULL COMMENT '软件信息',
+  `sysinfo` varchar(255) NOT NULL COMMENT '系统信息',
+  `content` varchar(255) NOT NULL COMMENT '意见内容',
+  `type` varchar(8) NOT NULL COMMENT '软件类型',
+  `ip` varchar(25) NOT NULL COMMENT 'IP',
+  `cTime` int(10) unsigned NOT NULL COMMENT '创建时间',
+  `status` tinyint(3) NOT NULL COMMENT '状态',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `pre_zazhi`;
+CREATE TABLE `pre_zazhi` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uid` int(11) NOT NULL COMMENT '作者ID',
+  `title` varchar(255) NOT NULL COMMENT '标题',
+  `content` text NOT NULL COMMENT '正文',
+  `faceimg` int(10) NOT NULL COMMENT '封面图',
+  `comments` int(10) NOT NULL COMMENT '评论数',
+  `favorites` int(10) unsigned NOT NULL COMMENT '收藏数',
+  `top` tinyint(1) NOT NULL COMMENT '是否置顶',
+  `hits` int(11) NOT NULL COMMENT '阅读数',
+  `status` tinyint(1) NOT NULL,
+  `cTime` int(11) NOT NULL COMMENT '创建世界',
+  `updateTime` int(11) NOT NULL COMMENT '最近更新时间',
+  PRIMARY KEY (`id`),
+  KEY `uid` (`uid`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+alter table pre_posts add zazhi int(10) not null COMMENT '所属杂志';
+alter table pre_posts add `order` int(10) not null COMMENT '文章顺序';
+
+DROP TABLE IF EXISTS `pre_videos`;
+CREATE TABLE `pre_videos` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `uid` int(11) unsigned NOT NULL COMMENT '作者',
+  `logid` int(11) NOT NULL COMMENT '内容ID',
+  `classify` varchar(16) NOT NULL COMMENT '分类',
+  `title` varchar(255) NOT NULL COMMENT '标题',
+  `content` varchar(255) NOT NULL COMMENT '描述',
+  `url` varchar(255) NOT NULL COMMENT '链接地址',
+  `swfurl` varchar(255) NOT NULL COMMENT 'FLASH视频地址',
+  `h5url` varchar(255) NOT NULL COMMENT 'H5视频地址',
+  `company` varchar(255) NOT NULL COMMENT '来源',
+  `videoid` varchar(255) NOT NULL COMMENT '视频ID',
+  `faceimg` varchar(255) NOT NULL COMMENT '封面图',
+  `status` tinyint(1) NOT NULL,
+  `cTime` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+alter table pre_users add ip varchar(16) not null COMMENT '注册IP';
+alter table pre_users add cTime int(10) not null COMMENT '注册时间';
+alter table pre_posts add  tinyint(1) not null COMMENT '是否是封面图';
