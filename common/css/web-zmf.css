@@ -33,12 +33,57 @@ button, input, select, textarea,.form-control,.btn{
 }
 .container{
     width: 960px;
+    position: relative
+}
+.navbar{
+    border-radius: 0
 }
 .navbar .container{    
     position: relative;    
     padding-left: 0;
     padding-right: 0;    
 }
+/*顶部小导航*/
+.navbar-topbar{
+    background: rgba(230,230,230,0.3);
+    border: none;
+    min-height: 40px;
+    margin-bottom: 0;
+    padding-bottom: 0
+}
+.navbar-topbar .navbar-brand{
+    color: #333333
+}
+.navbar-topbar .navbar-header{
+    color: #333333
+}
+.navbar-topbar .navbar-nav>li>a{
+    color: #333333;
+    padding: 8px 15px;
+}
+.navbar-topbar .navbar-nav>.active>a, .navbar-topbar .navbar-nav>.active>a:focus, .navbar-topbar .navbar-nav>.active>a:hover,.navbar-topbar .navbar-nav>li>a:hover{
+    color: #333333;
+    background-color: #e6e6e6;
+}
+.navbar-topbar .navbar-nav>.open>a, .navbar-topbar .navbar-nav>.open>a:focus, .navbar-topbar .navbar-nav>.open>a:hover{
+    color: #333333;
+    background-color: #e6e6e6;
+}
+/*logo及搜索*/
+.header-logo{
+    width: 205px;
+    height: 90px;
+    margin: 10px 0;
+    background: #93ba5f;
+    float: left
+}
+.header-search{
+    width: 350px;
+    height: 44px;
+    float: right;
+    margin-top: 37px
+}
+/*主导航*/
 .navbar-default{
     background: #93ba5f;
     border-color: #93ba5f;
@@ -63,6 +108,8 @@ button, input, select, textarea,.form-control,.btn{
     color: #fff;
     background-color: #93ba5f;
 }
+
+
 .main-part{
     width: 640px;
     float: left
@@ -78,7 +125,8 @@ button, input, select, textarea,.form-control,.btn{
 }
 .module .module-header{
     padding: 10px 20px;
-    border-bottom: 1px solid #e6e6e6
+    border-bottom: 1px solid #e6e6e6;
+    font-weight: 700;    
 }
 .module .module-body{
     padding: 20px 20px 40px;
@@ -134,133 +182,9 @@ span.required,.errorMessage{
     width: 100%;
     height: 93px;
 }
-
-/*文章列表------*/
-.post-item img{
-    width: 100%;
-}
-.post-item h4{
-    margin-top: 0;
-    margin-bottom: 10px;
-    font-weight: 700
-}
-.post-item-footer{
-    margin-top: 15px;
-    padding-top: 15px;
-    border-top: 1px solid #f8f8f8;
-    padding-bottom: 25px
-}
-.post-item-footer .left-actions{
-    float: left
-}
-.post-item-footer .left-actions span{
-    margin-right: 15px
-}
-.post-item-footer .left-actions .comment-num{
-    color:#4F946E
-}
-.post-item-footer .left-actions .favor-num{
-    color:#FF677D
-}
-.post-item-footer .right-actions{
-    float: right
-}
-.post-list-tags{
-    color: #9F9F9F
-}
-.post-list-tags a{
-    margin-right: 10px;
-    color: #9F9F9F
-}
-/*文章列表------*/
-/*文章页面------*/
-.post-page h1{
-    font-size: 24px;
-    font-weight: 700;
-    margin-top: 10px;
-    margin-bottom: 20px;
-    text-align: center
-}
-.post-content img{
-    width: 100%;
-}
-.post-content .row{
-    margin-left: 0;
-    margin-right: 0;
-}
-.post-content [class^="col-xs-"],.post-content [class^="col-sm-"]{
-    padding-left: 5px;
-    padding-right: 5px;
-}
-.post-content p{
-    text-indent: 2em
-}
-.post-content .attach-desc{
-    color: #ccc;
-    text-indent:0
-}
-.post-content .well-sm{
-    border-radius: 0;
-    background-color: #f8f8f8;
-    border: 1px solid #f2f2f2;
-    box-shadow:none;
-    font-size: 14px
-}
-.post-fixed-actions{
-    width: 48px;        
-    background: #fff;
-    top: 95px;
-    left: 50%;
-    margin-left: 325px;
-    position: fixed;
-    font-size: 32px;
-    border: 1px solid #f8f8f8;
-    text-align: center;
-}
-.post-fixed-actions .fa{
-    color: #808080
-}
-.post-fixed-actions .fa-qrcode:hover{
-    color: #333
-}
-.post-fixed-actions .fa-comment-o:hover{
-    color: #4F946E
-}
-.post-fixed-actions .fa-heart-o:hover{
-    color: #FF677D
-}
-.post-fixed-actions .fa-heart{
-    color: #FF677D
-}
-.post-fixed-actions .divider{
-    border-top: 1px solid #f2f2f2;
-    width: 100%;
-    height: 1px;
-    display: block;
-    padding: 0 2px;
-    margin: 10px 0
-}
-.post-comments .media{
-    border-bottom: 1px solid #f8f8f8
-}
-.comment-textarea{
-    border:1px solid #f8f8f8;
-    box-shadow: none;
-    background-color: #f8f8f8;
-}
-.share-body{
-    text-align: center
-}
-.share-body p{
-    margin: 0
-}
-.share-body .more-awesome{
-    margin-top: 0;
-    margin-bottom: 20px
-}
-.post-img-map{
-    width: 600px;
-    height: 371px
+.module .book-chapters{
+    padding-top: 0;
+    padding-bottom: 0;
 }
 /*更多*/
 .more-awesome {
@@ -300,54 +224,6 @@ span.required,.errorMessage{
     left: 31px;
 }
 /*文章页面------*/
-/*标签页面------*/
-.tags-page{
-    border-top: 1px solid #f2f2f2;
-    border-left: 1px solid #f2f2f2;
-    border-right: 1px solid #f2f2f2;
-}
-.tags-page .panel-group .panel{
-    border-radius: 0;
-    border: none;
-    border-bottom: 1px solid #f2f2f2;
-    box-shadow: none;
-    margin-bottom: 0;
-    margin-top: 0
-}
-.tags-page .panel-group .panel-heading+.panel-collapse>.list-group{
-    border-top: 1px solid #ccc
-}
-.tags-page .panel-default>.panel-heading{
-    background: none;    
-}
-.tags-page .panel-title>a{
-    font-weight: 700
-}
-.tags-page .list-group-item{
-    border: 1px solid #f2f2f2;
-    font-size: 13px;
-}
-.tags-page .tags-more-posts{
-    color: #ccc
-}
-/*标签页面------*/
-/*地图页面------*/
-.map-fiexed-btns{
-    position: absolute;
-    left: 50%;
-    top: 10px;
-    z-index: 999
-}
-.map-mininfo{
-    width: 300px
-}
-.map-mininfo .map-item-title{
-
-}
-.map-mininfo .left-num{
-    margin-right: 10px
-}
-/*地图页面------*/
 /*页脚------*/
 .footer{
     width: 100%;

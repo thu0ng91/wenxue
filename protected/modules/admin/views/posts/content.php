@@ -80,20 +80,10 @@ $form=$this->beginWidget('CActiveForm', array(
     <?php foreach($posts as $post){?>
     <tr>
         <?php foreach($selectArr as $field){if($field=='id')continue;?>
-        <?php if($field=='httpType'){?>
-        <td><?php echo IpInfo::httpType($post[$field]);?></td>
-        <?php }elseif($field=='requestType'){?>
-        <td><?php echo IpInfo::requestType($post[$field]);?></td>
-        <?php }elseif($field=='uid'){?>
+        <?php if($field=='uid'){?>
         <td><?php echo CHtml::link(Users::getUsername($post[$field]),array('users/view','id'=>$post['uid']));?></td>
         <?php }elseif($field=='classify' && $from=='link'){?>
         <td><span class="label label-info"><?php echo Link::exTypes($post[$field]);?></span></td>
-        <?php }elseif($field=='type' && $from=='order'){?>
-        <td><span class="label label-info"><?php echo PackageType::getOneTitle($post[$field]);?></span></td>
-        <?php }elseif($field=='date' && $from=='order'){?>
-        <td><span class="label label-info"><?php echo PackageDate::getOneTitle($post[$field]);?></span></td>
-        <?php }elseif($field=='orderStatus' && $from=='order'){?>
-        <td><span class="label label-<?php echo $post[$field]!=Order::ORDER_STATUS_PAID ? 'danger' : 'success';?>"><?php echo Order::exStatus($post[$field]);?></span></td>
         <?php }elseif($field=='url'){?>
         <td><?php echo CHtml::link(zmf::subStr($post[$field],10),$post[$field]);?></td>
         <?php }elseif(in_array($field,array('hot','new'))){?>
@@ -110,8 +100,8 @@ $form=$this->beginWidget('CActiveForm', array(
         <?php }?>
         <td>
             <?php echo CHtml::link('编辑',array('update','id'=>$post['id']));?>
-            <?php if($from=='order'){?>
-            <?php echo CHtml::link('详情',array('view','id'=>$post['id']));?>
+            <?php if($from=='books'){?>
+            <?php echo CHtml::link('章节',array('chapters','id'=>$post['id']));?>
             <?php }?>
             <?php echo CHtml::link('删除',array('delete','id'=>$post['id']));?>
         </td>
@@ -122,11 +112,17 @@ $form=$this->beginWidget('CActiveForm', array(
 <div class="row">
     <div class="col-xs-2 col-sm-2">
         <div class="btn-group" role="group">
-            <?php echo CHtml::link('新增',array('create'),array('class'=>'btn btn-primary'));?>
-            <?php if(in_array($from,array('packagePower','packageDate','packageType'))){?>
-            <?php echo CHtml::link('排序',array('order'),array('class'=>'btn btn-info'));?>            
-            <?php }?>
-            <?php echo CHtml::link('管理',array('admin'),array('class'=>'btn btn-default'));?>
+            <?php 
+            if($from=='chapters') {
+                echo CHtml::link('新增', array('chapters/create','bid'=>$bid), array('class' => 'btn btn-primary'));
+            } else {
+                echo CHtml::link('新增', array('create'), array('class' => 'btn btn-primary'));
+                if (in_array($from, array('packagePower', 'packageDate', 'packageType'))) {
+                    echo CHtml::link('排序', array('order'), array('class' => 'btn btn-info'));
+                }
+                echo CHtml::link('管理', array('admin'), array('class' => 'btn btn-default'));
+            }
+            ?>
         </div>
     </div>
     <div class="col-xs-10 col-sm-10">

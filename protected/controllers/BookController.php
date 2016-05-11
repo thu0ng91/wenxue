@@ -27,7 +27,15 @@ class BookController extends Q {
     public function actionChapter(){
         $cid=  zmf::val('cid',2);
         $chapterInfo=  Chapters::model()->findByPk($cid);
+        if(!$chapterInfo){
+            throw new CHttpException(404, 'The requested page does not exist.');
+        }
+        $bookInfo=Books::getOne($chapterInfo['bid']);
+        if(!$bookInfo){
+            throw new CHttpException(404, 'The requested page does not exist.');
+        }
         $data=array(
+            'bookInfo'=>$bookInfo,
             'chapterInfo'=>$chapterInfo,
             'chapters'=>$chapters,
         );

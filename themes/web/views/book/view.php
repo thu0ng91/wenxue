@@ -1,4 +1,12 @@
 <style>
+    .book-info h1{
+        font-size: 24px;
+        font-weight: 700;
+        padding-left: 15px;
+    }
+    .book-info .book-detail p{
+        margin-bottom: 0
+    }
     .book-starInfo{
         width: 200px;
         border-left: 1px solid #e6e6e6;
@@ -32,11 +40,29 @@
     .star-percent{
         float: left;
         margin-left: 5px;
+    }    
+    .book-chapters .list-group{
+        margin-bottom: 0
+    }
+    .book-chapters .list-group-item:first-child{
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+        border-top: none;
+    }
+    .book-chapters .list-group-item:last-child{        
+        border-bottom-right-radius: 0;
+        border-bottom-left-radius: 0;
+        border-bottom: none;
+    }
+    .book-chapters .list-group-item{
+        border-left: none;
+        border-right: none;
+        padding: 10px 0
     }
 </style>
 <div class="container">
     <div class="main-part">
-        <div class="module">
+        <div class="module book-info">
             <h1><?php echo $info['title']; ?></h1>
             <div class="media">
                 <div class="media-left">
@@ -44,7 +70,7 @@
                         <img class="media-object" src="<?php echo $info['faceImg']; ?>" alt="<?php echo $info['title']; ?>">
                     </a>
                 </div>
-                <div class="media-body">
+                <div class="media-body book-detail">
                     <p>作者：<?php echo CHtml::link($info['title'], array('author/view', 'id' => $info['aid'])); ?></p>
                     <p>分类：<?php echo $info['title']; ?></p>
                     <p>收藏：<?php echo $info['favorites']; ?></p>
@@ -94,16 +120,12 @@
                     </div>                    
                 </div>
             </div>
-            <div class="module-header">
-                内容简介
-            </div>
+            <div class="module-header">内容简介</div>
             <div class="module-body">
                 <p><?php echo $info['content']; ?></p>
             </div>  
-            <div class="module-header">
-                目录
-            </div>
-            <div class="module-body">
+            <div class="module-header">目录</div>
+            <div class="module-body book-chapters">
                 <div class="list-group">
                 <?php foreach ($chapters as $chapter){?>
                 <?php echo CHtml::link($chapter['title'],array('book/chapter','cid'=>$chapter['id']),array('class'=>'list-group-item'));?>
@@ -112,9 +134,7 @@
             </div>
         </div>
         <div class="module">
-            <div class="module-header">
-                点评
-            </div>
+            <div class="module-header">点评</div>
             <div class="module-body">
                 <p><?php echo $info['content']; ?></p>
             </div>

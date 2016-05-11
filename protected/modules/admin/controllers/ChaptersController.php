@@ -27,7 +27,17 @@ class ChaptersController extends Admin {
         if ($id) {
             $model = $this->loadModel($id);
         } else {
+            $bid=  zmf::val('bid',2);
+            if(!$bid){
+                throw new CHttpException(404, '请选择小说');
+            }
             $model = new Chapters;
+            $bookInfo=  Books::getOne($bid);            
+            if($bookInfo){
+                $model->bid=$bid;
+                $model->uid=$bookInfo['uid'];
+                $model->aid=$bookInfo['aid'];
+            }
         }
         // Uncomment the following line if AJAX validation is needed
         // $this->performAjaxValidation($model);
@@ -36,7 +46,7 @@ class ChaptersController extends Admin {
             if ($model->save()) {
                 if (!$id) {
                     Yii::app()->user->setFlash('addChaptersSuccess', "保存成功！您可以继续添加。");
-                    $this->redirect(array('create'));
+                    $this->redirect(array('create','bid'=>$bid));
                 } else {
                     $this->redirect(array('index'));
                 }

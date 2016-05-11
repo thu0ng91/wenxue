@@ -1036,5 +1036,21 @@ class zmf {
             return $str;
         }
     }
+    
+    /**
+     * Yes OR NO
+     * @param string $type
+     * @return string
+     */
+    public static function yesOrNo($type = '') {
+        $arr = array(
+            '0' => '不是',
+            '1' => '是',
+        );
+        if ($type == 'admin') {
+            return $arr;
+        }
+        return $arr[$type];
+    }
 
 }

@@ -84,7 +84,32 @@ class BooksController extends Admin {
             'model' => $model,
             'pages' => $pager,
             'posts' => $posts,
-            'from' => 'packageDate',
+            'from' => 'books',
+            'selectArr' => explode(',', $select),
+        ));
+    }
+    
+    public function actionChapters() {
+        $id=  zmf::val('id',1);
+        $select = "id,aid,title";
+        $model = new Chapters();
+        $criteria = new CDbCriteria();
+        if($id){
+            $criteria->addCondition("bid='$id'");
+        }
+        $criteria->select = $select;
+        $criteria->order = 'cTime DESC';
+        $count = $model->count($criteria);
+        $pager = new CPagination($count);
+        $pager->pageSize = 30;
+        $pager->applyLimit($criteria);
+        $posts = $model->findAll($criteria);
+        $this->render('/posts/content', array(
+            'bid' => $id,
+            'model' => $model,
+            'pages' => $pager,
+            'posts' => $posts,
+            'from' => 'chapters',
             'selectArr' => explode(',', $select),
         ));
     }

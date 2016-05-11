@@ -15,18 +15,15 @@
 )); ?>
 <?php echo $form->errorSummary($model); ?>
     <div class="form-group">
-        <?php echo $form->labelEx($model,'uid'); ?>
-        <?php echo $form->textField($model,'uid',array('size'=>10,'maxlength'=>10,'class'=>'form-control')); ?>
+        <?php echo $form->hiddenField($model,'uid'); ?>
         <?php echo $form->error($model,'uid'); ?>
     </div>
     <div class="form-group">
-        <?php echo $form->labelEx($model,'aid'); ?>
-        <?php echo $form->textField($model,'aid',array('size'=>10,'maxlength'=>10,'class'=>'form-control')); ?>
+        <?php echo $form->hiddenField($model,'aid'); ?>
         <?php echo $form->error($model,'aid'); ?>
     </div>
     <div class="form-group">
-        <?php echo $form->labelEx($model,'bid'); ?>
-        <?php echo $form->textField($model,'bid',array('size'=>10,'maxlength'=>10,'class'=>'form-control')); ?>
+        <?php echo $form->hiddenField($model,'bid'); ?>
         <?php echo $form->error($model,'bid'); ?>
     </div>
     <div class="form-group">

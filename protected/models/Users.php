@@ -87,6 +87,11 @@ class Users extends CActiveRecord {
     public static function getOne($id) {
         return Users::model()->findByPk($id);
     }
+    
+    public static function getUsername($id){
+        $info= Users::model()->findByPk($id);
+        return $info ? $info['truename'] : '';
+    }
 
     public static function userSex($return) {
         $arr = array(

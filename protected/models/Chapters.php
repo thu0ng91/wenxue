@@ -161,5 +161,12 @@ class Chapters extends CActiveRecord {
         ));
         return $items;
     }
+    
+    public static function text($content){
+        $content=  nl2br($content);
+        $content=str_replace('<br />', '</p><p>', $content);
+        $content='<p>'.$content.'</p>';
+        return $content;
+    }
 
 }

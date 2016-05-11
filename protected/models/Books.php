@@ -156,5 +156,13 @@ class Books extends CActiveRecord {
         }
         return $posts;
     }
+    
+    public static function getOne($id){
+        if(!$id){
+            return false;
+        }
+        $info=  Books::model()->findByPk($id);
+        return $info;
+    }
 
 }
