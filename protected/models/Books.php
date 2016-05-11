@@ -47,6 +47,7 @@ class Books extends CActiveRecord {
             array('vip, bookStatus, status,top', 'numerical', 'integerOnly' => true),
             array('uid, aid,colid,favorites, hits, chapters, comments, words,topTime', 'length', 'max' => 10),
             array('title, faceImg, desc', 'length', 'max' => 255),
+            array('content', 'safe'),
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
             array('id, uid, aid, title, faceImg, desc, content, favorites, hits, chapters, comments, words, vip, bookStatus, status', 'safe', 'on' => 'search'),
