@@ -104,7 +104,11 @@
                 目录
             </div>
             <div class="module-body">
-                <p><?php echo $info['content']; ?></p>
+                <div class="list-group">
+                <?php foreach ($chapters as $chapter){?>
+                <?php echo CHtml::link($chapter['title'],array('book/chapter','cid'=>$chapter['id']),array('class'=>'list-group-item'));?>
+                <?php }?>
+                </div>
             </div>
         </div>
         <div class="module">

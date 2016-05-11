@@ -74,3 +74,22 @@ CREATE TABLE `pre_videos` (
 alter table pre_users add ip varchar(16) not null COMMENT '注册IP';
 alter table pre_users add cTime int(10) not null COMMENT '注册时间';
 alter table pre_posts add  tinyint(1) not null COMMENT '是否是封面图';
+
+DROP TABLE IF EXISTS `pre_chapters`;
+CREATE TABLE `pre_chapters` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `uid` int(10) unsigned NOT NULL COMMENT '用户',
+  `aid` int(10) unsigned NOT NULL COMMENT '作者ID',
+  `bid` int(10) unsigned NOT NULL COMMENT '所属小说ID',
+  `title` varchar(255) NOT NULL COMMENT '标题',
+  `content` text NOT NULL COMMENT '正文',
+  `words` int(10) unsigned NOT NULL COMMENT '字数',
+  `comments` int(10) unsigned NOT NULL COMMENT '评论数',
+  `hits` int(10) unsigned NOT NULL COMMENT '点击数',
+  `status` tinyint(1) unsigned NOT NULL COMMENT '状态',
+  `vip` tinyint(1) unsigned NOT NULL COMMENT '是否VIP',
+  `cTime` int(10) unsigned NOT NULL COMMENT '创建时间',
+  `updateTime` int(10) unsigned NOT NULL COMMENT '更新时间',
+  `postTime` int(10) unsigned NOT NULL COMMENT '发布时间',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;

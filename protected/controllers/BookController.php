@@ -12,10 +12,26 @@ class BookController extends Q {
             throw new CHttpException(404, 'The requested page does not exist.');
         }
         $info=  Books::model()->findByPk($id);
+        if(!$info || $info['status']!=Posts::STATUS_PASSED){
+            throw new CHttpException(404, 'The requested page does not exist.');
+        }
+        $chapters=  Chapters::getByBook($id);
+        
         $data=array(
-            'info'=>$info
+            'info'=>$info,
+            'chapters'=>$chapters,
         );
         $this->render('view', $data);
+    }
+    
+    public function actionChapter(){
+        $cid=  zmf::val('cid',2);
+        $chapterInfo=  Chapters::model()->findByPk($cid);
+        $data=array(
+            'chapterInfo'=>$chapterInfo,
+            'chapters'=>$chapters,
+        );
+        $this->render('chapter', $data);
     }
 
 }
