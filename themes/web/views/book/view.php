@@ -1,4 +1,7 @@
 <style>
+    .book-info{
+        padding: 0
+    }
     .book-info h1{
         font-size: 24px;
         font-weight: 700;

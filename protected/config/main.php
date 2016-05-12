@@ -39,7 +39,7 @@ return array(
         'user' => array(
             'identityCookie' => array('domain' => '.newsoul.cn', 'path' => '/'),
             'allowAutoLogin' => true,
-            'stateKeyPrefix' => 'zmf_newsoul',
+            'stateKeyPrefix' => 'ZMFCHUXIN',
             'loginUrl' => array(
                 'site/login'
             )
