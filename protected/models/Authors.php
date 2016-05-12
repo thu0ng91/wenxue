@@ -130,5 +130,9 @@ class Authors extends CActiveRecord {
     public static function model($className = __CLASS__) {
         return parent::model($className);
     }
+    
+    public static function getOne($id){
+        return Authors::model()->findByPk($id);
+    }
 
 }
