@@ -63,6 +63,26 @@ $cols=  Column::allCols();
         color: #666;
         cursor: pointer;
     }
+    .side-module{
+        border-bottom: 1px solid #f2f2f2;
+        padding: 10px 0;
+    }
+    .side-module .side-module-header{
+        font-weight:700
+    }
+    .side-footer{
+        padding: 10px 0;
+        color: #999
+    }
+    .side-footer a{
+        padding-right: 2px;
+        color: #999;
+        display: inline-block
+    }
+    .side-footer a+a {
+        border-left: 1px solid #eee;
+        padding-left: 5px;
+    }
 </style>
 <div class="navbar navbar-default" role="navigation">
     <div class="container">
@@ -99,17 +119,41 @@ $cols=  Column::allCols();
 
             </div>
             <div class="user-achiever">
-                <span class="">获得 <i class="fa fa-thumbs-up"></i> 0赞同</span>
-                <span class="pull-right btn btn-default">完善资料</span>
+                <span class="color-grey">获得 <i class="fa fa-thumbs-up"></i> 0赞同</span>
+                <?php if($this->toUserInfo['id']==$this->uid){?>                
+                <div class="pull-right">
+                    <div class="btn-group" role="group">
+                        <?php echo CHtml::link('完善资料',array('user/setting'),array('class'=>'btn btn-default'));?>
+                        <?php if($this->userInfo['authorId']>0){?>
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                作者中心
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <?php if($this->authorLogin){?>
+                                <li><?php echo CHtml::link('新增作品',array('author/createBook'));?></li>
+                                <li><?php echo CHtml::link('进入作者中心',array('author/view','id'=>$this->userInfo['authorId']));?></li>
+                                <?php }else{?>
+                                <li><?php echo CHtml::link('登录作者中心',array('user/authorAuth'));?></li>
+                                <?php }?>
+                            </ul>
+                        </div>
+                        <?php }else{?>
+                        <?php echo CHtml::link('成为作者',array('user/author'),array('class'=>'btn btn-primary'));?>                        
+                        <?php }?>                        
+                    </div>
+                </div>
+                <?php }?>
             </div>
             <div class="user-navbar">
                 <div class="navbar navbar-user" role="navigation">                    
                     <div class="navbar-collapse collapse">
                         <ul class="nav navbar-nav">
-                            <li><?php echo CHtml::link('首页', zmf::config('baseurl')); ?></li>
+                            <li<?php echo $this->selectNav == 'index' ? ' class="active"' : ''; ?>><?php echo CHtml::link('首页', array('user/index','id'=>$this->toUserInfo['id'])); ?></li>
                             <li<?php echo $this->selectNav == 'comment' ? ' class="active"' : ''; ?>><?php echo CHtml::link('点评', array('user/comment','id'=>$this->toUserInfo['id'])); ?></li>       
                             <li<?php echo $this->selectNav == 'favorite' ? ' class="active"' : ''; ?>><?php echo CHtml::link('收藏', array('user/favorite','id'=>$this->toUserInfo['id'])); ?></li>
-                            <li<?php echo $this->selectNav == 'notice' ? ' class="active"' : ''; ?>><?php echo CHtml::link('消息', array('user/notice','id'=>$this->toUserInfo['id'])); ?></li>
+                            <li<?php echo $this->selectNav == 'notice' ? ' class="active"' : ''; ?>><?php echo CHtml::link('消息', array('user/notice')); ?></li>
                             <li<?php echo $this->selectNav == 'setting' ? ' class="active"' : ''; ?>><?php echo CHtml::link('设置', array('user/setting')); ?></li>
                         </ul>
                     </div>
@@ -131,7 +175,22 @@ $cols=  Column::allCols();
                 <label> 人</label>
             </a>
         </div>
-        
+        <div class="side-module">
+            <div class="side-module-header">关注了<a href='#'>14个作者</a></div>
+            <div class="side-module-body">
+                
+            </div>
+        </div>
+        <div class="side-module">
+            <span class="color-grey">主页被访问123次</span>
+        </div>
+        <div class="side-footer">
+            <a href="#">关于我们</a>
+            <a href="#">联系我们</a>
+            <a href="#">隐私条款</a>
+            <a href="#">版权说明</a><br/>
+            <p>渝备123456 <a href="#">初心创文</a>&copy;<?php echo date('Y');?></p>
+        </div>
     </div>
 </div>
 <?php $this->endContent(); ?>

@@ -37,7 +37,7 @@ class Users extends CActiveRecord {
             array('ip', 'default', 'setOnEmpty' => true, 'value' => ip2long(Yii::app()->request->userHostAddress)),
             array('hits, sex, isAdmin, status', 'numerical', 'integerOnly' => true),
             array('truename,ip', 'length', 'max' => 16),
-            array('cTime', 'length', 'max' => 10),
+            array('cTime,authorId', 'length', 'max' => 10),
             array('password', 'length', 'max' => 32),
             array('contact, avatar', 'length', 'max' => 255),
             array('content', 'safe'),
@@ -71,6 +71,7 @@ class Users extends CActiveRecord {
             'status' => '状态',
             'ip' => '注册IP',
             'cTime' => '注册时间',
+            'authorId' => '作者ID',
         );
     }
 

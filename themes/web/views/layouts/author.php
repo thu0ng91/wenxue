@@ -53,8 +53,50 @@ $cols=  Column::allCols();
         margin-top:25px;
         float:left
     }
+    .author-side-info{
+        padding:15px 10px 0 10px;
+        border-bottom:1px solid #e6e6e6
+    }
+    .author-side-info .info-label{
+        float:left;
+        min-width:40px;
+        font-weight:700
+    }
+    .author-side-info .txt{
+        color:#999
+    }
+    .author-side-num {
+        border-bottom: 1px solid #eee;
+        margin-bottom: 0;
+        float: left;
+        width: 100%;
+        padding:0 0 0 10px
+    }
+    .author-side-num .item {
+        text-decoration: none;
+        padding: 15px 30px 8px 0;
+        float: left
+    }
+    .author-side-num .item+.item {
+        padding-left: 20px;
+        border-left: 1px solid #eee;
+    }
+    .author-side-num .item strong {
+        font-size: 16px;
+        font-weight: 700;
+        color: #666;
+    }
+    .author-side-num .item label {
+        font-size: 13px;
+        font-weight: 400;
+        vertical-align: 1px;
+        color: #666;
+        cursor: pointer;
+    }
+    
+    
     .author-side-navbar{
-        height:100%;
+        clear:both
     }
     .author-side-navbar a{
         display:block;
@@ -64,6 +106,14 @@ $cols=  Column::allCols();
     .author-side-navbar .item+.item {
         border-top: 1px solid #eee;
     }
+    .author-side-navbar .active{
+        color:#fff;
+        background:#93ba5f
+    }
+    .author-side-navbar .fa{
+        margin-right:6px
+    }
+    
     .author-content-holder{
         padding:10px 0 10px 15px
     }
@@ -71,11 +121,19 @@ $cols=  Column::allCols();
         border-bottom:1px solid #e6e6e6;
         margin-bottom:10px;
         padding-bottom:10px;
-        margin-top:0
+        margin-top:0;
+        padding-right:10px;
     }
     .author-content-holder .media img{
         width:90px;
         height:127px;
+    }
+    .author-content-holder .media .right-actions{
+        float:right;
+        display:inline-block
+    }
+    .create-book-form{
+        padding-right:15px;
     }
 </style>
 <div class="navbar navbar-default" role="navigation">
@@ -103,12 +161,42 @@ $cols=  Column::allCols();
         </div>
     </div>
     <div class="author-content module author-module">
-        <div class="main-part ">          
+        <div class="main-part ">
             <?php echo $content; ?>
         </div>
-        <div class="aside-part author-side-navbar">
-            <a href="#" class="item">作品</a>
-            <a href="#" class="item">作品</a>
+        <div class="aside-part">
+            <div class="author-side-info">
+                <p><span class="info-label">性别</span><span class="txt">男</span></p>
+                <p><span class="info-label">入住</span><span class="txt"><?php echo zmf::time($this->authorInfo['cTime'],'Y-m-d');?></span></p>
+                <p><span class="info-label">简介</span><span class="txt"><?php echo $this->authorInfo['content'];?></span></p>
+            </div>
+            <div class="author-side-num">
+                <a class="item" href="#">
+                    <span>追随者</span><br>
+                    <strong>3</strong>
+                    <label> 人</label>
+                </a>
+                <a class="item" href="#">
+                    <span>作品数</span><br>
+                    <strong>0</strong>
+                </a>
+                <a class="item" href="#">
+                    <span>热度</span><br>
+                    <strong>0</strong>
+                </a>
+            </div>
+            <div class="author-side-navbar">
+                <?php echo CHtml::link('<i class="fa fa-list"></i>作品',array('author/view','id'=>$this->authorInfo['id']),array('class'=>'item'.($this->selectNav == 'index' ? ' active' : '')));?>
+                <?php echo CHtml::link('<i class="fa fa-star"></i>追随者',array('author/fans','id'=>$this->authorInfo['id']),array('class'=>'item'.($this->selectNav == 'fans' ? ' active' : '')));?>
+                <a href="#" class="item"><i class="fa fa-comments"></i>作者专区</a>
+                <?php if($this->adminLogin){?>
+                <?php echo CHtml::link('<i class="fa fa-plus"></i>新作品',array('author/createBook'),array('class'=>'item'.($this->selectNav == 'createBook' ? ' active' : '')));?>
+                <a href="#" class="item"><i class="fa fa-file"></i>草稿箱</a>
+                <a href="#" class="item"><i class="fa fa-edit"></i>编辑资料</a>
+                <a href="#" class="item"><i class="fa fa-cog"></i>设置皮肤</a>
+                <?php echo CHtml::link('<i class="fa fa-sign-out"></i>退出管理',array('author/logout'),array('class'=>'item'));?>
+                <?php }?>
+            </div>
         </div>
     </div>    
     

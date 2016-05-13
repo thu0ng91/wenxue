@@ -93,3 +93,5 @@ CREATE TABLE `pre_chapters` (
   `postTime` int(10) unsigned NOT NULL COMMENT '发布时间',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+alter table pre_users add authorId int(10) unsigned not null COMMENT '作者ID';

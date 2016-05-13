@@ -18,6 +18,9 @@ a{
 p{
     margin:0 0 5px
 }
+.color-grey{
+    color: #999
+}
 .ui-nowrap {
     max-width: 100%;
     overflow: hidden;
@@ -115,7 +118,7 @@ button, input, select, textarea,.form-control,.btn{
     float: left
 }
 .aside-part{
-    width: 300px;
+    width: 315px;
     float: right
 }
 .module{
@@ -131,6 +134,70 @@ button, input, select, textarea,.form-control,.btn{
     padding: 10px 20px;
     border-bottom: 1px solid #e6e6e6;
     font-weight: 700;    
+}
+/*小说主页*/
+.book-info{
+    padding: 0
+}
+.book-info h1{
+    font-size: 24px;
+    font-weight: 700;
+    padding-left: 15px;
+}
+.book-info .book-detail p{
+    margin-bottom: 0
+}
+.book-starInfo{
+    width: 200px;
+    border-left: 1px solid #e6e6e6;
+    height: 100%;
+    padding-left: 15px;
+    display: block
+}
+.book-star-num{
+    font-size: 28px;
+    width: 48px
+}
+.book-star-detail{
+    font-size: 12px;
+    line-height: 16px;
+    display: block
+}
+.book-star-detail-item{
+    display: block;
+    clear: both
+}
+.book-star-detail .star-title{
+    float: left;
+    margin-right: 5px;
+}
+.book-star-detail .star-width{
+    float: left;
+    height: 8px;
+    background: red;
+    margin-top: 4px;
+}
+.book-star-detail .star-percent{
+    float: left;
+    margin-left: 5px;
+}    
+.book-chapters .list-group{
+    margin-bottom: 0
+}
+.book-chapters .list-group-item:first-child{
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-top: none;
+}
+.book-chapters .list-group-item:last-child{        
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+    border-bottom: none;
+}
+.book-chapters .list-group-item{
+    border-left: none;
+    border-right: none;
+    padding: 10px 0
 }
 .module .module-body{
     padding: 20px 20px 40px;

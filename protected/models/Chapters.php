@@ -148,6 +148,17 @@ class Chapters extends CActiveRecord {
         return $arr[$type];
     }
     
+    public static function exStatusForAuthor($type) {
+        $arr = array(
+            Posts::STATUS_NOTPASSED => '存草稿箱',
+            Posts::STATUS_PASSED => '立即发布'
+        );
+        if ($type == 'admin') {
+            return $arr;
+        }
+        return $arr[$type];
+    }
+    
     public static function getByBook($id){
         if(!$id){
             return array();
@@ -160,6 +171,10 @@ class Chapters extends CActiveRecord {
             'select'=>'id,title'
         ));
         return $items;
+    }
+    
+    public static function getOne($cid){
+        return Chapters::model()->findByPk($cid);
     }
     
     public static function text($content){

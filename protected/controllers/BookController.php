@@ -11,7 +11,7 @@ class BookController extends Q {
         if(!$id){
             throw new CHttpException(404, 'The requested page does not exist.');
         }
-        $info=  Books::model()->findByPk($id);
+        $info=  Books::getOne($id);
         if(!$info || $info['status']!=Posts::STATUS_PASSED){
             throw new CHttpException(404, 'The requested page does not exist.');
         }

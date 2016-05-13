@@ -37,10 +37,10 @@ class Authors extends CActiveRecord {
     public function rules() {
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
-        return array(            
+        return array(
             array('cTime', 'default', 'setOnEmpty' => true, 'value' => zmf::now()),
             array('hashCode', 'default', 'setOnEmpty' => true, 'value' => zmf::randMykeys(6)),
-            array('status', 'default', 'setOnEmpty' => true, 'value' => Posts::STATUS_PASSED),            
+            array('status', 'default', 'setOnEmpty' => true, 'value' => Posts::STATUS_PASSED),
             array('uid, authorName, avatar, password', 'required'),
             array('uid, favors, posts, hits, score, cTime, status', 'numerical', 'integerOnly' => true),
             array('authorName', 'length', 'max' => 16),
@@ -130,9 +130,25 @@ class Authors extends CActiveRecord {
     public static function model($className = __CLASS__) {
         return parent::model($className);
     }
-    
-    public static function getOne($id){
+
+    public static function getOne($id) {
         return Authors::model()->findByPk($id);
+    }
+
+    public static function findByUid($uid) {
+        return Authors::model()->find('uid=:uid', array(':uid' => $uid));
+    }
+
+    public static function checkLogin($userInfo, $authorId) {
+        if (!$userInfo) {
+            return false;
+        }
+        $code = 'authorAuth-' . $userInfo['id'];
+        $val = Yii::app()->session[$code];
+        if ($authorId>0 && $authorId == $userInfo['authorId'] && $val) {
+            return true;
+        }
+        return false;
     }
 
 }
