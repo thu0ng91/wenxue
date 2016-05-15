@@ -23,6 +23,7 @@ $url=  Yii::app()->createUrl('book/view',array('id'=>$data['id']));
             <span><?php echo CHtml::link('分享','javascript:;',array('action'=>'share','action-qrcode'=>$qrcode,'action-url'=>$url,'action-img'=>$qrcode,'action-title'=>$data['title']));?></span>
             <?php if($this->adminLogin){?>
             <span class="right-actions">                
+                <?php echo CHtml::link('预览',array('book/view','id'=>$data['id']));?>
                 <?php echo CHtml::link('编辑',array('author/updateBook','bid'=>$data['id']));?>
                 <?php echo CHtml::link('章节',array('author/book','bid'=>$data['id']));?>
                 <?php echo CHtml::link('续写',array('author/addChapter','bid'=>$data['id']));?>

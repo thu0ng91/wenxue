@@ -139,7 +139,7 @@ class Posts extends CActiveRecord {
      * @return boolean
      */
     public static function updateCount($keyid, $type, $num = 1, $field = 'hits') {
-        if (!$keyid || !$type || !in_array($type, array('Posts'))) {
+        if (!$keyid || !$type || !in_array($type, array('Books','Authors','Chapters','Tips','Users'))) {
             return false;
         }
         $model = new $type;
@@ -153,25 +153,25 @@ class Posts extends CActiveRecord {
      */
     public static function handleContent($content) {
         $pattern = '/<img[\s\S]+?(data|mapinfo|video)=("|\')([^\2]+?)\2[^>]+?>/i';
-        preg_match_all($pattern, $content, $matches);        
-        $arr_attachids = $arr_videoids=array();
+        preg_match_all($pattern, $content, $matches);
+        $arr_attachids = $arr_videoids = array();
         if (!empty($matches[0])) {
             $arr = array();
             foreach ($matches[0] as $key => $val) {
-                $_type=$matches[1][$key];
-                if($_type=='data'){//处理图片
-                    $thekey=$matches[3][$key];
-                    $imgsrc=$matches[0][$key];
+                $_type = $matches[1][$key];
+                if ($_type == 'data') {//处理图片
+                    $thekey = $matches[3][$key];
+                    $imgsrc = $matches[0][$key];
                     $content = str_ireplace("{$imgsrc}", '[attach]' . $thekey . '[/attach]', $content);
                     $arr_attachids[] = $thekey;
-                }elseif($_type=='video'){//处理视频
-                    $thekey=$matches[3][$key];
-                    $imgsrc=$matches[0][$key];
+                } elseif ($_type == 'video') {//处理视频
+                    $thekey = $matches[3][$key];
+                    $imgsrc = $matches[0][$key];
                     $content = str_ireplace("{$imgsrc}", '[video]' . $thekey . '[/video]', $content);
                     $arr_videoids[] = $thekey;
-                }elseif($_type=='mapinfo'){//处理地图信息
-                    $thekey=$matches[3][$key];
-                    $imgsrc=$matches[0][$key];
+                } elseif ($_type == 'mapinfo') {//处理地图信息
+                    $thekey = $matches[3][$key];
+                    $imgsrc = $matches[0][$key];
                     $content = str_ireplace("{$imgsrc}", '[map]' . $thekey . '[/map]', $content);
                 }
             }
@@ -214,6 +214,24 @@ class Posts extends CActiveRecord {
         $com->bindValue(':limit', $pages->pageSize);
         $comLists = $com->queryAll();
     }
+    
+    public static function getByPage($params) {
+        $sql = $params['sql'];
+        if (!$sql) {
+            return false;
+        }
+        $pageSize = (is_numeric($params['pageSize']) && $params['pageSize'] > 0) ? $params['pageSize'] : 30;
+        $page = (is_numeric($params['page']) && $params['page'] > 1) ? $params['page'] : 1;
+        $bindValues=!empty($params['bindValues']) ? $params['bindValues'] : array();
+        $bindValues[':offset']=($page-1) * $pageSize;
+        $bindValues[':limit']=$pageSize;
+        $com = Yii::app()->db->createCommand($sql . " LIMIT :offset,:limit");
+        $com->bindValues($bindValues);        
+        $posts = $com->queryAll();
+        return array(
+            'posts' => $posts
+        );
+    }
 
     public static function getTopsByTag($tagid, $limit = 5) {
         $sql = "SELECT p.id,p.title FROM {{posts}} p,{{tag_relation}} tr WHERE tr.tagid='{$tagid}' AND tr.classify='posts' AND tr.logid=p.id AND p.status=" . self::STATUS_PASSED . " ORDER BY hits DESC LIMIT {$limit}";
@@ -225,7 +243,7 @@ class Posts extends CActiveRecord {
         if (!$code || !$type) {
             return array('status' => 0, 'msg' => '数据不全，请核实');
         }
-        if (!in_array($type, array('post'))) {
+        if (!in_array($type, array('book', 'author','tip','user'))) {
             return array('status' => 0, 'msg' => '暂不允许的分类');
         }
         if (is_numeric($code)) {
@@ -233,41 +251,65 @@ class Posts extends CActiveRecord {
         } else {
             $codeArr = Posts::decode($code);
             if ($codeArr['type'] != $type || !is_numeric($codeArr['id']) || $codeArr['id'] < 1) {
-                $this->jsonOutPut(0, '您所查看的内容不存在');
+                return array('status' => 0, 'msg' => '您所操作的内容不存在');
             }
             $id = $codeArr['id'];
         }
         if (!$uid) {
             $uid = zmf::uid();
         }
-        if ($uid) {
-            if (zmf::actionLimit('favorite-' . $type, $id)) {
-                return array('status' => 0, 'msg' => '操作太频繁，请稍后再试');
-            }
-        } else {
-            //没有登录的访客点收藏时判断是否已收藏过
-            if (zmf::actionLimit('favorite-' . $type, $id, 1, 86400, true)) {
-                return array('status' => 1, 'msg' => '已点赞', 'state' => 1);
-            }
-            $uid = 0;
+        if(!$uid){
+            return array('status' => 0, 'msg' => '请先登录');
         }
-        $postInfo = Posts::model()->findByPk($id);
+        if (zmf::actionLimit('favorite-' . $type, $id)) {
+            return array('status' => 0, 'msg' => '操作太频繁，请稍后再试');
+        }
+        if($type=='book'){
+            $postInfo=  Books::getOne($id);            
+            $content="您的小说【{$postInfo['title']}】有了新的收藏者";
+            $noticeUid=$postInfo['uid'];
+        }elseif($type=='author'){
+            $postInfo=  Authors::getOne($id);
+            $content="您的作者主页【{$postInfo['authorName']}】有了新的追随者";
+            $noticeUid=$postInfo['uid'];
+        }elseif($type=='tip'){
+            $postInfo=  Tips::getOne($id);
+            if (!$postInfo || $postInfo['status'] != Posts::STATUS_PASSED) {
+                return array('status' => 0, 'msg' => '您所操作的内容不存在');
+            }
+            $chapterInfo=  Chapters::getOne($postInfo['logid']);
+            if (!$chapterInfo || $chapterInfo['status'] != Posts::STATUS_PASSED) {
+                return array('status' => 0, 'msg' => '您所操作的内容不存在');
+            }
+            $content="您点评【{$chapterInfo['title']}】有了新的赞同";
+            $noticeUid=$postInfo['uid'];
+        }elseif($type=='user'){
+            $postInfo= Users::getOne($id);
+            $content="您有了新的粉丝";
+            $noticeUid=$id;
+        }
         if (!$postInfo || $postInfo['status'] != Posts::STATUS_PASSED) {
-            return array('status' => 0, 'msg' => '文章不存在');
+            return array('status' => 0, 'msg' => '您所操作的内容不存在');
         }
         $attr = array(
             'uid' => $uid,
             'logid' => $id,
             'classify' => $type
-        );
-        $info = false;
-        if ($uid) {
-            $info = Favorites::model()->findByAttributes($attr);
-        }
+        );        
+        $info = Favorites::model()->findByAttributes($attr);
         if ($info) {
             if (Favorites::model()->deleteByPk($info['id'])) {
-                if ($type == 'post') {
-                    Posts::updateCount($id, 'Posts', -1, 'favorite');
+                if ($type == 'book') {
+                    Posts::updateCount($id, 'Books', -1, 'favorites');
+                }elseif($type=='author'){
+                    Posts::updateCount($id, 'Authors', -1, 'favors');
+                }elseif($type=='tip'){
+                    Posts::updateCount($id, 'Tips', -1, 'favors');
+                }elseif($type=='user'){
+                    //更新被收藏的用户的粉丝数
+                    Posts::updateCount($id, 'Users', -1, 'favors');
+                    //增加我关注了的人数
+                    Posts::updateCount($this->uid, 'Users', -1, 'favord');
                 }
                 return array('status' => 1, 'msg' => '取消点赞', 'state' => 3);
             } else {
@@ -278,14 +320,23 @@ class Posts extends CActiveRecord {
             $model = new Favorites();
             $model->attributes = $attr;
             if ($model->save()) {
-                if ($type == 'post') {
-                    Posts::updateCount($id, 'Posts', 1, 'favorite');
+                if ($type == 'book') {
+                    Posts::updateCount($id, 'Books', 1, 'favorites');
+                }elseif($type=='author'){
+                    Posts::updateCount($id, 'Authors', 1, 'favors');
+                }elseif($type=='tip'){
+                    Posts::updateCount($id, 'Tips', 1, 'favors');
+                }elseif($type=='user'){
+                    //更新被收藏的用户的粉丝数
+                    Posts::updateCount($id, 'Users', 1, 'favors');
+                    //增加我关注了的人数
+                    Posts::updateCount($uid, 'Users', 1, 'favord');
                 }
                 //点赞后给对方发提醒
                 $_noticedata = array(
-                    'uid' => $postInfo['uid'],
+                    'uid' => $noticeUid,
                     'authorid' => $uid,
-                    'content' => "您的文章【{$postInfo['title']}】有了新的赞",
+                    'content' => $content,
                     'new' => 1,
                     'type' => 'favorite',
                     'cTime' => zmf::now(),

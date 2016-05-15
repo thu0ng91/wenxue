@@ -3,6 +3,7 @@ body{
     font-size: 13px;
     color: #444;
     background: #faefc2;    
+    position: relative
 }
 h2,h3,h4,h5,h6{
     font-size: 14px;
@@ -20,6 +21,9 @@ p{
 }
 .color-grey{
     color: #999
+}
+.color-warning{
+    color: #BF1031
 }
 .ui-nowrap {
     max-width: 100%;
@@ -257,6 +261,9 @@ span.required,.errorMessage{
     padding-top: 0;
     padding-bottom: 0;
 }
+.module .author-book-chapters{
+    padding: 0 0 0 10px;
+}
 /*更多*/
 .more-awesome {
     color: #999;
@@ -348,5 +355,23 @@ span.required,.errorMessage{
 .feedback a{font-size: 24px;}
 .feedback .fa{margin-top: 10px;}
 .back-to-top{bottom:70px;display: none}
+.footer-bg{
+    width: 100%;
+    height: 360px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    background: url(../temp/footer-bg.png) no-repeat left bottom;
+    background-size: contain;
+    transition: opacity 200ms ease-in-out;
+    z-index: -1;
+    opacity: 0.5
+}
+@media screen and (min-width: 1529px){
+    .footer-bg {
+        height: 520px;
+    }
+}
+
 /*意见反馈和返回顶部-------*/
 ul.yiiPager{height:26px;margin:0;padding:0}ul.yiiPager li{display:inline;margin-right: 5px;}ul.yiiPager a:link,ul.yiiPager a:visited{padding:5px 9px;border:1px solid #ccc;border-radius:3px;background:#fff;color:#777;font-weight:normal}ul.yiiPager a:hover{border-color:#449d44;box-shadow:1px 1px 1px #333;color:#035d67;text-decoration:none}ul.yiiPager .selected a{padding:6px 10px;border:0;border-radius:3px;background:#449d44;color:#fff}ul.yiiPager .hidden,ul.yiiPager .last,ul.yiiPager .first{display:none}ul.yiiPager .previous{float: left}ul.yiiPager .next{float: right;margin-right: 0}ul.yiiPager .page{float:left}

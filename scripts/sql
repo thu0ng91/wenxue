@@ -95,3 +95,37 @@ CREATE TABLE `pre_chapters` (
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 alter table pre_users add authorId int(10) unsigned not null COMMENT '作者ID';
+
+DROP TABLE IF EXISTS `pre_tips`;
+CREATE TABLE `pre_tips` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `uid` int(11) unsigned NOT NULL COMMENT '用户ID',
+  `logid` int(11) unsigned NOT NULL COMMENT '对象ID',
+  `classify` char(16) NOT NULL COMMENT '对象分类',
+  `tocommentid` int(11) unsigned NOT NULL COMMENT '评论ID',
+  `content` varchar(1024) NOT NULL COMMENT '内容',
+  `platform` char(16) NOT NULL COMMENT '来源',  
+  `score` tinyint(1) unsigned NOT NULL COMMENT '评分', 
+  `favors` int(10) unsigned NOT NULL COMMENT '点赞数', 
+  `status` tinyint(1) NOT NULL COMMENT '状态',
+  `cTime` int(11) unsigned NOT NULL COMMENT '创建时间',  
+  `ip` varchar(16) NOT NULL COMMENT 'IP',
+  `ipInfo` varchar(255) NOT NULL COMMENT 'IP信息',
+  PRIMARY KEY (`id`),
+  KEY `logid` (`logid`,`classify`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+alter table pre_users add cTime int(10) unsigned not null COMMENT '创建时间';
+alter table pre_users add ip int(10) not null COMMENT '注册IP';
+alter table pre_users add favors int(10) not null COMMENT '粉丝数';
+alter table pre_users add favord int(10) not null COMMENT '关注了';
+alter table pre_users add favorAuthors int(10) not null COMMENT '关注作者数';
+
+alter table pre_books add score char(3) not null COMMENT '总评分';
+alter table pre_books add scorer int(10) unsigned not null COMMENT '总评分人数';
+alter table pre_books add score1 int(10) unsigned not null COMMENT '评1分';
+alter table pre_books add score2 int(10) unsigned not null COMMENT '评2分';
+alter table pre_books add score3 int(10) unsigned not null COMMENT '评3分';
+alter table pre_books add score4 int(10) unsigned not null COMMENT '评4分';
+alter table pre_books add score5 int(10) unsigned not null COMMENT '评5分';
+

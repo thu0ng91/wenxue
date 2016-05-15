@@ -39,15 +39,18 @@ $cols=  Column::allCols();
         width: 100%;
         height: 100%;
     }
+    .author-header{
+        text-align:center
+    }
     .author-header h1{
         text-aligin:center;
         font-size:24px;
         font-weight:700;
         color:#fff;
         padding-top:0;
-        margin-top:5px;
+        margin-top:15px;
         margin-bottom:0;
-        padding-bottom:0
+        padding-bottom:10px
     }
     .author-content{
         margin-top:25px;
@@ -132,6 +135,12 @@ $cols=  Column::allCols();
         float:right;
         display:inline-block
     }
+    .author-following{
+        padding-top:15px;
+    }
+    .author-following a{
+        text-align:center
+    }
     .create-book-form{
         padding-right:15px;
     }
@@ -147,6 +156,7 @@ $cols=  Column::allCols();
                 <li<?php echo $this->selectNav == 'zazhi' ? ' class="active"' : ''; ?>><?php echo CHtml::link('作者专区', array('author/index')); ?></li>                   
                 <li<?php echo $this->selectNav == 'about' ? ' class="active"' : ''; ?>><?php echo CHtml::link('读者专区', array('readers/index')); ?></li>
             </ul>
+            <?php $this->renderPartial('/layouts/_user');?>
         </div>
     </div> 
 </div>
@@ -158,6 +168,7 @@ $cols=  Column::allCols();
                 <img src="<?php echo $this->authorInfo['avatar'];?>"/>
             </div>
             <h1><?php echo $this->authorInfo['authorName'];?></h1>
+            <p><?php echo CHtml::link('<i class="fa fa-plus"></i> 关注','javascript:;',array('class'=>'btn btn-'.($this->favorited ? 'danger' :'default').' btn-small','action'=>'favorite','action-data'=>$this->authorInfo['id'],'action-type'=>'author'));?></p>
         </div>
     </div>
     <div class="author-content module author-module">
@@ -171,18 +182,18 @@ $cols=  Column::allCols();
                 <p><span class="info-label">简介</span><span class="txt"><?php echo $this->authorInfo['content'];?></span></p>
             </div>
             <div class="author-side-num">
-                <a class="item" href="#">
+                <a class="item" href="<?php echo Yii::app()->createUrl('author/fans',array('id'=>$this->authorInfo['id']));?>">
                     <span>追随者</span><br>
-                    <strong>3</strong>
+                    <strong><?php echo $this->authorInfo['favors'];?></strong>
                     <label> 人</label>
                 </a>
                 <a class="item" href="#">
                     <span>作品数</span><br>
-                    <strong>0</strong>
+                    <strong><?php echo $this->authorInfo['posts'];?></strong>
                 </a>
                 <a class="item" href="#">
                     <span>热度</span><br>
-                    <strong>0</strong>
+                    <strong><?php echo $this->authorInfo['score'];?></strong>
                 </a>
             </div>
             <div class="author-side-navbar">

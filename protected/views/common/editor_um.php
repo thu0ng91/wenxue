@@ -21,13 +21,15 @@ var tipImgUploadUrl="<?php echo $upurl;?>";
   $(function(){
     myeditor=UM.getEditor('<?php echo CHtml::activeId($model,$attri);?>', {
        //UMEDITOR_HOME_URL : URL, 
-       <?php if($mini){?>
+       <?php if($hiddenToolbar){?>
+           toolbar: [],
+       <?php }elseif($mini){?>
            toolbar: ["bold","italic","underline","|","image"],
        <?php }else{?>
            toolbar: ["bold","italic","underline","|","paragraph","|","insertorderedlist","insertunorderedlist","justifyleft","justifycenter","justifyright","justifyjustify","horizontal","|","link","unlink","image"],
        <?php }?>       
        lang:'zh-cn', //语言
-       wordCount:false, //关闭字数统计       
+       wordCount:true, //关闭字数统计       
        initialFrameWidth:<?php echo isset($editorWidth) ? $editorWidth : 620;?>, //宽度
        initialFrameHeight:<?php echo isset($editorHeight) ? $editorHeight : 200;?>, //高度
        zIndex:0,
@@ -36,7 +38,7 @@ var tipImgUploadUrl="<?php echo $upurl;?>";
        elementPathEnabled : false,       
        contextMenu:[],       
        autoHeightEnabled:true,
-       initialStyle:'.edui-editor-body .edui-body-container p{font-size:13px;line-height:1.42857143;margin:0 0 10px;text-indent:2em}.edui-container .edui-toolbar{z-index:1 !important}',
+       initialStyle:'.edui-container .edui-editor-body{background:transparent !important}.edui-editor-body .edui-body-container p{font-size:13px;line-height:1.42857143;margin:0 0 10px;text-indent:2em}.edui-container .edui-toolbar{z-index:1 !important}',
        removeFormatTags:'b,big,code,del,dfn,em,font,i,ins,kbd,q,samp,small,span,strike,strong,sub,sup,tt,u,var',
        removeFormatAttributes:'class,style,lang,width,height,align,hspace,valign',
        imageScaleEnabled:false,

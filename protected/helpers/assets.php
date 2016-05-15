@@ -35,7 +35,7 @@ class assets {
             'delContentUrl' => zmf::config('domain') . Yii::app()->createUrl('/ajax/delContent'), //删除内容
             'favoriteUrl' => zmf::config('domain') . Yii::app()->createUrl('/ajax/favorite'), //收藏内容
             'feedbackUrl' => zmf::config('domain') . Yii::app()->createUrl('/ajax/feedback'), //意见反馈
-            'setStatusUrl' => zmf::config('domain') . Yii::app()->createUrl('/ajax/setStatus'),
+            'ajaxUrl' => zmf::config('domain') . Yii::app()->createUrl('/ajax/do'),
             'parseVideoUrl' => zmf::config('domain') . Yii::app()->createUrl('/ajax/parseVideo'),
         );
         $arr['mobile'] = array(

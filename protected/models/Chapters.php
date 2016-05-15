@@ -61,6 +61,11 @@ class Chapters extends CActiveRecord {
         return array(
         );
     }
+    
+    public function beforeSave(){
+        $this->words=mb_strlen($this->content, 'UTF-8');
+        return true;
+    }
 
     /**
      * @return array customized attribute labels (name=>label)
@@ -129,10 +134,6 @@ class Chapters extends CActiveRecord {
      */
     public static function model($className = __CLASS__) {
         return parent::model($className);
-    }
-
-    public function beforeSave() {
-        return true;
     }
 
     public static function exStatus($type) {

@@ -49,25 +49,25 @@ class Favorites extends CActiveRecord {
 
     public function beforeSave() {
         $ip = Yii::app()->request->userHostAddress;
-        $url = 'http://apis.baidu.com/apistore/iplookupservice/iplookup?ip=' . $ip;
-        // 执行HTTP请求
-        $header = array(
-            'apikey:e5882e7ac4b03c5d6f332b6de4469e81',
-        );
-        $ch = curl_init();
-        // 添加apikey到header
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_URL, $url);
-        $res = curl_exec($ch);
-        $res = CJSON::decode($res, true);
-        $retData = array();
-        if ($res['errNum'] == 0) {
-            $retData = $res['retData'];
-        }
-        $_info = json_encode($retData);
-        $this->ip = ip2long($ip);
-        $this->ipInfo = $_info;
+        $this->ip = ip2long($ip);        
+//        $url = 'http://apis.baidu.com/apistore/iplookupservice/iplookup?ip=' . $ip;
+//        // 执行HTTP请求
+//        $header = array(
+//            'apikey:e5882e7ac4b03c5d6f332b6de4469e81',
+//        );
+//        $ch = curl_init();
+//        // 添加apikey到header
+//        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+//        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+//        curl_setopt($ch, CURLOPT_URL, $url);
+//        $res = curl_exec($ch);
+//        $res = CJSON::decode($res, true);
+//        $retData = array();
+//        if ($res['errNum'] == 0) {
+//            $retData = $res['retData'];
+//        }
+//        $_info = json_encode($retData);        
+//        $this->ipInfo = $_info;        
         return true;
     }
 
@@ -76,15 +76,12 @@ class Favorites extends CActiveRecord {
             $uid = zmf::uid();
         }
         if (!$uid) {
-            if (zmf::actionLimit('favorite-' . $type, $logid, 1, 86400, true, true)) {
-                return true;
-            }
             return false;
         }
         if (!is_numeric($logid)) {
             return false;
         }
-        if (!isset($type) OR ! in_array($type, array('post'))) {
+        if (!isset($type) || !in_array($type, array('author','book'))) {
             return false;
         }
         $attr = array(

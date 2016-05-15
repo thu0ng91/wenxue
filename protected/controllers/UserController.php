@@ -4,13 +4,23 @@ class UserController extends Q {
 
     public $toUserInfo;
     public $authorLogin=false;
+    public $favorited=false;
 
     public function init() {
         parent::init();        
         $this->layout = 'user';
-        $this->toUserInfo = $this->userInfo;
+        $id = zmf::val('id', 2);
+        if(!$id && !$this->uid){
+            throw new CHttpException(404, '您所查看的用户不存在，请核实');
+        }elseif (!$id || $id==$this->uid) {
+            $this->toUserInfo = $this->userInfo;
+        }else{
+            $this->toUserInfo =  Users::getOne($id);
+        }
         if($this->toUserInfo['id']==$this->uid){
             $this->authorLogin=  Authors::checkLogin($this->userInfo, $this->userInfo['authorId']);
+        }else{
+            Posts::updateCount($id, 'Users', 1, 'hits');
         }
     }
     
@@ -27,6 +37,30 @@ class UserController extends Q {
         $this->render('index', array(
             'model' => $model,
         ));
+    }
+    
+    public function actionFollow(){
+        $type=  zmf::val('type',1);
+        if($type=='fans'){
+            $sql="SELECT u.id,u.truename,u.avatar FROM {{users}} u,{{favorites}} f WHERE f.logid='{$this->toUserInfo['id']}' AND f.classify='user' AND f.uid=u.id ORDER BY f.cTime DESC";
+            $label='关注者';
+            $render='fans';
+        }elseif ($type=='authors') {
+            $sql="SELECT a.id,a.authorName,a.avatar FROM {{authors}} a,{{favorites}} f WHERE f.uid='{$this->toUserInfo['id']}' AND f.classify='author' AND f.logid=a.id ORDER BY f.cTime DESC";
+            $label='关注作者';
+            $render='authors';
+        }else{
+            $sql="SELECT u.id,u.truename,u.avatar FROM {{users}} u,{{favorites}} f WHERE f.uid='{$this->toUserInfo['id']}' AND f.classify='user' AND f.logid=u.id ORDER BY f.cTime DESC";
+            $label='关注了';
+            $render='fans';
+        }
+        Posts::getAll(array('sql'=>$sql), $pages, $posts);
+        $this->selectNav='index';
+        $data = array(
+            'label' => $label,
+            'posts' => $posts,
+        );
+        $this->render($render, $data);
     }
 
     public function actionAuthor() {

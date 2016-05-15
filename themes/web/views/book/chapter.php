@@ -33,6 +33,19 @@
         margin-bottom: 10px;
         text-indent: 2em;
     }
+    .chapter-tips-module{
+        padding-left: 0;
+        padding-right: 0;
+    }
+    .chapter-tips-module .module-body{
+        padding-bottom: 0
+    }
+    .chapter-tips-module .media{
+        border-bottom: 1px dashed #F2f2f2
+    }
+    .chapter-tips-module .media:last-child{
+        border-bottom: none
+    }
     .chapter-navbar .breadcrumb{
         margin-bottom: 0;
         background: transparent
@@ -81,19 +94,31 @@
         <div class="module chapter">
             <h1><?php echo $chapterInfo['title']; ?></h1>
             <p class="chapter-min-tips">
-                <span>小说：<?php echo $bookInfo['title']; ?></span>
-                <span>作者：<?php echo $chapterInfo['aid']; ?></span>
+                <span>小说：<?php echo CHtml::link($bookInfo['title'],array('book/view','id'=>$bookInfo['id'])); ?></span>
+                <span>作者：<?php echo CHtml::link($chapterInfo['aid'],array('author/view','id'=>$chapterInfo['aid'])); ?></span>
                 <span>字数：<?php echo $chapterInfo['words']; ?></span>
                 <span>更新时间：<?php echo zmf::time($chapterInfo['updateTime']); ?></span>         
             </p>
             <div class="chapter-content">
                 <?php echo Chapters::text($chapterInfo['content']); ?>
             </div>            
-        </div>        
-        <div class="module">
+        </div>
+        <div class="module chapter-tips-module">
             <div class="module-header">点评</div>
-            <div class="module-body">
-
+            <div class="module-body" id="comments-chapter-<?php echo $chapterInfo['id'];?>">                
+                <div id="more-content">
+                    <?php if(!empty($tips)){?>
+                    <?php foreach ($tips as $tip){?> 
+                    <?php $this->renderPartial('/book/_tip',array('data'=>$tip));?>
+                    <?php }?>
+                    <?php }else{?>
+                    <p class="help-block">还没人写过点评，快来抢沙发吧</p>
+                    <?php }?>
+                </div>
+            </div>
+            <div class="module-header">写点评</div>
+            <div class="module-body"> 
+                <?php $this->renderPartial('/common/addTips',array('type'=>'chapter','keyid'=>$chapterInfo['id']));?>
             </div>
         </div>
     </div>

@@ -20,12 +20,25 @@
             <p class="help-block"><?php echo $info['content'];?></p>
         </div>
     </div>
+    <style>
+        .author-book-chapters .table>tr:first-child td{
+            border-top: none !important
+        }
+    </style>
     <div class="module-header">目录</div>
-    <div class="module-body book-chapters">
-        <div class="list-group">
-        <?php foreach ($chapters as $chapter){?>
-        <?php echo CHtml::link($chapter['title'],array('book/chapter','cid'=>$chapter['id']),array('class'=>'list-group-item'));?>
-        <?php }?>
-        </div>
+    <div class="module-body author-book-chapters">
+        <table class="table table-hover table-striped">
+            <?php foreach ($chapters as $chapter){?>
+            <tr>
+                <td><?php echo CHtml::link($chapter['title'],array('book/chapter','cid'=>$chapter['id']));?></td>
+                <td style="width: 120px">
+                    <?php echo CHtml::link('编辑',array('author/addChapter','cid'=>$chapter['id']));?>
+                    <?php echo CHtml::link('发布',array('author/addChapter','cid'=>$chapter['id']));?>
+                    <?php echo CHtml::link('删除',array('author/addChapter','cid'=>$chapter['id']));?>
+                </td>
+            </tr>        
+            <?php }?>            
+        </table>
+        <?php echo CHtml::link('<i class="fa fa-plus"></i> 新章节',array('author/addChapter','bid'=>$info['id']),array('class'=>'btn btn-primary btn-block'));?>
     </div>
 </div>

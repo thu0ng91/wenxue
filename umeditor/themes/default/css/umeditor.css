@@ -1,9 +1,6 @@
 @charset "utf-8";
 .edui-container{
-    position: relative;
-    border: 1px solid #d4d4d4;
-    box-shadow: 2px 2px 5px #d3d6da;
-    background-color: #fff;
+    position: relative;    
 }
 .edui-container .edui-toolbar{
     position: relative;
@@ -18,7 +15,7 @@
     padding: 5px;
 }
 .edui-container .edui-editor-body{
-    background-color: #fff;
+    background: transparent;
 }
 .edui-editor-body .edui-body-container{
     padding:10px 5px;

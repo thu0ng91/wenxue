@@ -15,46 +15,31 @@
                     <p>点击：<?php echo $info['hits']; ?></p>
                     <p>总字：<?php echo $info['words']; ?></p>
                     <p>状态：<?php echo $info['bookStatus']; ?></p>
+                    <div class="btn-group" role="group">
+                        <?php echo CHtml::link('立即阅读',array('book/chapter','cid'=>''),array('class'=>'btn btn-default btn-xs'));?>
+                        <?php echo CHtml::link('收藏','javascript:;',array('class'=>'btn btn-'.($this->favorited ? 'danger' :'default').' btn-xs','action'=>'favorite','action-data'=>$info['id'],'action-type'=>'book'));?>
+                        <button type="button" class="btn btn-default btn-xs">分享</button>
+                    </div>
                 </div>
                 <div class="media-right">
                     <div class="book-starInfo">
                         <p>初心创文评分</p>
+                        <?php if($info['scorer']>0){?>
                         <div class="media">
                             <div class="media-left">
-                                <p class="book-star-num">8.6</p>
+                                <p class="book-star-num"><?php echo $info['score'];?></p>
                             </div>
                             <div class="media-body">
-                                <p><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half"></i></p>
-                                <p>123人评价</p>                                
+                                <p><?php echo Books::starCss($info['score']);?></p>
+                                <p><?php echo $info['scorer'];?>人评价</p>                                
                             </div>
                         </div>
                         <div class="book-star-detail">
-                            <div class="book-star-detail-item">
-                                <span class="star-title">5星</span>
-                                <span class="star-width" style="width:62px"></span>
-                                <span class="star-percent">86%</span>
-                            </div>
-                            <div class="book-star-detail-item">
-                                <span class="star-title">4星</span>
-                                <span class="star-width" style="width:15px"></span>
-                                <span class="star-percent">86%</span>
-                            </div>
-                            <div class="book-star-detail-item">
-                                <span class="star-title">3星</span>
-                                <span class="star-width" style="width:8px"></span>
-                                <span class="star-percent">86%</span>
-                            </div>
-                            <div class="book-star-detail-item">
-                                <span class="star-title">2星</span>
-                                <span class="star-width" style="width:6px"></span>
-                                <span class="star-percent">86%</span>
-                            </div>
-                            <div class="book-star-detail-item">
-                                <span class="star-title">1星</span>
-                                <span class="star-width" style="width:2px"></span>
-                                <span class="star-percent">86%</span>
-                            </div>
+                            <?php echo Books::showScoreDetial($info);?>
                         </div>
+                        <?php }else{?>
+                        <p class="color-grey">暂无评分</p>
+                        <?php }?>
                     </div>                    
                 </div>
             </div>

@@ -4,22 +4,22 @@ class AuthorController extends Q {
 
     public $authorInfo = array();
     public $adminLogin = false;
+    public $favorited=false;
 
     public function init() {
         parent::init();
         $this->layout = 'author';
-        $id = zmf::val('id', 1);
-        if(!$id && !$this->uid){
+        $id = zmf::val('id', 2);
+        if(!$id && !$this->userInfo['authorId']){
             throw new CHttpException(404, '您所查看的作者不存在，请核实');
-        }elseif (!$this->userInfo['authorId']) {
-            throw new CHttpException(404, '您所查看的作者不存在，请核实');
-        }else{
+        }elseif (!$id) {
             $id=  $this->userInfo['authorId'];
-        }        
+        }
         $this->authorInfo = Authors::getOne($id);
         if ($this->uid) {
             $this->adminLogin=  Authors::checkLogin($this->userInfo,$id);
-        }
+            $this->favorited=  Favorites::checkFavored($id, 'author');
+        }        
     }
 
     public function actionView() {
@@ -29,12 +29,23 @@ class AuthorController extends Q {
             'params' => array(
                 ':aid' => $this->authorInfo['id']
             )
-        ));
+        ));        
         $this->selectNav='index';
+        Posts::updateCount($id, 'Authors', 1, 'hits');
         $data = array(
             'posts' => $posts
         );
         $this->render('view', $data);
+    }
+    
+    public function actionFans(){
+        $sql="SELECT u.id,u.truename,u.avatar FROM {{users}} u,{{favorites}} f WHERE f.logid='{$this->authorInfo['id']}' AND f.classify='author' AND f.uid=u.id ORDER BY f.cTime DESC";
+        Posts::getAll(array('sql'=>$sql), $pages, $posts);
+        $this->selectNav='fans';
+        $data = array(
+            'posts' => $posts
+        );
+        $this->render('fans', $data);
     }
     
     public function actionCreateBook($bid = ''){
@@ -81,7 +92,8 @@ class AuthorController extends Q {
         $this->render('book', $data);
     }
     
-    public function actionAddChapter($cid=''){        
+    public function actionAddChapter($cid=''){
+        $this->layout = 'addChapter';
         if ($cid) {
             $model = Chapters::getOne($cid);
         } else {
