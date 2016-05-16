@@ -19,13 +19,13 @@ class AuthorController extends Q {
         if ($this->uid) {
             $this->adminLogin=  Authors::checkLogin($this->userInfo,$id);
             $this->favorited=  Favorites::checkFavored($id, 'author');
-        }        
+        }
     }
 
     public function actionView() {
         $posts = Books::model()->findAll(array(
-            'condition' => 'aid=:aid',
-            'select' => 'id,colid,title,faceImg,`desc`,words,cTime',
+            'condition' => 'aid=:aid'.(!$this->adminLogin ? " AND bookStatus='".Books::STATUS_PUBLISHED."'" : ""),
+            'select' => 'id,colid,title,faceImg,`desc`,words,cTime,score,scorer,bookStatus',
             'params' => array(
                 ':aid' => $this->authorInfo['id']
             )
@@ -83,7 +83,7 @@ class AuthorController extends Q {
         if(!$info){
             throw new CHttpException(404, 'The requested page does not exist.');
         }
-        $chapters=  Chapters::getByBook($bid);
+        $chapters=  Chapters::getByBook($bid,$this->adminLogin);
         
         $data=array(
             'info'=>$info,
@@ -93,9 +93,14 @@ class AuthorController extends Q {
     }
     
     public function actionAddChapter($cid=''){
-        $this->layout = 'addChapter';
+        $this->layout = 'common';
         if ($cid) {
             $model = Chapters::getOne($cid);
+            if(!$model){
+                throw new CHttpException(404, '你所编辑的内容不存在');
+            }elseif ($model['uid']!=$this->uid) {
+                throw new CHttpException(403, '你无权本操作');
+            }
         } else {
             $bid=  zmf::val('bid',2);
             if(!$bid){
@@ -110,11 +115,22 @@ class AuthorController extends Q {
             }
         }
         if (isset($_POST['Chapters'])) {
-            $model->attributes = $_POST['Chapters'];
+            $title=  zmf::filterInput($_POST['Chapters']['title'],1);
+            $content= Chapters::handleContent($_POST['Chapters']['content']);
+            $postscript=  zmf::filterInput($_POST['Chapters']['postscript'],1);
+            $psPosition=  zmf::filterInput($_POST['Chapters']['psPosition'],2);
+            $attr=array(
+                'title'=>$title,
+                'content'=>$content,
+                'postscript'=>$postscript,
+                'psPosition'=>($psPosition<0 || $psPosition>1) ? 0 : $psPosition,
+            ); 
+            $model->attributes = $attr;
             if ($model->save()) {
                 $this->redirect(array('author/book','bid'=>$model->bid));                
             }
         }
+        $this->pageTitle='写文章';
         $this->render('addChapter', array(
             'model' => $model,
         ));

@@ -42,9 +42,10 @@ class Chapters extends CActiveRecord {
             array('uid', 'default', 'setOnEmpty' => true, 'value' => zmf::uid()),
             array('cTime,updateTime,postTime', 'default', 'setOnEmpty' => true, 'value' => zmf::now()),
             array('uid, aid, bid, title, content', 'required'),
-            array('status, vip', 'numerical', 'integerOnly' => true),
+            array('status, vip,psPosition', 'numerical', 'integerOnly' => true),
             array('uid, aid, bid, words, comments, hits, cTime, updateTime, postTime', 'length', 'max' => 10),
             array('title', 'length', 'max' => 255),
+            array('postscript', 'length', 'max' => 1024),
             array('content', 'safe'),
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
@@ -86,6 +87,8 @@ class Chapters extends CActiveRecord {
             'cTime' => '创建时间',
             'updateTime' => '更新时间',
             'postTime' => '发布时间',
+            'postscript' => '还有话说',
+            'psPosition' => '展示位置',
         );
     }
 
@@ -160,16 +163,27 @@ class Chapters extends CActiveRecord {
         return $arr[$type];
     }
     
-    public static function getByBook($id){
+    public static function exPsPosition($type) {
+        $arr = array(
+            '0' => '底部',
+            '1' => '顶部'
+        );
+        if ($type == 'admin') {
+            return $arr;
+        }
+        return $arr[$type];
+    }
+    
+    public static function getByBook($id,$adminLogin=false){
         if(!$id){
             return array();
         }
         $items=  Chapters::model()->findAll(array(
-            'condition'=>'bid=:bid AND status='.Posts::STATUS_PASSED,
+            'condition'=>'bid=:bid'.(!$adminLogin ? ' AND status='.Posts::STATUS_PASSED : ''),
             'params'=>array(
                 ':bid'=>$id
             ),
-            'select'=>'id,title'
+            'select'=>'id,title,status'
         ));
         return $items;
     }
@@ -178,10 +192,44 @@ class Chapters extends CActiveRecord {
         return Chapters::model()->findByPk($cid);
     }
     
+    public static function checkTip($cid,$uid){
+        if(!$cid || !$uid){
+            return false;
+        }
+        $tipInfo=  Tips::model()->find(array(
+            'condition'=>"uid=:uid AND logid=:logid AND classify='chapter'",
+            'select'=>'id,status',
+            'params'=>array(
+                ':uid'=>$uid,
+                ':logid'=>$cid,
+            )
+        ));
+        return !empty($tipInfo) ? $tipInfo : false;
+    }
+    
     public static function text($content){
         $content=  nl2br($content);
         $content=str_replace('<br />', '</p><p>', $content);
         $content='<p>'.$content.'</p>';
+        return $content;
+    }
+    
+    /**
+     * 处理内容
+     * @param type $content
+     * @return type
+     */
+    public static function handleContent($content) {
+        $content = strip_tags($content, '<p><br/><br>');
+        $replace = array(
+            "/style=\"[^\"]*?\"/i",
+            "/<p><br\/><\/p>/i",
+            "/<p><\/p>/i",
+        );
+        $to = array(
+            ''
+        );
+        $content = preg_replace($replace, $to, $content);        
         return $content;
     }
 

@@ -44,6 +44,10 @@ class AjaxController extends Q {
         $status = Posts::STATUS_PASSED;
         $uid = $this->uid;
         if ($type == 'chapter') {
+            $ckInfo=  Chapters::checkTip($keyid, $uid);
+            if($ckInfo!==false){
+                $this->jsonOutPut(0, '每章节只能评价一次');
+            }
             $postInfo = Chapters::getOne($keyid);
         }
         if (!$postInfo || $postInfo['status'] != Posts::STATUS_PASSED) {

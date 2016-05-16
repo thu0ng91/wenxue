@@ -3,23 +3,6 @@ var beforeModal;
 var ajaxReturn = true;
 
 var url = window.location.href;
-if ($.support.pjax) {
-    if(zmf.module=='magazine'){
-        $(document).pjax('a:not([data-remote]):not([data-skip-pjax]):not([data-ajax=false]):not([target=_blank])', '#pjax-container', {
-            push:true,
-            scrollTo:0,
-            fragment:'#pjax-container', 
-            timeout:5000
-        });
-        $(document).on('pjax:send', function() {
-           simpleLoading({title:'正在加载中...'});
-        });
-        $(document).on('pjax:complete', function() {
-            closeSimpleLoading();        
-            rebind();
-        });
-    }
-};
 $(window).scroll(function () {
     $(window).scrollTop() > 100 ? $(".back-to-top").fadeIn() : $(".back-to-top").fadeOut();
 }), $(".back-to-top").click(function () {
@@ -166,7 +149,7 @@ function rebind() {
         $("button[action=feedback]").unbind('click').click(function () {
             feedback();
         });
-    });
+    });    
 }
 /**
  * 获取内容
@@ -724,7 +707,12 @@ function backToTop() {
         var x3 = parseInt((x + x1 + 16) / 2);
     }
     $("#back-to-top").css('left', x3 + 'px');
-    //alert(x3);
+    //让body至少为窗口高度
+    var wh=$(window).height();
+    var dh=$(document.body).height();
+    if(wh>dh){
+        $("body").css('height',wh);
+    }
 }
 function textareaAutoResize() {
     $('textarea').autoResize({

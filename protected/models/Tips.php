@@ -41,7 +41,7 @@ class Tips extends CActiveRecord {
             array('cTime', 'default', 'setOnEmpty' => true, 'value' => zmf::now()),
             array('status', 'default', 'setOnEmpty' => true, 'value' => Posts::STATUS_PASSED),
             array('ip', 'default', 'setOnEmpty' => true, 'value' => ip2long(Yii::app()->request->userHostAddress)),            
-            array('uid, logid, classify,content', 'required'),
+            array('uid, logid, classify,content,score', 'required'),
             array('status,favors', 'numerical', 'integerOnly' => true),
             array('uid, logid, tocommentid, score, cTime', 'length', 'max' => 11),
             array('classify, platform, ip', 'length', 'max' => 16),
@@ -131,6 +131,31 @@ class Tips extends CActiveRecord {
     
     public static function getOne($id){
         return Tips::model()->findByPk($id);
+    }
+    
+    public static function exScore($type){
+        $arr=array(
+            '1'=>'很差',
+            '2'=>'较差',
+            '3'=>'还行',
+            '4'=>'推荐',
+            '5'=>'力荐',
+        );
+        if($type=='admin'){
+            return $arr;
+        }
+        return $arr[$type];
+    }
+    
+    public static function exStatusForUser($type) {
+        $arr = array(
+            Posts::STATUS_DELED => '不再显示',
+            Posts::STATUS_PASSED => '立即发布'
+        );
+        if ($type == 'admin') {
+            return $arr;
+        }
+        return $arr[$type];
     }
 
 }

@@ -6,6 +6,7 @@ return array(
     'basePath' => dirname(__FILE__) . DIRECTORY_SEPARATOR . '..',
     'name' => 'Momo',
     'theme' => 'web',
+    'language' => 'zh_cn',
     'preload' => array('log'),
     'onBeginRequest' => create_function('$event', 'return ob_start("ob_gzhandler");'),
     'onEndRequest' => create_function('$event', 'return ob_end_flush();'),

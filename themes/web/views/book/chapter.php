@@ -116,17 +116,29 @@
                     <?php }?>
                 </div>
             </div>
-            <div class="module-header">写点评</div>
-            <div class="module-body"> 
-                <?php $this->renderPartial('/common/addTips',array('type'=>'chapter','keyid'=>$chapterInfo['id']));?>
+            <div class="module-header" id="add-tip-holder">写点评</div>
+            <div class="module-body">
+                <?php if($this->uid){
+                    if($this->tipInfo!==false){
+                        if($this->tipInfo['status']==Posts::STATUS_PASSED){
+                            echo '<p class="help-block">每章节只能评价一次，但你可以对 '.CHtml::link('现有的评价','javascript:;',array('action-target'=>'tip-'.$this->tipInfo['id'],'action'=>'scroll')).' 进行修改。</p>';
+                        }else{
+                            echo '<p class="help-block">你已经删除了对本章节的点评，如需显示，请'.CHtml::link('重新编辑','javascript:;').'。</p>';
+                        }
+                    }else{
+                        $this->renderPartial('/common/addTips',array('type'=>'chapter','keyid'=>$chapterInfo['id']));
+                    }
+                 }else{?>
+                <p class="help-block">登录后享有更多功能，<?php echo CHtml::link('立即登录',array('site/login'));?>或<?php echo CHtml::link('注册',array('site/reg'));?>。</p>
+                <?php }?>
             </div>
         </div>
     </div>
     <div class="chapter-fixed-navbar">
         <?php echo CHtml::link('<i class="fa fa-list"></i> 目录','javascript:;');?>
-        <?php echo CHtml::link('<i class="fa fa-heart"></i> 收藏','javascript:;');?>
-        <?php echo CHtml::link('<i class="fa fa-star"></i> 点评','javascript:;');?>
-        <?php echo CHtml::link('<i class="fa fa-mobile"></i> 手机','javascript:;');?>        
-        <?php echo CHtml::link('<i class="fa fa-reply"></i> 返回','javascript:;');?>        
+        <?php echo CHtml::link('<i class="fa fa-star-o"></i> 点评','javascript:;',array('action'=>'scroll','action-target'=>'add-tip-holder'));?>
+        <?php echo CHtml::link('<i class="fa fa-long-arrow-left"></i> 上一章','javascript:;');?>
+        <?php echo CHtml::link('<i class="fa fa-long-arrow-right"></i> 下一章','javascript:;');?>
+        <?php echo CHtml::link('<i class="fa fa-reply"></i> 返回',array('book/view','id'=>$chapterInfo['bid']));?>        
     </div>
 </div>

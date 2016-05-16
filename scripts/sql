@@ -129,3 +129,5 @@ alter table pre_books add score3 int(10) unsigned not null COMMENT '评3分';
 alter table pre_books add score4 int(10) unsigned not null COMMENT '评4分';
 alter table pre_books add score5 int(10) unsigned not null COMMENT '评5分';
 
+alter table pre_chapters add postscript varchar(255) not null COMMENT '还想说';
+alter table pre_chapters add psPosition tinyint(1) unsigned not null COMMENT '位置';

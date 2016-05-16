@@ -26,6 +26,9 @@
  */
 class Books extends CActiveRecord {
 
+    const STATUS_NOTPUBLISHED = 0;
+    const STATUS_PUBLISHED = 1;
+
     /**
      * @return string the associated database table name
      */
@@ -173,6 +176,17 @@ class Books extends CActiveRecord {
         return $info;
     }
 
+    public static function exStatus($type) {
+        $arr = array(
+            self::STATUS_NOTPUBLISHED => '未发表',
+            self::STATUS_PUBLISHED => '连载中',
+        );
+        if($type=='admin'){
+            return $arr;
+        }
+        return $arr[$type];
+    }
+
     /**
      * 更新小说的评分
      * @param type $bid
@@ -184,8 +198,9 @@ class Books extends CActiveRecord {
         $arr = CHtml::listData($items, 'id', 'score');
         $countArr = array_count_values($arr);
         $sum = array_sum($arr);
+        $score = $sum > 0 ? number_format($sum / $total * 2, 1, '.', '') : 0;
         $attr = array(
-            'score' => $sum > 0 ? number_format($sum / $total * 2, 1, '.', '') : '0',
+            'score' => $score >= 10 ? 10 : $score,
             'scorer' => $total,
             'score1' => $countArr['1'] ? $countArr['1'] : 0,
             'score2' => $countArr['2'] ? $countArr['2'] : 0,
@@ -248,7 +263,7 @@ class Books extends CActiveRecord {
             $_int+=1;
         }
         if ($_int < 5) {
-            for ($j = 0; $j < 5-$_int; $j++) {
+            for ($j = 0; $j < 5 - $_int; $j++) {
                 $str.='<i class="fa fa-star-o"></i>';
             }
         }

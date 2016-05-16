@@ -13,8 +13,9 @@
             <?php if($this->uid){?>
             <span class="pull-right">
                 <?php 
-                if($this->uid==$data['uid'] || $this->userInfo['isAdmin']){
-                    echo CHtml::link('删除','javascript:;',array('action'=>'del-content','action-type'=>'tip','action-data'=>  $data['id'],'action-confirm'=>1,'action-target'=>'tip-'.$data['id']));  
+                if($this->uid==$data['uid']){
+                    echo CHtml::link('编辑',array('book/editTip','tid'=>$data['id']));
+                    echo CHtml::link('删除','javascript:;',array('action'=>'del-content','action-type'=>'tip','action-data'=>  $data['id'],'action-confirm'=>1,'action-target'=>'tip-'.$data['id']));
                 }?>                
             </span>
             <?php }?>

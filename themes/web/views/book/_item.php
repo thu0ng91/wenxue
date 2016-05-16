@@ -14,10 +14,10 @@ $url=  Yii::app()->createUrl('book/view',array('id'=>$data['id']));
     </div>
     <div class="media-body">
         <h4><?php echo CHtml::link($data['title'],$urlArr);?></h4>
-        <p><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half"></i> （123人评价）</p>
+        <p><?php if($data['scorer']>0){echo Books::starCss($data['score']);?> （<?php echo $data['scorer'];?>人评价）<?php }else{?><span class="color-grey">暂无评分</span><?php }?></p>
         <p class="help-block"><?php echo $data['desc'];?></p>
         <p class="help-block">
-            <span>连载中</span>
+            <span><?php echo Books::exStatus($data['bookStatus']);?></span>
             <span>总字<?php echo $data['words'];?></span>
             <span><?php echo zmf::time($data['cTime'],'Y-m-d');?></span>
             <span><?php echo CHtml::link('分享','javascript:;',array('action'=>'share','action-qrcode'=>$qrcode,'action-url'=>$url,'action-img'=>$qrcode,'action-title'=>$data['title']));?></span>

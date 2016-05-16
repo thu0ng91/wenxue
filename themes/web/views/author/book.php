@@ -30,10 +30,13 @@
         <table class="table table-hover table-striped">
             <?php foreach ($chapters as $chapter){?>
             <tr>
-                <td><?php echo CHtml::link($chapter['title'],array('book/chapter','cid'=>$chapter['id']));?></td>
+                <td>
+                    <?php echo CHtml::link($chapter['title'],array('book/chapter','cid'=>$chapter['id']));?>
+                    <?php echo $chapter['status']==Posts::STATUS_PASSED ? '':'<span class="color-warning">草稿</span>';?>
+                </td>
                 <td style="width: 120px">
                     <?php echo CHtml::link('编辑',array('author/addChapter','cid'=>$chapter['id']));?>
-                    <?php echo CHtml::link('发布',array('author/addChapter','cid'=>$chapter['id']));?>
+                    <?php echo $chapter['status']==Posts::STATUS_PASSED ? '' : CHtml::link('发布',array('author/addChapter','cid'=>$chapter['id']));?>
                     <?php echo CHtml::link('删除',array('author/addChapter','cid'=>$chapter['id']));?>
                 </td>
             </tr>        
