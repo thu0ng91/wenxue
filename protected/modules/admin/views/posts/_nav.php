@@ -11,13 +11,12 @@
 $c = Yii::app()->getController()->id;
 $a = Yii::app()->getController()->getAction()->id;
 $this->menu=array(
-    '文章列表'=>array(
-        'link'=>array('posts/index'),
+    '列表'=>array(
+        'link'=>array('index'),
         'active'=>in_array($a,array('index'))
     ),
     '新增'=>array(
-        'link'=>array('posts/create'),
+        'link'=>array('create'),
         'active'=>false,
-        'target'=>true,
     ),
 );

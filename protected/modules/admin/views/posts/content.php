@@ -102,6 +102,8 @@ $form=$this->beginWidget('CActiveForm', array(
             <?php echo CHtml::link('编辑',array('update','id'=>$post['id']));?>
             <?php if($from=='books'){?>
             <?php echo CHtml::link('章节',array('chapters','id'=>$post['id']));?>
+            <?php }elseif($from=='showcases'){?>
+            <?php echo CHtml::link('添加文章',array('showcaseLink/create','sid'=>$post['id']));?>
             <?php }?>
             <?php echo CHtml::link('删除',array('delete','id'=>$post['id']));?>
         </td>

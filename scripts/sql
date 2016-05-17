@@ -131,3 +131,33 @@ alter table pre_books add score5 int(10) unsigned not null COMMENT '评5分';
 
 alter table pre_chapters add postscript varchar(255) not null COMMENT '还想说';
 alter table pre_chapters add psPosition tinyint(1) unsigned not null COMMENT '位置';
+
+DROP TABLE IF EXISTS `pre_showcases`;
+CREATE TABLE `pre_showcases` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `uid` int(10) unsigned NOT NULL COMMENT '创建人ID',
+  `title` char(16) NOT NULL COMMENT '标题',
+  `position` char(16) NOT NULL COMMENT '位置',  
+  `display` char(16) NOT NULL COMMENT '展示方式',  
+  `num` tinyint(3) unsigned NOT NULL COMMENT '条数', 
+  `status` tinyint(1) NOT NULL COMMENT '状态',
+  `cTime` int(10) unsigned NOT NULL COMMENT '创建时间', 
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `pre_showcase_link`;
+CREATE TABLE `pre_showcase_link` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `sid` int(10) unsigned NOT NULL COMMENT '创建人ID',
+  `logid` int(10) unsigned NOT NULL COMMENT '创建人ID',
+  `classify` char(16) NOT NULL COMMENT '标题',
+  `title` varchar(255) NOT NULL COMMENT '展示方式',  
+  `faceimg` varchar(255) NOT NULL COMMENT '位置',  
+  `content` varchar(255) NOT NULL COMMENT '展示方式',
+  `url` varchar(255) NOT NULL COMMENT '展示方式',  
+  `status` tinyint(1) NOT NULL COMMENT '状态',
+  `cTime` int(10) unsigned NOT NULL COMMENT '创建时间', 
+  `startTime` int(10) unsigned NOT NULL COMMENT '开始时间', 
+  `endTime` int(10) unsigned NOT NULL COMMENT '结束时间', 
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;

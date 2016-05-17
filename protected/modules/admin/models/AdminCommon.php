@@ -10,6 +10,11 @@ class AdminCommon extends CActiveRecord {
             'url' => Yii::app()->createUrl('admin/index/index'),
             'active' => in_array($c, array('index'))
         );        
+        $attr['showcases'] = array(
+            'title' => '板块',
+            'url' => Yii::app()->createUrl('admin/showcases/index'),
+            'active' => in_array($c, array('showcases'))
+        );
         $attr['authors'] = array(
             'title' => '作者',
             'url' => Yii::app()->createUrl('admin/authors/index'),
