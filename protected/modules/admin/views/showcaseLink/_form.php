@@ -17,17 +17,15 @@
 	'id'=>'showcase-link-form',
 	'enableAjaxValidation'=>false,
 )); ?>
-<?php echo $form->errorSummary($model); ?>
+<?php echo $form->errorSummary($model); ?>    
+    <?php if($model->classify=='book'){?>    
     <div class="form-group">
         <?php echo $form->labelEx($model,'logid'); ?>
         <?php echo $form->textField($model,'logid',array('size'=>10,'maxlength'=>10,'class'=>'form-control')); ?>
+        <p class="help-block">请添加<?php echo Showcases::exClassify($model->classify);?>ID</p>
         <?php echo $form->error($model,'logid'); ?>
     </div>
-    <div class="form-group">
-        <?php echo $form->labelEx($model,'classify'); ?>
-        <?php echo $form->dropDownlist($model,'classify',  ShowcaseLink::exClassify('admin'),array('class'=>'form-control','empty'=>'--请选择--')); ?>
-        <?php echo $form->error($model,'classify'); ?>
-    </div>
+    <?php }elseif($model->classify=='ad'){?>
     <div class="form-group">
         <?php echo $form->labelEx($model,'title'); ?>
         <?php echo $form->textField($model,'title',array('size'=>60,'maxlength'=>255,'class'=>'form-control')); ?>
@@ -47,7 +45,8 @@
         <?php echo $form->labelEx($model,'url'); ?>
         <?php echo $form->textField($model,'url',array('size'=>60,'maxlength'=>255,'class'=>'form-control')); ?>
         <?php echo $form->error($model,'url'); ?>
-    </div>    
+    </div> 
+    <?php }?>    
     <div class="form-group">
         <?php echo $form->labelEx($model,'startTime'); ?>
         <?php 
@@ -63,7 +62,7 @@
             ),			    
             ));
         ?>
-        <p class="help-block">什么时候出现在列表页面</p>
+        <p class="help-block">什么时候出现在列表页面，默认为发布即显示</p>
         <?php echo $form->error($model,'startTime'); ?>
     </div>
     <div class="form-group">
@@ -81,7 +80,7 @@
             ),			    
             ));
         ?>
-        <p class="help-block">什么时候从列表隐藏</p>
+        <p class="help-block">什么时候从列表隐藏，默认为不限制</p>
         <?php echo $form->error($model,'endTime'); ?>
     </div>
     <div class="form-group">

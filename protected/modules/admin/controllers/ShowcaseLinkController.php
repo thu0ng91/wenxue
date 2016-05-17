@@ -27,28 +27,70 @@ class ShowcaseLinkController extends Admin {
         if ($id) {
             $model = $this->loadModel($id);
         } else {
-            $sid=  zmf::val('sid',2);
-            if(!$sid){
+            $sid = zmf::val('sid', 2);
+            if (!$sid) {
+                throw new CHttpException(404, '请选择板块');
+            }
+            $showInfo = Showcases::getOne($sid);
+            if (!$showInfo) {
                 throw new CHttpException(404, '请选择板块');
             }
             $model = new ShowcaseLink;
-            $model->sid=$sid;
+            $model->sid = $sid;
+            $model->classify = $showInfo['classify'];
         }
-        // Uncomment the following line if AJAX validation is needed
-        // $this->performAjaxValidation($model);
         if (isset($_POST['ShowcaseLink'])) {
-            $model->attributes = $_POST['ShowcaseLink'];
-            if ($model->save()) {
-                if (!$id) {
-                    Yii::app()->user->setFlash('addShowcaseLinkSuccess', "保存成功！您可以继续添加。");
-                    $this->redirect(array('create'));
-                } else {
-                    $this->redirect(array('index'));
+            $now = zmf::now();
+            if ($_POST['ShowcaseLink']['startTime']) {
+                $_POST['ShowcaseLink']['startTime'] = strtotime($_POST['ShowcaseLink']['startTime'], $now);
+            } else {
+                $_POST['ShowcaseLink']['startTime'] = $now;
+            }
+            if ($_POST['ShowcaseLink']['endTime']) {
+                $_POST['ShowcaseLink']['endTime'] = strtotime($_POST['ShowcaseLink']['endTime'], $now);
+            }
+            if ($model->classify == 'book' && !$_POST['ShowcaseLink']['logid']) {
+                $model->addError('logid', '请填写小说ID');
+            } else {
+                $model->attributes = $_POST['ShowcaseLink'];
+                if ($model->save()) {
+                    if (!$id) {
+                        Yii::app()->user->setFlash('addShowcaseLinkSuccess', "保存成功！您可以继续添加。");
+                        $this->redirect(array('create', 'sid' => $model->sid));
+                    } else {
+                        $this->redirect(array('showcaseLink/index', 'sid' => $model->sid));
+                    }
                 }
             }
         }
         $this->render('create', array(
             'model' => $model,
+        ));
+    }
+
+    public function actionIndex() {
+        $sid = zmf::val('sid', 2);
+        if (!$sid) {
+            throw new CHttpException(404, '请选择板块');
+        }
+        $select = "id,sid,logid,classify,startTime,endTime";
+        $model = new ShowcaseLink();
+        $criteria = new CDbCriteria();
+        $criteria->addCondition("sid='{$sid}'");
+        $criteria->select = $select;
+        $criteria->order = 'cTime DESC';
+        $count = $model->count($criteria);
+        $pager = new CPagination($count);
+        $pager->pageSize = 30;
+        $pager->applyLimit($criteria);
+        $posts = $model->findAll($criteria);
+        $this->render('/posts/content', array(
+            'model' => $model,
+            'pages' => $pager,
+            'posts' => $posts,
+            'from' => 'showcaseLink',
+            'sid' => $sid,
+            'selectArr' => explode(',', $select),
         ));
     }
 

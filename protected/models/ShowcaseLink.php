@@ -39,7 +39,7 @@ class ShowcaseLink extends CActiveRecord {
         return array(
             array('cTime', 'default', 'setOnEmpty' => true, 'value' => zmf::now()),
             array('status', 'default', 'setOnEmpty' => true, 'value' => Posts::STATUS_PASSED),            
-            array('sid,logid,classify', 'required'),
+            array('sid,classify', 'required'),
             array('status', 'numerical', 'integerOnly' => true),
             array('sid, logid, cTime, startTime, endTime', 'length', 'max' => 10),
             array('classify', 'length', 'max' => 16),
@@ -68,7 +68,7 @@ class ShowcaseLink extends CActiveRecord {
             'id' => 'ID',
             'sid' => '板块ID',
             'logid' => '所属对象ID',
-            'classify' => '标题',
+            'classify' => '分类',
             'title' => '标题',
             'faceimg' => '位置',
             'content' => '简介',
@@ -124,15 +124,4 @@ class ShowcaseLink extends CActiveRecord {
     public static function model($className = __CLASS__) {
         return parent::model($className);
     }
-    
-    public static function exClassify($type){
-        $arr=array(
-            'book'=>'小说',
-        );
-        if($type=='admin'){
-            return $arr;
-        }
-        return $arr[$type];
-    }
-
 }

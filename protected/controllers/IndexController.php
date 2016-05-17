@@ -2,8 +2,8 @@
 
 class IndexController extends Q {
 
-    public function actionIndex() {
-        $posts=  Books::getIndexTops();
+    public function actionIndex() {        
+        $posts=  Showcases::getPagePosts('returnIndexColumns');
         $data = array(
             'posts' => $posts
         );

@@ -103,7 +103,7 @@ $form=$this->beginWidget('CActiveForm', array(
             <?php if($from=='books'){?>
             <?php echo CHtml::link('章节',array('chapters','id'=>$post['id']));?>
             <?php }elseif($from=='showcases'){?>
-            <?php echo CHtml::link('添加文章',array('showcaseLink/create','sid'=>$post['id']));?>
+            <?php echo CHtml::link('文章',array('showcaseLink/index','sid'=>$post['id']));?>
             <?php }?>
             <?php echo CHtml::link('删除',array('delete','id'=>$post['id']));?>
         </td>
@@ -117,11 +117,10 @@ $form=$this->beginWidget('CActiveForm', array(
             <?php 
             if($from=='chapters') {
                 echo CHtml::link('新增', array('chapters/create','bid'=>$bid), array('class' => 'btn btn-primary'));
+            }elseif($from=='showcaseLink') {
+                echo CHtml::link('新增', array('create','sid'=>$sid), array('class' => 'btn btn-primary'));
             } else {
                 echo CHtml::link('新增', array('create'), array('class' => 'btn btn-primary'));
-                if (in_array($from, array('packagePower', 'packageDate', 'packageType'))) {
-                    echo CHtml::link('排序', array('order'), array('class' => 'btn btn-info'));
-                }
                 echo CHtml::link('管理', array('admin'), array('class' => 'btn btn-default'));
             }
             ?>

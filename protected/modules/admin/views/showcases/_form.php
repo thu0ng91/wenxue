@@ -20,6 +20,16 @@
         <?php echo $form->error($model,'title'); ?>
     </div>
     <div class="form-group">
+        <?php echo $form->labelEx($model,'columnid'); ?>
+        <?php echo $form->dropDownlist($model,'columnid',  Column::allCols(),array('class'=>'form-control','empty'=>'--请选择--')); ?>
+        <?php echo $form->error($model,'columnid'); ?>
+    </div>
+    <div class="form-group">
+        <?php echo $form->labelEx($model,'classify'); ?>
+        <?php echo $form->dropDownlist($model,'classify',  Showcases::exClassify('admin'),array('class'=>'form-control','empty'=>'--请选择--')); ?>
+        <?php echo $form->error($model,'classify'); ?>
+    </div>
+    <div class="form-group">
         <?php echo $form->labelEx($model,'position'); ?>
         <?php echo $form->dropDownlist($model,'position',  Showcases::exPosition('admin'),array('class'=>'form-control','empty'=>'--请选择--')); ?>
         <?php echo $form->error($model,'position'); ?>

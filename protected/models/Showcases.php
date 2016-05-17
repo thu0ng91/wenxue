@@ -38,8 +38,8 @@ class Showcases extends CActiveRecord {
             array('status', 'default', 'setOnEmpty' => true, 'value' => Posts::STATUS_PASSED),            
             array('uid, title, position, display', 'required'),
             array('num, status', 'numerical', 'integerOnly' => true),
-            array('uid, cTime', 'length', 'max' => 10),
-            array('title, position, display', 'length', 'max' => 16),
+            array('uid, cTime,columnid', 'length', 'max' => 10),
+            array('title, position, display,classify', 'length', 'max' => 16),
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
             array('id, uid, title, position, display, num, status, cTime', 'safe', 'on' => 'search'),
@@ -63,6 +63,8 @@ class Showcases extends CActiveRecord {
         return array(
             'id' => 'ID',
             'uid' => '创建人ID',
+            'classify' => '分类',
+            'columnid' => '所属板块',
             'title' => '标题',
             'position' => '位置',
             'display' => '展示方式',
@@ -113,23 +115,37 @@ class Showcases extends CActiveRecord {
         return parent::model($className);
     }
     
+    public static function getOne($id){
+        return Showcases::model()->findByPk($id);
+    }
+    
     public static function exPosition($type){
         $arr=array(
             'indexLeft1'=>'首页左边1',
             'indexRight1'=>'首页右边1',
-            'indexAd1'=>'首页小图1',
-            
+            'indexAd1'=>'首页小图1',            
             'indexLeft2'=>'首页左边2',
             'indexRight2'=>'首页右边2',
-            'indexAd2'=>'首页小图2',
-            
+            'indexAd2'=>'首页小图2',            
             'indexLeft3'=>'首页左边3',
             'indexRight3'=>'首页右边3',
-            'indexAd3'=>'首页小图3',
-            
+            'indexAd3'=>'首页小图3',            
         );
         if($type=='admin'){
             return $arr;
+        }elseif($type=='returnIndexColumns' || $type=='returnColumnColumns'){
+            if($type=='returnIndexColumns'){
+                $find='index';
+            }elseif($type=='returnColumnColumns'){
+                $find='column';
+            }
+            $tmp=array();
+            foreach ($arr as $key=>$val){
+                if(strpos($key, $find)!==false){
+                    $tmp[]=$key;
+                }
+            }
+            return $tmp;
         }
         return $arr[$type];
     }
@@ -145,6 +161,43 @@ class Showcases extends CActiveRecord {
             return $arr;
         }
         return $arr[$type];
+    }
+    
+    public static function exClassify($type){
+        $arr=array(
+            'book'=>'小说',
+            'ad'=>'广告',
+        );
+        if($type=='admin'){
+            return $arr;
+        }
+        return $arr[$type];
+    }
+    
+    public static function getPagePosts($type){
+        $arr=  Showcases::exPosition($type);
+        $arrWithQuote=array();
+        foreach ($arr as $val){
+            $arrWithQuote[]="'{$val}'";
+        }
+        $positionStr=join(',',$arrWithQuote);
+        $sql="SELECT id,title,position,display,num,classify FROM {{showcases}} WHERE position IN({$positionStr})";
+        $showcases=  Yii::app()->db->createCommand($sql)->queryAll();
+        $posts=array();
+        foreach ($showcases as $case){
+            $_tmp=$case;
+            if($case['classify']=='book'){
+                $_sql="SELECT b.id,b.aid,b.colid,b.title,b.faceImg,b.desc,'阿年飞少' AS authorName FROM {{books}} b,{{showcase_link}} sl WHERE sl.sid='{$case['id']}' AND sl.classify='book' AND sl.logid=b.id ORDER BY sl.startTime ASC LIMIT {$case['num']}";
+                $_posts=  Yii::app()->db->createCommand($_sql)->queryAll();
+                $_tmp['posts']=$_posts;
+            }elseif($case['classify']=='ad'){
+                $_sql="SELECT title,faceimg,content,url FROM {{showcase_link}} WHERE sid='{$case['id']}' AND classify='ad' ORDER BY startTime ASC LIMIT {$case['num']}";
+                $_posts=  Yii::app()->db->createCommand($_sql)->queryAll();
+                $_tmp['posts']=$_posts;
+            }
+            $posts[$case['position']]=$_tmp;
+        }
+        return $posts;
     }
 
 }

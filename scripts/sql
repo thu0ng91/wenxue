@@ -136,6 +136,7 @@ DROP TABLE IF EXISTS `pre_showcases`;
 CREATE TABLE `pre_showcases` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `uid` int(10) unsigned NOT NULL COMMENT '创建人ID',
+  `columnid` int(10) unsigned NOT NULL COMMENT '所属栏目',
   `title` char(16) NOT NULL COMMENT '标题',
   `position` char(16) NOT NULL COMMENT '位置',  
   `display` char(16) NOT NULL COMMENT '展示方式',  
