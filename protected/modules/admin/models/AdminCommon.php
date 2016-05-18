@@ -11,7 +11,7 @@ class AdminCommon extends CActiveRecord {
             'active' => in_array($c, array('index'))
         );        
         $attr['showcases'] = array(
-            'title' => '板块',
+            'title' => '版块',
             'url' => Yii::app()->createUrl('admin/showcases/index'),
             'active' => in_array($c, array('showcases'))
         );

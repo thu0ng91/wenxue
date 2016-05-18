@@ -129,7 +129,20 @@ class Showcases extends CActiveRecord {
             'indexAd2'=>'首页小图2',            
             'indexLeft3'=>'首页左边3',
             'indexRight3'=>'首页右边3',
-            'indexAd3'=>'首页小图3',            
+            'indexAd3'=>'首页小图3',
+            
+            
+            'column1'=>'版块第一排1',
+            'column2'=>'版块第一排2',
+            'column3'=>'版块第一排3',
+            'column1'=>'版块第二排1',
+            'column2'=>'版块第二排2',
+            'column3'=>'版块第二排3',
+            
+            'column1'=>'版块第三排1',
+            'column2'=>'版块第三排2',
+            'column3'=>'版块第三排3',
+            
         );
         if($type=='admin'){
             return $arr;
@@ -174,7 +187,7 @@ class Showcases extends CActiveRecord {
         return $arr[$type];
     }
     
-    public static function getPagePosts($type){
+    public static function getPagePosts($type,$columnid=NULL){
         $arr=  Showcases::exPosition($type);
         $arrWithQuote=array();
         foreach ($arr as $val){
@@ -193,7 +206,7 @@ class Showcases extends CActiveRecord {
             }elseif($case['classify']=='ad'){
                 $_sql="SELECT title,faceimg,content,url FROM {{showcase_link}} WHERE sid='{$case['id']}' AND classify='ad' ORDER BY startTime ASC LIMIT {$case['num']}";
                 $_posts=  Yii::app()->db->createCommand($_sql)->queryAll();
-                $_tmp['posts']=$_posts;
+                $_tmp['post']=$_posts;
             }
             $posts[$case['position']]=$_tmp;
         }

@@ -70,7 +70,7 @@ class ShowcaseLink extends CActiveRecord {
             'logid' => '所属对象ID',
             'classify' => '分类',
             'title' => '标题',
-            'faceimg' => '位置',
+            'faceimg' => '图片地址',
             'content' => '简介',
             'url' => '链接',
             'status' => '状态',

@@ -75,7 +75,7 @@ class assets {
             $coreJsArr=array(
                 'jquery'=>array('pos'=>'head'),
                 'bootstrap'=>array('pos'=>'end'),
-                'pjax'=>array('pos'=>'end'),
+                'superSlide'=>array('pos'=>'end'),
             );
             $cssArr = array(
                 'web-zmf',
@@ -131,7 +131,7 @@ class assets {
         $cssDirArr = zmf::readDir($cssDir, false);
         $jsDirArr = zmf::readDir($jsDir, false);
         foreach ($coreCssDirArr as $coreFileName) {
-            foreach ($coreCssArr as $coreCssfile=>$fileParams) {                
+            foreach ($coreCssArr as $coreCssfile=>$fileParams) {
                 if (strpos($coreFileName,$coreCssfile) !== false) {
                     $cs->registerCssFile($staticUrl . 'common/coreCss/' . $coreFileName);
                 }
