@@ -15,6 +15,7 @@ class ShowcaseController extends Q {
         if(!$columnid){
             throw new CHttpException(404, '请选择版块');
         }
+        $this->selectNav='column'.$columnid;
         $posts=  Showcases::getPagePosts('returnColumnColumns',$columnid);
         $data = array(
             'posts' => $posts

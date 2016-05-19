@@ -1,8 +1,32 @@
 <?php
 
 class PostsController extends Q {
-    
+
     public $favorited = false;
+
+    public function actionIndex() {
+        $type = zmf::val('type', 1);
+        if (!in_array($type, array('author', 'reader'))) {
+            $type = 'author';
+        }
+        $classify = 0;
+        if ($type == 'author') {
+            $classify = Posts::CLASSIFY_AUTHOR;
+            $label = '作者专区';
+        } elseif ($type == 'reader') {
+            $classify = Posts::CLASSIFY_READER;
+            $label = '读者专区';
+        }
+        $sql = "SELECT id,title,uid,cTime,comments,favors FROM {{posts}} WHERE classify='{$classify}' AND status=" . Posts::STATUS_PASSED." ORDER BY cTime DESC";
+        Posts::getAll(array('sql' => $sql), $pages, $posts);
+        $this->selectNav = $type . 'Forum';
+        $data = array(
+            'posts' => $posts,
+            'label' => $label,
+            'type' => $type,
+        );
+        $this->render('index', $data);
+    }
 
     public function actionView() {
         $id = zmf::val('id', 2);
@@ -10,46 +34,44 @@ class PostsController extends Q {
             throw new CHttpException(404, 'The requested page does not exist.');
         }
         $info = $this->loadModel($id);
-        if($info['zazhi']>0){
-            $this->redirect(array('zazhi/chapter','id'=>$id,'zid'=>$info['zazhi']));
-        }
         $pageSize = 30;
-        $comments = Comments::getCommentsByPage($id, 'posts', 1, $pageSize);       
-        $tags = Tags::getByIds($info['tagids']);
-        $relatePosts=  Posts::getRelations($id, 5);
+        $comments = Comments::getCommentsByPage($id, 'posts', 1, $pageSize);
         if (!zmf::actionLimit('visit-Posts', $id, 5, 60)) {
             Posts::updateCount($id, 'Posts', 1, 'hits');
         }
-        $size='600';
-        if($this->isMobile){
-            $size='640';
+        $size = '600';
+        if ($this->isMobile) {
+            $size = '640';
         }
-        $info['content']=zmf::text(array(),$info['content'],true,$size);
+        $info['content'] = zmf::text(array(), $info['content'], true, $size);
         $data = array(
             'info' => $info,
             'comments' => $comments,
-            'tags' => $tags,
-            'relatePosts' => $relatePosts,
             'loadMore' => count($comments) == $pageSize ? 1 : 0,
         );
-        $this->favorited=  Favorites::checkFavored($id, 'post');
-        $this->pageTitle=$info['title'];
-        $this->selectNav='posts';
+        $this->favorited = Favorites::checkFavored($id, 'post');
+        $this->selectNav = 'authorForum';
+        $this->pageTitle = $info['title'];
         $this->render('view', $data);
     }
-    
-    public function actionCreate($id = '') {    
+
+    public function actionCreate($id = '') {
         $this->onlyOnPc();
-        $id = zmf::myint($id);
         if (!$this->uid) {
             $this->redirect(array('site/login'));
-        }        
+        }
         if ($id) {
+            $id = zmf::myint($id);
             $model = $this->loadModel($id);
             $isNew = false;
         } else {
+            $type = zmf::val('type', 1);
+            if (!in_array($type, array('author', 'reader'))) {
+                throw new CHttpException(404, '你所选择的版块不存在');
+            }            
             $model = new Posts;
-            $isNew = true;            
+            $model->classify=  Posts::exType($type);
+            $isNew = true;
         }
         if (isset($_POST['ajax']) && $_POST['ajax'] === 'posts-form') {
             echo CActiveForm::validate($model);
@@ -57,7 +79,7 @@ class PostsController extends Q {
         }
         if (isset($_POST['Posts'])) {
             //处理文本
-            $filter = Posts::handleContent($_POST['Posts']['content']);            
+            $filter = Posts::handleContent($_POST['Posts']['content']);
             $_POST['Posts']['content'] = $filter['content'];
             if (!empty($filter['attachids'])) {
                 $attkeys = array_filter(array_unique($filter['attachids']));
@@ -66,9 +88,7 @@ class PostsController extends Q {
                 }
             } else {
                 $_POST['Posts']['faceimg'] = ''; //否则将封面图置为空(有可能编辑后没有图片了)
-            }            
-            $tagids = array_unique(array_filter($_POST['tags']));
-            $_POST['Posts']['status']=  Posts::STATUS_STAYCHECK;
+            }       
             $model->attributes = $_POST['Posts'];
             if ($model->save()) {
                 //将上传的图片置为通过
@@ -79,10 +99,10 @@ class PostsController extends Q {
                         Attachments::model()->updateAll(array('status' => Posts::STATUS_PASSED, 'logid' => $model->id), 'id IN(' . $attstr . ')');
                     }
                 }
-                $this->redirect(array('users/posts'));
+                $this->redirect(array('posts/view','id'=>$model->id));
             }
         }
-        $this->selectNav='contribution';
+        $this->selectNav = 'contribution';
         $this->pageTitle = '投稿 - ' . zmf::config('sitename');
         $this->render('create', array(
             'model' => $model,
@@ -91,7 +111,7 @@ class PostsController extends Q {
 
     public function loadModel($id) {
         $model = Posts::model()->findByPk($id);
-        if ($model === null || $model->status!=Posts::STATUS_PASSED)
+        if ($model === null || $model->status != Posts::STATUS_PASSED)
             throw new CHttpException(404, 'The requested page does not exist.');
         return $model;
     }

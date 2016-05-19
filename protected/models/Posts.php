@@ -29,6 +29,10 @@ class Posts extends CActiveRecord {
     const STATUS_PASSED = 1;
     const STATUS_STAYCHECK = 2;
     const STATUS_DELED = 3;
+    
+    const CLASSIFY_POST = 1;
+    const CLASSIFY_AUTHOR = 2;
+    const CLASSIFY_READER = 3;
 
     /**
      * @return string the associated database table name
@@ -48,7 +52,7 @@ class Posts extends CActiveRecord {
             array('cTime,updateTime', 'default', 'setOnEmpty' => true, 'value' => zmf::now()),
             array('status', 'default', 'setOnEmpty' => true, 'value' => Posts::STATUS_PASSED),
             array('uid, title, content', 'required'),
-            array('uid, faceimg, classify, mapZoom, comments, top, hits, status, cTime, updateTime,isFaceimg', 'numerical', 'integerOnly' => true),
+            array('uid, faceimg, classify, mapZoom, comments, top, hits, status, cTime, updateTime', 'numerical', 'integerOnly' => true),
             array('title, tagids', 'length', 'max' => 255),
             array('lat, long', 'length', 'max' => 50),
             array('favors', 'length', 'max' => 11),
@@ -91,7 +95,6 @@ class Posts extends CActiveRecord {
             'updateTime' => '最近更新时间',
             'zazhi' => '所属杂志',
             'order' => '文章顺序',
-            'isFaceimg' => '是否仅封面图',
         );
     }
 
@@ -114,6 +117,25 @@ class Posts extends CActiveRecord {
         if ($type == 'admin') {
             return $arr;
         }
+        return $arr[$type];
+    }
+    
+    public static function exClassify($type) {
+        $arr = array(
+            self::CLASSIFY_AUTHOR => '作者专区',
+            self::CLASSIFY_READER => '读者专区',
+        );
+        if ($type == 'admin') {
+            return $arr;
+        }
+        return $arr[$type];
+    }
+    
+    public static function exType($type){
+        $arr = array(
+            'author'=>self::CLASSIFY_AUTHOR,
+            'reader'=>self::CLASSIFY_READER,
+        );
         return $arr[$type];
     }
 

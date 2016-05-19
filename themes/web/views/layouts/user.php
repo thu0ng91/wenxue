@@ -40,7 +40,8 @@ $cols=  Column::allCols();
         border-bottom: 1px solid #eee;
         margin-bottom: 15px;
         float: left;
-        width: 100%
+        width: 100%;
+        padding: 15px 0 0 15px
     }
     .side-following .item {
         text-decoration: none;
@@ -65,23 +66,13 @@ $cols=  Column::allCols();
     }
     .side-module{
         border-bottom: 1px solid #f2f2f2;
-        padding: 10px 0;
+        padding: 10px 0 10px 15px;
     }
     .side-module .side-module-header{
         font-weight:700
     }
-    .side-footer{
-        padding: 10px 0;
-        color: #999
-    }
-    .side-footer a{
-        padding-right: 2px;
-        color: #999;
-        display: inline-block
-    }
-    .side-footer a+a {
-        border-left: 1px solid #eee;
-        padding-left: 5px;
+    .side-module:last-child{
+        border: none
     }
     .user-following{
        padding-left: 0;
@@ -175,32 +166,28 @@ $cols=  Column::allCols();
         </div>
         <?php echo $content; ?>
     </div>
-    <div class="aside-part module">        
-        <div class="side-following">
-            <a class="item" href="<?php echo Yii::app()->createUrl('user/follow',array('id'=>$this->toUserInfo['id']));?>">
-                <span>关注了</span><br>
-                <strong><?php echo $this->toUserInfo['favord'];?></strong>
-                <label> 人</label>
-            </a>
-            <a class="item" href="<?php echo Yii::app()->createUrl('user/follow',array('id'=>$this->toUserInfo['id'],'type'=>'fans'));?>">
-                <span>关注者</span><br>
-                <strong><?php echo $this->toUserInfo['favors'];?></strong>
-                <label> 人</label>
-            </a>
-        </div>
-        <div class="side-module">
-            <div class="side-module-header">关注了<?php echo $this->toUserInfo['favorAuthors']>0 ? CHtml::link($this->toUserInfo['favorAuthors'].'个作者',array('user/follow','id'=>$this->toUserInfo['id'],'type'=>'authors')) : ' 0个作者';?></div>
-        </div>
-        <div class="side-module">
-            <span class="color-grey">主页被访问<?php echo $this->toUserInfo['hits'];?>次</span>
-        </div>
-        <div class="side-footer">
-            <a href="#">关于我们</a>
-            <a href="#">联系我们</a>
-            <a href="#">隐私条款</a>
-            <a href="#">版权说明</a><br/>
-            <p>渝备123456 <a href="#">初心创文</a>&copy;<?php echo date('Y');?></p>
-        </div>
+    <div class="aside-part">
+        <div class="module">
+            <div class="side-following">
+                <a class="item" href="<?php echo Yii::app()->createUrl('user/follow',array('id'=>$this->toUserInfo['id']));?>">
+                    <span>关注了</span><br>
+                    <strong><?php echo $this->toUserInfo['favord'];?></strong>
+                    <label> 人</label>
+                </a>
+                <a class="item" href="<?php echo Yii::app()->createUrl('user/follow',array('id'=>$this->toUserInfo['id'],'type'=>'fans'));?>">
+                    <span>关注者</span><br>
+                    <strong><?php echo $this->toUserInfo['favors'];?></strong>
+                    <label> 人</label>
+                </a>
+            </div>
+            <div class="side-module">
+                <div class="side-module-header">关注了<?php echo $this->toUserInfo['favorAuthors']>0 ? CHtml::link($this->toUserInfo['favorAuthors'].'个作者',array('user/follow','id'=>$this->toUserInfo['id'],'type'=>'authors')) : ' 0个作者';?></div>
+            </div>
+            <div class="side-module">
+                <span class="color-grey">主页被访问<?php echo $this->toUserInfo['hits'];?>次</span>
+            </div>
+        </div>        
+        <?php $this->renderPartial('/common/copyright');?>
     </div>
 </div>
 <?php $this->endContent(); ?>

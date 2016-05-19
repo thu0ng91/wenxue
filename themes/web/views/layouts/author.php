@@ -11,6 +11,9 @@ $cols=  Column::allCols();
     .author-module .main-part{
         border-right:1px solid #e6e6e6
     }
+    .author-module .aside-part{
+        width:315px
+    }
     .author-bg-container{
         width: 960px;
         height: 300px;

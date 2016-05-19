@@ -37,20 +37,7 @@
     .slideBox .bd img{ width:480px; height:360px; display:block;  } 
 </style>
 <div class="container column-page">
-    <div class="module column-min">
-        <div class="module-header">测试</div>
-        <div class="module-body">
-            <p class="no-wrap">的房间哦士大夫就四的覅计算</p>
-            <p class="no-wrap">的房间哦士大夫就四的覅计算</p>
-            <p class="no-wrap">的房间哦士大夫就四的覅计算</p>
-            <p class="no-wrap">的房间哦士大夫就四的覅计算</p>
-            <p class="no-wrap">的房间哦士大夫就四的覅计算</p>
-            <p class="no-wrap">的房间哦士大夫就四的覅计算</p>
-            <p class="no-wrap">的房间哦士大夫就四的覅计算</p>
-            <p class="no-wrap">的房间哦士大夫就四的覅计算</p>
-            <p class="no-wrap">的房间哦士大夫就四的覅计算</p>
-        </div>
-    </div>
+    <?php $this->renderPartial('/showcase/columnModule',array('moduleInfo'=>$posts['column11']));?>
     <div class="module column-medium">
         <div id="slideBox" class="slideBox">
             <div class="hd"><ul><li>1</li><li>2</li><li>3</li></ul></div>
@@ -68,70 +55,14 @@
             });       
        </script>
     </div>
+    <?php $this->renderPartial('/showcase/columnModule',array('moduleInfo'=>$posts['column13']));?>
+    <?php $this->renderPartial('/showcase/columnModule',array('moduleInfo'=>$posts['column21']));?>
+    <?php $this->renderPartial('/showcase/columnModule',array('moduleInfo'=>$posts['column22'],'class'=>'column-medium'));?>       
+    <?php $this->renderPartial('/showcase/columnModule',array('moduleInfo'=>$posts['column23']));?>
+    <?php $this->renderPartial('/showcase/columnModule',array('moduleInfo'=>$posts['column31']));?>
+    <?php $this->renderPartial('/showcase/columnModule',array('moduleInfo'=>$posts['column32'],'class'=>'column-medium'));?>
     <div class="module column-min">
-        <div class="module-header">测试</div>
-        <div class="module-body">
-            <p class="no-wrap">的房间哦士大夫就四的覅计算</p>
-            <p class="no-wrap">的房间哦士大夫就四的覅计算</p>
-            <p class="no-wrap">的房间哦士大夫就四的覅计算</p>
-            <p class="no-wrap">的房间哦士大夫就四的覅计算</p>
-            <p class="no-wrap">的房间哦士大夫就四的覅计算</p>
-            <p class="no-wrap">的房间哦士大夫就四的覅计算</p>
-            <p class="no-wrap">的房间哦士大夫就四的覅计算</p>
-            <p class="no-wrap">的房间哦士大夫就四的覅计算</p>
-            <p class="no-wrap">的房间哦士大夫就四的覅计算</p>
-        </div>
-    </div>
-    <div class="module column-min">
-        <div class="module-header">测试</div>
-        <div class="module-body">
-            <p class="no-wrap">的房间哦士大夫就四的覅计算</p>
-            <p class="no-wrap">的房间哦士大夫就四的覅计算</p>
-            <p class="no-wrap">的房间哦士大夫就四的覅计算</p>
-            <p class="no-wrap">的房间哦士大夫就四的覅计算</p>
-            <p class="no-wrap">的房间哦士大夫就四的覅计算</p>
-            <p class="no-wrap">的房间哦士大夫就四的覅计算</p>
-            <p class="no-wrap">的房间哦士大夫就四的覅计算</p>
-            <p class="no-wrap">的房间哦士大夫就四的覅计算</p>
-            <p class="no-wrap">的房间哦士大夫就四的覅计算</p>
-        </div>
-    </div>
-    <div class="module column-medium">
-        
-    </div>    
-    <div class="module column-min">
-        <div class="module-header">测试</div>
-        <div class="module-body">
-            <p class="no-wrap">的房间哦士大夫就四的覅计算</p>
-            <p class="no-wrap">的房间哦士大夫就四的覅计算</p>
-            <p class="no-wrap">的房间哦士大夫就四的覅计算</p>
-            <p class="no-wrap">的房间哦士大夫就四的覅计算</p>
-            <p class="no-wrap">的房间哦士大夫就四的覅计算</p>
-            <p class="no-wrap">的房间哦士大夫就四的覅计算</p>
-            <p class="no-wrap">的房间哦士大夫就四的覅计算</p>
-            <p class="no-wrap">的房间哦士大夫就四的覅计算</p>
-            <p class="no-wrap">的房间哦士大夫就四的覅计算</p>
-        </div>
-    </div>
-    <div class="module column-min">
-        <div class="module-header">测试</div>
-        <div class="module-body">
-            <p class="no-wrap">的房间哦士大夫就四的覅计算</p>
-            <p class="no-wrap">的房间哦士大夫就四的覅计算</p>
-            <p class="no-wrap">的房间哦士大夫就四的覅计算</p>
-            <p class="no-wrap">的房间哦士大夫就四的覅计算</p>
-            <p class="no-wrap">的房间哦士大夫就四的覅计算</p>
-            <p class="no-wrap">的房间哦士大夫就四的覅计算</p>
-            <p class="no-wrap">的房间哦士大夫就四的覅计算</p>
-            <p class="no-wrap">的房间哦士大夫就四的覅计算</p>
-            <p class="no-wrap">的房间哦士大夫就四的覅计算</p>
-        </div>
-    </div>
-    <div class="module column-medium">
-        
-    </div>    
-    <div class="module column-min">
-        <div class="module-header">测试</div>
+        <div class="module-header">最新评论</div>
         <div class="module-body">
             <p class="no-wrap">的房间哦士大夫就四的覅计算</p>
             <p class="no-wrap">的房间哦士大夫就四的覅计算</p>

@@ -46,10 +46,6 @@
     .chapter-tips-module .media:last-child{
         border-bottom: none
     }
-    .chapter-navbar .breadcrumb{
-        margin-bottom: 0;
-        background: transparent
-    }
     .chapter-min-tips{
         color:#ccc;
         margin-top: 10px;

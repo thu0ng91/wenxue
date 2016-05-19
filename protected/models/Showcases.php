@@ -132,16 +132,16 @@ class Showcases extends CActiveRecord {
             'indexAd3'=>'首页小图3',
             
             
-            'column1'=>'版块第一排1',
-            'column2'=>'版块第一排2',
-            'column3'=>'版块第一排3',
-            'column1'=>'版块第二排1',
-            'column2'=>'版块第二排2',
-            'column3'=>'版块第二排3',
+            'column11'=>'版块第一排1',
+            'column12'=>'版块第一排2',
+            'column13'=>'版块第一排3',
+            'column21'=>'版块第二排1',
+            'column22'=>'版块第二排2',
+            'column23'=>'版块第二排3',
             
-            'column1'=>'版块第三排1',
-            'column2'=>'版块第三排2',
-            'column3'=>'版块第三排3',
+            'column31'=>'版块第三排1',
+            'column32'=>'版块第三排2',
+            'column33'=>'版块第三排3',
             
         );
         if($type=='admin'){
@@ -194,14 +194,29 @@ class Showcases extends CActiveRecord {
             $arrWithQuote[]="'{$val}'";
         }
         $positionStr=join(',',$arrWithQuote);
-        $sql="SELECT id,title,position,display,num,classify FROM {{showcases}} WHERE position IN({$positionStr})";
+        $sql="SELECT id,title,position,display,num,classify FROM {{showcases}} WHERE ".($columnid ? "columnid='{$columnid}' AND " : '')." position IN({$positionStr})";
         $showcases=  Yii::app()->db->createCommand($sql)->queryAll();
         $posts=array();
         foreach ($showcases as $case){
             $_tmp=$case;
             if($case['classify']=='book'){
-                $_sql="SELECT b.id,b.aid,b.colid,b.title,b.faceImg,b.desc,'阿年飞少' AS authorName FROM {{books}} b,{{showcase_link}} sl WHERE sl.sid='{$case['id']}' AND sl.classify='book' AND sl.logid=b.id ORDER BY sl.startTime ASC LIMIT {$case['num']}";
+                $_sql="SELECT b.id,b.aid,b.colid,'' AS colTitle,b.title,b.faceImg,b.desc,'阿年飞少' AS authorName FROM {{books}} b,{{showcase_link}} sl WHERE sl.sid='{$case['id']}' AND sl.classify='book' AND sl.logid=b.id ORDER BY sl.startTime ASC LIMIT {$case['num']}";
                 $_posts=  Yii::app()->db->createCommand($_sql)->queryAll();
+                if(!empty($_posts)){
+                    $colidStr=  join(',', array_unique(array_keys(CHtml::listData($_posts, 'colid', ''))));
+                    if($colidStr!=''){
+                        $_sqlCol="SELECT id,title FROM {{column}} WHERE id IN({$colidStr})";
+                        $_colsArr=Yii::app()->db->createCommand($_sqlCol)->queryAll();
+                        foreach ($_posts as $k=>$val){
+                            foreach ($_colsArr as $_colval){
+                                if($_colval['id']==$val['colid']){
+                                    $_posts[$k]['colTitle']=$_colval['title'];
+                                    continue;
+                                }
+                            }
+                        }
+                    }
+                }
                 $_tmp['posts']=$_posts;
             }elseif($case['classify']=='ad'){
                 $_sql="SELECT title,faceimg,content,url FROM {{showcase_link}} WHERE sid='{$case['id']}' AND classify='ad' ORDER BY startTime ASC LIMIT {$case['num']}";

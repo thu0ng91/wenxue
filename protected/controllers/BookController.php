@@ -71,6 +71,7 @@ class BookController extends Q {
         $this->tipInfo = Chapters::checkTip($cid, $this->uid);
         //标题
         $this->pageTitle='【'.$bookInfo['title'].'】'.$chapterInfo['title'].' - '.$authorInfo['authorName'].'作品';
+        $this->selectNav='column'.$bookInfo['colid'];
         $data = array(
             'bookInfo' => $bookInfo,
             'chapterInfo' => $chapterInfo,
