@@ -713,6 +713,7 @@ function backToTop() {
     if(wh>dh){
         $("body").css('height',wh);
     }
+    $('#footer-bg').fadeIn(3000);
 }
 function textareaAutoResize() {
     $('textarea').autoResize({

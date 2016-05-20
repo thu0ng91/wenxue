@@ -18,6 +18,21 @@
     .add-post-page .main-part{
         padding: 10px
     }
+    .tags-body .tag-item{
+        border:1px solid #93ba5f;
+        border-radius: 5px;
+        padding: 5px 10px;
+        display: inline-block;
+        margin-bottom: 5px
+    }
+    .tags-body .tag-item:hover{
+        background: #93ba5f;
+        color: #fff;
+        cursor: pointer
+    }
+    .tags-body .tag-item input{
+        display: none
+    }
 </style>
 <?php $uploadurl=Yii::app()->createUrl('attachments/upload',array('type'=>'posts','imgsize'=>600));?>
 <div class="container">
@@ -42,8 +57,39 @@
         </div>
         <div class="aside-part">
             <div class="module-header">选择标签</div>
-            <div class="module-body">
-                
+            <div class="module-body tags-body">
+                <span class="tag-item">
+                    吐槽
+                    <input type="checkbox" name="tags[]" value=""/>
+                </span>
+                <span class="tag-item">
+                    吐槽
+                    <input type="checkbox" name="tags[]" value=""/>
+                </span>
+                <span class="tag-item">
+                    吐槽
+                    <input type="checkbox" name="tags[]" value=""/>
+                </span>
+                <span class="tag-item">
+                    吐槽
+                    <input type="checkbox" name="tags[]" value=""/>
+                </span>
+                <span class="tag-item">
+                    吐槽
+                    <input type="checkbox" name="tags[]" value=""/>
+                </span>
+                <span class="tag-item">
+                    吐槽
+                    <input type="checkbox" name="tags[]" value=""/>
+                </span>
+                <span class="tag-item">
+                    吐槽
+                    <input type="checkbox" name="tags[]" value=""/>
+                </span>
+                <span class="tag-item">
+                    吐槽
+                    <input type="checkbox" name="tags[]" value=""/>
+                </span>
             </div>
         </div>
     </div>

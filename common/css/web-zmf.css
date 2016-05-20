@@ -292,6 +292,22 @@ button, input, select, textarea,.form-control,.btn{
 span.required,.errorMessage{
     color:#FF677D
 }
+.errorSummary{
+    border:2px solid #C00;
+    background:#FEE;
+    font-size:.9em;
+    margin:0 0 20px;
+    padding:7px 7px 12px
+}
+.errorSummary p{
+    margin:0;
+    padding:5px
+}
+.errorSummary ul{
+    color:red;
+    margin:0;
+    padding:0 0 0 20px
+}
 /*注册页面------*/
 .top-book-item img{
     width: 100%;
@@ -405,7 +421,8 @@ span.required,.errorMessage{
     background-size: contain;
     transition: opacity 200ms ease-in-out;
     z-index: -1;
-    opacity: 0.5
+    opacity: 0.5;
+    display: none
 }
 @media screen and (min-width: 1529px){
     .footer-bg {

@@ -9,18 +9,20 @@
  ?>
 
 <div class="module">
-<?php $form=$this->beginWidget('CActiveForm', array(
-	'id'=>'authors-form',
-	'enableAjaxValidation'=>false,
-)); ?>
-<?php echo $form->errorSummary($model); ?>
-    <div class="form-group">
-        <?php echo $form->labelEx($model,'password'); ?>
-        <?php echo $form->passwordField($model,'password',array('size'=>32,'maxlength'=>32,'class'=>'form-control')); ?>
-        <?php echo $form->error($model,'password'); ?>
+    <div class="module-body">
+        <?php $form=$this->beginWidget('CActiveForm', array(
+                'id'=>'authors-form',
+                'enableAjaxValidation'=>false,
+        )); ?>
+        <?php echo $form->errorSummary($model); ?>
+            <div class="form-group">
+                <?php echo $form->labelEx($model,'password'); ?>
+                <?php echo $form->passwordField($model,'password',array('size'=>32,'maxlength'=>32,'class'=>'form-control')); ?>
+                <?php echo $form->error($model,'password'); ?>
+            </div>
+            <div class="form-group">
+                <?php echo CHtml::submitButton('验证',array('class'=>'btn btn-primary')); ?>
+            </div>
+        <?php $this->endWidget(); ?>
     </div>
-    <div class="form-group">
-        <?php echo CHtml::submitButton('验证',array('class'=>'btn btn-primary')); ?>
-    </div>
-<?php $this->endWidget(); ?>
 </div><!-- form -->
