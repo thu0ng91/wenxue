@@ -43,7 +43,7 @@ class Tips extends CActiveRecord {
             array('ip', 'default', 'setOnEmpty' => true, 'value' => ip2long(Yii::app()->request->userHostAddress)),            
             array('uid, logid, classify,content,score', 'required'),
             array('status,favors', 'numerical', 'integerOnly' => true),
-            array('uid, logid, tocommentid, score, cTime', 'length', 'max' => 11),
+            array('uid, logid, tocommentid, score, cTime,bid', 'length', 'max' => 11),
             array('classify, platform, ip', 'length', 'max' => 16),
             array('ipInfo', 'length', 'max' => 255),
             array('content', 'length', 'max' => 1024),
@@ -70,6 +70,7 @@ class Tips extends CActiveRecord {
         return array(
             'id' => 'ID',
             'uid' => '用户ID',
+            'bid' => '所属小说',
             'logid' => '对象ID',
             'classify' => '对象分类',
             'tocommentid' => '评论ID',

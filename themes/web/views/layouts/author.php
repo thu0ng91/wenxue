@@ -202,17 +202,19 @@ $cols=  Column::allCols();
             <div class="author-side-navbar">
                 <?php echo CHtml::link('<i class="fa fa-list"></i> 作品',array('author/view','id'=>$this->authorInfo['id']),array('class'=>'item'.($this->selectNav == 'index' ? ' active' : '')));?>
                 <?php echo CHtml::link('<i class="fa fa-star"></i> 追随者',array('author/fans','id'=>$this->authorInfo['id']),array('class'=>'item'.($this->selectNav == 'fans' ? ' active' : '')));?>
-                <a href="#" class="item"><i class="fa fa-comments"></i> 作者专区</a>
+                <?php echo CHtml::link('<i class="fa fa-comments"></i> 作者专区',array('posts/index','type'=>'author','aid'=>$this->authorInfo['id']),array('class'=>'item'));?>
                 <?php if($this->adminLogin){?>
                 <?php echo CHtml::link('<i class="fa fa-plus"></i> 新作品',array('author/createBook'),array('class'=>'item'.($this->selectNav == 'createBook' ? ' active' : '')));?>
                 <?php echo CHtml::link('<i class="fa fa-file"></i> 草稿箱',array('author/drafts'),array('class'=>'item'.($this->selectNav == 'drafts' ? ' active' : '')));?>
-                <a href="#" class="item"><i class="fa fa-edit"></i> 编辑资料</a>
-                <a href="#" class="item"><i class="fa fa-cog"></i> 设置皮肤</a>
+                <?php echo CHtml::link('<i class="fa fa-edit"></i> 编辑资料',array('author/update','type'=>'info'),array('class'=>'item'.($this->selectNav == 'updateInfo' ? ' active' : '')));?>
+                <?php echo CHtml::link('<i class="fa fa-cog"></i> 设置皮肤',array('author/update','type'=>'skin'),array('class'=>'item'.($this->selectNav == 'updateSkin' ? ' active' : '')));?>
                 <?php echo CHtml::link('<i class="fa fa-sign-out"></i> 退出管理',array('author/logout'),array('class'=>'item'));?>
+                <?php }elseif($this->uid && $this->userInfo['authorId']==$this->authorInfo['id']){?>
+                <?php echo CHtml::link('<i class="fa fa-cog"></i> 进入作者管理中心',array('user/authorAuth'),array('class'=>'item'));?>
                 <?php }?>
             </div>
         </div>
     </div>    
-    
 </div>
+<div class="footer-bg" id="footer-bg"></div>
 <?php $this->endContent(); ?>

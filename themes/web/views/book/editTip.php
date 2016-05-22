@@ -9,8 +9,16 @@
  */
 $scoreArr=Tips::exScore('admin');
 ?>
+
 <div class="container">
+    <ol class="breadcrumb">
+        <li><a href="#">初心创文首页</a></li>
+        <li><a href="#">一级分类</a></li>
+        <li><a href="#">二级分类</a></li>
+        <li class="active">编辑点评</li>
+    </ol>
     <div class="module">
+        <div class="module-body">
         <?php $form=$this->beginWidget('CActiveForm', array( 
             'id'=>'tips-form', 
             'enableAjaxValidation'=>false, 
@@ -41,5 +49,6 @@ $scoreArr=Tips::exScore('admin');
             <?php echo CHtml::submitButton($model->isNewRecord ? '新增' : '更新',array('class'=>'btn btn-primary')); ?>
         </div>
         <?php $this->endWidget(); ?>
+        </div>
     </div>
 </div>

@@ -116,7 +116,9 @@ class Tags extends CActiveRecord {
     }
 
     public static function classify($return = '') {
-        $arr = array(
+        $arr = array(            
+            'author' => '作者专区',
+            'reader' => '读者专区',
             'posts' => '文章',
         );
         if ($return != 'admin') {

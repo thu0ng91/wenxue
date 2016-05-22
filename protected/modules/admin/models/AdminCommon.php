@@ -9,11 +9,16 @@ class AdminCommon extends CActiveRecord {
             'title' => '首页',
             'url' => Yii::app()->createUrl('admin/index/index'),
             'active' => in_array($c, array('index'))
-        );        
+        );
         $attr['showcases'] = array(
             'title' => '版块',
             'url' => Yii::app()->createUrl('admin/showcases/index'),
             'active' => in_array($c, array('showcases'))
+        );
+        $attr['column'] = array(
+            'title' => '分类',
+            'url' => Yii::app()->createUrl('admin/column/index'),
+            'active' => in_array($c, array('column'))
         );
         $attr['authors'] = array(
             'title' => '作者',
@@ -25,6 +30,11 @@ class AdminCommon extends CActiveRecord {
             'url' => Yii::app()->createUrl('admin/books/index'),
             'active' => in_array($c, array('books'))
         );
+        $attr['posts'] = array(
+            'title' => '文章',
+            'url' => Yii::app()->createUrl('admin/posts/index'),
+            'active' => in_array($c, array('posts'))
+        );
         $attr['comments'] = array(
             'title' => '评论',
             'url' => Yii::app()->createUrl('admin/comments/index'),
@@ -35,22 +45,11 @@ class AdminCommon extends CActiveRecord {
             'url' => Yii::app()->createUrl('admin/feedback/index'),
             'active' => in_array($c, array('feedback'))
         );
-        $attr['zazhi'] = array(
-            'title' => '杂志',
-            'url' => Yii::app()->createUrl('admin/zazhi/index'),
-            'active' => in_array($c, array('zazhi'))
-        );        
-        $attr['posts'] = array(
-            'title' => '文章',
-            'url' => Yii::app()->createUrl('admin/posts/index'),
-            'active' => in_array($c, array('posts'))
-        );        
         $attr['group'] = array(
             'title' => '标签',
             'url' => Yii::app()->createUrl('admin/tags/index'),
             'active' => in_array($c, array('tags'))
-        );
-        
+        );        
         $attr['user'] = array(
             'title' => '用户',
             'url' => Yii::app()->createUrl('admin/users/index'),

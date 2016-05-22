@@ -56,7 +56,7 @@ class Posts extends CActiveRecord {
             array('title, tagids', 'length', 'max' => 255),
             array('lat, long', 'length', 'max' => 50),
             array('favors', 'length', 'max' => 11),
-            array('favorite,zazhi,order', 'length', 'max' => 10),
+            array('favorite,zazhi,order,aid', 'length', 'max' => 10),
         );
     }
 
@@ -76,7 +76,8 @@ class Posts extends CActiveRecord {
     public function attributeLabels() {
         return array(
             'id' => 'ID',
-            'uid' => '作者ID',
+            'uid' => '用户ID',
+            'aid' => '作者ID',
             'title' => '标题',
             'content' => '正文',
             'faceimg' => '封面图',
@@ -136,6 +137,9 @@ class Posts extends CActiveRecord {
             'author'=>self::CLASSIFY_AUTHOR,
             'reader'=>self::CLASSIFY_READER,
         );
+        if(is_numeric($type)){
+            $arr=array_flip($arr);
+        }
         return $arr[$type];
     }
 
@@ -250,9 +254,7 @@ class Posts extends CActiveRecord {
         $com = Yii::app()->db->createCommand($sql . " LIMIT :offset,:limit");
         $com->bindValues($bindValues);        
         $posts = $com->queryAll();
-        return array(
-            'posts' => $posts
-        );
+        return $posts;
     }
 
     public static function getTopsByTag($tagid, $limit = 5) {

@@ -61,6 +61,7 @@ class AjaxController extends Q {
         $toUserInfo = array();
         $touid = $postInfo['uid'];
         $intoData = array(
+            'bid' => $postInfo['bid'],
             'logid' => $keyid,
             'uid' => $uid,
             'content' => $content,

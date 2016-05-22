@@ -9,11 +9,13 @@
  ?>
 
 <div class="module">
-<?php $form=$this->beginWidget('CActiveForm', array(
-	'id'=>'authors-form',
-	'enableAjaxValidation'=>false,
-)); ?>
-<?php echo $form->errorSummary($model); ?>
+    <div class="module-header">完善基本资料</div>
+    <div class="module-body">
+    <?php $form=$this->beginWidget('CActiveForm', array(
+            'id'=>'authors-form',
+            'enableAjaxValidation'=>false,
+    )); ?>
+    <?php echo $form->errorSummary($model); ?>
     <div class="form-group">
         <?php echo $form->labelEx($model,'authorName'); ?>
         <?php echo $form->textField($model,'authorName',array('size'=>16,'maxlength'=>16,'class'=>'form-control')); ?>
@@ -37,5 +39,6 @@
     <div class="form-group">
         <?php echo CHtml::submitButton($model->isNewRecord ? '新增' : '更新',array('class'=>'btn btn-primary')); ?>
     </div>
-<?php $this->endWidget(); ?>
+    <?php $this->endWidget(); ?>
+    </div>
 </div><!-- form -->

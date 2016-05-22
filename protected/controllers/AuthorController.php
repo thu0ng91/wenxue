@@ -21,6 +21,16 @@ class AuthorController extends Q {
             $this->favorited=  Favorites::checkFavored($id, 'author');
         }
     }
+    
+    private function checkAuthorLogin(){
+        if(!$this->adminLogin){
+            if($this->uid && $this->userInfo['authorId']>0){
+                $this->redirect(array('user/authorAuth'));
+            }else{
+                throw new CHttpException(404, '你无权该操作，请核实');
+            }
+        }
+    }
 
     public function actionView() {
         $posts = Books::model()->findAll(array(
@@ -49,6 +59,7 @@ class AuthorController extends Q {
     }
     
     public function actionCreateBook($bid = ''){
+        $this->checkAuthorLogin();
         if ($bid) {
             $model = Books::getOne($bid);
             if(!$model || $model['status']!=Posts::STATUS_PASSED){
@@ -78,6 +89,7 @@ class AuthorController extends Q {
     }
     
     public function actionBook($bid){
+        $this->checkAuthorLogin();
         $bid=  zmf::val('bid',2);
         $info=  Books::getOne($bid);
         if(!$info){
@@ -93,6 +105,7 @@ class AuthorController extends Q {
     }
     
     public function actionAddChapter($cid=''){
+        $this->checkAuthorLogin();
         $this->layout = 'common';
         if ($cid) {
             $model = Chapters::getOne($cid);

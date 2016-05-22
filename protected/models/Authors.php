@@ -150,5 +150,17 @@ class Authors extends CActiveRecord {
         }
         return false;
     }
+    
+    public static function otherTops($aid,$notInclude=0,$limit=10){
+        $items=  Books::model()->findAll(array(
+            'condition'=>'aid=:aid AND bookStatus='.Books::STATUS_PUBLISHED,
+            'order'=>'hits DESC',
+            'limit'=>$limit,
+            'params'=>array(
+                ':aid'=>$aid
+            )
+        ));
+        return $items;
+    }
 
 }

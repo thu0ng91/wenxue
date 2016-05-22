@@ -33,20 +33,14 @@ function rebind() {
         var dom = $(this);
         favorite(dom);
     });
-    $("a[action=select-tag]").unbind('click').click(function () {
+    $(".tag-item").on('click',function () {
         var dom = $(this);
-        var tagid = dom.attr('action-data');
-        if (!tagid) {
-            return false;
-        }
-        var _pdom = dom.parent('.tag-item');
-        if (_pdom.hasClass('active')) {
-            _pdom.removeClass('active');
-            dom.children('input').remove();
-        } else {
-            _pdom.addClass('active');
-            var _html = '<input type="hidden" name="tags[]" value="' + tagid + '"/>';
-            dom.append(_html);
+        if(dom.hasClass('active')){
+            dom.removeClass('active');
+            dom.children('input').removeAttr('checked');
+        }else{
+            dom.addClass('active');
+            dom.children('input').attr('checked','checked');
         }
     });
     $(".comment-textarea").unbind('click').click(function () {

@@ -32,13 +32,40 @@ class ShowcasesController extends Admin {
         // Uncomment the following line if AJAX validation is needed
         // $this->performAjaxValidation($model);
         if (isset($_POST['Showcases'])) {
-            $model->attributes = $_POST['Showcases'];
-            if ($model->save()) {
-                if (!$id) {
+            if (!$id) {
+                $cols = array_filter(array_unique($_POST['Showcases']['columnid']));
+            } else {
+                $cols = $_POST['Showcases']['columnid'];
+            }
+            if ($id) {//更新时
+                $_POST['Showcases']['columnid'] = $cols;
+                $model->attributes = $_POST['Showcases'];
+                if ($model->save()) {
+                    $this->redirect(array('index'));
+                }
+            } elseif (!$id && empty($cols)) {//新增且没选择所属版块时
+                $_POST['Showcases']['columnid'] = 0;
+                $model->attributes = $_POST['Showcases'];
+                if ($model->save()) {
                     Yii::app()->user->setFlash('addShowcasesSuccess', "保存成功！您可以继续添加。");
                     $this->redirect(array('create'));
-                } else {
-                    $this->redirect(array('index'));
+                }
+            } else {//新增且有版块
+                $hasError = false;
+                foreach ($cols as $colid) {
+                    $_POST['Showcases']['columnid'] = $colid;
+                    $model->attributes = $_POST['Showcases'];
+                    if (!$model->save()) {
+                        $hasError = true;
+                        break;
+                    }else{
+                        unset($model->id);
+                        $model->isNewRecord=true;
+                    }
+                }
+                if (!$hasError) {
+                    Yii::app()->user->setFlash('addShowcasesSuccess', "保存成功！您可以继续添加。");
+                    $this->redirect(array('create'));
                 }
             }
         }
@@ -66,7 +93,7 @@ class ShowcasesController extends Admin {
 
         // if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
         if (!isset($_GET['ajax']))
-            $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+            $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('index'));
     }
 
     /**

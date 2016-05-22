@@ -43,7 +43,11 @@
                     <div class="media-body">
                         <p class="no-wrap title"><?php echo CHtml::link($_post['title'],array('posts/view','id'=>$_post['id']));?></p>
                         <p class="color-grey tips">
-                            <span>大飞</span>                            
+                            <?php if($_post['classify']==Posts::CLASSIFY_AUTHOR){?>
+                            <span><?php echo CHtml::link($_post['username'],array('author/view','id'=>$_post['aid']));?></span>  
+                            <?php }else{?>
+                            <span><?php echo CHtml::link($_post['username'],array('user/view','id'=>$_post['uid']));?></span>  
+                            <?php }?>
                             <span><?php echo zmf::formatTime($_post['cTime']);?></span>                            
                             <span><?php echo $_post['comments'];?>评论</span>                            
                             <span><?php echo $_post['favors'];?>赞</span>                            

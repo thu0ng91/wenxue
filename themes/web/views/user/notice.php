@@ -1,4 +1,5 @@
 <div class="module">
+    <div class="module-header">消息通知</div>
     <div class="module-body">
     <?php if(!empty($posts)){?>
         <?php foreach ($posts as $row): ?> 

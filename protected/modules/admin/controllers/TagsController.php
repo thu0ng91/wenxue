@@ -16,18 +16,21 @@ class TagsController extends Admin {
     }
 
     public function actionIndex() {
+        $select = "id,title,classify";
+        $model = new Tags();
         $criteria = new CDbCriteria();
-        $criteria->addCondition('status=' . Posts::STATUS_PASSED);
-        $criteria->order = 'cTime DESC';
-        $count = Tags::model()->count($criteria);
+        $criteria->select = $select;
+        $count = $model->count($criteria);
         $pager = new CPagination($count);
         $pager->pageSize = 30;
         $pager->applyLimit($criteria);
-        $posts = Tags::model()->findAll($criteria);
-
-        $this->render('index', array(
+        $posts = $model->findAll($criteria);
+        $this->render('/posts/content', array(
+            'model' => $model,
             'pages' => $pager,
             'posts' => $posts,
+            'from' => 'tags',
+            'selectArr' => explode(',', $select),
         ));
     }
 
@@ -40,7 +43,6 @@ class TagsController extends Admin {
             }
         } else {
             $model = new Tags;
-            $model->classify = 'posts';
         }
         if (isset($_POST['Tags'])) {
             $model->attributes = $_POST['Tags'];

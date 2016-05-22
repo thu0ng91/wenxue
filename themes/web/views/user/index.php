@@ -10,5 +10,8 @@
  */
 ?>
 <div class="module">
-    
+    <div class="module-header">他的动态</div>
+    <div class="module-body">
+        
+    </div>
 </div>

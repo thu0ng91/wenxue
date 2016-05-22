@@ -21,7 +21,8 @@
     </div>
     <div class="form-group">
         <?php echo $form->labelEx($model,'columnid'); ?>
-        <?php echo $form->dropDownlist($model,'columnid',  Column::allCols(),array('class'=>'form-control','empty'=>'--请选择--')); ?>
+        <?php echo $form->dropDownlist($model,'columnid',  Column::allCols(),array('class'=>'form-control','empty'=>'--请选择--','multiple'=>$model->id>0 ? false : true)); ?>
+        <p class="help-block">按住ctrl可多选</p>
         <?php echo $form->error($model,'columnid'); ?>
     </div>
     <div class="form-group">

@@ -113,9 +113,19 @@ class UserController extends Q {
     }
     
     public function actionComment(){
+        //获取点评列表
+        $sql="SELECT t.id,t.uid,t.bid,b.title AS bookTitle,t.logid,c.title AS chapterTitle,t.content,t.score,t.favors,t.cTime FROM ({{tips}} AS t RIGHT JOIN {{chapters}} AS c ON t.logid=c.id) LEFT JOIN {{books}} AS b ON t.bid=b.id WHERE t.uid=:uid AND t.classify='chapter' AND t.logid=c.id ORDER BY t.cTime ASC";
+        $tips=  Posts::getByPage(array(
+            'sql'=>$sql,
+            'page'=>  $this->page,
+            'pageSize'=>  $this->pageSize,
+            'bindValues'=>array(
+                ':uid'=>$this->toUserInfo['id']
+            )
+        ));
         $this->selectNav = 'comment';
         $this->render('comment', array(
-            'model' => $model,
+            'tips' => $tips,
         ));
     }
     

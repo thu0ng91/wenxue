@@ -10,11 +10,14 @@ class Q extends Controller {
     public $uid;
     public $userInfo;
     public $selectNav = '';
-    public $currentModule='mobile';
+    public $currentModule = 'mobile';
     public $platform;
     public $isMobile = false;
     public $keywords;
     public $pageDescription;
+    public $page = 1;
+    public $pageSize = 30;
+    public $isAjax = false;
 
     function init() {
         parent::init();
@@ -29,19 +32,24 @@ class Q extends Controller {
         if ($uid) {
             $this->uid = $uid;
             $this->userInfo = Users::getOne($uid);
-            if($this->userInfo['status']!=Posts::STATUS_PASSED){
+            if ($this->userInfo['status'] != Posts::STATUS_PASSED) {
                 Yii::app()->user->logout();
                 unset($this->uid);
                 unset($this->userInfo);
             }
         }
+        if (Yii::app()->request->isAjaxRequest && Yii::app()->request->isPostRequest) {
+            $this->isAjax = true;
+        }
+        $page = zmf::val('page', 2);
+        $this->page = $page >= 1 ? $page : 1;
         self::_referer();
     }
 
     function _referer() {
         $currentUrl = Yii::app()->request->url;
         $arr = array(
-             'login',
+            'login',
             '/site/',
             '/error/',
             '/attachments/',
@@ -72,10 +80,10 @@ class Q extends Controller {
             $this->referer = $referer;
         }
     }
-    
-    public function onlyOnPc(){
-        if($this->isMobile){
-            $this->layout='common';
+
+    public function onlyOnPc() {
+        if ($this->isMobile) {
+            $this->layout = 'common';
             $this->render('//common/onlyOnPc');
             Yii::app()->end();
         }

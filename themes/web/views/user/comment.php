@@ -10,5 +10,14 @@
  */
 ?>
 <div class="module">
-    
+    <div class="module-header">他的点评</div>
+    <div class="module-body" id="more-content">        
+        <?php if(!empty($tips)){?>
+        <?php foreach ($tips as $tip){?> 
+        <?php $this->renderPartial('/book/_tip',array('data'=>$tip));?>
+        <?php }?>
+        <?php }else{?>
+        <p class="help-block">还没点评过</p>
+        <?php }?>        
+    </div>
 </div>
