@@ -16,6 +16,7 @@
  * @property integer $status
  */
 class Users extends CActiveRecord {
+    public $newPassword;
 
     /**
      * @return string the associated database table name
@@ -39,7 +40,7 @@ class Users extends CActiveRecord {
             array('truename,ip', 'length', 'max' => 16),
             array('cTime,authorId,favors,favord,favorAuthors', 'length', 'max' => 10),
             array('password', 'length', 'max' => 32),
-            array('contact, avatar', 'length', 'max' => 255),
+            array('contact,avatar,skinUrl', 'length', 'max' => 255),
             array('content', 'safe'),
         );
     }
@@ -62,8 +63,10 @@ class Users extends CActiveRecord {
             'id' => 'ID',
             'truename' => '用户昵称',
             'password' => '账号密码',
+            'newPassword' => '新密码',
             'contact' => '联系方式',
             'avatar' => '用户头像',
+            'skinUrl' => '皮肤地址',
             'content' => '个人简介',
             'hits' => '点击次数',
             'sex' => '性别',
@@ -99,7 +102,7 @@ class Users extends CActiveRecord {
 
     public static function userSex($return) {
         $arr = array(
-            '0' => '未知',
+            '0' => '未公开',
             '1' => '男',
             '2' => '女',
         );

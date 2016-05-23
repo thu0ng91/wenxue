@@ -148,15 +148,15 @@ class AjaxController extends Q {
         $model->attributes=$data;   
         if ($model->save()) {
             $attachid = $model->id;
-            $returnimg = zmf::getThumbnailUrl($fullDir, '280', $type);
+            $returnimg = zmf::getThumbnailUrl($fullDir, '120', $type);
             $_attr = array(
                 'id' => $attachid,
-                'imgurl' => $returnimg,
+                'imgUrl' => $returnimg,
                 'desc' => ''
             );
             $html = '';
             if ($type == 'posts') {
-                //$html = $this->renderPartial('/posts/_addImg', array('data' => $_attr), true);
+                $html = $this->renderPartial('/posts/_addImg', array('data' => $_attr), true);
             }
             $outPutData = array(
                 'status' => 1,

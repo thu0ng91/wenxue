@@ -16,6 +16,44 @@ $cols=  Column::allCols();
         padding-bottom: 0;
         padding-left: 20px;
     }
+    .user-module img{
+        width: 120px;
+        height: 120px;
+    }
+    .user-module .uinfo-label{
+        font-weight: 700;
+        min-width: 30px;
+        margin-right: 5px;
+        display: inline-block
+    }
+    .user-module .uinfo-txt{
+        color: #666
+    }
+    .user-module .media-left{
+        position: relative;
+        padding: 0;
+    }
+    .user-module .media-body{
+        padding-left: 10px;
+    }
+    .user-module .fixed-btn{
+        width: 100%;
+        height: 20px;
+        background: rgba(0,0,0,.6);
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        text-align: center;
+        color: #fff;
+        line-height: 20px;
+        display: none
+    }
+    .user-module .fixed-btn a{
+        color: #fff
+    }
+    .user-module .media-left:hover .fixed-btn{
+        display: block
+    }
     .user-achiever{
         padding: 10px 20px;
         border-top: 1px solid #e6e6e6;
@@ -82,6 +120,8 @@ $cols=  Column::allCols();
     .user-following .row{
         text-align:center
     }
+    
+    
 </style>
 <div class="navbar navbar-default" role="navigation">
     <div class="container">
@@ -106,15 +146,14 @@ $cols=  Column::allCols();
             <div class="module-body">
                 <div class="media">
                     <div class="media-left">
-                        <img class="media-object" src="<?php echo $this->toUserInfo['avatar'];?>" alt="<?php echo $this->toUserInfo['truename'];?>">                        
+                        <img class="media-object" src="<?php echo $this->toUserInfo['avatar'];?>" alt="<?php echo $this->toUserInfo['truename'];?>">  
+                        <div class="fixed-btn"><?php echo CHtml::link('更改头像',array('user/setting','#'=>'avatar'));?></div>
                     </div>
                     <div class="media-body">
-                        <p>所在地 </p>
-                        <p>姓别 <i class="fa fa-mars"></i> </p>
-                        <p>简介</p>
+                        <p><span class="uinfo-label">姓别</span><span class="uinfo-txt"><?php echo Users::userSex($this->toUserInfo['sex']);?></span></p>
+                        <p><span class="uinfo-label">简介</span><span class="uinfo-txt"><?php echo CHtml::encode(nl2br($this->toUserInfo['content']));?></span></p>
                     </div>
                 </div>
-
             </div>
             <div class="user-achiever">
                 <span class="color-grey">获得 <i class="fa fa-thumbs-up"></i> 0赞同</span>

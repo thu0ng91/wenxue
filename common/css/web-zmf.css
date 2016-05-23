@@ -249,6 +249,61 @@ button, input, select, textarea,.form-control,.btn{
 .toggle-area{
     display: none
 }
+/*用户页面*/
+.gallery-body .thumbnail,.fileSuccess .thumbnail{
+    width: 95px;
+    display: inline-block;
+    border: none;
+    padding: 0;
+    margin-bottom: 0;
+    margin-right: 3px;
+    position: relative
+}
+.gallery-body .thumbnail .fixed-mask{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    background: rgba(0,0,0,.6);
+    padding: 10px 5px 0;
+    text-align: center;
+    z-index: 998;
+    display: none;
+}
+.gallery-body .thumbnail .fixed-badge{
+    width: 16px;
+    height: 16px;
+    text-align: center;
+    display: none;
+    position: absolute;
+    right: -6px;
+    top: -6px;
+    background: #BF1031;
+    border-radius: 200px;
+    color: #fff;
+    z-index: 999;
+    line-height: 16px;        
+}
+.gallery-body .thumbnail .fixed-badge a{
+    color: #fff
+}
+.gallery-body .thumbnail .fixed-mask a{
+    margin-bottom: 5px
+}
+.gallery-body .thumbnail:hover,.fileSuccess .thumbnail:hover{
+    cursor: pointer;
+}
+.gallery-body .thumbnail:hover .fixed-mask{
+    display: block
+}
+.gallery-body .thumbnail:hover .fixed-badge{
+    display: block
+}
+.gallery-body .thumbnail img,.fileSuccess .thumbnail img{
+    width: 95px;
+    height: 71px;
+}
 /*自定义加载*/
 .simple-loading-box{
     position: fixed;

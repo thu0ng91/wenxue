@@ -1,5 +1,5 @@
 <?php 
-if($this->adminLogin){
+if($adminLogin){
     $urlArr=array('author/book','bid'=>$data['id']);    
 }else{
     $urlArr=array('book/view','id'=>$data['id']);
@@ -8,7 +8,7 @@ $url=  Yii::app()->createUrl('book/view',array('id'=>$data['id']));
 ?>
 <div class="media">
     <div class="media-left">
-        <a href="#">
+        <a href="<?php echo Yii::app()->createUrl('book/view',array('id'=>$data['id']));?>" title="<?php echo $data['title'];?>">
             <img class="media-object" src="<?php echo $data['faceImg'];?>" alt="<?php echo $data['title'];?>">
         </a>
     </div>
@@ -21,7 +21,7 @@ $url=  Yii::app()->createUrl('book/view',array('id'=>$data['id']));
             <span>总字<?php echo $data['words'];?></span>
             <span><?php echo zmf::time($data['cTime'],'Y-m-d');?></span>
             <span><?php echo CHtml::link('分享','javascript:;',array('action'=>'share','action-qrcode'=>$qrcode,'action-url'=>$url,'action-img'=>$qrcode,'action-title'=>$data['title']));?></span>
-            <?php if($this->adminLogin){?>
+            <?php if($adminLogin){?>
             <span class="right-actions">                
                 <?php echo CHtml::link('预览',array('book/view','id'=>$data['id']));?>
                 <?php echo CHtml::link('编辑',array('author/updateBook','bid'=>$data['id']));?>

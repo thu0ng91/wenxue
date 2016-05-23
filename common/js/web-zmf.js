@@ -144,6 +144,25 @@ function rebind() {
             feedback();
         });
     });    
+    $('.openGallery').on('click',function(){
+        var dom=$(this);
+        var holder=dom.attr('data-holder');
+        var field=dom.attr('data-field');
+        dialog({msg: '<div id="gallery-select-modal" class="gallery-body"></div>','title':'选择图片'});
+        $.post(zmf.userGalleryUrl, {from:'selectImg',YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {                
+            result = eval('(' + result + ')');
+            if (result['status'] == '1') {
+                $("#gallery-select-modal").append(result['msg']['html']);   
+                $('.select-gallery-img').on('click',function(){
+                    var _dom=$(this);
+                    selectThisImg(_dom,holder,field);
+                });
+                rebind();
+            } else {
+                alert(result['msg']);
+            }
+        });
+    });
 }
 /**
  * 获取内容
@@ -216,7 +235,19 @@ function getContents(dom) {
     });
 
 }
-
+function selectThisImg(dom,holder,field){
+    var _origin=dom.attr('data-original');
+    if(!_origin){
+        alert('获取图片地址失败');
+        return false;
+    }
+    if(holder){
+        $('#'+holder).attr('src',_origin);
+    }
+    if(field){
+        $('#'+field).val(_origin);
+    }
+}
 function delContent(dom) {
     var acdata = dom.attr("action-data");
     var t = dom.attr("action-type");

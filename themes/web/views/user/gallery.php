@@ -14,13 +14,7 @@
         我的相册
         <?php echo CHtml::link('<i class="fa fa-plus"></i> 上传图片',array('user/upload'),array('class'=>'pull-right'));?>
     </div>
-    <div class="module-body">
-        <div class="row">
-        <?php foreach ($posts as $post){?>
-            <div class="col-xs-2 col-sm-2">
-                <img src="<?php echo $post['imgUrl'];?>" class="img-responsive"/>
-            </div>
-        <?php }?>
-        </div>
+    <div class="module-body gallery-body">        
+        <?php foreach ($posts as $post){$this->renderPartial('/posts/_addImg',array('data'=>$post));}?>
     </div>
 </div>

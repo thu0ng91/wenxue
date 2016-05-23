@@ -22,7 +22,7 @@ if($accessKey && $secretKey && $bucket){
 ?>
 <style>
     #noModelUpload{
-        margin: 0 auto
+        margin: 0 auto 15px;
     }
 </style>
 <div class="module">
@@ -31,8 +31,8 @@ if($accessKey && $secretKey && $bucket){
     </div>
     <div class="module-body">
         <div id="noModelUpload"></div>
-        <div id="singleFileQueue" style="clear:both;display: "></div>
         <div id="fileSuccess" class="fileSuccess"></div>
+        <div id="singleFileQueue" style="clear:both;display: "></div>        
     </div>
 </div>
 <script>
