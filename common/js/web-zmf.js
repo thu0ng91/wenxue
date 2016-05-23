@@ -488,7 +488,7 @@ function singleUploadify(params) {
         fileTypeDesc: 'Image Files',
         uploader: params.uploadUrl,
         buttonText: params.buttonText ? params.buttonText : (params.buttonText === null ? '' : '添加图片'),
-        buttonClass: 'btn btn-default',
+        buttonClass: params.buttonClass ? params.buttonClass : 'btn btn-default',
         debug: false,
         formData: {'PHPSESSID': zmf.currentSessionId, 'YII_CSRF_TOKEN': zmf.csrfToken},
         onUploadStart: function (file) {
@@ -510,9 +510,10 @@ function singleUploadify(params) {
                         YII_CSRF_TOKEN: zmf.csrfToken,
                         filePath: data.key,
                         fileSize: file.size,
-                        type: params.type
+                        type: params.type,
+                        action: 'saveUploadImg'
                     };
-                    $.post(zmf.saveUploadImgUrl, passData, function (reJson) {
+                    $.post(zmf.ajaxUrl,passData, function (reJson) {
                         reJson = $.parseJSON(reJson);
                         if (reJson.status === 1) {
                             $("#fileSuccess").append(reJson.html);

@@ -157,6 +157,7 @@ $cols=  Column::allCols();
                             <li<?php echo $this->selectNav == 'favorite' ? ' class="active"' : ''; ?>><?php echo CHtml::link('收藏', array('user/favorite','id'=>$this->toUserInfo['id'])); ?></li>
                             <?php if($this->toUserInfo['id']==$this->uid){?>
                             <li<?php echo $this->selectNav == 'notice' ? ' class="active"' : ''; ?>><?php echo CHtml::link('消息', array('user/notice')); ?></li>
+                            <li<?php echo $this->selectNav == 'gallery' ? ' class="active"' : ''; ?>><?php echo CHtml::link('相册', array('user/gallery')); ?></li>
                             <li<?php echo $this->selectNav == 'setting' ? ' class="active"' : ''; ?>><?php echo CHtml::link('设置', array('user/setting')); ?></li>
                             <?php }?>
                         </ul>

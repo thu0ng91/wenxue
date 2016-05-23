@@ -136,6 +136,26 @@ class UserController extends Q {
         ));
     }
     
+    public function actionGallery(){
+        $sql="SELECT id,filePath,classify,remote FROM {{attachments}} WHERE uid='{$this->uid}' AND status=".Posts::STATUS_PASSED." ORDER BY cTime DESC";
+        Posts::getAll(array('sql'=>$sql), $pages, $posts);
+        foreach ($posts as $k=>$val){
+            $posts[$k]['imgUrl']=  Attachments::getUrl($val, 170);
+        }
+        $this->selectNav = 'gallery';
+        $this->render('gallery', array(
+            'posts' => $posts,
+            'pages' => $pages,
+        ));
+    }
+    
+    public function actionUpload(){
+        $this->selectNav = 'gallery';
+        $this->render('upload', array(
+            'model' => $model,
+        ));
+    }
+    
     public function actionSetting(){
         $this->selectNav = 'setting';
         $this->render('setting', array(

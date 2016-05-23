@@ -17,7 +17,7 @@ class AjaxController extends Q {
 
     public function actionDo() {
         $action = zmf::val('action', 1);
-        if (!in_array($action, array('addTip'))) {
+        if (!in_array($action, array('addTip','saveUploadImg'))) {
             $this->jsonOutPut(0, Yii::t('default', 'forbiddenaction'));
         }
         $this->$action();
@@ -104,6 +104,70 @@ class AjaxController extends Q {
             }
         } else {
             $this->jsonOutPut(0, '新增评论失败');
+        }
+    }
+    
+    public function saveUploadImg() {
+        $this->checkLogin();
+        $type = zmf::val('type', 1);
+        if (!isset($type) OR ! in_array($type, array('posts'))) {
+            $this->jsonOutPut(0, '请设置上传所属类型' . $type);
+        }
+        $filePath = zmf::val('filePath', 1);
+        $fileSize = zmf::val('fileSize', 2);
+        $pathArr = pathinfo($filePath);
+        if (!$filePath || !$fileSize || !$pathArr['basename']) {
+            $this->jsonOutPut(0, '保存图片失败');
+        }
+        $fullDir = zmf::attachBase('site', $type) . $filePath;
+        $imgInfo = file_get_contents($fullDir . '?imageInfo');
+        $imgInfoArr = CJSON::decode($imgInfo, 'true');
+        if (!$imgInfoArr) {
+            $this->jsonOutPut(0, '获取图片信息失败');
+        }
+        $width=$imgInfoArr['width'];
+        $height=$imgInfoArr['height'];
+        if(in_array($imgInfoArr['orientation'], array('Right-top','Left-bottom'))){
+            $width=$imgInfoArr['height'];
+            $height=$imgInfoArr['width'];
+        }
+        $data = array();
+        $data['uid'] = zmf::uid();
+        $data['logid'] = 0;
+        $data['filePath'] = $pathArr['basename']; //文件名
+        $data['fileDesc'] = '';
+        $data['classify'] = $type;
+        $data['covered'] = '0';
+        $data['cTime'] = zmf::now();
+        $data['status'] = Posts::STATUS_PASSED;
+        $data['width'] = $width;
+        $data['height'] = $height;
+        $data['size'] = $fileSize;
+        $data['remote'] = $fullDir;
+        $model=new Attachments;
+        $model->attributes=$data;   
+        if ($model->save()) {
+            $attachid = $model->id;
+            $returnimg = zmf::getThumbnailUrl($fullDir, '280', $type);
+            $_attr = array(
+                'id' => $attachid,
+                'imgurl' => $returnimg,
+                'desc' => ''
+            );
+            $html = '';
+            if ($type == 'posts') {
+                //$html = $this->renderPartial('/posts/_addImg', array('data' => $_attr), true);
+            }
+            $outPutData = array(
+                'status' => 1,
+                'attachid' => $attachid,
+                'imgsrc' => $returnimg,
+                'html' => $html,
+            );
+            $json = CJSON::encode($outPutData);
+            echo $json;
+        } else {
+            $this->jsonOutPut(0, '写入数据库错误');
         }
     }
 
@@ -408,79 +472,6 @@ class AjaxController extends Q {
         $type = zmf::val('type', 1);
         $ckinfo = Posts::favorite($data, $type, 'web');
         $this->jsonOutPut($ckinfo['state'], $ckinfo['msg']);
-    }
-
-    public function actionOrderChapters() {
-        $zid = zmf::val('zid', 2);
-        $ids = zmf::val('ids', 1);
-        if (!$ids || !$zid) {
-            $this->jsonOutPut(0, '数据不全');
-        }
-        $arr = array_filter(explode('#', $ids));
-        if (empty($arr)) {
-            $this->jsonOutPut(0, '数据不全');
-        }
-        $s = $e = 0;
-        foreach ($arr as $k => $v) {
-            $_order = ($k + 1);
-            $data = array(
-                'order' => $_order
-            );
-            $_info = Posts::model()->updateByPk($v, $data);
-            if ($_info) {
-                $s+=1;
-            } else {
-                $e+=1;
-            }
-        }
-        if ($s > 0) {
-            $this->jsonOutPut(1, '已更新');
-        }
-        $this->jsonOutPut(0, '可能未做修改');
-    }
-
-    public function actionParseVideo() {
-        $this->checkLogin();
-        $url = zmf::val('url', 1);
-        $desc = zmf::val('desc', 1);
-        if (!$url) {
-            $this->jsonOutPut(0, '请输入地址');
-        }
-        if (strpos($url, 'http://') === false && strpos($url, 'https://') === false) {
-            $url = 'http://' . $url;
-        }
-        $validator = new CUrlValidator;
-        if (!$validator->validateValue($url)) {
-            $this->jsonOutPut(0, '请输入输入一个有效的链接地址');
-        } elseif (strpos($url, 'qq.com') !== false) {
-            $this->jsonOutPut(0, '暂不支持腾讯视频');
-        } elseif (strpos($url, 'youku.com') === false && strpos($url, 'tudou.com') === false && strpos($url, 'qq.com') === false) {
-            $this->jsonOutPut(0, '目前仅支持优酷、土豆视频');
-        }
-
-        $return = zmfVideo::parse_vedio($url);
-        if ($return['faceimg'] != '') {
-            $data = array(
-                'logid' => 0,
-                'classify' => 'posts',
-                'title' => $return['title'],
-                'url' => $url,
-                'swfurl' => $return['swfurl'],
-                'h5url' => $return['h5url'],
-                'content' => $desc,
-                'faceimg' => $return['faceimg'],
-                'status' => Posts::STATUS_NOTPASSED,
-                'company' => $return['company'],
-                'videoid' => $return['videoid'],
-            );
-            $model = new Videos;
-            $model->attributes = $data;
-            if ($model->save()) {
-                $html = $this->renderPartial('//common/_addVideo', array('data' => $model), true);
-                $this->jsonOutPut(1, $html);
-            }
-        }
-        $this->jsonOutPut(0, '解析视频地址错误');
     }
 
 }
