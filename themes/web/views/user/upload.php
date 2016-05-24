@@ -31,8 +31,8 @@ if($accessKey && $secretKey && $bucket){
     </div>
     <div class="module-body">
         <div id="noModelUpload"></div>
-        <div id="fileSuccess" class="fileSuccess"></div>
-        <div id="singleFileQueue" style="clear:both;display: "></div>        
+        <div id="fileSuccess" class="gallery-body"></div>
+        <div id="singleFileQueue"></div>        
     </div>
 </div>
 <script>

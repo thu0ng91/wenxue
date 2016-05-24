@@ -19,6 +19,7 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl.'/umeditor/lang
     var height=<?php echo isset($editorHeight) ? $editorHeight : 200;?>;
     var textarea='<?php echo CHtml::activeId($model,$attri);?>';
     var editorId='<?php echo CHtml::activeId($model, $attri); ?>';
+    var internal;
     $(function(){
         myeditor=UM.getEditor(editorId, {
            //UMEDITOR_HOME_URL : URL, 
@@ -49,9 +50,15 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl.'/umeditor/lang
                 });
                 $('#submit-btn').removeAttr('disabled');
                 $('#preview-btn').removeAttr('disabled');
+                //开始重复
+                if(!internal){
+                    internal=window.setInterval("saveDrafts()",1000);
+                }
             } else {
                 $('#submit-btn').attr('disabled', 'disabled');
                 $('#preview-btn').attr('disabled', 'disabled');
+                window.clearInterval(internal); 
+                internal=false;
             }
         });
         $('#submit-btn').click(function () {
@@ -81,5 +88,9 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl.'/umeditor/lang
         }else{
             $('#add-chapter-form').submit();
         }
+    }
+    function saveDrafts(){
+        var inputstr = myeditor.getContentTxt();
+        
     }
 </script>

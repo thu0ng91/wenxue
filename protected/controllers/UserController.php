@@ -227,11 +227,9 @@ class UserController extends Q {
                     );
                 }
             } elseif ($action == 'skin') {
-                $avatar = zmf::filterInput($_POST['Users']['avatar'], 1);
-                $skinUrl = zmf::filterInput($_POST['Users']['skinUrl'], 1);
+                $avatar = zmf::filterInput($_POST['Users']['avatar'], 1);                
                 $attr = array(
                     'avatar' => $avatar,
-                    'skinUrl' => $skinUrl,
                 );
             }
             if (!$field && !$msg) {

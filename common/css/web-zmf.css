@@ -304,6 +304,9 @@ button, input, select, textarea,.form-control,.btn{
     width: 95px;
     height: 71px;
 }
+.change-avatar-holder .media img{
+    width: 120px;
+}
 /*自定义加载*/
 .simple-loading-box{
     position: fixed;

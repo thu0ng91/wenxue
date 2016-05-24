@@ -23,6 +23,8 @@
  * @property integer $status
  */
 class Authors extends CActiveRecord {
+    
+    public $newPassword;
 
     /**
      * @return string the associated database table name
@@ -42,9 +44,10 @@ class Authors extends CActiveRecord {
             array('hashCode', 'default', 'setOnEmpty' => true, 'value' => zmf::randMykeys(6)),
             array('status', 'default', 'setOnEmpty' => true, 'value' => Posts::STATUS_PASSED),
             array('uid, authorName, avatar, password', 'required'),
+            array('avatar, skinUrl', 'checkUrl'),
             array('uid, favors, posts, hits, score, cTime, status', 'numerical', 'integerOnly' => true),
             array('authorName', 'length', 'max' => 16),
-            array('avatar', 'length', 'max' => 255),
+            array('avatar,skinUrl', 'length', 'max' => 255),
             array('password', 'length', 'max' => 32),
             array('hashCode', 'length', 'max' => 6),
             array('content', 'safe'),
@@ -73,7 +76,9 @@ class Authors extends CActiveRecord {
             'uid' => '用户ID',
             'authorName' => '作者名',
             'avatar' => '用户头像',
+            'skinUrl' => '皮肤图片地址',
             'password' => '密码',
+            'newPassword' => '新密码',
             'hashCode' => '随机码',
             'content' => '作者简介',
             'favors' => '粉丝数',
@@ -129,6 +134,16 @@ class Authors extends CActiveRecord {
      */
     public static function model($className = __CLASS__) {
         return parent::model($className);
+    }
+    
+    public function checkUrl($attribute, $params) {
+        $url = $this->avatar;
+        $urlb = $this->skinUrl;
+        if (!Attachments::checkUrlDomain($url)) {
+            $this->addError('avatar', '请使用站内图片哦~');
+        }elseif(!Attachments::checkUrlDomain($urlb)){
+            $this->addError('skinUrl', '请使用站内图片哦~');
+        }
     }
 
     public static function getOne($id) {

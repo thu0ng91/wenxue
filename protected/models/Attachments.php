@@ -98,5 +98,24 @@ class Attachments extends CActiveRecord {
         //todo，图片分表，将图片表分为attachments0~9
         return Attachments::model()->findByPk($id);
     }
+    
+    /**
+     * 判断图片是否是站内图片
+     * @param type $url
+     * @return boolean
+     */
+    public static function checkUrlDomain($url){
+        $arr[]=  zmf::config('domain');
+        $arr[]=  zmf::config('imgVisitUrl');
+        $arr=  array_filter($arr);
+        $find=false;
+        foreach ($arr as $_url){
+            if(strpos($url, $_url)!==false){
+                $find=true;
+                break;
+            }
+        }
+        return $find;
+    }
 
 }

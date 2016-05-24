@@ -45,8 +45,9 @@ class Books extends CActiveRecord {
         return array(
             array('cTime,updateTime', 'default', 'setOnEmpty' => true, 'value' => zmf::now()),
             array('uid', 'default', 'setOnEmpty' => true, 'value' => zmf::uid()),
-            array('status', 'default', 'setOnEmpty' => true, 'value' => Posts::STATUS_PASSED),
+            array('status', 'default', 'setOnEmpty' => true, 'value' => Books::STATUS_NOTPUBLISHED),
             array('uid, aid,colid, title', 'required'),
+            array('faceImg', 'checkUrl'),
             array('vip, bookStatus, status,top', 'numerical', 'integerOnly' => true),
             array('uid, aid,colid,favorites, hits, chapters, comments, words,topTime,scorer,score1,score2,score3,score4,score5', 'length', 'max' => 10),
             array('title, faceImg, desc', 'length', 'max' => 255),
@@ -149,6 +150,13 @@ class Books extends CActiveRecord {
      */
     public static function model($className = __CLASS__) {
         return parent::model($className);
+    }
+    
+    public function checkUrl($attribute, $params) {
+        $url = $this->faceImg;
+        if (!Attachments::checkUrlDomain($url)) {
+            $this->addError('faceImg', '请使用站内图片哦~');
+        }
     }
 
     public static function getIndexTops() {

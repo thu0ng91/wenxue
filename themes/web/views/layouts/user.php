@@ -119,7 +119,7 @@ $cols=  Column::allCols();
     }
     .user-following .row{
         text-align:center
-    }
+    }    
     
     
 </style>

@@ -40,7 +40,7 @@ class Users extends CActiveRecord {
             array('truename,ip', 'length', 'max' => 16),
             array('cTime,authorId,favors,favord,favorAuthors', 'length', 'max' => 10),
             array('password', 'length', 'max' => 32),
-            array('contact,avatar,skinUrl', 'length', 'max' => 255),
+            array('contact,avatar', 'length', 'max' => 255),
             array('content', 'safe'),
         );
     }
@@ -66,7 +66,6 @@ class Users extends CActiveRecord {
             'newPassword' => '新密码',
             'contact' => '联系方式',
             'avatar' => '用户头像',
-            'skinUrl' => '皮肤地址',
             'content' => '个人简介',
             'hits' => '点击次数',
             'sex' => '性别',

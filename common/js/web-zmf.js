@@ -152,7 +152,7 @@ function rebind() {
         $.post(zmf.userGalleryUrl, {from:'selectImg',YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {                
             result = eval('(' + result + ')');
             if (result['status'] == '1') {
-                $("#gallery-select-modal").append(result['msg']['html']);   
+                $("#gallery-select-modal").html(result['msg']['html']);   
                 $('.select-gallery-img').on('click',function(){
                     var _dom=$(this);
                     selectThisImg(_dom,holder,field);
@@ -551,6 +551,7 @@ function singleUploadify(params) {
                             if (params.inputId) {
                                 $('#' + params.inputId).val(reJson.attachid);
                             }
+                            rebind();
                         } else {
                             alert(reJson.msg);
                             return false;

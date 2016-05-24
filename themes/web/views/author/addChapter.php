@@ -75,7 +75,9 @@
         display: none
     }
     .edui-container{
-        border: 1px solid #fff
+        border: 1px solid #fff !important;
+        background: transparent !important;
+        box-shadow: none !important
     }
 </style>
 <header class="edit-navbar">
@@ -134,3 +136,8 @@
     </div>
 </div><!-- form -->
 <div class="footer-bg"></div>
+<script>
+    $(document).ready(function(){
+        
+    })
+</script>

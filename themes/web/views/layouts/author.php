@@ -147,6 +147,14 @@ $cols=  Column::allCols();
     .create-book-form{
         padding-right:15px;
     }
+    .create-book-form .thumbnail{
+        border:none;
+        padding:0
+    }
+    .create-book-form .thumbnail img{
+        width:120px;
+        height:160px;
+    }
 </style>
 <div class="navbar navbar-default" role="navigation">
     <div class="container">
@@ -206,8 +214,8 @@ $cols=  Column::allCols();
                 <?php if($this->adminLogin){?>
                 <?php echo CHtml::link('<i class="fa fa-plus"></i> 新作品',array('author/createBook'),array('class'=>'item'.($this->selectNav == 'createBook' ? ' active' : '')));?>
                 <?php echo CHtml::link('<i class="fa fa-file"></i> 草稿箱',array('author/drafts'),array('class'=>'item'.($this->selectNav == 'drafts' ? ' active' : '')));?>
-                <?php echo CHtml::link('<i class="fa fa-edit"></i> 编辑资料',array('author/update','type'=>'info'),array('class'=>'item'.($this->selectNav == 'updateInfo' ? ' active' : '')));?>
-                <?php echo CHtml::link('<i class="fa fa-cog"></i> 设置皮肤',array('author/update','type'=>'skin'),array('class'=>'item'.($this->selectNav == 'updateSkin' ? ' active' : '')));?>
+                <?php echo CHtml::link('<i class="fa fa-edit"></i> 编辑资料',array('author/setting','type'=>'info'),array('class'=>'item'.($this->selectNav == 'updateinfo' ? ' active' : '')));?>
+                <?php echo CHtml::link('<i class="fa fa-cog"></i> 设置皮肤',array('author/setting','type'=>'skin'),array('class'=>'item'.($this->selectNav == 'updateskin' ? ' active' : '')));?>
                 <?php echo CHtml::link('<i class="fa fa-sign-out"></i> 退出管理',array('author/logout'),array('class'=>'item'));?>
                 <?php }elseif($this->uid && $this->userInfo['authorId']==$this->authorInfo['id']){?>
                 <?php echo CHtml::link('<i class="fa fa-cog"></i> 进入作者管理中心',array('user/authorAuth'),array('class'=>'item'));?>

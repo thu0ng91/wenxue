@@ -75,7 +75,7 @@ class AuthorController extends Q {
         if (isset($_POST['Books'])) {
             $model->attributes = $_POST['Books'];
             if ($model->save()) {
-                $this->redirect(array('index'));                
+                $this->redirect(array('author/book','bid'=>$model->id));                
             }
         }
         $this->selectNav='createBook';
@@ -146,6 +146,73 @@ class AuthorController extends Q {
         $this->pageTitle='写文章';
         $this->render('addChapter', array(
             'model' => $model,
+        ));
+    }
+    
+    public function actionSetting(){
+        $this->checkAuthorLogin();
+        $type=  zmf::val('type',1);
+        if(!in_array($type, array('info','skin','passwd'))){
+            throw new CHttpException(403, '不允许的分类');
+        }
+        $model=  Authors::model()->findByPk($this->userInfo['authorId']);
+        if (isset($_POST['Authors'])) {
+            if($type=='info'){
+                $content=  zmf::filterInput($_POST['Authors']['content'],1);
+                $attr=array(
+                    'content'=>$content
+                );
+            }elseif($type=='passwd'){
+                $old = zmf::filterInput($_POST['Authors']['password'], 1);
+                $new = zmf::filterInput($_POST['Authors']['newPassword'], 1);
+                if (!$old) {
+                    $field = 'password';
+                    $msg = '请输入原始密码';
+                } elseif (!$new) {
+                    $field = 'newPassword';
+                    $msg = '请输入新密码';
+                } elseif (strlen($new) < 6) {
+                    $field = 'newPassword';
+                    $msg = '新密码不能短于6位';
+                } elseif (md5($old.$model->hashCode) != $model->password) {
+                    $field = 'password';
+                    $msg = '原始密码有误';
+                } else {
+                    $attr = array(
+                        'password' => md5($new.$model->hashCode),
+                    );
+                }
+            }elseif($type=='skin'){
+                $avatar = zmf::filterInput($_POST['Authors']['avatar'], 1);
+                $skinUrl = zmf::filterInput($_POST['Authors']['skinUrl'], 1);
+                if(!Attachments::checkUrlDomain($avatar)){
+                    $field = 'avatar';
+                    $msg = '请使用站内图片';
+                }elseif(!Attachments::checkUrlDomain($skinUrl)){
+                    $field = 'skinUrl';
+                    $msg = '请使用站内图片';
+                }else{
+                    $attr = array(
+                        'avatar' => $avatar,
+                        'skinUrl' => $skinUrl,
+                    );
+                }
+            }
+            if (!$field && !$msg) {
+                $model->updateByPk($this->userInfo['authorId'], $attr);
+                Yii::app()->user->setFlash('updateAuthorInfoSuccess', "修改已更新");
+                $this->redirect(array('author/setting','type'=>$type));
+            } else {
+                $model->addError($field, $msg);
+            }
+        }
+        unset($model->password);
+        unset($model->hashCode);
+        $this->pageTitle='编辑资料';
+        $this->selectNav='update'.$type;
+        $this->render('setting', array(
+            'model' => $model,
+            'type' => $type,
         ));
     }
     
