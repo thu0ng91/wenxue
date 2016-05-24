@@ -151,7 +151,7 @@ $cols=  Column::allCols();
                     </div>
                     <div class="media-body">
                         <p><span class="uinfo-label">姓别</span><span class="uinfo-txt"><?php echo Users::userSex($this->toUserInfo['sex']);?></span></p>
-                        <p><span class="uinfo-label">简介</span><span class="uinfo-txt"><?php echo CHtml::encode(nl2br($this->toUserInfo['content']));?></span></p>
+                        <p><span class="uinfo-label">简介</span><span class="uinfo-txt"><?php echo $this->toUserInfo['content']!='' ? CHtml::encode(nl2br($this->toUserInfo['content'])) : '未设置';?></span></p>
                     </div>
                 </div>
             </div>

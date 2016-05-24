@@ -23,7 +23,7 @@
  * @property integer $status
  */
 class Authors extends CActiveRecord {
-    
+
     public $newPassword;
 
     /**
@@ -135,19 +135,21 @@ class Authors extends CActiveRecord {
     public static function model($className = __CLASS__) {
         return parent::model($className);
     }
-    
+
     public function checkUrl($attribute, $params) {
         $url = $this->avatar;
         $urlb = $this->skinUrl;
         if (!Attachments::checkUrlDomain($url)) {
             $this->addError('avatar', '请使用站内图片哦~');
-        }elseif(!Attachments::checkUrlDomain($urlb)){
+        } elseif (!Attachments::checkUrlDomain($urlb)) {
             $this->addError('skinUrl', '请使用站内图片哦~');
         }
     }
 
-    public static function getOne($id) {
-        return Authors::model()->findByPk($id);
+    public static function getOne($id, $imgSize = 'w120') {
+        $info=Authors::model()->findByPk($id);
+        $info['avatar']=  zmf::getThumbnailUrl($info['avatar'],$imgSize,'author');
+        return $info;
     }
 
     public static function findByUid($uid) {
@@ -160,19 +162,19 @@ class Authors extends CActiveRecord {
         }
         $code = 'authorAuth-' . $userInfo['id'];
         $val = Yii::app()->session[$code];
-        if ($authorId>0 && $authorId == $userInfo['authorId'] && $val) {
+        if ($authorId > 0 && $authorId == $userInfo['authorId'] && $val) {
             return true;
         }
         return false;
     }
-    
-    public static function otherTops($aid,$notInclude=0,$limit=10){
-        $items=  Books::model()->findAll(array(
-            'condition'=>'aid=:aid AND bookStatus='.Books::STATUS_PUBLISHED,
-            'order'=>'hits DESC',
-            'limit'=>$limit,
-            'params'=>array(
-                ':aid'=>$aid
+
+    public static function otherTops($aid, $notInclude = 0, $limit = 10) {
+        $items = Books::model()->findAll(array(
+            'condition' => 'aid=:aid AND bookStatus=' . Books::STATUS_PUBLISHED,
+            'order' => 'hits DESC',
+            'limit' => $limit,
+            'params' => array(
+                ':aid' => $aid
             )
         ));
         return $items;

@@ -15,7 +15,12 @@ class AuthorController extends Q {
         }elseif (!$id) {
             $id=  $this->userInfo['authorId'];
         }
-        $this->authorInfo = Authors::getOne($id);
+        $this->authorInfo = Authors::getOne($id,'d120');
+        if(!$this->authorInfo){
+            throw new CHttpException(404, '您所查看的作者不存在，请核实');
+        }else{
+            $this->authorInfo['skinUrl']=  zmf::getThumbnailUrl($this->authorInfo['skinUrl'], 'c960', 'author');
+        }
         if ($this->uid) {
             $this->adminLogin=  Authors::checkLogin($this->userInfo,$id);
             $this->favorited=  Favorites::checkFavored($id, 'author');
@@ -39,9 +44,13 @@ class AuthorController extends Q {
             'params' => array(
                 ':aid' => $this->authorInfo['id']
             )
-        ));        
+        ));
+        foreach ($posts as $k=>$val){
+            $posts[$k]['faceImg']=  zmf::getThumbnailUrl($val['faceImg'], 'w120', 'book');
+        }
+        Posts::updateCount($this->userInfo['authorId'], 'Authors', 1, 'hits');
         $this->selectNav='index';
-        Posts::updateCount($id, 'Authors', 1, 'hits');
+        $this->pageTitle=$this->authorInfo['authorName'].' - '.zmf::config('sitename');
         $data = array(
             'posts' => $posts
         );
@@ -125,6 +134,12 @@ class AuthorController extends Q {
                 $model->bid=$bid;
                 $model->uid=$bookInfo['uid'];
                 $model->aid=$bookInfo['aid'];
+            }else{
+                if($bookInfo['uid']!=$this->uid || $bookInfo['aid']!=$this->userInfo['authorId']){
+                    throw new CHttpException(403, '你无权本操作');
+                }else{
+                    throw new CHttpException(404, '你所操作的小说不存在');
+                }
             }
         }
         if (isset($_POST['Chapters'])) {
@@ -140,6 +155,7 @@ class AuthorController extends Q {
             ); 
             $model->attributes = $attr;
             if ($model->save()) {
+                Books::updateBookStatInfo($model->bid);
                 $this->redirect(array('author/book','bid'=>$model->bid));                
             }
         }

@@ -21,7 +21,7 @@ class BookController extends Q {
             if($info['bookStatus']!=Books::STATUS_PUBLISHED && $this->uid!=$info['uid']){
                 throw new CHttpException(404, '你所查看的小说不存在。');
             }
-        }
+        }        
         $authorInfo=  Authors::getOne($info['aid']);
         if(!$authorInfo || $authorInfo['status']!=Posts::STATUS_PASSED){
             throw new CHttpException(404, 'The requested page does not exist.');

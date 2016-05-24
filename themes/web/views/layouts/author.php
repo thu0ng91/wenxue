@@ -16,9 +16,11 @@ $cols=  Column::allCols();
     }
     .author-bg-container{
         width: 960px;
-        height: 300px;
-        background: url(<?php echo zmf::config('baseurl');?>common/temp/011.jpg) no-repeat center;
-        position:relative
+        height: 300px;        
+        position:relative;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: cover
     }
     .author-header{
         width:100px;
@@ -131,8 +133,8 @@ $cols=  Column::allCols();
         padding-right:10px;
     }
     .author-content-holder .media img{
-        width:90px;
-        height:127px;
+        width:120px;
+        height:160px;
     }
     .author-content-holder .media .right-actions{
         float:right;
@@ -173,7 +175,7 @@ $cols=  Column::allCols();
 </div>
 
 <div class="container">
-    <div class="author-bg-container">
+    <div class="author-bg-container" style="background-image: url(<?php echo zmf::getThumbnailUrl($this->authorInfo['skinUrl']);?>);">
         <div class="author-header">
             <div class="author-avatar-fixed">
                 <img src="<?php echo $this->authorInfo['avatar'];?>"/>
@@ -215,6 +217,7 @@ $cols=  Column::allCols();
                 <?php echo CHtml::link('<i class="fa fa-plus"></i> 新作品',array('author/createBook'),array('class'=>'item'.($this->selectNav == 'createBook' ? ' active' : '')));?>
                 <?php echo CHtml::link('<i class="fa fa-file"></i> 草稿箱',array('author/drafts'),array('class'=>'item'.($this->selectNav == 'drafts' ? ' active' : '')));?>
                 <?php echo CHtml::link('<i class="fa fa-edit"></i> 编辑资料',array('author/setting','type'=>'info'),array('class'=>'item'.($this->selectNav == 'updateinfo' ? ' active' : '')));?>
+                <?php echo CHtml::link('<i class="fa fa-lock"></i> 修改密码',array('author/setting','type'=>'passwd'),array('class'=>'item'.($this->selectNav == 'updatepasswd' ? ' active' : '')));?>
                 <?php echo CHtml::link('<i class="fa fa-cog"></i> 设置皮肤',array('author/setting','type'=>'skin'),array('class'=>'item'.($this->selectNav == 'updateskin' ? ' active' : '')));?>
                 <?php echo CHtml::link('<i class="fa fa-sign-out"></i> 退出管理',array('author/logout'),array('class'=>'item'));?>
                 <?php }elseif($this->uid && $this->userInfo['authorId']==$this->authorInfo['id']){?>

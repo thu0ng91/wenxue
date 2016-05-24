@@ -19,14 +19,13 @@ $cols=  Column::allCols();
             <div class="input-group-btn">
                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">作者 <span class="caret"></span></button>
                 <ul class="dropdown-menu">
-                    <li><a href="#">Action</a></li>
-                    <li><a href="#">Another action</a></li>
-                    <li><a href="#">Something else here</a></li>
-                    <li role="separator" class="divider"></li>
-                    <li><a href="#">Separated link</a></li>
+                    <li><a href="#">作者</a></li>
+                    <li><a href="#">小说</a></li>
+                    <li><a href="#">章节</a></li>
+                    <li><a href="#">用户</a></li>
                 </ul>
             </div><!-- /btn-group -->
-            <input type="text" class="form-control" aria-label="Text input with dropdown button">
+            <input type="text" class="form-control" placeholder="请输入关键词">
             <span class="input-group-btn">
                 <button class="btn btn-default" type="button">
                     <i class="fa fa-search"></i>

@@ -230,19 +230,8 @@ class zmf {
         //c132|c120|c180|c105|c360
         $appStatus = self::config('appStatus');
         $visitUrl = self::config('imgVisitUrl');
-        $csize = ($size != '' && $visitUrl != '') ? '/c' . $size : '';
-        $reurl = '';
-        if (!$appStatus || $appStatus == '1') {//本地开发
-            if (in_array($type, array('avatar'))) {
-                $reurl = $url;
-            } else {
-                $reurl = $url . $csize;
-            }
-        } elseif ($appStatus == '2') {//线上测试
-            $reurl = $url . $csize;
-        } elseif ($appStatus == '3') {//线上正式
-            $reurl = $url . $csize;
-        }
+        $csize = ($size != '' && $visitUrl != '') ? (is_numeric($size) ? '/c' . $size : '/'.$size) : '';        
+        $reurl = $url . $csize;        
         return $reurl;
     }
 

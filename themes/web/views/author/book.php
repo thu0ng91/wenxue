@@ -12,7 +12,12 @@
 <div class="author-content-holder">
     <div class="media">
         <div class="media-left">
-            <img class="media-object" src="<?php echo $info['faceImg'];?>" alt="<?php echo $info['title'];?>">            
+            <img class="media-object lazy" src="<?php echo zmf::lazyImg();?>" data-original="<?php echo $info['faceImg'];?>" alt="<?php echo $info['title'];?>">  
+            <?php if($info['bookStatus']!=Books::STATUS_PUBLISHED){?>
+            <p><?php echo CHtml::link('立即发布','javascript:;',array('class'=>'btn btn-danger btn-xs btn-block'));?></p>
+            <?php }?>
+            <p><?php echo CHtml::link('预览','javascript:;',array('class'=>'btn btn-success btn-xs btn-block'));?></p>
+            <p><?php echo CHtml::link('分享','javascript:;',array('class'=>'btn btn-default btn-xs btn-block'));?></p>
         </div>
         <div class="media-body">
             <h4><?php echo $info['title'];?></h4>

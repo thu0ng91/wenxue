@@ -45,7 +45,8 @@ class Books extends CActiveRecord {
         return array(
             array('cTime,updateTime', 'default', 'setOnEmpty' => true, 'value' => zmf::now()),
             array('uid', 'default', 'setOnEmpty' => true, 'value' => zmf::uid()),
-            array('status', 'default', 'setOnEmpty' => true, 'value' => Books::STATUS_NOTPUBLISHED),
+            array('status', 'default', 'setOnEmpty' => true, 'value' => Posts::STATUS_PASSED),
+            array('bookStatus', 'default', 'setOnEmpty' => true, 'value' => Books::STATUS_NOTPUBLISHED),
             array('uid, aid,colid, title', 'required'),
             array('faceImg', 'checkUrl'),
             array('vip, bookStatus, status,top', 'numerical', 'integerOnly' => true),
@@ -176,11 +177,12 @@ class Books extends CActiveRecord {
         return $posts;
     }
 
-    public static function getOne($id) {
+    public static function getOne($id, $imgSize = 'w120') {
         if (!$id) {
             return false;
         }
         $info = Books::model()->findByPk($id);
+        $info['faceImg']=  zmf::getThumbnailUrl($info['faceImg'],$imgSize,'book');
         return $info;
     }
 
@@ -215,6 +217,28 @@ class Books extends CActiveRecord {
             'score3' => $countArr['3'] ? $countArr['3'] : 0,
             'score4' => $countArr['4'] ? $countArr['4'] : 0,
             'score5' => $countArr['5'] ? $countArr['5'] : 0,
+        );
+        return Books::model()->updateByPk($bid, $attr);
+    }
+    
+    public static function updateBookStatInfo($bid){
+        $items=  Chapters::model()->findAll(array(
+            'condition'=>'bid=:bid AND status='.Posts::STATUS_PASSED,
+            'select'=>'words,comments,hits',
+            'params'=>array(
+                ':bid'=>$bid
+            )
+        ));
+        $words=$comments=$hits=0;
+        foreach ($items as $val){
+            $words+=$val['words'];
+            $comments+=$val['comments'];
+            $hits+=$val['hits'];
+        }
+        $attr=array(
+            'words'=>$words,
+            'comments'=>$comments,
+            'hits'=>$hits,
         );
         return Books::model()->updateByPk($bid, $attr);
     }
