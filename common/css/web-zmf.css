@@ -31,6 +31,9 @@ p{
     white-space: nowrap;
     text-overflow: ellipsis;
 }
+.title{
+    font-weight: 700
+}
 .navbar-fixed-top ~ .container {
     border-top: 65px solid transparent;
 }
@@ -188,8 +191,15 @@ button, input, select, textarea,.form-control,.btn{
     font-weight: 700;
     padding-left: 15px;
 }
+.book-info .media{
+    padding-left: 20px
+}
 .book-info .book-detail p{
     margin-bottom: 0
+}
+.book-info .media img{
+    width: 120px;
+    height: 160px;
 }
 .book-starInfo{
     width: 200px;

@@ -269,6 +269,6 @@ class UserController extends Q {
         );
         $this->pageTitle = $this->userInfo['truename'] . '的文章 - ' . zmf::config('sitename');
         $this->render('posts', $data);
-    }
+    }    
 
 }

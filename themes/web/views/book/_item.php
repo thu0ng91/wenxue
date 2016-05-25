@@ -17,15 +17,16 @@ $url=  Yii::app()->createUrl('book/view',array('id'=>$data['id']));
         <p><?php if($data['scorer']>0){echo Books::starCss($data['score']);?> （<?php echo $data['scorer'];?>人评价）<?php }else{?><span class="color-grey">暂无评分</span><?php }?></p>
         <p class="help-block"><?php echo $data['desc'];?></p>
         <p class="help-block">
-            <span><?php echo Books::exStatus($data['bookStatus']);?></span>
+            <span class="<?php echo $data['bookStatus']==Books::STATUS_PUBLISHED ? 'success' : 'danger';?>"><?php echo Books::exStatus($data['bookStatus']);?></span>
             <span>总字<?php echo $data['words'];?></span>
             <span><?php echo zmf::time($data['cTime'],'Y-m-d');?></span>
             <span><?php echo CHtml::link('分享','javascript:;',array('action'=>'share','action-qrcode'=>$qrcode,'action-url'=>$url,'action-img'=>$qrcode,'action-title'=>$data['title']));?></span>
             <?php if($adminLogin){?>
             <span class="right-actions">                
                 <?php echo CHtml::link('预览',array('book/view','id'=>$data['id']));?>
-                <?php echo CHtml::link('编辑',array('author/updateBook','bid'=>$data['id']));?>
                 <?php echo CHtml::link('章节',array('author/book','bid'=>$data['id']));?>
+                <?php echo $data['bookStatus']==Books::STATUS_NOTPUBLISHED ? CHtml::link('发表','javascript:;',array('action'=>'publishBook','data-id'=>$data['id'])) : '';?>   
+                <?php echo CHtml::link('编辑',array('author/updateBook','bid'=>$data['id']));?>                
                 <?php echo CHtml::link('续写',array('author/addChapter','bid'=>$data['id']));?>
             </span>
             <?php }?>

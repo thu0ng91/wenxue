@@ -8,11 +8,11 @@
                 </div>
                 <div class="media-body book-detail">
                     <p>作者：<?php echo CHtml::link($authorInfo['authorName'], array('author/view', 'id' => $info['aid'])); ?></p>
-                    <p>分类：<?php echo $info['title']; ?></p>
+                    <p>分类：<?php echo CHtml::link($colInfo['title'],array('book/index','colid'=>$colInfo['id']),array('target'=>'_blank'));?></p>
                     <p>收藏：<?php echo $info['favorites']; ?></p>
                     <p>点击：<?php echo $info['hits']; ?></p>
                     <p>总字：<?php echo $info['words']; ?></p>
-                    <p>状态：<?php echo $info['bookStatus']; ?></p>
+                    <p>状态：<?php echo Books::exStatus($info['bookStatus']); ?></p>
                     <div class="btn-group" role="group">
                         <?php echo CHtml::link('立即阅读',array('book/chapter','cid'=>''),array('class'=>'btn btn-default btn-xs'));?>
                         <?php echo CHtml::link('收藏','javascript:;',array('class'=>'btn btn-'.($this->favorited ? 'danger' :'default').' btn-xs','action'=>'favorite','action-data'=>$info['id'],'action-type'=>'book'));?>
@@ -29,7 +29,7 @@
                             </div>
                             <div class="media-body">
                                 <p><?php echo Books::starCss($info['score']);?></p>
-                                <p><?php echo $info['scorer'];?>人评价</p>                                
+                                <p><?php echo CHtml::link($info['scorer'].'人评价','javascript:;',array('action'=>'scroll','action-target'=>'chapter-tips-holder'));?></p>
                             </div>
                         </div>
                         <div class="book-star-detail">
@@ -43,7 +43,7 @@
             </div>
             <div class="module-header">内容简介</div>
             <div class="module-body">
-                <p><?php echo $info['content']; ?></p>
+                <p><?php echo nl2br($info['content']); ?></p>
             </div>  
             <div class="module-header">目录</div>
             <div class="module-body book-chapters">
@@ -56,16 +56,14 @@
         </div>
         <div class="module">
             <div class="module-header">点评</div>
-            <div class="module-body">
-                <div id="more-content">
-                    <?php if(!empty($tips)){?>
-                    <?php foreach ($tips as $tip){?> 
-                    <?php $this->renderPartial('/book/_tip',array('data'=>$tip));?>
-                    <?php }?>
-                    <?php }else{?>
-                    <p class="help-block">还没人写过点评，快来抢沙发吧</p>
-                    <?php }?>
-                </div>
+            <div class="module-body" id="chapter-tips-holder">                
+                <?php if(!empty($tips)){?>
+                <?php foreach ($tips as $tip){?> 
+                <?php $this->renderPartial('/book/_tip',array('data'=>$tip));?>
+                <?php }?>
+                <?php }else{?>
+                <p class="help-block">还没人写过点评，快来抢沙发吧</p>
+                <?php }?>
             </div>
         </div>
     </div>

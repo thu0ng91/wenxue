@@ -101,6 +101,45 @@ function rebind() {
         var dom = $(this);
         share(dom);
     });
+    $("a[action=publishBook]").on('click',function () {
+        var dom = $(this);
+        var id=parseInt(dom.attr('data-id'));
+        if(!id){
+            alert('缺少参数');
+            return false;
+        }
+        if(confirm('确定立即发表作品么？')){
+            $.post(zmf.ajaxUrl, {action:'publishBook',id:id,YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {                
+                result = eval('(' + result + ')');
+                if (result['status'] == '1') {
+                    window.location.reload();
+                } else {
+                    dialog({msg:result['msg']});
+                    return false;
+                }
+            });
+        }
+    });
+    $("a[action=publishChapter]").on('click',function () {
+        var dom = $(this);
+        var id=parseInt(dom.attr('data-id'));
+        if(!id){
+            alert('缺少参数');
+            return false;
+        }
+        if(confirm('确定立即发表本章节么？')){
+            $.post(zmf.ajaxUrl, {action:'publishChapter',id:id,YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {                
+                result = eval('(' + result + ')');
+                if (result['status'] == '1') {
+                    window.location.reload();
+                } else {
+                    dialog({msg:result['msg']});
+                    return false;
+                }
+            });
+        }
+    });
+    
     $('#add-post-btn').unbind('click').click(function () {
         $(window).unbind('beforeunload');
     });

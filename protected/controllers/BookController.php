@@ -39,10 +39,16 @@ class BookController extends Q {
         $chapters = Chapters::getByBook($id);
         //作者的其他推荐书
         $otherTops=  Authors::otherTops($info['aid'], $id, 10);
+        //获取分类
+        $colInfo=  Column::getSimpleInfo($info['colid']);
+        
         $this->favorited = Favorites::checkFavored($id, 'book');
+        //标题
+        $this->pageTitle='【'.$authorInfo['authorName'].'作品】'.$info['title'].' - '.zmf::config('sitename');
         $data = array(
             'info' => $info,
             'authorInfo' => $authorInfo,
+            'colInfo' => $colInfo,
             'chapters' => $chapters,
             'otherTops' => $otherTops,
             'tips' => $tips,
@@ -96,15 +102,20 @@ class BookController extends Q {
 //        }
         //更新统计
         Posts::updateCount($cid, 'Chapters', 1, 'hits');
+        //获取分类
+        $colInfo=  Column::getSimpleInfo($bookInfo['colid']);
+        
         //判断我是否已点评过
         $this->tipInfo = Chapters::checkTip($cid, $this->uid);
         //标题
-        $this->pageTitle='【'.$bookInfo['title'].'】'.$chapterInfo['title'].' - '.$authorInfo['authorName'].'作品';
+        $this->pageTitle='【'.$bookInfo['title'].'】'.$chapterInfo['title'].' - '.$authorInfo['authorName'].'作品 - '.zmf::config('sitename');
         $this->selectNav='column'.$bookInfo['colid'];
         $data = array(
             'bookInfo' => $bookInfo,
             'chapterInfo' => $chapterInfo,
             'chapters' => $chapters,
+            'authorInfo' => $authorInfo,
+            'colInfo' => $colInfo,
             'tips' => $tips,
         );
         $this->render('chapter', $data);

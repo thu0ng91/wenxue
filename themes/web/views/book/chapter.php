@@ -70,7 +70,8 @@
         text-align: center;
         padding: 10px;
         background: #fff;
-        margin-bottom: 5px
+        margin-bottom: 5px;
+        text-decoration: none
     }
     .chapter-fixed-navbar .fa{
         display: block;
@@ -81,9 +82,8 @@
     <div class="chapter-container">
         <div class="chapter-navbar">
             <ol class="breadcrumb">
-                <li><a href="#">初心创文首页</a></li>
-                <li><a href="#">一级分类</a></li>
-                <li><a href="#">二级分类</a></li>
+                <li><?php echo CHtml::link(zmf::config('sitename').'首页',  zmf::config('baseurl'));?></li>
+                <li><?php echo CHtml::link($colInfo['title'],array('book/index','colid'=>$colInfo['id']),array('target'=>'_blank'));?></li>
                 <li class="active"><?php echo $bookInfo['title']; ?></li>
             </ol>
         </div>
@@ -91,13 +91,13 @@
             <h1><?php echo $chapterInfo['title']; ?></h1>
             <p class="chapter-min-tips">
                 <span>小说：<?php echo CHtml::link($bookInfo['title'],array('book/view','id'=>$bookInfo['id'])); ?></span>
-                <span>作者：<?php echo CHtml::link($chapterInfo['aid'],array('author/view','id'=>$chapterInfo['aid'])); ?></span>
+                <span>作者：<?php echo CHtml::link($authorInfo['authorName'],array('author/view','id'=>$chapterInfo['aid'])); ?></span>
                 <span>字数：<?php echo $chapterInfo['words']; ?></span>
                 <span>更新时间：<?php echo zmf::time($chapterInfo['updateTime']); ?></span>         
             </p>
             <div class="chapter-content">
                 <?php echo Chapters::text($chapterInfo['content']); ?>
-            </div>            
+            </div>
         </div>
         <div class="module chapter-tips-module">
             <div class="module-header">点评</div>
@@ -132,7 +132,7 @@
     </div>
     <div class="chapter-fixed-navbar">
         <?php echo CHtml::link('<i class="fa fa-list"></i> 目录','javascript:;');?>
-        <?php echo CHtml::link('<i class="fa fa-star-o"></i> 点评','javascript:;',array('action'=>'scroll','action-target'=>'add-tip-holder'));?>
+        <?php echo CHtml::link((($this->uid && $this->tipInfo!==false) ? '<i class="fa fa-star"></i> 已点评' : '<i class="fa fa-star-o"></i> 已点评'),'javascript:;',array('action'=>'scroll','action-target'=>'add-tip-holder'));?>
         <?php echo CHtml::link('<i class="fa fa-long-arrow-left"></i> 上一章','javascript:;');?>
         <?php echo CHtml::link('<i class="fa fa-long-arrow-right"></i> 下一章','javascript:;');?>
         <?php echo CHtml::link('<i class="fa fa-reply"></i> 返回',array('book/view','id'=>$chapterInfo['bid']));?>        

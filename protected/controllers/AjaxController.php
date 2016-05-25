@@ -17,7 +17,7 @@ class AjaxController extends Q {
 
     public function actionDo() {
         $action = zmf::val('action', 1);
-        if (!in_array($action, array('addTip','saveUploadImg'))) {
+        if (!in_array($action, array('addTip', 'saveUploadImg', 'publishBook', 'publishChapter', 'saveDraft'))) {
             $this->jsonOutPut(0, Yii::t('default', 'forbiddenaction'));
         }
         $this->$action();
@@ -35,7 +35,7 @@ class AjaxController extends Q {
         if (!isset($keyid) || !is_numeric($keyid)) {
             $this->jsonOutPut(0, Yii::t('default', 'pagenotexists'));
         }
-        if(!$score || $score>5 || $score<1){
+        if (!$score || $score > 5 || $score < 1) {
             $this->jsonOutPut(0, '请评一个分吧~');
         }
         if (!$content) {
@@ -44,8 +44,8 @@ class AjaxController extends Q {
         $status = Posts::STATUS_PASSED;
         $uid = $this->uid;
         if ($type == 'chapter') {
-            $ckInfo=  Chapters::checkTip($keyid, $uid);
-            if($ckInfo!==false){
+            $ckInfo = Chapters::checkTip($keyid, $uid);
+            if ($ckInfo !== false) {
                 $this->jsonOutPut(0, '每章节只能评价一次');
             }
             $postInfo = Chapters::getOne($keyid);
@@ -106,7 +106,7 @@ class AjaxController extends Q {
             $this->jsonOutPut(0, '新增评论失败');
         }
     }
-    
+
     public function saveUploadImg() {
         $this->checkLogin();
         $type = zmf::val('type', 1);
@@ -125,11 +125,11 @@ class AjaxController extends Q {
         if (!$imgInfoArr) {
             $this->jsonOutPut(0, '获取图片信息失败');
         }
-        $width=$imgInfoArr['width'];
-        $height=$imgInfoArr['height'];
-        if(in_array($imgInfoArr['orientation'], array('Right-top','Left-bottom'))){
-            $width=$imgInfoArr['height'];
-            $height=$imgInfoArr['width'];
+        $width = $imgInfoArr['width'];
+        $height = $imgInfoArr['height'];
+        if (in_array($imgInfoArr['orientation'], array('Right-top', 'Left-bottom'))) {
+            $width = $imgInfoArr['height'];
+            $height = $imgInfoArr['width'];
         }
         $data = array();
         $data['uid'] = zmf::uid();
@@ -144,8 +144,8 @@ class AjaxController extends Q {
         $data['height'] = $height;
         $data['size'] = $fileSize;
         $data['remote'] = $fullDir;
-        $model=new Attachments;
-        $model->attributes=$data;   
+        $model = new Attachments;
+        $model->attributes = $data;
         if ($model->save()) {
             $attachid = $model->id;
             $returnimg = zmf::getThumbnailUrl($fullDir, '120', $type);
@@ -168,6 +168,105 @@ class AjaxController extends Q {
             echo $json;
         } else {
             $this->jsonOutPut(0, '写入数据库错误');
+        }
+    }
+
+    private function publishBook() {
+        $this->checkLogin();
+        $id = zmf::val('id', 2);
+        if (!$id) {
+            $this->jsonOutPut(0, '缺少参数哦~');
+        }
+        $bookInfo = Books::getOne($id);
+        if (!$bookInfo || $bookInfo['status'] != Posts::STATUS_PASSED) {
+            $this->jsonOutPut(0, '小说不存在或已删除');
+        } elseif ($bookInfo['uid'] != $this->uid || $bookInfo['aid'] != $this->userInfo['authorId']) {
+            $this->jsonOutPut(0, '你无权本操作');
+        } elseif ($bookInfo['bookStatus'] == Books::STATUS_PUBLISHED) {
+            $this->jsonOutPut(1, '已发表');
+        }
+        if (!Authors::checkLogin($this->userInfo, $bookInfo['aid'])) {
+            $this->jsonOutPut(0, '你无权本操作');
+        }
+        //统计已发表的章节
+        $chapters = Chapters::model()->count('uid=:uid AND aid=:aid AND bid=:bid', array(':uid' => $this->uid, ':aid' => $this->userInfo['authorId'], ':bid' => $id));
+        if ($chapters < 1) {
+            $this->jsonOutPut(0, '小说暂无已发表章节，请先发表章节');
+        }
+        if (Books::model()->updateByPk($id, array('bookStatus' => Books::STATUS_PUBLISHED))) {
+            Books::updateBookStatInfo($id);
+            $this->jsonOutPut(1, '已发表');
+        } else {
+            $this->jsonOutPut(1, '已发表');
+        }
+    }
+
+    private function publishChapter() {
+        $this->checkLogin();
+        $id = zmf::val('id', 2);
+        if (!$id) {
+            $this->jsonOutPut(0, '缺少参数哦~');
+        }
+        $chapterInfo = Chapters::getOne($id);
+        $bookInfo = Books::getOne($chapterInfo['bid']);
+        if (!$bookInfo || $bookInfo['status'] != Posts::STATUS_PASSED) {
+            $this->jsonOutPut(0, '小说不存在或已删除');
+        } elseif ($bookInfo['uid'] != $this->uid || $bookInfo['aid'] != $this->userInfo['authorId']) {
+            $this->jsonOutPut(0, '你无权本操作');
+        }
+        if (!$chapterInfo) {
+            $this->jsonOutPut(0, '操作对象不存在，请核实');
+        } elseif ($chapterInfo['uid'] != $this->uid || $chapterInfo['aid'] != $this->userInfo['authorId']) {
+            $this->jsonOutPut(0, '你无权本操作');
+        } elseif ($chapterInfo['status'] == Books::STATUS_PUBLISHED) {
+            $this->jsonOutPut(1, '已发表');
+        }
+        if (!Authors::checkLogin($this->userInfo, $chapterInfo['aid'])) {
+            $this->jsonOutPut(0, '你无权本操作');
+        }
+        if (Chapters::model()->updateByPk($id, array('status' => Books::STATUS_PUBLISHED))) {
+            Books::updateBookStatInfo($chapterInfo['bid']);
+            $this->jsonOutPut(1, '已发表');
+        } else {
+            $this->jsonOutPut(1, '已发表');
+        }
+    }
+
+    private function saveDraft() {
+        $this->checkLogin();
+        $title = zmf::val('title', 1);
+        $content = zmf::val('content', 1);
+        $hash = zmf::val('hash', 1);
+        $bookId = zmf::val('bookId', 2);
+        if (!$bookId) {
+            $this->jsonOutPut(0, '缺少参数，请选择小说~');
+        }
+        $attr = array(
+            'uid' => $this->uid,
+            'aid' => $this->userInfo['authorId'],
+            'bid' => $bookId,
+            'uuid' => $hash,
+        );
+        $draftInfo = Drafts::model()->findByAttributes($attr);
+        $attr['title']=$title;
+        $attr['content']=$content;
+        $attr['cTime']=  zmf::now();
+        if($draftInfo){
+            if($draftInfo['title']==$title && $draftInfo['content']==$content){
+                $this->jsonOutPut(1, '已自动保存');
+            }
+            if(Drafts::model()->updateByPk($draftInfo['id'], $attr)){
+                $this->jsonOutPut(1, '已自动保存');
+            }else{
+                $this->jsonOutPut(0, '保存草稿失败');
+            }
+        }
+        $model=new Drafts();
+        $model->attributes=$attr;
+        if($model->save()){
+            $this->jsonOutPut(1, '已自动保存');
+        }else{
+            $this->jsonOutPut(0, '保存草稿失败');
         }
     }
 

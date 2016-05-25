@@ -110,6 +110,7 @@ $cols=  Column::allCols();
         display:block;
         width:100%;
         padding:10px 0 10px 10px;
+        text-decoration: none
     }
     .author-side-navbar .item+.item {
         border-top: 1px solid #eee;
@@ -139,6 +140,12 @@ $cols=  Column::allCols();
     .author-content-holder .media .right-actions{
         float:right;
         display:inline-block
+    }
+    .author-content-holder .success{
+        color: #589013
+    }
+    .author-content-holder .danger{
+        color: #BF1031
     }
     .author-following{
         padding-top:15px;
@@ -210,7 +217,7 @@ $cols=  Column::allCols();
                 </a>
             </div>
             <div class="author-side-navbar">
-                <?php echo CHtml::link('<i class="fa fa-list"></i> 作品',array('author/view','id'=>$this->authorInfo['id']),array('class'=>'item'.($this->selectNav == 'index' ? ' active' : '')));?>
+                <?php echo CHtml::link('<i class="fa fa-list"></i> 作品<span></span>',array('author/view','id'=>$this->authorInfo['id']),array('class'=>'item'.($this->selectNav == 'index' ? ' active' : '')));?>
                 <?php echo CHtml::link('<i class="fa fa-star"></i> 追随者',array('author/fans','id'=>$this->authorInfo['id']),array('class'=>'item'.($this->selectNav == 'fans' ? ' active' : '')));?>
                 <?php echo CHtml::link('<i class="fa fa-comments"></i> 作者专区',array('posts/index','type'=>'author','aid'=>$this->authorInfo['id']),array('class'=>'item'));?>
                 <?php if($this->adminLogin){?>
@@ -225,7 +232,7 @@ $cols=  Column::allCols();
                 <?php }?>
             </div>
         </div>
-    </div>    
+    </div>
 </div>
 <div class="footer-bg" id="footer-bg"></div>
 <?php $this->endContent(); ?>
