@@ -38,7 +38,7 @@ $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
                 <h1><?php echo $info['title'];?></h1>
                 <p class="color-grey tips">
                     <span><?php echo zmf::time($info['cTime'],'Y-m-d H:i');?></span>
-                    <span>大飞</span>                
+                    <span><?php echo CHtml::link($authorInfo['title'],$authorInfo['url']);?></span>                
                 </p>
                 <div class="post-content">
                     <?php echo $info['content'];?>
@@ -70,12 +70,26 @@ $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
         </div>
     </div>
     <div class="aside-part">
+        <?php if(!empty($tags)){?>
+        <div class="module">
+            <div class="module-header">文章标签</div>
+            <div class="module-body">
+                <?php foreach ($tags as $tag){?>
+                <p><?php echo CHtml::link('<i class="fa fa-tag"></i> '.$tag['title'],array('posts/index','type'=>Posts::exType($info['classify']),'tagid'=>$tag['id']));?></p>
+                <?php }?>
+            </div>
+        </div>
+        <?php }?>
+        <?php if(!empty($relatePosts)){?>
         <div class="module">
             <div class="module-header">相关文章</div>
             <div class="module-body">
-                
+                <?php foreach ($relatePosts as $relatePost){?>
+                <p class="ui-nowrap"><?php echo CHtml::link($relatePost['title'],array('posts/view','id'=>$relatePost['id']));?></p>
+                <?php }?>
             </div>
         </div>
+        <?php }?>
         <?php $this->renderPartial('/common/copyright');?>
     </div>
 </div>

@@ -143,6 +143,7 @@ class Showcases extends CActiveRecord {
             'column33'=>'版块第三排3',
             
             'reg'=>'登录注册轮播图',
+            'author'=>'作者、读者专区右侧广告',
         );
         if($type=='admin'){
             return $arr;
@@ -187,8 +188,19 @@ class Showcases extends CActiveRecord {
         return $arr[$type];
     }
     
-    public static function getPagePosts($type,$columnid=NULL){
-        $arr=  Showcases::exPosition($type);
+    /**
+     * 根据页面、栏目或者位置显示作品
+     * @param string $type 版块或位置
+     * @param int $columnid 所属栏目
+     * @param bool $showType 是否只按位置显示
+     * @return array
+     */
+    public static function getPagePosts($type,$columnid=NULL,$showType=false,$imgSize='c120'){
+        if(!$showType){
+            $arr=  Showcases::exPosition($type);
+        }else{
+            $arr[]=$type;
+        }
         $arrWithQuote=array();
         foreach ($arr as $val){
             $arrWithQuote[]="'{$val}'";
@@ -221,6 +233,9 @@ class Showcases extends CActiveRecord {
             }elseif($case['classify']=='ad'){
                 $_sql="SELECT title,faceimg,content,url FROM {{showcase_link}} WHERE sid='{$case['id']}' AND classify='ad' ORDER BY startTime ASC LIMIT {$case['num']}";
                 $_posts=  Yii::app()->db->createCommand($_sql)->queryAll();
+                foreach ($_posts as $k=>$val){
+                    $_posts[$k]['faceimg']=  zmf::getThumbnailUrl($val['faceimg'], $imgSize, 'showcase');
+                }
                 $_tmp['post']=$_posts;
             }
             $posts[$case['position']]=$_tmp;

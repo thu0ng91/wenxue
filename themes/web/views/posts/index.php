@@ -10,8 +10,8 @@
  */
 ?>
 <style>
-    .forum-page .module{
-        padding: 0
+    .forum-page .module-body{
+        padding-bottom: 0;
     }
     .forum-page .post-item{
         border-bottom: 1px dashed #eee
@@ -21,6 +21,14 @@
     }
     .forum-page .post-item .tips span{
         margin-right: 5px
+    }
+    .forum-page .posts-side-show img{
+        width: 300px;
+        height: 225px;
+    }
+    .yiiPager{
+        clear: both;
+        display: block
     }
 </style>
 <div class="container forum-page">
@@ -55,17 +63,18 @@
                     </div>
                 </div>
                 <?php }?>
+                <?php $this->renderPartial('/common/pager',array('pages'=>$pages));?>
             </div>
         </div>
     </div>
     <div class="aside-part">
-        <div class="module">
-            
+        <?php $sideAds=$sideInfo['post'];if(!empty($sideAds)){$_info=$sideAds[0];?>
+        <div class="module posts-side-show">
+            <a href="<?php echo $_info['url']!='' ? $_info['url'] : 'javascript:;';?>" target="_blank">
+                <img src="<?php echo zmf::lazyImg();?>" data-original="<?php echo $_info['faceimg'];?>" class="img-responsive lazy"/>
+            </a>
         </div>
-        <p>
-            
-        </p>
-        
+        <?php }?>
         <?php $this->renderPartial('/common/copyright');?>
     </div>
 </div>

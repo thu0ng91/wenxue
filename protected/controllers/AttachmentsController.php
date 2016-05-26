@@ -1,5 +1,9 @@
 <?php
+Yii::import('application.vendors.qiniu.*');
+require_once 'autoload.php';
 
+use Qiniu\Auth;
+use Qiniu\Storage\UploadManager;
 class AttachmentsController extends Q {
 
     public function actionUpload() {
@@ -7,7 +11,7 @@ class AttachmentsController extends Q {
         $logid = zmf::filterInput($_GET['id']); //所属对象
         $reImgsize = zmf::filterInput($_GET['imgsize']); //返回图片的尺寸
         $fileholder = zmf::filterInput($_GET['fileholder'], 't', 1); //上传控件的ID
-        if (!isset($uptype) OR ! in_array($uptype, array('posts','siteinfo','zazhi'))) {
+        if (!isset($uptype) OR ! in_array($uptype, array('posts','siteinfo'))) {
             $this->jsonOutPut(0, '请设置上传所属类型' . $uptype);
         }
         if (Yii::app()->request->getParam('PHPSESSID')) {
@@ -28,7 +32,7 @@ class AttachmentsController extends Q {
         $ext = $img->getExtensionName();
         $size = $img->getSize();
         if ($size > zmf::config('imgMaxSize')) {
-            $this->jsonOutPut(0, '上传文件最大尺寸为：' . tools::formatBytes(zmf::config('imgMaxSize')));
+            $this->jsonOutPut(0, '上传文件最大尺寸为：' . zmf::formatBytes(zmf::config('imgMaxSize')));
         }
         $upExt = zmf::config("imgAllowTypes");
         if (!preg_match('/^(' . str_replace('*.', '|', str_replace(';', '', $upExt)) . ')$/i', $ext)) {
@@ -66,6 +70,7 @@ class AttachmentsController extends Q {
                 $accessKey = zmf::config('qiniuAk');
                 $secretKey = zmf::config('qiniuSk');
                 $bucket = zmf::config('qiniuBucket');
+                $returnimg = zmf::uploadDirs($ctime, 'site', $uptype) . $fileName;
                 if ($accessKey && $secretKey && $bucket) {
                     $auth = new Auth($accessKey, $secretKey);
                     $token = $auth->uploadToken($bucket);
@@ -74,13 +79,15 @@ class AttachmentsController extends Q {
                     if ($err !== null) {
                         zmf::fp(var_export($err));
                         $this->jsonOutPut(0, '上传至云服务错误');
+                    }else{
+                        //上传成功则直接将地址写入数据库
+                        Attachments::model()->updateByPk($attachid, array('remote'=>$returnimg));
                     }
                 }
-                $returnimg = zmf::uploadDirs($ctime, 'site', $uptype) . $fileName;
-                $returnimg = zmf::getThumbnailUrl($returnimg, '650', $uptype);
+                $returnimg = zmf::getThumbnailUrl($returnimg, 'w650', $uptype);
                 $_attr = array(
                     'id' => $attachid,
-                    'imgurl' => $returnimg,
+                    'imgUrl' => $returnimg,
                 );
                 $html=  $this->renderPartial('/posts/_addImg',array('data'=>$_attr),true);                
                 $outPutData = array(

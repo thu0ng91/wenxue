@@ -20,11 +20,13 @@
         <ul class="dropdown-menu">
             <li><?php echo CHtml::link('个人中心', array('user/index'), array('role' => 'menuitem')); ?></li>
             <?php if($this->userInfo['authorId']>0){?>
+            <li role="separator" class="divider"></li>
             <li><?php echo CHtml::link('作者中心', array('author/view','id'=>$this->userInfo['authorId']), array('role' => 'menuitem')); ?></li>
             <?php }?>
             <?php if ($this->userInfo['isAdmin']) { ?>
             <li role="separator" class="divider"></li>
-            <li><?php echo CHtml::link('管理中心', array('admin/index/index'), array('role' => 'menuitem')); ?></li>                            
+            <li><?php echo CHtml::link('管理中心', array('admin/index/index'), array('role' => 'menuitem')); ?></li>      
+            <li role="separator" class="divider"></li>
             <?php } ?>
             <li><?php echo CHtml::link('退出', array('site/logout'), array('role' => 'menuitem')); ?></li>
         </ul>

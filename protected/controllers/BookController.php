@@ -6,6 +6,17 @@ class BookController extends Q {
     public $tipInfo = array();
 
     public function actionIndex() {
+        $posts = Books::model()->findAll(array(
+            'condition' => 'bookStatus=' . Books::STATUS_PUBLISHED,
+            'select' => 'id,colid,title,faceImg,`desc`,words,cTime,score,scorer,bookStatus',
+            
+        ));
+        foreach ($posts as $k => $val) {
+            $posts[$k]['faceImg'] = zmf::getThumbnailUrl($val['faceImg'], 'w120', 'book');
+        }
+        $data = array(
+            'posts' => $posts
+        );
         $this->render('index', $data);
     }
 

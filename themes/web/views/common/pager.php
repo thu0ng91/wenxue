@@ -1,5 +1,5 @@
+<div class="pagination">
 <?php
-
 //分页widget代码: 
 $this->widget('CLinkPager', array(
     'header' => '',
@@ -12,3 +12,4 @@ $this->widget('CLinkPager', array(
         )
 );
 ?>
+</div>

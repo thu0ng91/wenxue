@@ -9,6 +9,7 @@ class PostsController extends Q {
         if (!in_array($type, array('author', 'reader'))) {
             $type = 'author';
         }
+        $this->pageSize=1;
         $classify = 0;
         if ($type == 'author') {
             $classify = Posts::CLASSIFY_AUTHOR;
@@ -19,12 +20,17 @@ class PostsController extends Q {
             $label = '读者专区';
             $sql = "SELECT p.id,p.title,p.uid,u.truename AS username,p.cTime,p.comments,p.favors,p.classify FROM {{posts}} p,{{users}} u WHERE p.classify='{$classify}' AND p.status=" . Posts::STATUS_PASSED." AND p.uid=u.id AND u.status=".Posts::STATUS_PASSED." ORDER BY p.cTime DESC";
         }
-        Posts::getAll(array('sql' => $sql), $pages, $posts);
+        Posts::getAll(array('sql' => $sql,'pageSize'=>  $this->pageSize), $pages, $posts);
+        //获取展示
+        $showcase=  Showcases::getPagePosts('author', NUll, true,'c360');
+        $sideInfo=$showcase['author'];
         $this->selectNav = $type . 'Forum';
         $data = array(
             'posts' => $posts,
+            'pages' => $pages,
             'label' => $label,
             'type' => $type,
+            'sideInfo' => $sideInfo,
         );
         $this->render('index', $data);
     }
@@ -37,21 +43,48 @@ class PostsController extends Q {
         $info = $this->loadModel($id);
         $pageSize = 30;
         $comments = Comments::getCommentsByPage($id, 'posts', 1, $pageSize);
+        $tags = Tags::getByIds($info['tagids']);
+        $relatePosts=  Posts::getRelations($id, 5);
+        //作者信息
+        $authorInfo=array();
+        if($info['classify']==Posts::CLASSIFY_AUTHOR){
+            $author=  Authors::getOne($info['aid']);
+            if(!$author){
+                throw new CHttpException(404, '所属作者不存在');
+            }
+            $authorInfo=array(
+                'title'=>$author['authorName'],
+                'url'=>array('author/view','id'=>$info['aid']),
+            );
+            $this->selectNav = 'authorForum';
+        }else{
+            $user=  Users::getOne($info['uid']);
+            if(!$user){
+                throw new CHttpException(404, '所属用户不存在');
+            }
+            $authorInfo=array(
+                'title'=>$user['truename'],
+                'url'=>array('user/index','id'=>$info['uid']),
+            );
+            $this->selectNav = 'readerForum';
+        }
         if (!zmf::actionLimit('visit-Posts', $id, 5, 60)) {
             Posts::updateCount($id, 'Posts', 1, 'hits');
         }
-        $size = '600';
+        $size = 'w600';
         if ($this->isMobile) {
-            $size = '640';
+            $size = 'w640';
         }
         $info['content'] = zmf::text(array(), $info['content'], true, $size);
         $data = array(
             'info' => $info,
+            'authorInfo' => $authorInfo,
             'comments' => $comments,
+            'tags' => $tags,
+            'relatePosts' => $relatePosts,
             'loadMore' => count($comments) == $pageSize ? 1 : 0,
         );
-        $this->favorited = Favorites::checkFavored($id, 'post');
-        $this->selectNav = 'authorForum';
+        $this->favorited = Favorites::checkFavored($id, 'post');        
         $this->pageTitle = $info['title'];
         $this->render('view', $data);
     }
