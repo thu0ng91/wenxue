@@ -137,12 +137,12 @@ class Showcases extends CActiveRecord {
             'column13'=>'版块第一排3',
             'column21'=>'版块第二排1',
             'column22'=>'版块第二排2',
-            'column23'=>'版块第二排3',
-            
+            'column23'=>'版块第二排3',            
             'column31'=>'版块第三排1',
             'column32'=>'版块第三排2',
             'column33'=>'版块第三排3',
             
+            'reg'=>'登录注册轮播图',
         );
         if($type=='admin'){
             return $arr;

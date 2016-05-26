@@ -22,12 +22,12 @@ class Q extends Controller {
     function init() {
         parent::init();
         Yii::app()->theme = 'web';
-        if (zmf::config('mobile')) {
-            if (zmf::checkmobile($this->platform)) {
-                Yii::app()->theme = 'mobile';
-                $this->isMobile = true;
-            }
-        }
+//        if (zmf::config('mobile')) {
+//            if (zmf::checkmobile($this->platform)) {
+//                Yii::app()->theme = 'mobile';
+//                $this->isMobile = true;
+//            }
+//        }
         $uid = zmf::uid();
         if ($uid) {
             $this->uid = $uid;

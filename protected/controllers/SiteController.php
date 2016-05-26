@@ -45,8 +45,6 @@ class SiteController extends Q {
         if (!Yii::app()->user->isGuest) {
             $this->message(0, '您已登录，请勿重复操作');
         }
-        $this->layout = 'common';
-        $this->currentModule='magazine';
         $canLogin = true;
         $ip = Yii::app()->request->getUserHostAddress();
         $cacheKey = 'loginErrors-' . $ip;
@@ -99,8 +97,6 @@ class SiteController extends Q {
         if (!Yii::app()->user->isGuest) {
             $this->redirect($this->referer);
         }
-        $this->layout = 'common';
-        $this->currentModule='magazine';
         $ip=ip2long(Yii::app()->request->userHostAddress);
         if(zmf::actionLimit('reg', $ip, 5, 86400, true,true)){
             throw new CHttpException(403, '您的操作太频繁，请明天再来吧');
