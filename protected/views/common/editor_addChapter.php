@@ -51,7 +51,7 @@ $cs->registerScriptFile(Yii::app()->baseUrl.'/umeditor/lang/zh-cn/zh-cn.js', CCl
                 $('#preview-btn').removeAttr('disabled');
                 //开始重复
                 if(!internal){
-                    internal=window.setInterval("saveDrafts()",1000);
+                    internal=window.setInterval("saveDrafts()",60000);
                 }
             } else {
                 $('#submit-btn').attr('disabled', 'disabled');

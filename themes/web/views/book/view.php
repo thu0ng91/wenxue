@@ -14,9 +14,13 @@
                     <p>总字：<?php echo $info['words']; ?></p>
                     <p>状态：<?php echo Books::exStatus($info['bookStatus']); ?></p>
                     <div class="btn-group" role="group">
-                        <?php echo CHtml::link('立即阅读',array('book/chapter','cid'=>''),array('class'=>'btn btn-default btn-xs'));?>
-                        <?php echo CHtml::link('收藏','javascript:;',array('class'=>'btn btn-'.($this->favorited ? 'danger' :'default').' btn-xs','action'=>'favorite','action-data'=>$info['id'],'action-type'=>'book'));?>
-                        <button type="button" class="btn btn-default btn-xs">分享</button>
+                        <?php echo CHtml::link('立即阅读',array('book/chapter','cid'=>$chapters[0]['id']),array('class'=>'btn btn-danger btn-small'));?>
+                        <?php if($this->favorited){?>
+                        <?php echo CHtml::link('<i class="fa fa-heart"></i> 已收藏','javascript:;',array('class'=>'btn btn-default btn-small','action'=>'favorite','action-data'=>$info['id'],'action-type'=>'book'));?>
+                        <?php }else{?>
+                        <?php echo CHtml::link('<i class="fa fa-heart-o"></i> 收藏','javascript:;',array('class'=>'btn btn-danger btn-small','action'=>'favorite','action-data'=>$info['id'],'action-type'=>'book'));?>
+                        <?php }?>
+                        <button type="button" class="btn btn-default btn-small">分享</button>
                     </div>
                 </div>
                 <div class="media-right">

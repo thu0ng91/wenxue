@@ -14,9 +14,9 @@ $(window).scroll(function () {
 }), backToTop();
 $(document).keydown(function (b) {
     if (b.keyCode == 37) {
-        $("a[action=preChapter]").click();
+        //$("a[action=preChapter]").click();
     } else if (b.keyCode == 39) {        
-        $("a[action=nextChapter]").click();        
+        //$("a[action=nextChapter]").click();        
     }
 });
 function rebind() {
@@ -145,6 +145,17 @@ function rebind() {
     });
     $('[data-toggle="tooltip"]').tooltip({
         container: 'body'
+    });
+    
+    $("a[action=showChapters]").on('click',function () {
+        var dom=$(this);
+        if(dom.hasClass('active')){
+            dom.removeClass('active');
+            $('#fixed-chapters').hide();
+        }else{
+            dom.addClass('active');
+            $('#fixed-chapters').show();
+        }
     });
     $("a[action=nextChapter]").unbind('click').click(function () {
         var dom = $('#nextChapter');
@@ -330,37 +341,54 @@ function delContent(dom) {
 function favorite(dom) {
     var acdata = dom.attr("action-data");
     var t = dom.attr("action-type");
-    var dt = dom.text();
-    var num = parseInt(dt);
+    var tmp = dom.html();
+    var num = parseInt(dom.text());
     if (!acdata || !t) {
         return false;
     }
     if (!checkLogin()) {
         //没有登录，判断是否包含fa-heart样式，包含则认为已收藏成功过
-        if (dom.children('i').hasClass('fa-heart')) {
-            dialog({msg: '已点赞', modalSize: 'modal-sm'});
-            return false;
-        }
+        dialog({msg: '请先登录哦~', modalSize: 'modal-sm'});
+        return false;
     }
     if (!checkAjax()) {
         return false;
     }
+    var childDom=dom.children('i');
+    if(t==='tip'){
+        if(childDom.hasClass('fa-thumbs-up')){
+            dom.html('<i class="fa fa-thumbs-o-up"></i> '+(--num));
+        }else{
+            dom.html('<i class="fa fa-thumbs-up"></i> '+(++num));
+        }
+    }else if(t==='author'){
+        if(dom.hasClass('btn-default')){
+            dom.removeClass('btn-default').addClass('btn-danger').html('<i class="fa fa-plus"></i> 关注');
+        }else{
+            dom.removeClass('btn-danger').addClass('btn-default').html('<i class="fa fa-check"></i> 已关注');
+        }
+    }else if(t==='book'){
+        if(dom.hasClass('btn-default')){
+            dom.removeClass('btn-default').addClass('btn-danger').html('<i class="fa fa-heart-o"></i> 收藏');
+        }else{
+            dom.removeClass('btn-danger').addClass('btn-default').html('<i class="fa fa-heart"></i> 已收藏');
+        }
+    }
     $.post(zmf.favoriteUrl, {type: t, data: acdata, YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
         ajaxReturn = true;
         result = $.parseJSON(result);
-        if (result.status === 1) {//收藏成功
-            //dom.text((num + 1) + ' 赞').removeClass('btn-default').addClass('btn-success');
-            dom.children('i').removeClass('fa-heart-o').addClass('fa-heart');
+        if (result.status === 1) {//收藏成功            
+            
         } else if (result.status === 2) {//收藏失败
-            //dom.text(dt);
+            dom.html(tmp);
             dialog({msg: result.msg});
         } else if (result.status === 3) {//取消成功
-            //dom.text((num - 1) + ' 赞').removeClass('btn-success').addClass('btn-default');
-            dom.children('i').removeClass('fa-heart').addClass('fa-heart-o');
+            
         } else if (result.status === 4) {//取消失败
-            //dom.text(dt);
+            dom.html(tmp);
             dialog({msg: result.msg});
         } else {
+            dom.html(tmp);
             dialog({msg: result.msg});
         }
         return false;
@@ -724,7 +752,7 @@ function simpleDialog(diaObj) {
     setTimeout("closeSimpleDialog()", 2700);
 }
 function closeSimpleDialog() {
-    $('.simpleDialog').fadeOut(100);
+    $('.simpleDialog').fadeOut(100).remove();
 }
 function simpleLoading(diaObj) {
     if (typeof diaObj !== "object") {

@@ -24,7 +24,7 @@ $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
 </style>
 <div class="container post-page">    
     <ol class="breadcrumb">
-        <li><a href="#">初心创文首页</a></li>
+        <li><?php echo CHtml::link(zmf::config('sitename').'首页',  zmf::config('baseurl'));?></li>
         <?php if($info['classify']==Posts::CLASSIFY_AUTHOR){?>
         <li><?php echo CHtml::link('作者专区',array('posts/index','type'=>'author'));?></li>
         <?php }elseif($info['classify']==Posts::CLASSIFY_READER){?>

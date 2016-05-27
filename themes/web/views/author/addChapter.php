@@ -90,7 +90,7 @@
     </div>
     <div class="edit-navbar-right">
         <div class="btn-group" role="group">
-            <button type="button" id="preview-btn" class="btn btn-default" disabled="disabled">预览</button>
+<!--            <button type="button" id="preview-btn" class="btn btn-default" disabled="disabled">预览</button>-->
             <button type="button" id="submit-btn" class="btn btn-default" disabled="disabled">保存</button>
             <div class="btn-group" role="group">
                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -136,8 +136,3 @@
     </div>
 </div><!-- form -->
 <div class="footer-bg"></div>
-<script>
-    $(document).ready(function(){
-        
-    })
-</script>

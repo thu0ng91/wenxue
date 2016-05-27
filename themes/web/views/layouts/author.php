@@ -188,7 +188,11 @@ $cols=  Column::allCols();
                 <img src="<?php echo $this->authorInfo['avatar'];?>"/>
             </div>
             <h1><?php echo $this->authorInfo['authorName'];?></h1>
-            <p><?php echo CHtml::link('<i class="fa fa-plus"></i> 关注','javascript:;',array('class'=>'btn btn-'.($this->favorited ? 'danger' :'default').' btn-small','action'=>'favorite','action-data'=>$this->authorInfo['id'],'action-type'=>'author'));?></p>
+            <?php if($this->favorited){?>
+            <p><?php echo CHtml::link('<i class="fa fa-check"></i> 已关注','javascript:;',array('class'=>'btn btn-default btn-small','action'=>'favorite','action-data'=>$this->authorInfo['id'],'action-type'=>'author'));?></p>
+            <?php }else{?>
+            <p><?php echo CHtml::link('<i class="fa fa-plus"></i> 关注','javascript:;',array('class'=>'btn btn-danger btn-small','action'=>'favorite','action-data'=>$this->authorInfo['id'],'action-type'=>'author'));?></p>
+            <?php }?>
         </div>
     </div>
     <div class="author-content module author-module">
