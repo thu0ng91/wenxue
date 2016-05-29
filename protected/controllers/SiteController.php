@@ -122,13 +122,10 @@ class SiteController extends Q {
                 $modelUser->addError('truename', '该手机号已被注册');
                 $modelUser->attributes=$_POST['Users'];                
             } else {
-                $contact = zmf::filterInput($_POST['Users']['contact'], 1);
-                $content = zmf::filterInput($_POST['Users']['content'], 1);
                 $inputData = array(
                     'truename' => $truename,
                     'password' => md5($password),
-                    'contact' => $contact,
-                    'content' => $content,
+                    'phone' => $phone,
                 );
                 $modelUser->attributes = $inputData;
                 if ($modelUser->save()) {
