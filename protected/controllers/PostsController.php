@@ -22,7 +22,6 @@ class PostsController extends Q {
         Posts::getAll(array('sql' => $sql,'pageSize'=>  $this->pageSize), $pages, $posts);
         //获取展示
         $showcases=  Showcases::getPagePosts('authorQzone', NUll, false,'c360'); 
-        zmf::test($showcases);
         $this->selectNav = $type . 'Forum';
         $this->pageTitle=$label.' - '.  zmf::config('sitename');
         $data = array(

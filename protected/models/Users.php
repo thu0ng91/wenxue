@@ -146,7 +146,7 @@ class Users extends CActiveRecord {
     }
     public static function findByPhone($phone){
         $info=  Users::model()->find('phone=:phone AND status='.Posts::STATUS_PASSED, array(
-            ':truename'=>$phone
+            ':phone'=>$phone
         ));
         return $info;
     }
