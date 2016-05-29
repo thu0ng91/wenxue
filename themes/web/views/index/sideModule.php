@@ -25,7 +25,7 @@ $_sidePosts=$sideInfo['posts'];
                 </a>
             </div>
             <div class="media-body">
-                <p class="no-wrap title"><?php echo CHtml::link(($_post['colTitle']!='' ? '['.$_post['colTitle'].']' : '').$_post['title'],array('book/view','id'=>$_post['id']));?></p>
+                <p class="ui-nowrap title"><?php echo CHtml::link(($_post['colTitle']!='' ? '['.$_post['colTitle'].']' : '').$_post['title'],array('book/view','id'=>$_post['id']));?></p>
                 <p class="color-grey"><?php echo zmf::subStr($_post['desc'],40);?></p>
             </div>
         </div>
