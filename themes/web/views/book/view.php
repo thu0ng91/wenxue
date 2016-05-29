@@ -77,11 +77,11 @@
             <div class="module-body">
                 <div class="media">
                     <div class="media-left">
-                        <img class="media-object" src="<?php echo $authorInfo['avatar']; ?>" alt="<?php echo $authorInfo['authorName']; ?>">                    
+                        <img class="media-object lazy" style="width: 120px;width: 160px" src="<?php echo zmf::lazyImg(); ?>" data-original="<?php echo $authorInfo['avatar']; ?>" alt="<?php echo $authorInfo['authorName']; ?>">
                     </div>
                     <div class="media-body">
-                        <p><?php echo CHtml::link($authorInfo['authorName'], array('author/view', 'id' => $authorInfo['id'])); ?></p>
-                        <p><?php echo $authorInfo['content'];?></p>
+                        <p class="title ui-nowrap"><?php echo CHtml::link($authorInfo['authorName'], array('author/view', 'id' => $authorInfo['id'])); ?></p>
+                        <p class="color-grey"><?php echo $authorInfo['content'];?></p>
                     </div>
                 </div>
             </div>
