@@ -70,6 +70,9 @@ class UserController extends Q {
             $this->pageTitle = $this->toUserInfo['truename'].'的关注 - ' . zmf::config('sitename');
         }
         Posts::getAll(array('sql' => $sql), $pages, $posts);
+        foreach ($posts as $k=>$val){
+            $posts[$k]['avatar']=  zmf::getThumbnailUrl($val['avatar'], 'a120', 'avatar');
+        }
         $this->selectNav = 'favorite';        
         $data = array(
             'label' => $label,
@@ -96,6 +99,8 @@ class UserController extends Q {
             $model->attributes = $_POST['Authors'];
             if ($model->save()) {
                 Users::model()->updateByPk($this->uid, array('authorId' => $model->id));
+                $code = 'authorAuth-' . $this->uid;
+                Yii::app()->session[$code]=1;
                 $this->redirect(array('author/view', 'id' => $model->id));
             }
         }

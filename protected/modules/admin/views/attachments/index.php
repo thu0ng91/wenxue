@@ -45,7 +45,7 @@ $this->renderPartial('_nav');
     <div class="img-item">
         <img src="<?php echo zmf::lazyImg();?>" data-original="<?php echo $_thumb;?>" class="img-responsive lazy"/>
         <div class="fixed-mask">
-            <p><?php echo CHtml::link('复制链接','javascript:;',array('class'=>'btn btn-default btn-xs btn-block'));?></p>
+            <p><a href="javascript:;" class="btn btn-xs btn-default btn-copy btn-block" data-clipboard-text="<?php echo $img['filePath'];?>">复制链接</a></p>
             <p><?php echo CHtml::link('查看大图',$img['filePath'],array('class'=>'btn btn-default btn-xs btn-block','target'=>'_blank'));?></p>
         </div>
     </div>

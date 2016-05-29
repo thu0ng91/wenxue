@@ -150,7 +150,15 @@
                 <span>更新时间：<?php echo zmf::time($chapterInfo['updateTime']); ?></span>         
             </p>
             <div class="chapter-content">
+                <?php if($chapterInfo['postscript']!='' && $chapterInfo['psPosition']==1){?>
+                <p><?php echo nl2br($chapterInfo['postscript']);?></p>
+                <hr/>
+                <?php }?>
                 <?php echo Chapters::text($chapterInfo['content']); ?>
+                <?php if($chapterInfo['postscript']!='' && $chapterInfo['psPosition']==0){?>
+                <hr/>
+                <p><?php echo nl2br($chapterInfo['postscript']);?></p>                
+                <?php }?>
             </div>
         </div>
         <div class="module chapter-tips-module">

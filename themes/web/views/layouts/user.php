@@ -119,9 +119,11 @@ $cols=  Column::allCols();
     }
     .user-following .row{
         text-align:center
-    }    
-    
-    
+    }
+    .user-following .col-xs-2 img{
+        width:74px;
+        height:74px;
+    }
 </style>
 <div class="navbar navbar-default" role="navigation">
     <div class="container">

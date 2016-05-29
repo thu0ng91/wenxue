@@ -3,23 +3,6 @@ var beforeModal;
 var ajaxReturn = true;
 
 var url = window.location.href;
-if ($.support.pjax) {
-    if(zmf.module=='magazine'){
-        $(document).pjax('a:not([data-remote]):not([data-skip-pjax]):not([data-ajax=false]):not([target=_blank])', '#pjax-container', {
-            push:true,
-            scrollTo:0,
-            fragment:'#pjax-container', 
-            timeout:5000
-        });
-        $(document).on('pjax:send', function() {
-           simpleLoading({title:'正在加载中...'});
-        });
-        $(document).on('pjax:complete', function() {
-            closeSimpleLoading();        
-            rebind();
-        });
-    }
-};
 $(window).scroll(function () {
     $(window).scrollTop() > 100 ? $(".back-to-top").fadeIn() : $(".back-to-top").fadeOut();
 }), $(".back-to-top").click(function () {
@@ -29,14 +12,11 @@ $(window).scroll(function () {
 }), $(window).resize(function () {
     backToTop();
 }), backToTop();
-$(window).resize(function() {
-        showChapters();
-    });
 $(document).keydown(function (b) {
     if (b.keyCode == 37) {
-        $("a[action=preChapter]").click();
+        //$("a[action=preChapter]").click();
     } else if (b.keyCode == 39) {        
-        $("a[action=nextChapter]").click();        
+        //$("a[action=nextChapter]").click();        
     }
 });
 function rebind() {
@@ -53,20 +33,14 @@ function rebind() {
         var dom = $(this);
         favorite(dom);
     });
-    $("a[action=select-tag]").unbind('click').click(function () {
+    $(".tag-item").on('click',function () {
         var dom = $(this);
-        var tagid = dom.attr('action-data');
-        if (!tagid) {
-            return false;
-        }
-        var _pdom = dom.parent('.tag-item');
-        if (_pdom.hasClass('active')) {
-            _pdom.removeClass('active');
-            dom.children('input').remove();
-        } else {
-            _pdom.addClass('active');
-            var _html = '<input type="hidden" name="tags[]" value="' + tagid + '"/>';
-            dom.append(_html);
+        if(dom.hasClass('active')){
+            dom.removeClass('active');
+            dom.children('input').removeAttr('checked');
+        }else{
+            dom.addClass('active');
+            dom.children('input').attr('checked','checked');
         }
     });
     $(".comment-textarea").unbind('click').click(function () {
@@ -79,6 +53,39 @@ function rebind() {
         var k = dom.attr("action-data");
         var t = dom.attr("action-type");
         addComment(dom, t, k);
+    });
+    $("a[action=add-tips]").unbind('click').click(function () {
+        var dom = $(this);
+        var k = dom.attr("action-data");
+        var t = dom.attr("action-type");
+        var c = $('#content-' + t + '-' + k).val();
+        var score=parseInt($('#add-tips-score input[name="score"]:checked ').val());        
+        if (!k || !t || !c) {
+            dialog({msg: '请填写内容'});
+            return false;
+        }
+        if (!score) {
+            score = 0;
+        }
+        if((!score || (score<1 || score>5)) && to===0){
+            dialog({msg: '请打一个分吧'});
+            return false;
+        }
+        if (!checkAjax()) {
+            return false;
+        }
+        $.post(zmf.ajaxUrl, {action:'addTip',k: k, t: t, c: c,score:score, YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
+            ajaxReturn = true;
+            result = eval('(' + result + ')');
+            if (result['status'] == '1') {
+                $('#content-' + t + '-' + k).val('');
+                $("#comments-" + t + "-" + k).append(result['msg']);
+                cancelReplyOne(k);
+                rebind();
+            } else {
+                dialog({msg: result['msg']});
+            }
+        });
     });
     $("a[action=scroll]").unbind('click').click(function () {
         var dom = $(this);
@@ -94,11 +101,61 @@ function rebind() {
         var dom = $(this);
         share(dom);
     });
+    $("a[action=publishBook]").on('click',function () {
+        var dom = $(this);
+        var id=parseInt(dom.attr('data-id'));
+        if(!id){
+            alert('缺少参数');
+            return false;
+        }
+        if(confirm('确定立即发表作品么？')){
+            $.post(zmf.ajaxUrl, {action:'publishBook',id:id,YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {                
+                result = eval('(' + result + ')');
+                if (result['status'] == '1') {
+                    window.location.reload();
+                } else {
+                    dialog({msg:result['msg']});
+                    return false;
+                }
+            });
+        }
+    });
+    $("a[action=publishChapter]").on('click',function () {
+        var dom = $(this);
+        var id=parseInt(dom.attr('data-id'));
+        if(!id){
+            alert('缺少参数');
+            return false;
+        }
+        if(confirm('确定立即发表本章节么？')){
+            $.post(zmf.ajaxUrl, {action:'publishChapter',id:id,YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {                
+                result = eval('(' + result + ')');
+                if (result['status'] == '1') {
+                    window.location.reload();
+                } else {
+                    dialog({msg:result['msg']});
+                    return false;
+                }
+            });
+        }
+    });
+    
     $('#add-post-btn').unbind('click').click(function () {
         $(window).unbind('beforeunload');
     });
     $('[data-toggle="tooltip"]').tooltip({
         container: 'body'
+    });
+    
+    $("a[action=showChapters]").on('click',function () {
+        var dom=$(this);
+        if(dom.hasClass('active')){
+            dom.removeClass('active');
+            $('#fixed-chapters').hide();
+        }else{
+            dom.addClass('active');
+            $('#fixed-chapters').show();
+        }
     });
     $("a[action=nextChapter]").unbind('click').click(function () {
         var dom = $('#nextChapter');
@@ -128,7 +185,7 @@ function rebind() {
         $(this).remove();
     });
     //输入框自动变大
-    //textareaAutoResize();
+    textareaAutoResize();
     //意见反馈
     $("a[action=feedback]").unbind('click').click(function () {
         var html = '<div class="form-group"><label for="feedback-contact">联系方式</label><input type="text" id="feedback-contact" class="form-control" placeholder="常用联系方式(邮箱、QQ、微信等)，便于告知反馈处理进度(可选)"/></div><div class="form-group"><label for="feedback-content">反馈内容</label><textarea id="feedback-content" class="form-control" max-lenght="255" placeholder="您的意见或建议"></textarea></div>';
@@ -136,6 +193,33 @@ function rebind() {
         $("button[action=feedback]").unbind('click').click(function () {
             feedback();
         });
+    });    
+    $('.openGallery').on('click',function(){
+        var dom=$(this);
+        var holder=dom.attr('data-holder');
+        var field=dom.attr('data-field');
+        dialog({msg: '<div id="gallery-select-modal" class="gallery-body"></div>','title':'选择图片'});
+        $.post(zmf.userGalleryUrl, {from:'selectImg',YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {                
+            result = eval('(' + result + ')');
+            if (result['status'] == '1') {
+                $("#gallery-select-modal").html(result['msg']['html']);   
+                $('.select-gallery-img').on('click',function(){
+                    var _dom=$(this);
+                    selectThisImg(_dom,holder,field);
+                });
+                rebind();
+            } else {
+                alert(result['msg']);
+            }
+        });
+    });
+    //调用复制
+    var clipboard = new Clipboard('.btn-copy');
+    clipboard.on('success', function (e) {
+        simpleDialog({content: '复制成功'});
+    });
+    clipboard.on('error', function (e) {
+        dialog({msg: '复制失败，请手动复制浏览器链接'});
     });
 }
 /**
@@ -209,7 +293,19 @@ function getContents(dom) {
     });
 
 }
-
+function selectThisImg(dom,holder,field){
+    var _origin=dom.attr('data-original');
+    if(!_origin){
+        alert('获取图片地址失败');
+        return false;
+    }
+    if(holder){
+        $('#'+holder).attr('src',_origin);
+    }
+    if(field){
+        $('#'+field).val(_origin);
+    }
+}
 function delContent(dom) {
     var acdata = dom.attr("action-data");
     var t = dom.attr("action-type");
@@ -253,37 +349,54 @@ function delContent(dom) {
 function favorite(dom) {
     var acdata = dom.attr("action-data");
     var t = dom.attr("action-type");
-    var dt = dom.text();
-    var num = parseInt(dt);
+    var tmp = dom.html();
+    var num = parseInt(dom.text());
     if (!acdata || !t) {
         return false;
     }
     if (!checkLogin()) {
         //没有登录，判断是否包含fa-heart样式，包含则认为已收藏成功过
-        if (dom.children('i').hasClass('fa-heart')) {
-            dialog({msg: '已点赞', modalSize: 'modal-sm'});
-            return false;
-        }
+        dialog({msg: '请先登录哦~', modalSize: 'modal-sm'});
+        return false;
     }
     if (!checkAjax()) {
         return false;
     }
+    var childDom=dom.children('i');
+    if(t==='tip'){
+        if(childDom.hasClass('fa-thumbs-up')){
+            dom.html('<i class="fa fa-thumbs-o-up"></i> '+(--num));
+        }else{
+            dom.html('<i class="fa fa-thumbs-up"></i> '+(++num));
+        }
+    }else if(t==='author'){
+        if(dom.hasClass('btn-default')){
+            dom.removeClass('btn-default').addClass('btn-danger').html('<i class="fa fa-plus"></i> 关注');
+        }else{
+            dom.removeClass('btn-danger').addClass('btn-default').html('<i class="fa fa-check"></i> 已关注');
+        }
+    }else if(t==='book'){
+        if(dom.hasClass('btn-default')){
+            dom.removeClass('btn-default').addClass('btn-danger').html('<i class="fa fa-heart-o"></i> 收藏');
+        }else{
+            dom.removeClass('btn-danger').addClass('btn-default').html('<i class="fa fa-heart"></i> 已收藏');
+        }
+    }
     $.post(zmf.favoriteUrl, {type: t, data: acdata, YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
         ajaxReturn = true;
         result = $.parseJSON(result);
-        if (result.status === 1) {//收藏成功
-            //dom.text((num + 1) + ' 赞').removeClass('btn-default').addClass('btn-success');
-            dom.children('i').removeClass('fa-heart-o').addClass('fa-heart');
+        if (result.status === 1) {//收藏成功            
+            
         } else if (result.status === 2) {//收藏失败
-            //dom.text(dt);
+            dom.html(tmp);
             dialog({msg: result.msg});
         } else if (result.status === 3) {//取消成功
-            //dom.text((num - 1) + ' 赞').removeClass('btn-success').addClass('btn-default');
-            dom.children('i').removeClass('fa-heart').addClass('fa-heart-o');
+            
         } else if (result.status === 4) {//取消失败
-            //dom.text(dt);
+            dom.html(tmp);
             dialog({msg: result.msg});
         } else {
+            dom.html(tmp);
             dialog({msg: result.msg});
         }
         return false;
@@ -294,30 +407,9 @@ function addComment(dom) {
     var t = dom.attr("action-type");
     var to = parseInt($('#replyoneHolder-' + k).attr('tocommentid'));
     var c = $('#content-' + t + '-' + k).val();
-    var username = $('#username-' + t + '-' + k).val();
-    var email = $('#email-' + t + '-' + k).val();
     if (!k || !t || !c) {
         dialog({msg: '请填写内容'});
         return false;
-    }
-    if (!username) {
-        username = '';
-    }
-    if (!email) {
-        email = '';
-    }
-    if (!checkLogin()) {
-        if (!username) {
-            dialog({msg: '请填写称呼'});
-            return false;
-        }
-        if (email != '') {
-            var reg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
-            if (!reg.test(email)) {
-                dialog({msg: '请填写正确的邮箱地址'});
-                return false;
-            }
-        }
     }
     if (!to) {
         to = 0;
@@ -325,7 +417,7 @@ function addComment(dom) {
     if (!checkAjax()) {
         return false;
     }
-    $.post(zmf.addCommentUrl, {k: k, t: t, c: c, to: to, email: email, username: username, YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
+    $.post(zmf.addCommentUrl, {k: k, t: t, c: c, to: to, YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
         ajaxReturn = true;
         result = eval('(' + result + ')');
         if (result['status'] == '1') {
@@ -393,7 +485,7 @@ function share(dom) {
     var img = dom.attr("action-img");
     var title = dom.attr("action-title");
     var html = '<div class="float-share-holder"><div class="float-share-content"><span class="float-close"><i class="fa fa-close"></i></span><div class="row"><div class="col-xs-6 text-center"><img src="' + qr + '" class="img-responsive"/><p class="help-block">扫码分享到微信</p></div><div class="col-xs-6 float-btns"><a href="javascript:;" class="btn btn-default btn-block"><i class="fa fa-weibo"></i></a><a href="javascript:;" class="btn btn-default btn-block"><i class="fa fa-qq"></i></a><a href="javascript:;" class="btn btn-default btn-block">复制链接</a></div></div></div><div class="float-triangle"></div></div>';
-    var html = '<div class="share-body"><p><img src="' + qr + '" class="img-responsive"/></p><p class="help-block">扫码分享到微信</p><div class="more-awesome"><span>或</span></div><p><a href="javascript:;" class="btn btn-default btn-block" action="shareToWeibo"><i class="fa fa-weibo"></i> 分享到微博</a><a href="javascript:;" class="btn btn-default btn-block" action="shareToQzone"><i class="fa fa-qq"></i> 分享到空间</a><a href="javascript:;" class="btn btn-default btn-block btn-copy"><i class="fa fa-copy"></i> 复制此链接</a></p></div>';
+    var html = '<div class="share-body"><p><img src="' + qr + '" class="img-responsive"/></p><p class="help-block text-center">扫码分享到微信</p><div class="more-awesome"><span>或</span></div><p><a href="javascript:;" class="btn btn-default btn-block" action="shareToWeibo"><i class="fa fa-weibo"></i> 分享到微博</a><a href="javascript:;" class="btn btn-default btn-block" action="shareToQzone"><i class="fa fa-qq"></i> 分享到空间</a><a href="javascript:;" class="btn btn-default btn-block btn-copy" data-clipboard-text="'+url+'"><i class="fa fa-copy"></i> 复制此链接</a></p></div>';
     dialog({msg: html, title: '分享', modalSize: 'modal-sm'});
     $("a[action=shareToWeibo]").unbind('click').click(function () {
         window.open('http://service.weibo.com/share/share.php?title=' + title + '&url=' + url + '&appkey=' + zmf.weiboAppkey + '&pic=' + img + '&changweibo=yes&ralateUid=' + zmf.weiboRalateUid, '_newtab');
@@ -401,19 +493,7 @@ function share(dom) {
     $("a[action=shareToQzone]").unbind('click').click(function () {
         window.open('http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?title=' + title + '&url=' + url + '&pics=' + img, '_newtab');
     });
-    var clipboard = new Clipboard('.btn-copy', {
-        text: function () {
-            return url;
-        }
-    });
-    clipboard.on('success', function (e) {
-        simpleDialog({content: '复制成功'});
-    });
-    clipboard.on('error', function (e) {
-        dialog({msg: '复制失败，请手动复制浏览器链接'});
-    });
 }
-
 function toggleChapters(){
     var dom=$('#chapters-box');
     var right=0;
@@ -502,7 +582,7 @@ function singleUploadify(params) {
         fileTypeDesc: 'Image Files',
         uploader: params.uploadUrl,
         buttonText: params.buttonText ? params.buttonText : (params.buttonText === null ? '' : '添加图片'),
-        buttonClass: 'btn btn-default',
+        buttonClass: params.buttonClass ? params.buttonClass : 'btn btn-default',
         debug: false,
         formData: {'PHPSESSID': zmf.currentSessionId, 'YII_CSRF_TOKEN': zmf.csrfToken},
         onUploadStart: function (file) {
@@ -524,15 +604,17 @@ function singleUploadify(params) {
                         YII_CSRF_TOKEN: zmf.csrfToken,
                         filePath: data.key,
                         fileSize: file.size,
-                        type: params.type
+                        type: params.type,
+                        action: 'saveUploadImg'
                     };
-                    $.post(zmf.saveUploadImgUrl, passData, function (reJson) {
+                    $.post(zmf.ajaxUrl,passData, function (reJson) {
                         reJson = $.parseJSON(reJson);
                         if (reJson.status === 1) {
                             $("#fileSuccess").append(reJson.html);
                             if (params.inputId) {
                                 $('#' + params.inputId).val(reJson.attachid);
                             }
+                            rebind();
                         } else {
                             alert(reJson.msg);
                             return false;
@@ -666,7 +748,7 @@ function simpleDialog(diaObj) {
     setTimeout("closeSimpleDialog()", 2700);
 }
 function closeSimpleDialog() {
-    $('.simpleDialog').fadeOut(100);
+    $('.simpleDialog').fadeOut(100).remove();
 }
 function simpleLoading(diaObj) {
     if (typeof diaObj !== "object") {
@@ -715,7 +797,13 @@ function backToTop() {
         var x3 = parseInt((x + x1 + 16) / 2);
     }
     $("#back-to-top").css('left', x3 + 'px');
-    //alert(x3);
+    //让body至少为窗口高度
+    var wh=$(window).height();
+    var dh=$(document.body).height();
+    if(wh>dh){
+        $("body").css('height',wh);
+    }
+    $('#footer-bg').fadeIn(3000);
 }
 function textareaAutoResize() {
     $('textarea').autoResize({

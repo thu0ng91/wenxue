@@ -47,7 +47,7 @@ class Books extends CActiveRecord {
             array('uid', 'default', 'setOnEmpty' => true, 'value' => zmf::uid()),
             array('status', 'default', 'setOnEmpty' => true, 'value' => Posts::STATUS_PASSED),
             array('bookStatus', 'default', 'setOnEmpty' => true, 'value' => Books::STATUS_NOTPUBLISHED),
-            array('uid, aid,colid, title', 'required'),
+            array('uid, aid,colid, title,content,desc', 'required'),
             array('faceImg', 'checkUrl'),
             array('vip, bookStatus, status,top', 'numerical', 'integerOnly' => true),
             array('uid, aid,colid,favorites, hits, chapters, comments, words,topTime,scorer,score1,score2,score3,score4,score5', 'length', 'max' => 10),
