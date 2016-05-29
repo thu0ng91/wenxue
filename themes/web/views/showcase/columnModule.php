@@ -33,13 +33,12 @@ $_columnClass=$class!='' ? $class : 'column-min';
                     </div>
                     <div class="media-body">
                         <p class="no-wrap title"><?php echo CHtml::link($_post['title'],array('book/view','id'=>$_post['id']),array('target'=>'_blank'));?></p>
-                        <p class="color-grey"><?php echo $_post['desc'];?></p>
+                        <p class="color-grey"><?php echo zmf::subStr($_post['desc']);?></p>
                     </div>
                 </div>
             </div>
         <?php }?>
         </div>
-        
         <?php }?>
         <?php }?>
     </div>

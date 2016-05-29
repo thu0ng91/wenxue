@@ -18,20 +18,22 @@
     .column-min{
         width: 230px;     
         height:360px;
+        overflow: hidden
     }
     .column-medium{
         width: 480px;
         margin:0 10px;
         height:360px;
-        border: none
+        border: none;
+        overflow: hidden
     }
     .column-medium .carousel .item img{
         width: 480px;
         height: 360px;
     }
     .column-medium .media-object{
-        width: 78px;
-        height: 104px;
+        width: 64px;
+        height: 85px;
     }
     .column-medium .title{
         

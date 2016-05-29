@@ -214,9 +214,8 @@ $cols=  Column::allCols();
         </div>
         <div class="aside-part">
             <div class="author-side-info">
-                <p><span class="info-label">性别</span><span class="txt">男</span></p>
                 <p><span class="info-label">入住</span><span class="txt"><?php echo zmf::time($this->authorInfo['cTime'],'Y-m-d');?></span></p>
-                <p><span class="info-label">简介</span><span class="txt"><?php echo $this->authorInfo['content'];?></span></p>
+                <p><span class="info-label">简介</span><span class="txt"><?php echo $this->authorInfo['content']!='' ? $this->authorInfo['content'] : '未设置';?></span></p>
             </div>
             <div class="author-side-num">
                 <a class="item" href="<?php echo Yii::app()->createUrl('author/fans',array('id'=>$this->authorInfo['id']));?>">

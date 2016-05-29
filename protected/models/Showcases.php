@@ -222,10 +222,11 @@ class Showcases extends CActiveRecord {
         foreach ($showcases as $case){
             $_tmp=$case;
             if($case['classify']=='book'){
-                $_sql="SELECT b.id,b.aid,b.colid,'' AS colTitle,b.title,b.faceImg,b.desc,'阿年飞少' AS authorName FROM {{books}} b,{{showcase_link}} sl WHERE sl.sid='{$case['id']}' AND sl.classify='book' AND sl.logid=b.id ORDER BY sl.startTime ASC LIMIT {$case['num']}";
+                $_sql="SELECT b.id,b.aid,b.colid,'' AS colTitle,b.title,b.faceImg,b.desc,'' AS authorName FROM {{books}} b,{{showcase_link}} sl WHERE sl.sid='{$case['id']}' AND sl.classify='book' AND sl.logid=b.id ORDER BY sl.startTime ASC LIMIT {$case['num']}";
                 $_posts=  Yii::app()->db->createCommand($_sql)->queryAll();
                 if(!empty($_posts)){
                     $colidStr=  join(',', array_unique(array_keys(CHtml::listData($_posts, 'colid', ''))));
+                    $aidStr=  join(',', array_unique(array_keys(CHtml::listData($_posts, 'aid', ''))));
                     if($colidStr!=''){
                         $_sqlCol="SELECT id,title FROM {{column}} WHERE id IN({$colidStr})";
                         $_colsArr=Yii::app()->db->createCommand($_sqlCol)->queryAll();
@@ -234,6 +235,18 @@ class Showcases extends CActiveRecord {
                             foreach ($_colsArr as $_colval){
                                 if($_colval['id']==$val['colid']){
                                     $_posts[$k]['colTitle']=$_colval['title'];
+                                    continue;
+                                }
+                            }
+                        }
+                    }
+                    if($aidStr!=''){
+                        $_sqlCol="SELECT id,authorName FROM {{authors}} WHERE id IN({$aidStr})";
+                        $_authorArr=Yii::app()->db->createCommand($_sqlCol)->queryAll();
+                        foreach ($_posts as $k=>$val){                            
+                            foreach ($_authorArr as $_aval){
+                                if($_aval['id']==$val['aid']){
+                                    $_posts[$k]['authorName']=$_aval['authorName'];
                                     continue;
                                 }
                             }
