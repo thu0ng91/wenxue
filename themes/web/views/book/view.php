@@ -77,7 +77,7 @@
             <div class="module-body">
                 <div class="media">
                     <div class="media-left">
-                        <img class="media-object lazy" style="width: 120px;width: 160px" src="<?php echo zmf::lazyImg(); ?>" data-original="<?php echo $authorInfo['avatar']; ?>" alt="<?php echo $authorInfo['authorName']; ?>">
+                        <img class="media-object lazy" style="width: 120px;height: 160px" src="<?php echo zmf::lazyImg(); ?>" data-original="<?php echo $authorInfo['avatar']; ?>" alt="<?php echo $authorInfo['authorName']; ?>">
                     </div>
                     <div class="media-body">
                         <p class="title ui-nowrap"><?php echo CHtml::link($authorInfo['authorName'], array('author/view', 'id' => $authorInfo['id'])); ?></p>
