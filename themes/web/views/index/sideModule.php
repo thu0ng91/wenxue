@@ -21,7 +21,7 @@ $_sidePosts=$sideInfo['posts'];
         <div class="media top-item">
             <div class="media-left">
                 <a href="<?php echo Yii::app()->createUrl('book/view',array('id'=>$_post['id']));?>">
-                    <img class="media-object" src="<?php echo $_post['faceImg'];?>" alt="<?php echo $_post['title'];?>">
+                    <img class="media-object lazy" src="<?php echo zmf::lazyImg();?>" data-original="<?php echo $_post['faceImg'];?>" alt="<?php echo $_post['title'];?>">
                 </a>
             </div>
             <div class="media-body">
