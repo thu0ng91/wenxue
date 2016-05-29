@@ -75,7 +75,7 @@ class Authors extends CActiveRecord {
             'id' => 'ID',
             'uid' => '用户ID',
             'authorName' => '作者名',
-            'avatar' => '用户头像',
+            'avatar' => '作者头像',
             'skinUrl' => '皮肤图片地址',
             'password' => '密码',
             'newPassword' => '新密码',

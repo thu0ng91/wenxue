@@ -16,6 +16,7 @@
             'enableAjaxValidation'=>false,
     )); ?>
     <?php echo $form->errorSummary($model); ?>
+    <?php echo $form->hiddenField($model,'avatar',array('class'=>'form-control')); ?>
     <div class="form-group">
         <?php echo $form->labelEx($model,'authorName'); ?>
         <?php echo $form->textField($model,'authorName',array('size'=>16,'maxlength'=>16,'class'=>'form-control')); ?>
@@ -23,8 +24,16 @@
     </div>
     <div class="form-group">
         <?php echo $form->labelEx($model,'avatar'); ?>
-        <?php echo $form->textField($model,'avatar',array('size'=>60,'maxlength'=>255,'class'=>'form-control')); ?>
-        <?php echo $form->error($model,'avatar'); ?>
+        <div class="media">
+            <div class="media-left">
+                <img src="<?php echo $model->avatar;?>" alt="作者头像" id="user-avatar" style="width: 120px;height: 160px">
+            </div>
+            <div class="media-body">
+                <p><a href="javascript:;" class="btn btn-default openGallery" role="button" data-holder="user-avatar" data-field="<?php echo CHtml::activeId($model, 'avatar');?>">选择头像</a></p>
+                <p class="help-block">作者的头像</p>
+                <?php echo $form->error($model,'avatar'); ?>
+            </div>
+        </div>
     </div>
     <div class="form-group">
         <?php echo $form->labelEx($model,'password'); ?>
