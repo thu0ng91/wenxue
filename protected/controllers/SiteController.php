@@ -133,11 +133,8 @@ class SiteController extends Q {
                     $_model = new FrontLogin;
                     $_model->phone = $phone;
                     $_model->password = $password;
-                    $_model->login();
-                    if ($this->referer == '') {
-                        $this->referer = zmf::config('baseurl');
-                    }
-                    $this->redirect($this->referer);
+                    $_model->login();                    
+                    $this->redirect(array('user/index'));
                 }
             }
         }
