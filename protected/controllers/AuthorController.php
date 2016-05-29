@@ -11,13 +11,13 @@ class AuthorController extends Q {
         $this->layout = 'author';
         $id = zmf::val('id', 2);
         if (!$id && !$this->userInfo['authorId']) {
-            throw new CHttpException(404, '您所查看的作者不存在，请核实');
+            throw new CHttpException(404, '你所查看的作者不存在，请核实');
         } elseif (!$id) {
             $id = $this->userInfo['authorId'];
         }
         $this->authorInfo = Authors::getOne($id, 'd120');
         if (!$this->authorInfo) {
-            throw new CHttpException(404, '您所查看的作者不存在，请核实');
+            throw new CHttpException(404, '你所查看的作者不存在，请核实');
         } else {
             $this->authorInfo['skinUrl'] = zmf::getThumbnailUrl($this->authorInfo['skinUrl'], 'c960', 'author');
         }
@@ -25,6 +25,7 @@ class AuthorController extends Q {
             $this->adminLogin = Authors::checkLogin($this->userInfo, $id);
             $this->favorited = Favorites::checkFavored($id, 'author');
         }
+        $this->pageTitle=$this->authorInfo['authorName'].' - '.zmf::config('sitename');
     }
 
     private function checkAuthorLogin() {
@@ -60,6 +61,9 @@ class AuthorController extends Q {
     public function actionFans() {
         $sql = "SELECT u.id,u.truename,u.avatar FROM {{users}} u,{{favorites}} f WHERE f.logid='{$this->authorInfo['id']}' AND f.classify='author' AND f.uid=u.id ORDER BY f.cTime DESC";
         Posts::getAll(array('sql' => $sql), $pages, $posts);
+        foreach ($posts as $k=>$val){
+            $posts[$k]['avatar']=  zmf::getThumbnailUrl($val['avatar'], 'a120', 'avatar');
+        }
         $this->selectNav = 'fans';
         $data = array(
             'posts' => $posts
@@ -84,9 +88,9 @@ class AuthorController extends Q {
         if ($bid) {
             $model = Books::getOne($bid);
             if (!$model || $model['status'] != Posts::STATUS_PASSED) {
-                throw new CHttpException(404, '您所编辑的小说不存在，请核实');
+                throw new CHttpException(404, '你所编辑的小说不存在，请核实');
             } elseif ($model['uid'] != $this->uid || $model['aid'] != $this->userInfo['authorId']) {
-                throw new CHttpException(403, '您无权改操作');
+                throw new CHttpException(403, '你无权改操作');
             }
         } else {
             $model = new Books;
@@ -269,7 +273,7 @@ class AuthorController extends Q {
         if (!$this->userInfo['authorId']) {
             throw new CHttpException(403, '操作有误');
         } elseif (!$this->adminLogin) {
-            throw new CHttpException(403, '您已退出，请勿重复操作');
+            throw new CHttpException(403, '你已退出，请勿重复操作');
         }
         $code = 'authorAuth-' . $this->uid;
         unset(Yii::app()->session[$code]);

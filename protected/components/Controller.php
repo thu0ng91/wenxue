@@ -68,7 +68,7 @@ class Controller extends CController {
                 if ($return) {
                     return false;
                 } elseif (!$json AND ! Yii::app()->request->isAjaxRequest) {
-                    throw new CHttpException(403, '您无权该操作');
+                    throw new CHttpException(403, '你无权该操作');
                 } else {
                     $this->jsonOutPut(0, '不是管理员');
                 }
@@ -80,9 +80,9 @@ class Controller extends CController {
             if ($return) {
                 return false;
             } elseif (!$json AND ! Yii::app()->request->isAjaxRequest) {
-                throw new CHttpException(403, '您无权该操作');
+                throw new CHttpException(403, '你无权该操作');
             } else {
-                $this->jsonOutPut(0, '您无权该操作');
+                $this->jsonOutPut(0, '你无权该操作');
             }
         }
         return true;

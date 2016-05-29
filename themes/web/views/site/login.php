@@ -12,12 +12,14 @@
                 )); ?>                
                 <?php CHtml::$afterRequiredLabel = '';?>
                 <div class="form-group">
-                    <?php echo $form->labelEx($model,'username'); ?>
-                    <?php echo $form->textField($model,'username', array('class'=>'form-control','placeholder'=>'邮箱/用户名')); ?> <?php echo $form->error($model,'username'); ?>
+                    <?php echo $form->labelEx($model,'phone'); ?>
+                    <?php echo $form->textField($model,'phone', array('class'=>'form-control','placeholder'=>'请输入手机号')); ?>
+                    <?php echo $form->error($model,'phone'); ?>
                 </div>
                 <div class="form-group">
                     <?php echo $form->labelEx($model,'password'); ?>
-                    <?php echo $form->passwordField($model,'password', array('class'=>'form-control','placeholder'=>'请输入密码')); ?> <?php echo $form->error($model,'password'); ?>
+                    <?php echo $form->passwordField($model,'password', array('class'=>'form-control','placeholder'=>'请输入密码')); ?>
+                    <?php echo $form->error($model,'password'); ?>
                 </div>
                 <?php $cookieInfo=zmf::getCookie('checkWithCaptcha');if($cookieInfo=='1'){?>
                 <div class="form-group">        

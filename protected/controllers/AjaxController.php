@@ -43,15 +43,21 @@ class AjaxController extends Q {
         }
         $status = Posts::STATUS_PASSED;
         $uid = $this->uid;
-        if ($type == 'chapter') {
-            $ckInfo = Chapters::checkTip($keyid, $uid);
-            if ($ckInfo !== false) {
-                $this->jsonOutPut(0, '每章节只能评价一次');
-            }
-            $postInfo = Chapters::getOne($keyid);
+        //todo，按分类获取信息
+        $ckInfo = Chapters::checkTip($keyid, $uid);
+        if ($ckInfo !== false) {
+            $this->jsonOutPut(0, '每章节只能评价一次');
         }
+        $postInfo = Chapters::getOne($keyid);        
         if (!$postInfo || $postInfo['status'] != Posts::STATUS_PASSED) {
-            $this->jsonOutPut(0, '您所评论的内容不存在');
+            $this->jsonOutPut(0, '你所评论的内容不存在');
+        }
+        //小说信息
+        $bookInfo=  Books::getOne($postInfo['bid']);
+        if(!$bookInfo || $bookInfo['status']!=Posts::STATUS_PASSED){
+            $this->jsonOutPut(0, '你所评论的小说不存在');
+        }elseif ($bookInfo['bookStatus']!=Books::STATUS_PUBLISHED) {
+            $this->jsonOutPut(0, '你所评论的小说暂未发表');
         }
         //处理文本
         $filter = Posts::handleContent($content);
@@ -77,7 +83,7 @@ class AjaxController extends Q {
                 if ($type == 'chapter') {
                     Posts::updateCount($keyid, 'Chapters', 1, 'comments');
                     $_url = CHtml::link('查看详情', array('book/chapter', 'cid' => $keyid, '#' => 'pid-' . $model->id));
-                    $_content = '您的小说章节【' . $postInfo['title'] . '】有了新的点评,' . $_url;
+                    $_content = '你的小说章节【' . $postInfo['title'] . '】有了新的点评,' . $_url;
                     $intoData['truename'] = $this->userInfo['truename'];
                     $intoData['cTime'] = zmf::now();
                     $intoData['favors'] = 0;
@@ -97,6 +103,16 @@ class AjaxController extends Q {
                     );
                     Notification::add($_noticedata);
                 }
+                //记录用户操作
+                $jsonData=  CJSON::encode(array(
+                    'cid'=>$keyid,
+                    'cTitle'=>$postInfo['title'],
+                    'bid'=>$bookInfo['id'],
+                    'bTitle'=>$bookInfo['title'],
+                    'bDesc'=>$bookInfo['desc'],
+                    'bFaceImg'=>$bookInfo['faceImg'],
+                ));
+                UserAction::recordAction($model->id, 'chapterTip', $jsonData);
                 $html = $this->renderPartial('/book/_tip', array('data' => $intoData, 'postInfo' => $postInfo), true);
                 $this->jsonOutPut(1, $html);
             } else {
@@ -289,9 +305,9 @@ class AjaxController extends Q {
         $model->attributes = $attr;
         if ($model->validate()) {
             if ($model->save()) {
-                $this->jsonOutPut(1, '感谢您的反馈');
+                $this->jsonOutPut(1, '感谢你的反馈');
             } else {
-                $this->jsonOutPut(1, '感谢您的反馈');
+                $this->jsonOutPut(1, '感谢你的反馈');
             }
         } else {
             $this->jsonOutPut(0, '反馈失败，请重试');
@@ -317,7 +333,7 @@ class AjaxController extends Q {
         $uid = $this->uid;
         $postInfo = Posts::model()->findByPk($keyid);
         if (!$postInfo || $postInfo['status'] != Posts::STATUS_PASSED) {
-            $this->jsonOutPut(0, '您所评论的内容不存在');
+            $this->jsonOutPut(0, '你所评论的内容不存在');
         }
         //处理文本
         $filter = Posts::handleContent($content);
@@ -361,10 +377,10 @@ class AjaxController extends Q {
                     if ($status == Posts::STATUS_PASSED) {
                         Posts::updateCommentsNum($keyid);
                     }
-                    $_content = '您的文章【' . $postInfo['title'] . '】有了新的评论,' . $_url;
+                    $_content = '你的文章【' . $postInfo['title'] . '】有了新的评论,' . $_url;
                 }
                 if ($to && $_url) {
-                    $_content = '您的评论有了新的回复,' . $_url;
+                    $_content = '你的评论有了新的回复,' . $_url;
                 }
                 if ($toNotice) {
                     $_noticedata = array(
@@ -414,7 +430,7 @@ class AjaxController extends Q {
         $longHtml = '';
         $postInfo = Posts::model()->findByPk($data);
         if (!$postInfo || $postInfo['status'] != Posts::STATUS_PASSED) {
-            $this->jsonOutPut(0, '您所评论的内容不存在');
+            $this->jsonOutPut(0, '你所评论的内容不存在');
         }
         switch ($type) {
             case 'comments':
@@ -450,19 +466,19 @@ class AjaxController extends Q {
         if (!$data || !$type) {
             $this->jsonOutPut(0, '数据不全，请核实');
         }
-        if (!in_array($type, array('comment', 'post', 'notice', 'tag'))) {
+        if (!in_array($type, array('comment', 'post', 'notice', 'tag','img','tip'))) {
             $this->jsonOutPut(0, '暂不允许的分类');
         }
         switch ($type) {
             case 'comment':
                 $info = Comments::model()->findByPk($data);
                 if (!$info) {
-                    $this->jsonOutPut(0, '您所查看的内容不存在');
+                    $this->jsonOutPut(0, '你所查看的内容不存在');
                 } elseif ($info['uid'] != $this->uid) {
                     if ($this->checkPower('delComment', $this->uid, true)) {
                         //我是管理员，我就可以删除
                     } else {
-                        $this->jsonOutPut(0, '您无权操作');
+                        $this->jsonOutPut(0, '你无权操作');
                     }
                 }
                 if (Comments::model()->updateByPk($data, array('status' => Posts::STATUS_DELED))) {
@@ -473,12 +489,12 @@ class AjaxController extends Q {
             case 'post':
                 $info = Posts::model()->findByPk($data);
                 if (!$info) {
-                    $this->jsonOutPut(0, '您所查看的内容不存在');
+                    $this->jsonOutPut(0, '你所查看的内容不存在');
                 } elseif ($info['uid'] != $this->uid) {
                     if ($this->checkPower('delPost', $this->uid, true)) {
                         //我是管理员，我就可以删除
                     } else {
-                        $this->jsonOutPut(0, '您无权操作');
+                        $this->jsonOutPut(0, '你无权操作');
                     }
                 }
                 if (Posts::model()->updateByPk($data, array('status' => Posts::STATUS_DELED))) {
@@ -488,19 +504,44 @@ class AjaxController extends Q {
                 break;
             case 'notice':
                 if (!$data || !is_numeric($data)) {
-                    $this->jsonOutPut(0, '您所操作的内容不存在');
+                    $this->jsonOutPut(0, '你所操作的内容不存在');
                 }
                 if (Notification::model()->deleteByPk($data)) {
                     $this->jsonOutPut(1, '已删除');
                 }
                 $this->jsonOutPut(1, '已删除');
                 break;
+            case 'img':
+                $info = Attachments::model()->findByPk($data);
+                if (!$info) {
+                    $this->jsonOutPut(0, '你所查看的内容不存在');
+                } elseif ($info['uid'] != $this->uid) {
+                    $this->jsonOutPut(0, '你无权操作');                    
+                }
+                if (Attachments::model()->updateByPk($data, array('status' => Posts::STATUS_DELED))) {
+                    $this->jsonOutPut(1, '已删除');
+                }
+                $this->jsonOutPut(1, '已删除');
+                break;
+            case 'tip':
+                $info = Tips::model()->findByPk($data);
+                if (!$info) {
+                    $this->jsonOutPut(0, '你所查看的内容不存在');
+                } elseif ($info['uid'] != $this->uid) {
+                    $this->jsonOutPut(0, '你无权操作');                    
+                }
+                if (Tips::model()->updateByPk($data, array('status' => Posts::STATUS_DELED))) {
+                    Books::updateScore($info['bid']);
+                    $this->jsonOutPut(1, '已删除');
+                }
+                $this->jsonOutPut(1, '已删除');
+                break;
             case 'tag':
                 if (!$data || !is_numeric($data)) {
-                    $this->jsonOutPut(0, '您所操作的内容不存在');
+                    $this->jsonOutPut(0, '你所操作的内容不存在');
                 }
                 if (!$this->checkPower('delTag', $this->uid, true)) {
-                    $this->jsonOutPut(0, '您无权操作');
+                    $this->jsonOutPut(0, '你无权操作');
                 }
                 if (Tags::model()->updateByPk($data, array('status' => Posts::STATUS_DELED))) {
                     $this->jsonOutPut(1, '已删除');

@@ -10,5 +10,6 @@
         </a>
         <?php echo ($k+1)%6==0 ? '<div class="clearfix"></div>' : '';?>
         <?php }?>
+        <?php $this->renderPartial('/common/pager',array('pages'=>$pages));?>
     </div>
 </div>

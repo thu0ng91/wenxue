@@ -45,7 +45,7 @@ class ChaptersController extends Admin {
             $model->attributes = $_POST['Chapters'];
             if ($model->save()) {
                 if (!$id) {
-                    Yii::app()->user->setFlash('addChaptersSuccess', "保存成功！您可以继续添加。");
+                    Yii::app()->user->setFlash('addChaptersSuccess', "保存成功！你可以继续添加。");
                     $this->redirect(array('create','bid'=>$bid));
                 } else {
                     $this->redirect(array('index'));

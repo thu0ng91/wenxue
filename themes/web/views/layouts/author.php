@@ -57,6 +57,14 @@ $cols=  Column::allCols();
         margin-bottom:0;
         padding-bottom:10px
     }
+    .change-skin{
+        position: absolute;
+        width: 24px;
+        height: 24px;
+        right: 0;
+        top: 0;
+        background: url(<?php echo zmf::config('baseurl').'common/images/skin.gif';?>) no-repeat center
+    }
     .author-content{
         margin-top:25px;
         float:left
@@ -183,6 +191,11 @@ $cols=  Column::allCols();
 
 <div class="container">
     <div class="author-bg-container" style="background-image: url(<?php echo zmf::getThumbnailUrl($this->authorInfo['skinUrl']);?>);">
+        <?php if($this->adminLogin){?>
+        <a href="<?php echo Yii::app()->createUrl('author/setting',array('type'=>'skin'));?>" title="更好皮肤">
+            <div class="change-skin"></div>
+        </a>
+        <?php }?>
         <div class="author-header">
             <div class="author-avatar-fixed">
                 <img src="<?php echo $this->authorInfo['avatar'];?>"/>

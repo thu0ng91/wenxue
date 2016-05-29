@@ -7,29 +7,25 @@
  * @copyright Copyright©2015 阿年飞少 
  * @datetime 2016-1-4  17:16:29 
  */
-$_uname='';
-if($data['uid']){
-    $_uname=$data['loginUsername'];
-}else{
-    $_uname=$data['username'];
-}
-if(!$_uname){
-    $_uname='匿名网友';
-}
+$_uname=$data['loginUsername'];
 ?>
 <div class="media" id="comment-<?php echo $data['id']; ?>">
     <div class="media-body">
-        <p><b><?php echo CHtml::encode($_uname);?></b></p>
+        <p>
+            <b><?php echo CHtml::link($_uname,array('user/index','id'=>$data['uid']));?></b>
+            <?php if(!empty($data['replyInfo'])){?>
+            回复 <b><?php echo CHtml::link($data['replyInfo']['truename'],array('user/index','id'=>$data['replyInfo']['uid']));?></b>        
+            <?php }?>
+        </p>
         <p><?php echo nl2br(CHtml::encode($data['content'])); ?></p>
         <p class="help-block">
             <?php echo zmf::formatTime($data['cTime']); ?>
             <?php if($this->uid){?>
             <span class="pull-right">
                 <?php 
-                if($this->uid!=$postInfo['uid']){
+                if($this->uid!=$data['uid']){
                     echo CHtml::link('回复','javascript:;',array('onclick'=>"replyOne('".$data['id']."','".$data['logid']."','".$_uname."')"));
-                }
-                if($this->uid==$postInfo['uid'] || $this->userInfo['isAdmin']){
+                }elseif($this->uid==$data['uid']){
                     echo CHtml::link('删除','javascript:;',array('action'=>'del-content','action-type'=>'comment','action-data'=>  $data['id'],'action-confirm'=>1,'action-target'=>'comment-'.$data['id']));  
                 }?>                
             </span>

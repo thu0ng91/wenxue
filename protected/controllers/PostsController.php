@@ -9,12 +9,11 @@ class PostsController extends Q {
         if (!in_array($type, array('author', 'reader'))) {
             $type = 'author';
         }
-        $this->pageSize=1;
         $classify = 0;
         if ($type == 'author') {
             $classify = Posts::CLASSIFY_AUTHOR;
             $label = '作者专区';
-            $sql = "SELECT p.id,p.title,p.aid,a.authorName AS username,p.cTime,p.comments,p.favors,p.classify FROM {{posts}} p,{{authors}} a WHERE p.classify='{$classify}' AND p.status=" . Posts::STATUS_PASSED." AND p.aid=a.id AND a.status=".Posts::STATUS_PASSED." ORDER BY p.cTime DESC";
+            $sql = "SELECT p.id,p.title,p.aid,a.authorName AS username,p.cTime,p.comments,p.favors,p.classify FROM {{posts}} p,{{authors}} a WHERE p.classify='{$classify}' AND p.status=" . Posts::STATUS_PASSED." AND p.aid=a.id AND a.status=".Posts::STATUS_PASSED." ORDER BY p.cTime DESC";            
         } elseif ($type == 'reader') {
             $classify = Posts::CLASSIFY_READER;
             $label = '读者专区';
@@ -22,15 +21,16 @@ class PostsController extends Q {
         }
         Posts::getAll(array('sql' => $sql,'pageSize'=>  $this->pageSize), $pages, $posts);
         //获取展示
-        $showcase=  Showcases::getPagePosts('author', NUll, true,'c360');
-        $sideInfo=$showcase['author'];
+        $showcases=  Showcases::getPagePosts('authorQzone', NUll, false,'c360'); 
+        zmf::test($showcases);
         $this->selectNav = $type . 'Forum';
+        $this->pageTitle=$label.' - '.  zmf::config('sitename');
         $data = array(
             'posts' => $posts,
             'pages' => $pages,
             'label' => $label,
             'type' => $type,
-            'sideInfo' => $sideInfo,
+            'showcases' => $showcases,
         );
         $this->render('index', $data);
     }
@@ -42,7 +42,7 @@ class PostsController extends Q {
         }
         $info = $this->loadModel($id);
         $pageSize = 30;
-        $comments = Comments::getCommentsByPage($id, 'posts', 1, $pageSize);
+        $comments = Comments::getCommentsByPage($id, 'posts', 1, $this->pageSize);
         $tags = Tags::getByIds($info['tagids']);
         $relatePosts=  Posts::getRelations($id, 5);
         //作者信息
@@ -160,13 +160,26 @@ class PostsController extends Q {
                 if (!$isNew || !empty($intoTags)) {
                     Posts::model()->updateByPk($model->id, array('tagids' => join(',', $intoTags)));
                 }
+                //记录用户操作
+                $jsonData=  CJSON::encode(array(
+                    'id'=>$model->id,
+                    'title'=>$model->title,
+                    'faceimg'=>$model->faceimg
+                ));
+                UserAction::recordAction($model->id, 'post', $jsonData);
                 $this->redirect(array('posts/view','id'=>$model->id));
             }
         }
         
         $tags=  Tags::getClassifyTags($type);
         $this->selectNav = 'contribution';
-        $this->pageTitle = '投稿 - ' . zmf::config('sitename');
+        if($model->classify==Posts::CLASSIFY_AUTHOR){
+            $this->pageTitle = '【作者专区】发布文章 - ' . zmf::config('sitename');
+            $this->selectNav =  'authorForum';
+        }else{
+            $this->pageTitle = '【读者专区】发布文章 - ' . zmf::config('sitename');
+            $this->selectNav =  'readerForum';
+        }
         $this->render('create', array(
             'model' => $model,
             'tags' => $tags,

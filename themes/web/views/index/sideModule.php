@@ -30,14 +30,7 @@ $_sidePosts=$sideInfo['posts'];
             </div>
         </div>
         <?php continue;}?>
-        <p class="ui-nowrap item"><span class="dot"><?php echo ($k+1);?></span><?php echo CHtml::link(($_post['colTitle']!='' ? '['.$_post['colTitle'].']' : '').$_post['title'],array('book/view','id'=>$_post['id']));?></p>  
-        <p class="ui-nowrap item"><span class="dot"><?php echo ($k+1);?></span><?php echo CHtml::link(($_post['colTitle']!='' ? '['.$_post['colTitle'].']' : '').$_post['title'],array('book/view','id'=>$_post['id']));?></p>  
-        <p class="ui-nowrap item"><span class="dot"><?php echo ($k+1);?></span><?php echo CHtml::link(($_post['colTitle']!='' ? '['.$_post['colTitle'].']' : '').$_post['title'],array('book/view','id'=>$_post['id']));?></p>  
-        <p class="ui-nowrap item"><span class="dot"><?php echo ($k+1);?></span><?php echo CHtml::link(($_post['colTitle']!='' ? '['.$_post['colTitle'].']' : '').$_post['title'],array('book/view','id'=>$_post['id']));?></p>  
-        <p class="ui-nowrap item"><span class="dot"><?php echo ($k+1);?></span><?php echo CHtml::link(($_post['colTitle']!='' ? '['.$_post['colTitle'].']' : '').$_post['title'],array('book/view','id'=>$_post['id']));?></p>  
-        <p class="ui-nowrap item"><span class="dot"><?php echo ($k+1);?></span><?php echo CHtml::link(($_post['colTitle']!='' ? '['.$_post['colTitle'].']' : '').$_post['title'],array('book/view','id'=>$_post['id']));?></p>  
-        <p class="ui-nowrap item"><span class="dot"><?php echo ($k+1);?></span><?php echo CHtml::link(($_post['colTitle']!='' ? '['.$_post['colTitle'].']' : '').$_post['title'],array('book/view','id'=>$_post['id']));?></p>  
-        <p class="ui-nowrap item"><span class="dot"><?php echo ($k+1);?></span><?php echo CHtml::link(($_post['colTitle']!='' ? '['.$_post['colTitle'].']' : '').$_post['title'],array('book/view','id'=>$_post['id']));?></p>  
+        <p class="ui-nowrap item"><span class="dot"><?php echo ($k+1);?></span><?php echo CHtml::link(($_post['colTitle']!='' ? '['.$_post['colTitle'].']' : '').$_post['title'],array('book/view','id'=>$_post['id']));?></p>
         <?php }?>
         <?php }?>        
     </div>

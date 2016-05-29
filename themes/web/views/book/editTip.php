@@ -12,9 +12,7 @@ $scoreArr=Tips::exScore('admin');
 
 <div class="container">
     <ol class="breadcrumb">
-        <li><a href="#">初心创文首页</a></li>
-        <li><a href="#">一级分类</a></li>
-        <li><a href="#">二级分类</a></li>
+        <li><?php echo CHtml::link(zmf::config('sitename').'首页',  zmf::config('baseurl'));?></li>
         <li class="active">编辑点评</li>
     </ol>
     <div class="module">

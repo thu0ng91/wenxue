@@ -53,7 +53,7 @@ $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
                     <div id="comments-posts-<?php echo $info['id'];?>">
                         <?php if(!empty($comments)){?>
                         <?php foreach($comments as $comment){?>
-                        <?php $this->renderPartial('/posts/_comment',array('data'=>$comment,'postInfo'=>$info));?>
+                        <?php $this->renderPartial('/posts/_comment',array('data'=>$comment));?>
                         <?php }?>
                         <?php }else{?>
                         <p class="help-block text-center">暂无评论！</p>

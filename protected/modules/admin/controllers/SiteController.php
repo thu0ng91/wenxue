@@ -21,7 +21,7 @@ class SiteController extends Admin {
     function actionLogin() {
         $this->layout = 'common';
         if (!Yii::app()->user->isGuest) {
-            $this->message(0, '您已登录，请勿重复操作', Yii::app()->createUrl('admin/index/index'));
+            $this->message(0, '你已登录，请勿重复操作', Yii::app()->createUrl('admin/index/index'));
         }
         $model = new LoginForm;
         if (isset($_POST['ajax']) && $_POST['ajax'] === 'login-form') {
@@ -37,7 +37,7 @@ class SiteController extends Admin {
                 $uid = Yii::app()->user->id;
                 if (!$this->checkPower('user', $uid, true)) {
                     Yii::app()->user->logout();
-                    $model->addError('username', '您不是管理员');
+                    $model->addError('username', '你不是管理员');
                 } else {
                     //User::model()->updateByPk($uid, $arr);
                     zmf::delCookie('checkWithCaptcha');

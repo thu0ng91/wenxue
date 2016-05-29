@@ -45,7 +45,7 @@ $cs->registerScriptFile(Yii::app()->baseUrl.'/umeditor/lang/zh-cn/zh-cn.js', CCl
             var inputstr = myeditor.getContentTxt();
             if (inputstr != '') {
                 $(window).bind('beforeunload', function () {
-                    return '您输入的内容可能未保存，确定离开此页面吗？';
+                    return '你输入的内容可能未保存，确定离开此页面吗？';
                 });
                 $('#submit-btn').removeAttr('disabled');
                 $('#preview-btn').removeAttr('disabled');

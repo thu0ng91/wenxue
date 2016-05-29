@@ -35,7 +35,7 @@ class ColumnController extends Admin {
             $model->attributes = $_POST['Column'];
             if ($model->save()) {
                 if (!$id) {
-                    Yii::app()->user->setFlash('addColumnSuccess', "保存成功！您可以继续添加。");
+                    Yii::app()->user->setFlash('addColumnSuccess', "保存成功！你可以继续添加。");
                     $this->redirect(array('create'));
                 } else {
                     $this->redirect(array('index'));

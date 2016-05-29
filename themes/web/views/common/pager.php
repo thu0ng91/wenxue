@@ -1,4 +1,3 @@
-<?php if($pages->itemCount > $pages->pageSize){?>
 <div class="pagination">
     <?php
     //分页widget代码: 
@@ -14,4 +13,3 @@
     );
     ?>
 </div>
-<?php }

@@ -11,7 +11,7 @@ class UserController extends Q {
         $this->layout = 'user';
         $id = zmf::val('id', 2);
         if (!$id && !$this->uid) {
-            throw new CHttpException(404, '您所查看的用户不存在，请核实');
+            throw new CHttpException(404, '你所查看的用户不存在，请核实');
         } elseif (!$id || $id == $this->uid) {
             $this->toUserInfo = $this->userInfo;
         } else {
@@ -35,9 +35,19 @@ class UserController extends Q {
     }
 
     public function actionIndex() {
+        $sql="SELECT classify,`data`,cTime FROM {{user_action}} WHERE uid='{$this->toUserInfo['id']}' ORDER BY cTime DESC";
+        Posts::getAll(array('sql' => $sql), $pages, $posts);
+        if(!empty($posts)){
+            foreach ($posts as $k=>$val){
+                $posts[$k]['data']=  CJSON::decode($val['data']);
+                $posts[$k]['action']= UserAction::exClassify($val['classify']);
+            }
+        }
         $this->selectNav = 'index';
+        $this->pageTitle=$this->toUserInfo['truename'].' - '.zmf::config('sitename');
         $this->render('index', array(
-            'model' => $model,
+            'posts' => $posts,
+            'pages' => $pages,
         ));
     }
 
@@ -47,20 +57,24 @@ class UserController extends Q {
             $sql = "SELECT u.id,u.truename,u.avatar FROM {{users}} u,{{favorites}} f WHERE f.logid='{$this->toUserInfo['id']}' AND f.classify='user' AND f.uid=u.id ORDER BY f.cTime DESC";
             $label = '关注者';
             $render = 'fans';
+            $this->pageTitle = $this->toUserInfo['truename'].'的关注者 - ' . zmf::config('sitename');
         } elseif ($type == 'authors') {
             $sql = "SELECT a.id,a.authorName,a.avatar FROM {{authors}} a,{{favorites}} f WHERE f.uid='{$this->toUserInfo['id']}' AND f.classify='author' AND f.logid=a.id ORDER BY f.cTime DESC";
             $label = '关注作者';
             $render = 'authors';
+            $this->pageTitle = $this->toUserInfo['truename'].'关注的作者 - ' . zmf::config('sitename');
         } else {
             $sql = "SELECT u.id,u.truename,u.avatar FROM {{users}} u,{{favorites}} f WHERE f.uid='{$this->toUserInfo['id']}' AND f.classify='user' AND f.logid=u.id ORDER BY f.cTime DESC";
             $label = '关注了';
             $render = 'fans';
+            $this->pageTitle = $this->toUserInfo['truename'].'的关注 - ' . zmf::config('sitename');
         }
         Posts::getAll(array('sql' => $sql), $pages, $posts);
-        $this->selectNav = 'favorite';
+        $this->selectNav = 'favorite';        
         $data = array(
             'label' => $label,
             'posts' => $posts,
+            'pages' => $pages,
         );
         $this->render($render, $data);
     }
@@ -69,7 +83,7 @@ class UserController extends Q {
         $this->checkLogin();
         $authorInfo = Authors::findByUid($this->uid);
         if ($authorInfo) {
-            throw new CHttpException(403, '您已成为作者，请勿重复操作');
+            throw new CHttpException(403, '你已成为作者，请勿重复操作');
         }
         $this->selectNav = 'setting';
         $model = new Authors;
@@ -85,6 +99,7 @@ class UserController extends Q {
                 $this->redirect(array('author/view', 'id' => $model->id));
             }
         }
+        $this->pageTitle = '成为作者 - ' . zmf::config('sitename');
         $this->render('createAuthor', array(
             'model' => $model,
         ));
@@ -94,7 +109,7 @@ class UserController extends Q {
         $this->checkLogin();
         $authorInfo = Authors::findByUid($this->uid);
         if (!$authorInfo) {
-            throw new CHttpException(403, '您尚未成为作者');
+            throw new CHttpException(403, '你尚未成为作者');
         }
         $model = new Authors;
         if (isset($_POST['Authors'])) {
@@ -126,6 +141,7 @@ class UserController extends Q {
                     )
         ));
         $this->selectNav = 'comment';
+        $this->pageTitle=$this->toUserInfo['truename'].'的点评 - '.zmf::config('sitename');
         $this->render('comment', array(
             'tips' => $tips,
         ));
@@ -134,7 +150,11 @@ class UserController extends Q {
     public function actionFavorite() {
         $sql = "SELECT b.id,b.aid,b.title,b.faceImg,b.desc,b.words,b.cTime,b.score,b.scorer,b.bookStatus FROM {{favorites}} f,{{books}} b WHERE f.uid='{$this->uid}' AND f.classify='book' AND f.logid=b.id AND b.status=" . Posts::STATUS_PASSED . " ORDER BY f.cTime DESC";
         Posts::getAll(array('sql' => $sql), $pages, $posts);
+        foreach ($posts as $k=>$val){
+            $posts[$k]['faceImg']=  zmf::getThumbnailUrl($val['faceImg'], 'w120', 'avatar');
+        }
         $this->selectNav = 'favorite';
+        $this->pageTitle=$this->toUserInfo['truename'].'的收藏 - '.zmf::config('sitename');
         $this->render('favorite', array(
             'posts' => $posts,
             'pages' => $pages,
@@ -172,6 +192,7 @@ class UserController extends Q {
             $this->jsonOutPut(1, $data);
         }
         $this->selectNav = 'gallery';
+        $this->pageTitle='相册 - '.zmf::config('sitename');
         $this->render('gallery', array(
             'posts' => $posts,
             'from' => $from,
@@ -180,6 +201,7 @@ class UserController extends Q {
 
     public function actionUpload() {
         $this->selectNav = 'gallery';
+        $this->pageTitle = '上传素材 - ' . zmf::config('sitename');
         $this->render('upload', array(
             'model' => $model,
         ));
@@ -241,6 +263,7 @@ class UserController extends Q {
         }
         unset($model->password);
         $this->selectNav = 'setting';
+        $this->pageTitle = '设置 - ' . zmf::config('sitename');
         $this->render('setting', array(
             'model' => $model,
         ));
@@ -256,7 +279,7 @@ class UserController extends Q {
             'posts' => $comLists,
             'pages' => $pages,
         );
-        $this->pageTitle = $this->userInfo['truename'] . '的提醒 - ' . zmf::config('sitename');
+        $this->pageTitle = '提醒 - ' . zmf::config('sitename');
         $this->render('notice', $data);
     }
 

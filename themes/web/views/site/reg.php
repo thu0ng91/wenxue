@@ -15,15 +15,16 @@
                 <?php echo $form->error($model,'truename'); ?>
                 </div>
                 <div class="form-group">
+                <?php echo $form->labelEx($model,'phone'); ?>
+                <?php echo $form->textField($model,'phone',array('class'=>'form-control','maxLength'=>11)); ?>
+                <?php echo $form->error($model,'phone'); ?>
+                </div>
+                <div class="form-group">
                 <?php echo $form->labelEx($model,'password'); ?>
                 <?php echo $form->passwordField($model,'password',array('class'=>'form-control')); ?>
                 <?php echo $form->error($model,'password'); ?>
                 </div> 
-                <div class="form-group">
-                <?php echo $form->labelEx($model,'content'); ?>
-                <?php echo $form->textArea($model,'content',array('class'=>'form-control')); ?>
-                <?php echo $form->error($model,'content'); ?>
-                </div>        
+                        
                 <div class="form-group text-center">
                     <div class="btn-group" role="group">
                         <?php echo CHtml::link('<i class="fa fa-angle-double-left"></i> 登录',array('site/login'),array('class'=>'btn btn-default'));?>

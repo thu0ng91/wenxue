@@ -146,7 +146,7 @@ $cols=  Column::allCols();
             <div class="module-body">
                 <div class="media">
                     <div class="media-left">
-                        <img class="media-object" src="<?php echo $this->toUserInfo['avatar'];?>" alt="<?php echo $this->toUserInfo['truename'];?>">  
+                        <img class="media-object lazy" src="<?php echo zmf::lazyImg();?>" data-original="<?php echo zmf::getThumbnailUrl($this->toUserInfo['avatar'], 'a120', 'avatar');?>" alt="<?php echo $this->toUserInfo['truename'];?>">  
                         <div class="fixed-btn"><?php echo CHtml::link('更改头像',array('user/setting','#'=>'avatar'));?></div>
                     </div>
                     <div class="media-body">

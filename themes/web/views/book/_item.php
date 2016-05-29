@@ -20,7 +20,9 @@ $url=  Yii::app()->createUrl('book/view',array('id'=>$data['id']));
             <span class="<?php echo $data['bookStatus']==Books::STATUS_PUBLISHED ? 'success' : 'danger';?>"><?php echo Books::exStatus($data['bookStatus']);?></span>
             <span>总字<?php echo $data['words'];?></span>
             <span><?php echo zmf::time($data['cTime'],'Y-m-d');?></span>
+            <?php if($data['bookStatus']==Books::STATUS_PUBLISHED){?>
             <span><?php echo CHtml::link('分享','javascript:;',array('action'=>'share','action-qrcode'=>$qrcode,'action-url'=>$url,'action-img'=>$qrcode,'action-title'=>$data['title']));?></span>
+            <?php }?>
             <?php if($adminLogin){?>
             <span class="right-actions">                
                 <?php echo CHtml::link('预览',array('book/view','id'=>$data['id']));?>

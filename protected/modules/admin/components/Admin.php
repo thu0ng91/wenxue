@@ -16,7 +16,7 @@ class Admin extends Controller {
         if ($time > 0) {
             if ($passwdErrorTimes >= $time) {
                 header('Content-Type: text/html; charset=utf-8');
-                echo '您暂时已被禁止访问';
+                echo '你暂时已被禁止访问';
                 Yii::app()->end();
             }
         }

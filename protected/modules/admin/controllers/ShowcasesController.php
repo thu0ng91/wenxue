@@ -47,7 +47,7 @@ class ShowcasesController extends Admin {
                 $_POST['Showcases']['columnid'] = 0;
                 $model->attributes = $_POST['Showcases'];
                 if ($model->save()) {
-                    Yii::app()->user->setFlash('addShowcasesSuccess', "保存成功！您可以继续添加。");
+                    Yii::app()->user->setFlash('addShowcasesSuccess', "保存成功！你可以继续添加。");
                     $this->redirect(array('create'));
                 }
             } else {//新增且有版块
@@ -64,7 +64,7 @@ class ShowcasesController extends Admin {
                     }
                 }
                 if (!$hasError) {
-                    Yii::app()->user->setFlash('addShowcasesSuccess', "保存成功！您可以继续添加。");
+                    Yii::app()->user->setFlash('addShowcasesSuccess', "保存成功！你可以继续添加。");
                     $this->redirect(array('create'));
                 }
             }

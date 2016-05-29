@@ -89,6 +89,9 @@ class BookController extends Q {
         $this->favorited = Favorites::checkFavored($id, 'book');
         //标题
         $this->pageTitle = '【' . $authorInfo['authorName'] . '作品】' . $info['title'] . ' - ' . zmf::config('sitename');
+        //二维码
+        $url=  zmf::config('domain').  Yii::app()->createUrl('book/view',array('id'=>$id));
+        $qrcode=  zmf::qrcode($url, 'book', $id);
         $data = array(
             'info' => $info,
             'authorInfo' => $authorInfo,
@@ -96,6 +99,8 @@ class BookController extends Q {
             'chapters' => $chapters,
             'otherTops' => $otherTops,
             'tips' => $tips,
+            'url' => $url,
+            'qrcode' => $qrcode,
         );
         $this->render('view', $data);
     }
@@ -125,25 +130,6 @@ class BookController extends Q {
         //获取点评数
         $sql = "SELECT t.id,t.uid,u.truename,t.content,t.cTime,t.logid,t.tocommentid,t.favors,t.score FROM {{tips}} t,{{users}} u WHERE t.logid=:logid AND t.classify='chapter' AND t.status=" . Posts::STATUS_PASSED . " AND t.uid=u.id AND u.status=" . Posts::STATUS_PASSED;
         $tips = Posts::getByPage(array('sql' => $sql, 'pageSize' => 30, 'page' => 1, 'bindValues' => array(':logid' => $cid)));
-//        if(!empty($tips)){
-//            $tocommentIdstr=  join(',', array_filter(array_unique(array_keys(CHtml::listData($tips, 'tocommentid', '')))));
-//            if($tocommentIdstr!=''){
-//                $_sql="SELECT t.id,t.uid,u.truename FROM {{tips}} t,{{users}} u WHERE t.id IN({$tocommentIdstr}) AND t.classify='chapter' AND t.status=".Posts::STATUS_PASSED." AND t.uid=u.id AND u.status=".Posts::STATUS_PASSED;
-//                $_userInfoArr=Yii::app()->db->createCommand($_sql)->queryAll();
-//                foreach ($tips as $k=>$tip){
-//                    $tips[$k]['replyInfo']=array();
-//                    if(!$tip['tocommentid']){
-//                        continue;
-//                    }
-//                    foreach ($_userInfoArr as $_val){
-//                        if($tip['tocommentid']==$_val['id']){
-//                            $tips[$k]['replyInfo']=$_val;
-//                            continue;
-//                        }
-//                    }
-//                }
-//            }
-//        }
         //更新统计
         Posts::updateCount($cid, 'Chapters', 1, 'hits');
         //获取分类
@@ -204,6 +190,17 @@ class BookController extends Q {
         } elseif ($model->uid != $this->uid) {
             throw new CHttpException(403, '你无权此操作.');
         }
+        $postInfo = Chapters::getOne($model->logid);        
+        if (!$postInfo || $postInfo['status'] != Posts::STATUS_PASSED) {
+            throw new CHttpException(404, '你所评论的内容不存在.');
+        }
+        //小说信息
+        $bookInfo=  Books::getOne($postInfo['bid']);
+        if(!$bookInfo || $bookInfo['status']!=Posts::STATUS_PASSED){
+            throw new CHttpException(404, '你所评论的内容不存在.');
+        }elseif ($bookInfo['bookStatus']!=Books::STATUS_PUBLISHED) {
+            throw new CHttpException(403, '你所评论的小说暂未发表.');
+        }
         if (isset($_POST['Tips'])) {
             $score = zmf::filterInput($_POST['Tips']['score'], 2);
             $content = zmf::filterInput($_POST['Tips']['content'], 1);
@@ -215,9 +212,21 @@ class BookController extends Q {
             );
             $model->attributes = $attr;
             if ($model->save()) {
+                Books::updateScore($model->bid);
+                //记录用户操作
+                $jsonData=  CJSON::encode(array(
+                    'cid'=>$postInfo['id'],
+                    'cTitle'=>$postInfo['title'],
+                    'bid'=>$bookInfo['id'],
+                    'bTitle'=>$bookInfo['title'],
+                    'bDesc'=>$bookInfo['desc'],
+                    'bFaceImg'=>$bookInfo['faceImg'],
+                ));
+                UserAction::recordAction($tid, 'chapterTip', $jsonData);
                 $this->redirect(array('book/chapter', 'cid' => $model->logid));
             }
         }
+        $this->pageTitle='编辑点评 - '.zmf::config('sitename');
         $data = array(
             'model' => $model,
         );

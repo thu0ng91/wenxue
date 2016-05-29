@@ -59,30 +59,30 @@ class Comments extends CActiveRecord {
 
     public function beforeSave() {
         $ip = Yii::app()->request->userHostAddress;
-        $key = 'ipInfo-' . $ip;
-        $ipData = zmf::getCookie($key);
-        if (!$ipData) {
-            $url = 'http://apis.baidu.com/apistore/iplookupservice/iplookup?ip=' . $ip;
-            // 执行HTTP请求
-            $header = array(
-                'apikey:e5882e7ac4b03c5d6f332b6de4469e81',
-            );
-            $ch = curl_init();
-            // 添加apikey到header
-            curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($ch, CURLOPT_URL, $url);
-            $res = curl_exec($ch);
-            $res = CJSON::decode($res, true);
-            $retData=array();
-            if ($res['errNum'] == 0) {
-                $retData = $res['retData'];
-            }
-            $ipData = json_encode($retData);
-            zmf::setCookie($key, $ipData,2592000);
-        }
+//        $key = 'ipInfo-' . $ip;
+//        $ipData = zmf::getCookie($key);
+//        if (!$ipData) {
+//            $url = 'http://apis.baidu.com/apistore/iplookupservice/iplookup?ip=' . $ip;
+//            // 执行HTTP请求
+//            $header = array(
+//                'apikey:e5882e7ac4b03c5d6f332b6de4469e81',
+//            );
+//            $ch = curl_init();
+//            // 添加apikey到header
+//            curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+//            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+//            curl_setopt($ch, CURLOPT_URL, $url);
+//            $res = curl_exec($ch);
+//            $res = CJSON::decode($res, true);
+//            $retData=array();
+//            if ($res['errNum'] == 0) {
+//                $retData = $res['retData'];
+//            }
+//            $ipData = json_encode($retData);
+//            zmf::setCookie($key, $ipData,2592000);
+//        }
         $this->ip = ip2long($ip);
-        $this->ipInfo = $ipData;
+        //$this->ipInfo = $ipData;
         return true;
     }
 
@@ -119,13 +119,20 @@ class Comments extends CActiveRecord {
                     }
                 }
             }
-            foreach ($items as $k => $val) {
-                if($val['tocommentid']>0){
-                    $_userinfo = Yii::app()->db->createCommand("SELECT u.id,u.truename FROM {{users}} u,{{comments}} c WHERE c.id='{$val['tocommentid']}' AND c.status=".Posts::STATUS_PASSED." AND c.uid=u.id AND u.status=".Posts::STATUS_PASSED)->queryRow();
-                    if($_userinfo){
-                        $items[$k]['toUserInfo']=$_userinfo;
-                    }else{
-                        $items[$k]['tocommentid']=0;
+            $tocommentIdstr = join(',', array_filter(array_unique(array_keys(CHtml::listData($items, 'tocommentid', '')))));
+            if ($tocommentIdstr != '') {
+                $_sql = "SELECT t.id,t.uid,u.truename FROM {{comments}} t,{{users}} u WHERE t.id IN({$tocommentIdstr}) AND t.classify='{$classify}' AND t.status=" . Posts::STATUS_PASSED . " AND t.uid=u.id AND u.status=" . Posts::STATUS_PASSED;
+                $_userInfoArr = Yii::app()->db->createCommand($_sql)->queryAll();
+                foreach ($items as $k => $tip) {
+                    $items[$k]['replyInfo'] = array();
+                    if (!$tip['tocommentid']) {
+                        continue;
+                    }
+                    foreach ($_userInfoArr as $_val) {
+                        if ($tip['tocommentid'] == $_val['id']) {
+                            $items[$k]['replyInfo'] = $_val;
+                            continue;
+                        }
                     }
                 }
             }

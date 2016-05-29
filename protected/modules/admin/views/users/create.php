@@ -12,6 +12,11 @@
         <?php echo $form->error($model,'truename'); ?>
     </div>
     <div class="form-group">
+        <?php echo $form->labelEx($model,'phone'); ?>
+        <?php echo $form->textField($model,'phone',array('class'=>'form-control')); ?>
+        <?php echo $form->error($model,'phone'); ?>
+    </div>
+    <div class="form-group">
         <?php echo $form->labelEx($model,'password'); ?>
         <?php echo $form->passwordField($model,'password',array('class'=>'form-control')); ?>
         <?php echo $form->error($model,'password'); ?>

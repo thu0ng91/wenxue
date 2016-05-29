@@ -16,6 +16,18 @@
     .main-tops .carousel-indicators li{
         border-color: #000
     }
+    .main-tops .top-book-item{
+        font-size: 12px;
+        text-align: center
+    }
+    .main-tops .top-book-item a{
+        color: #333
+    }
+    .main-tops .top-book-item .item-title a{
+        font-size: 14px;
+        color: #93ba5f;
+        font-weight: 700
+    }
     .aside-tops{
         width: 300px;
     }
@@ -26,6 +38,10 @@
     }
     .aside-tops .module .top-item{
         margin-bottom: 10px;
+    }
+    .aside-tops .module .top-item img{
+        width: 78px;
+        height: 104px;
     }
     .aside-tops .module .item{
         padding: 12px 0 8px;

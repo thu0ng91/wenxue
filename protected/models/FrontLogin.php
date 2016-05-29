@@ -2,7 +2,7 @@
 
 class FrontLogin extends CFormModel {
 
-    public $username;
+    public $phone;
     public $password;
     public $rememberMe;
     public $verifyCode;
@@ -10,7 +10,7 @@ class FrontLogin extends CFormModel {
 
     public function rules() {
         $rules = array(
-            array('username, password', 'required'),
+            array('phone, password', 'required'),
             array('rememberMe', 'boolean'),
             array('password', 'authenticate'),
         );
@@ -26,7 +26,7 @@ class FrontLogin extends CFormModel {
      */
     public function attributeLabels() {
         return array(
-            'username' => '用户昵称',
+            'phone' => '手机号',
             'password' => '密码',
             'rememberMe' => '记住我',
             'verifyCode' => '验证码',
@@ -38,7 +38,7 @@ class FrontLogin extends CFormModel {
      * This is the 'authenticate' validator as declared in rules().
      */
     public function authenticate($attribute, $params) {
-        $this->_identity = new U($this->username, $this->password);
+        $this->_identity = new U($this->phone, $this->password);
         if (!$this->_identity->authenticate())
             $this->addError('password', '用户名或密码不正确.');
     }

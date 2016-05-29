@@ -213,6 +213,14 @@ function rebind() {
             }
         });
     });
+    //调用复制
+    var clipboard = new Clipboard('.btn-copy');
+    clipboard.on('success', function (e) {
+        simpleDialog({content: '复制成功'});
+    });
+    clipboard.on('error', function (e) {
+        dialog({msg: '复制失败，请手动复制浏览器链接'});
+    });
 }
 /**
  * 获取内容
@@ -477,7 +485,7 @@ function share(dom) {
     var img = dom.attr("action-img");
     var title = dom.attr("action-title");
     var html = '<div class="float-share-holder"><div class="float-share-content"><span class="float-close"><i class="fa fa-close"></i></span><div class="row"><div class="col-xs-6 text-center"><img src="' + qr + '" class="img-responsive"/><p class="help-block">扫码分享到微信</p></div><div class="col-xs-6 float-btns"><a href="javascript:;" class="btn btn-default btn-block"><i class="fa fa-weibo"></i></a><a href="javascript:;" class="btn btn-default btn-block"><i class="fa fa-qq"></i></a><a href="javascript:;" class="btn btn-default btn-block">复制链接</a></div></div></div><div class="float-triangle"></div></div>';
-    var html = '<div class="share-body"><p><img src="' + qr + '" class="img-responsive"/></p><p class="help-block">扫码分享到微信</p><div class="more-awesome"><span>或</span></div><p><a href="javascript:;" class="btn btn-default btn-block" action="shareToWeibo"><i class="fa fa-weibo"></i> 分享到微博</a><a href="javascript:;" class="btn btn-default btn-block" action="shareToQzone"><i class="fa fa-qq"></i> 分享到空间</a><a href="javascript:;" class="btn btn-default btn-block btn-copy"><i class="fa fa-copy"></i> 复制此链接</a></p></div>';
+    var html = '<div class="share-body"><p><img src="' + qr + '" class="img-responsive"/></p><p class="help-block text-center">扫码分享到微信</p><div class="more-awesome"><span>或</span></div><p><a href="javascript:;" class="btn btn-default btn-block" action="shareToWeibo"><i class="fa fa-weibo"></i> 分享到微博</a><a href="javascript:;" class="btn btn-default btn-block" action="shareToQzone"><i class="fa fa-qq"></i> 分享到空间</a><a href="javascript:;" class="btn btn-default btn-block btn-copy" data-clipboard-text="'+url+'"><i class="fa fa-copy"></i> 复制此链接</a></p></div>';
     dialog({msg: html, title: '分享', modalSize: 'modal-sm'});
     $("a[action=shareToWeibo]").unbind('click').click(function () {
         window.open('http://service.weibo.com/share/share.php?title=' + title + '&url=' + url + '&appkey=' + zmf.weiboAppkey + '&pic=' + img + '&changweibo=yes&ralateUid=' + zmf.weiboRalateUid, '_newtab');
@@ -485,19 +493,7 @@ function share(dom) {
     $("a[action=shareToQzone]").unbind('click').click(function () {
         window.open('http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?title=' + title + '&url=' + url + '&pics=' + img, '_newtab');
     });
-    var clipboard = new Clipboard('.btn-copy', {
-        text: function () {
-            return url;
-        }
-    });
-    clipboard.on('success', function (e) {
-        simpleDialog({content: '复制成功'});
-    });
-    clipboard.on('error', function (e) {
-        dialog({msg: '复制失败，请手动复制浏览器链接'});
-    });
 }
-
 function toggleChapters(){
     var dom=$('#chapters-box');
     var right=0;

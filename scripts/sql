@@ -179,3 +179,6 @@ CREATE TABLE `pre_drafts` (
   `cTime` int(10) unsigned NOT NULL COMMENT '保存时间', 
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+alter table pre_users add phone char(11) COMMENT '手机号';
+alter table pre_users add phoneChecked tinyint(1) unsigned not null COMMENT '手机号是否已验证';

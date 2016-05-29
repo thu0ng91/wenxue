@@ -29,9 +29,11 @@ $carouselPerSize=12;
                     <div class="row">
                     <?php foreach ($_tmpPost as $_post){?>
                         <div class="col-xs-2 col-sm-2 top-book-item">
-                            <p><img src="<?php echo $_post['faceImg'];?>" class="img-responsive"/></p>
-                            <p class="ui-nowrap"><?php echo CHtml::link($_post['title'],array('book/view','id'=>$_post['id']));?></p>
-                            <p class="ui-nowrap"><?php echo CHtml::link($_post['authorName'],array('author/view','id'=>$_post['aid']));?></p>
+                            <a href="<?php echo Yii::app()->createUrl('book/view',array('id'=>$_post['id']));?>">
+                                <p><img src="<?php echo zmf::lazyImg();?>" class="img-responsive lazy" data-original="<?php echo $_post['faceImg'];?>"/></p>
+                            </a>
+                            <p class="ui-nowrap item-title ui-nowrap"><?php echo CHtml::link($_post['title'],array('book/view','id'=>$_post['id']));?></p>
+                            <p class="ui-nowrap ui-nowrap"><?php echo CHtml::link($_post['authorName'],array('author/view','id'=>$_post['aid']));?></p>
                         </div>
                     <?php }?>
                     </div>

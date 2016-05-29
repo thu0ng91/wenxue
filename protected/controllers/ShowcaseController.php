@@ -15,8 +15,13 @@ class ShowcaseController extends Q {
         if(!$columnid){
             throw new CHttpException(404, '请选择版块');
         }
+        $colInfo=  Column::getSimpleInfo($columnid);
+        if(!$colInfo){
+            throw new CHttpException(404, '请选择版块');
+        }
+        $this->pageTitle=$colInfo['title'].' - '.  zmf::config('sitename');
         $this->selectNav='column'.$columnid;
-        $posts=  Showcases::getPagePosts('returnColumnColumns',$columnid);
+        $posts=  Showcases::getPagePosts('returnColumnColumns',$columnid,false,'c480360');
         $data = array(
             'posts' => $posts
         );

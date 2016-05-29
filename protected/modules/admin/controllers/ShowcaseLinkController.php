@@ -55,7 +55,7 @@ class ShowcaseLinkController extends Admin {
                 $model->attributes = $_POST['ShowcaseLink'];
                 if ($model->save()) {
                     if (!$id) {
-                        Yii::app()->user->setFlash('addShowcaseLinkSuccess', "保存成功！您可以继续添加。");
+                        Yii::app()->user->setFlash('addShowcaseLinkSuccess', "保存成功！你可以继续添加。");
                         $this->redirect(array('create', 'sid' => $model->sid));
                     } else {
                         $this->redirect(array('showcaseLink/index', 'sid' => $model->sid));
@@ -113,7 +113,7 @@ class ShowcaseLinkController extends Admin {
 
         // if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
         if (!isset($_GET['ajax']))
-            $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+            $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('index'));
     }
 
     /**

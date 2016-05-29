@@ -121,6 +121,7 @@ class Showcases extends CActiveRecord {
     
     public static function exPosition($type){
         $arr=array(
+            //首页版块
             'indexLeft1'=>'首页左边1',
             'indexRight1'=>'首页右边1',
             'indexAd1'=>'首页小图1',            
@@ -130,8 +131,7 @@ class Showcases extends CActiveRecord {
             'indexLeft3'=>'首页左边3',
             'indexRight3'=>'首页右边3',
             'indexAd3'=>'首页小图3',
-            
-            
+            //跟版块绑定的栏目            
             'column11'=>'版块第一排1',
             'column12'=>'版块第一排2',
             'column13'=>'版块第一排3',
@@ -141,9 +141,15 @@ class Showcases extends CActiveRecord {
             'column31'=>'版块第三排1',
             'column32'=>'版块第三排2',
             'column33'=>'版块第三排3',
-            
+            //其他
             'reg'=>'登录注册轮播图',
             'author'=>'作者、读者专区右侧广告',
+            //专区            
+            'authorTop'=>'作者专区右侧推荐',
+            'readerTop'=>'读者专区右侧推荐',
+            //站点右侧二维码
+            'weiboSideQr'=>'站点右侧微博二维码',
+            'weixinSideQr'=>'站点右侧微信二维码',
         );
         if($type=='admin'){
             return $arr;
@@ -160,6 +166,10 @@ class Showcases extends CActiveRecord {
                 }
             }
             return $tmp;
+        }elseif($type=='authorQzone'){
+            return array('author','authorTop','weiboSideQr','weixinSideQr');
+        }elseif($type=='readerQzone'){
+            return array('author','readerTop','weiboSideQr','weixinSideQr');
         }
         return $arr[$type];
     }
@@ -195,7 +205,7 @@ class Showcases extends CActiveRecord {
      * @param bool $showType 是否只按位置显示
      * @return array
      */
-    public static function getPagePosts($type,$columnid=NULL,$showType=false,$imgSize='c120'){
+    public static function getPagePosts($type,$columnid=NULL,$showType=false,$adImgSize='c120',$postImgSize='w120'){
         if(!$showType){
             $arr=  Showcases::exPosition($type);
         }else{
@@ -220,6 +230,7 @@ class Showcases extends CActiveRecord {
                         $_sqlCol="SELECT id,title FROM {{column}} WHERE id IN({$colidStr})";
                         $_colsArr=Yii::app()->db->createCommand($_sqlCol)->queryAll();
                         foreach ($_posts as $k=>$val){
+                            $_posts[$k]['faceImg']=  zmf::getThumbnailUrl($val['faceImg'], $postImgSize, 'showcase');
                             foreach ($_colsArr as $_colval){
                                 if($_colval['id']==$val['colid']){
                                     $_posts[$k]['colTitle']=$_colval['title'];
@@ -234,7 +245,7 @@ class Showcases extends CActiveRecord {
                 $_sql="SELECT title,faceimg,content,url FROM {{showcase_link}} WHERE sid='{$case['id']}' AND classify='ad' ORDER BY startTime ASC LIMIT {$case['num']}";
                 $_posts=  Yii::app()->db->createCommand($_sql)->queryAll();
                 foreach ($_posts as $k=>$val){
-                    $_posts[$k]['faceimg']=  zmf::getThumbnailUrl($val['faceimg'], $imgSize, 'showcase');
+                    $_posts[$k]['faceimg']=  zmf::getThumbnailUrl($val['faceimg'], $adImgSize, 'showcase');
                 }
                 $_tmp['post']=$_posts;
             }

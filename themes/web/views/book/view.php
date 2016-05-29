@@ -13,15 +13,15 @@
                     <p>点击：<?php echo $info['hits']; ?></p>
                     <p>总字：<?php echo $info['words']; ?></p>
                     <p>状态：<?php echo Books::exStatus($info['bookStatus']); ?></p>
-                    <div class="btn-group" role="group">
-                        <?php echo CHtml::link('立即阅读',array('book/chapter','cid'=>$chapters[0]['id']),array('class'=>'btn btn-danger btn-small'));?>
+                    <p>
+                        <?php echo CHtml::link('立即阅读',array('book/chapter','cid'=>$chapters[0]['id']),array('class'=>'btn btn-danger btn-xs'));?>
                         <?php if($this->favorited){?>
-                        <?php echo CHtml::link('<i class="fa fa-heart"></i> 已收藏','javascript:;',array('class'=>'btn btn-default btn-small','action'=>'favorite','action-data'=>$info['id'],'action-type'=>'book'));?>
+                        <?php echo CHtml::link('<i class="fa fa-heart"></i> 已收藏','javascript:;',array('class'=>'btn btn-default btn-xs','action'=>'favorite','action-data'=>$info['id'],'action-type'=>'book'));?>
                         <?php }else{?>
-                        <?php echo CHtml::link('<i class="fa fa-heart-o"></i> 收藏','javascript:;',array('class'=>'btn btn-danger btn-small','action'=>'favorite','action-data'=>$info['id'],'action-type'=>'book'));?>
+                        <?php echo CHtml::link('<i class="fa fa-heart-o"></i> 收藏','javascript:;',array('class'=>'btn btn-danger btn-xs','action'=>'favorite','action-data'=>$info['id'],'action-type'=>'book'));?>
                         <?php }?>
-                        <button type="button" class="btn btn-default btn-small">分享</button>
-                    </div>
+                        <?php echo CHtml::link('分享','javascript:;',array('action'=>'share','action-qrcode'=>$qrcode,'action-url'=>$url,'action-img'=>$qrcode,'action-title'=>$info['title'],'class'=>'btn btn-default btn-xs'));?>
+                    </p>
                 </div>
                 <div class="media-right">
                     <div class="book-starInfo">
@@ -59,7 +59,7 @@
             </div>
         </div>
         <div class="module">
-            <div class="module-header">点评</div>
+            <div class="module-header">书评</div>
             <div class="module-body" id="chapter-tips-holder">                
                 <?php if(!empty($tips)){?>
                 <?php foreach ($tips as $tip){?> 

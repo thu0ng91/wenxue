@@ -9,7 +9,7 @@
  * @datetime 2016-5-25  17:14:26 
  */
 ?>
-<div class="module-header">作品</div>
+<div class="module-header">草稿箱</div>
 <div class="module-body">
     <?php foreach ($posts as $post){?>
     <div class="media">

@@ -10,8 +10,11 @@
  */
 ?>
 <style>
-    .forum-page .module-body{
+    .forum-page .main-part .module-body{
         padding-bottom: 0;
+    }
+    .forum-page .aside-part .module-body{
+        padding-bottom: 20px;
     }
     .forum-page .post-item{
         border-bottom: 1px dashed #eee
@@ -35,8 +38,16 @@
     <div class="main-part">
         <div class="module">
             <div class="module-header">
-                <?php echo $label;?>
-                <?php echo CHtml::link('<i class="fa fa-plus"></i> 发布文章',array('posts/create','type'=>$type),array('class'=>'pull-right'));?>
+                <?php echo $label;?>                
+                <?php 
+                if($type=='author'){
+                    if($this->userInfo['authorId']>0){
+                        echo CHtml::link('<i class="fa fa-plus"></i> 发布文章',array('posts/create','type'=>$type),array('class'=>'pull-right'));
+                    }
+                }else{
+                    echo CHtml::link('<i class="fa fa-plus"></i> 发布文章',array('posts/create','type'=>$type),array('class'=>'pull-right'));
+                }
+                ?>
             </div>
             <div class="module-body">
                 <?php foreach ($posts as $_post){?>
@@ -54,7 +65,7 @@
                             <?php if($_post['classify']==Posts::CLASSIFY_AUTHOR){?>
                             <span><?php echo CHtml::link($_post['username'],array('author/view','id'=>$_post['aid']));?></span>  
                             <?php }else{?>
-                            <span><?php echo CHtml::link($_post['username'],array('user/view','id'=>$_post['uid']));?></span>  
+                            <span><?php echo CHtml::link($_post['username'],array('user/index','id'=>$_post['uid']));?></span>  
                             <?php }?>
                             <span><?php echo zmf::formatTime($_post['cTime']);?></span>                            
                             <span><?php echo $_post['comments'];?>评论</span>                            
@@ -68,13 +79,38 @@
         </div>
     </div>
     <div class="aside-part">
-        <?php $sideAds=$sideInfo['post'];if(!empty($sideAds)){$_info=$sideAds[0];?>
+        <?php $sideAds=$showcases['author']['post'];if(!empty($sideAds)){$_info=$sideAds[0];?>
         <div class="module posts-side-show">
             <a href="<?php echo $_info['url']!='' ? $_info['url'] : 'javascript:;';?>" target="_blank">
                 <img src="<?php echo zmf::lazyImg();?>" data-original="<?php echo $_info['faceimg'];?>" class="img-responsive lazy"/>
             </a>
         </div>
         <?php }?>
+        <?php $sideTops=$showcases[$type.'Top'];if(!empty($sideTops)){$_sideTops=$sideTops['post'];?>
+        <div class="module">
+            <div class="module-header"><?php echo $sideTops['title'];?></div>
+            <div class="module-body">
+                <?php  foreach ($_sideTops as $_side){?>
+                <p><?php echo CHtml::link($_side['title'],$_side['url'],array('target'=>'_blank'));?></p>
+                <?php }?>
+            </div>
+        </div>
+        <?php }?>
+        <div class="module">
+            <div class="module-header">关注我们</div>
+            <div class="module-body">
+                <div class="row">
+                    <div class="col-xs-6">
+                        <img src="<?php echo zmf::lazyImg();?>" data-original="<?php echo zmf::config('baseurl').'common/images/qrcode.png';?>" class="img-responsive lazy"/>
+                        <p class="text-center">官方微博</p>
+                    </div>
+                    <div class="col-xs-6">
+                        <img src="<?php echo zmf::lazyImg();?>" data-original="<?php echo zmf::config('baseurl').'common/images/qrcode.png';?>" class="img-responsive lazy"/>
+                        <p class="text-center">官方微信</p>
+                    </div>
+                </div>                
+            </div>
+        </div>
         <?php $this->renderPartial('/common/copyright');?>
     </div>
 </div>

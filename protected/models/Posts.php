@@ -275,7 +275,7 @@ class Posts extends CActiveRecord {
         } else {
             $codeArr = Posts::decode($code);
             if ($codeArr['type'] != $type || !is_numeric($codeArr['id']) || $codeArr['id'] < 1) {
-                return array('status' => 0, 'msg' => '您所操作的内容不存在');
+                return array('status' => 0, 'msg' => '你所操作的内容不存在');
             }
             $id = $codeArr['id'];
         }
@@ -290,30 +290,44 @@ class Posts extends CActiveRecord {
         }
         if($type=='book'){
             $postInfo=  Books::getOne($id);            
-            $content="您的小说【{$postInfo['title']}】有了新的收藏者";
+            $content="你的小说【{$postInfo['title']}】有了新的收藏者";
             $noticeUid=$postInfo['uid'];
+            //记录用户操作
+            $jsonData=  CJSON::encode(array(
+                'bid'=>$id,
+                'bTitle'=>$postInfo['title'],
+                'bDesc'=>$postInfo['desc'],
+                'bFaceImg'=>$postInfo['faceImg']
+            ));
         }elseif($type=='author'){
             $postInfo=  Authors::getOne($id);
-            $content="您的作者主页【{$postInfo['authorName']}】有了新的追随者";
+            $content="你的作者主页【{$postInfo['authorName']}】有了新的追随者";
             $noticeUid=$postInfo['uid'];
+            //记录用户操作
+            $jsonData=  CJSON::encode(array(
+                'aid'=>$id,
+                'authorName'=>$postInfo['authorName'],
+                'avatar'=>$postInfo['avatar'],
+                'content'=>$postInfo['content']
+            ));
         }elseif($type=='tip'){
             $postInfo=  Tips::getOne($id);
             if (!$postInfo || $postInfo['status'] != Posts::STATUS_PASSED) {
-                return array('status' => 0, 'msg' => '您所操作的内容不存在');
+                return array('status' => 0, 'msg' => '你所操作的内容不存在');
             }
             $chapterInfo=  Chapters::getOne($postInfo['logid']);
             if (!$chapterInfo || $chapterInfo['status'] != Posts::STATUS_PASSED) {
-                return array('status' => 0, 'msg' => '您所操作的内容不存在');
+                return array('status' => 0, 'msg' => '你所操作的内容不存在');
             }
-            $content="您点评【{$chapterInfo['title']}】有了新的赞同";
+            $content="你点评【{$chapterInfo['title']}】有了新的赞同";
             $noticeUid=$postInfo['uid'];
         }elseif($type=='user'){
             $postInfo= Users::getOne($id);
-            $content="您有了新的粉丝";
-            $noticeUid=$id;
+            $content="你有了新的粉丝";
+            $noticeUid=$id;            
         }
         if (!$postInfo || $postInfo['status'] != Posts::STATUS_PASSED) {
-            return array('status' => 0, 'msg' => '您所操作的内容不存在');
+            return array('status' => 0, 'msg' => '你所操作的内容不存在');
         }
         $attr = array(
             'uid' => $uid,
@@ -368,6 +382,8 @@ class Posts extends CActiveRecord {
                     'from_num' => 1
                 );
                 Notification::add($_noticedata);
+                //记录用户操作
+                UserAction::recordAction($id, 'favorite'.  ucfirst($type), $jsonData);
                 return array('status' => 1, 'msg' => '点赞成功', 'state' => 1);
             } else {
                 return array('status' => 0, 'msg' => '点赞失败', 'state' => 2);

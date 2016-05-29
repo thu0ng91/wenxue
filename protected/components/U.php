@@ -9,10 +9,11 @@ class U extends CUserIdentity {
 
     private $_id;
     public $username;
+    public $phone;
 
-    public function __construct($username, $password) {
-        parent::__construct($username, $password);        
-        $this->username=$username;
+    public function __construct($phone, $password) {
+        parent::__construct($phone, $password);        
+        $this->phone=$phone;
     }
 
     /**
@@ -20,7 +21,7 @@ class U extends CUserIdentity {
      * @return boolean whether authentication succeeds.
      */
     public function authenticate() {        
-        $user = Users::model()->find('truename=:truename', array(':truename'=>  $this->username)); 
+        $user = Users::model()->find('phone=:phone', array(':phone'=>  $this->phone)); 
         if ($user === null)
             $this->errorCode = self::ERROR_USERNAME_INVALID;
         else if($user['status']!=Posts::STATUS_PASSED)

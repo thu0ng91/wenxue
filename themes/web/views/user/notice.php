@@ -10,8 +10,10 @@
                 <?php echo CHtml::link('<i class="fa fa-remove"></i>','javascript:;',array('action'=>'del-content','action-type'=>'notice','action-data'=>  $row['id'],'action-confirm'=>1,'action-target'=>'notice-'.$row['id']));?>
             </span>
         </p>
-        <?php endforeach; ?>            
-    <?php }?>   
+        <?php endforeach; ?>     
+        <?php $this->renderPartial('/common/pager', array('pages' => $pages)); ?>
+    <?php }else{?>
+        <p class="help-block text-center">暂无消息</p>    
+    <?php }?>
     </div>
 </div>
-<?php $this->renderPartial('/common/pager', array('pages' => $pages)); ?>

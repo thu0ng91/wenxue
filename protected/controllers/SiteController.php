@@ -43,7 +43,7 @@ class SiteController extends Q {
 
     public function actionLogin() {        
         if (!Yii::app()->user->isGuest) {
-            $this->message(0, '您已登录，请勿重复操作');
+            $this->message(0, '你已登录，请勿重复操作');
         }
         $canLogin = true;
         $ip = Yii::app()->request->getUserHostAddress();
@@ -84,7 +84,7 @@ class SiteController extends Q {
 
     public function actionLogout() {
         if (Yii::app()->user->isGuest) {
-            $this->message(0, '您尚未登录');
+            $this->message(0, '你尚未登录');
         }
         Yii::app()->user->logout();
         if ($this->referer == '') {
@@ -99,14 +99,18 @@ class SiteController extends Q {
         }
         $ip=ip2long(Yii::app()->request->userHostAddress);
         if(zmf::actionLimit('reg', $ip, 5, 86400, true,true)){
-            throw new CHttpException(403, '您的操作太频繁，请明天再来吧');
+            throw new CHttpException(403, '你的操作太频繁，请明天再来吧');
         }
         $modelUser = new Users();
         if (isset($_POST['Users'])) {
             $truename = zmf::filterInput($_POST['Users']['truename'], 1);
+            $phone = zmf::filterInput($_POST['Users']['phone'], 2);
             $password = $_POST['Users']['password'];
             if (!$truename) {
                 $modelUser->addError('truename', '用户昵称不能为空');
+                $modelUser->attributes=$_POST['Users'];
+            }elseif (!$phone) {
+                $modelUser->addError('phone', '请输入手机号');
                 $modelUser->attributes=$_POST['Users'];
             } elseif (!$password || strlen($password) < 6) {
                 $modelUser->addError('password', '密码不能为空且不能小于6位');
@@ -114,6 +118,9 @@ class SiteController extends Q {
             }elseif(Users::findByName($truename)){
                 $modelUser->addError('truename', '该用户昵称已被注册');
                 $modelUser->attributes=$_POST['Users'];
+            }elseif(Users::findByPhone($phone)){
+                $modelUser->addError('truename', '该手机号已被注册');
+                $modelUser->attributes=$_POST['Users'];                
             } else {
                 $contact = zmf::filterInput($_POST['Users']['contact'], 1);
                 $content = zmf::filterInput($_POST['Users']['content'], 1);
@@ -147,11 +154,11 @@ class SiteController extends Q {
         $code = zmf::val('code', 1);
         $_title = SiteInfo::exTypes($code);
         if (!$_title) {
-            throw new CHttpException(404, '您所查看的页面不存在');
+            throw new CHttpException(404, '你所查看的页面不存在');
         }
         $info = SiteInfo::model()->find('code=:code', array(':code' => $code));
         if (!$info) {
-            throw new CHttpException(404, '您所查看的页面不存在');
+            throw new CHttpException(404, '你所查看的页面不存在');
         }
         $allInfos = SiteInfo::model()->findAll(array(
             'select' => 'code,title',

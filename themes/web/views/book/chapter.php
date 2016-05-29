@@ -173,7 +173,7 @@
                         if($this->tipInfo['status']==Posts::STATUS_PASSED){
                             echo '<p class="help-block">每章节只能评价一次，但你可以对 '.CHtml::link('现有的评价','javascript:;',array('action-target'=>'tip-'.$this->tipInfo['id'],'action'=>'scroll')).' 进行修改。</p>';
                         }else{
-                            echo '<p class="help-block">你已经删除了对本章节的点评，如需显示，请'.CHtml::link('重新编辑','javascript:;').'。</p>';
+                            echo '<p class="help-block">你已经删除了对本章节的点评，如需显示，请'.CHtml::link('重新编辑',array('book/editTip','tid'=>$this->tipInfo['id'])).'。</p>';
                         }
                     }else{
                         $this->renderPartial('/common/addTips',array('type'=>'chapter','keyid'=>$chapterInfo['id']));

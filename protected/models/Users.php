@@ -32,13 +32,14 @@ class Users extends CActiveRecord {
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('truename, password', 'required'),
+            array('truename,phone, password', 'required'),
             array('cTime', 'default', 'setOnEmpty' => true, 'value' => zmf::now()),
             array('status', 'default', 'setOnEmpty' => true, 'value' => Posts::STATUS_PASSED),
             array('ip', 'default', 'setOnEmpty' => true, 'value' => ip2long(Yii::app()->request->userHostAddress)),
-            array('hits, sex, isAdmin, status', 'numerical', 'integerOnly' => true),
+            array('hits, sex, isAdmin, status,phoneChecked', 'numerical', 'integerOnly' => true),
             array('truename,ip', 'length', 'max' => 16),
             array('cTime,authorId,favors,favord,favorAuthors', 'length', 'max' => 10),
+            array('phone', 'length', 'max' => 11),
             array('password', 'length', 'max' => 32),
             array('contact,avatar', 'length', 'max' => 255),
             array('content', 'safe'),
@@ -62,6 +63,7 @@ class Users extends CActiveRecord {
         return array(
             'id' => 'ID',
             'truename' => '用户昵称',
+            'phone' => '手机号码',
             'password' => '账号密码',
             'newPassword' => '新密码',
             'contact' => '联系方式',
@@ -77,6 +79,7 @@ class Users extends CActiveRecord {
             'favors' => '粉丝数',
             'favord' => '关注了',
             'favorAuthors' => '收藏作者数',
+            'phoneChecked' => '手机号是否已验证',
         );
     }
 
@@ -138,6 +141,12 @@ class Users extends CActiveRecord {
     public static function findByName($truename){
         $info=  Users::model()->find('truename=:truename AND status='.Posts::STATUS_PASSED, array(
             ':truename'=>$truename
+        ));
+        return $info;
+    }
+    public static function findByPhone($phone){
+        $info=  Users::model()->find('phone=:phone AND status='.Posts::STATUS_PASSED, array(
+            ':truename'=>$phone
         ));
         return $info;
     }

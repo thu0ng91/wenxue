@@ -35,7 +35,7 @@ class UsersController extends Admin {
             $this->checkPower('updateUser');
             $model = Users::model()->findByPk($id);
             if (!$model) {
-                $this->message(0, '您所编辑的用户不存在');
+                $this->message(0, '你所编辑的用户不存在');
             }
             $isNew = false;
         } else {
