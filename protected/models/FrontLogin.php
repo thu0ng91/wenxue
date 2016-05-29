@@ -49,7 +49,7 @@ class FrontLogin extends CFormModel {
      */
     public function login() {
         if ($this->_identity === null) {
-            $this->_identity = new U($this->username, $this->password);
+            $this->_identity = new U($this->phone, $this->password);
             $this->_identity->authenticate();
         }
         if ($this->_identity->errorCode === U::ERROR_NONE) {

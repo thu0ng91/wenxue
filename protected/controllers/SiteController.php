@@ -131,7 +131,7 @@ class SiteController extends Q {
                 if ($modelUser->save()) {
                     zmf::actionLimit('reg', $ip, 5, 86400, true);
                     $_model = new FrontLogin;
-                    $_model->username = $truename;
+                    $_model->phone = $phone;
                     $_model->password = $password;
                     $_model->login();
                     if ($this->referer == '') {
