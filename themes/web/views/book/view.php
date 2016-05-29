@@ -4,7 +4,7 @@
             <h1><?php echo $info['title']; ?></h1>
             <div class="media">
                 <div class="media-left">
-                    <img class="media-object" src="<?php echo $info['faceImg']; ?>" alt="<?php echo $info['title']; ?>">                    
+                    <img class="media-object lazy" src="<?php echo zmf::lazyImg(); ?>" data-original="<?php echo $info['faceImg']; ?>" alt="<?php echo $info['title']; ?>">                    
                 </div>
                 <div class="media-body book-detail">
                     <p>作者：<?php echo CHtml::link($authorInfo['authorName'], array('author/view', 'id' => $info['aid'])); ?></p>
