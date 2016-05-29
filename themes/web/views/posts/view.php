@@ -21,6 +21,12 @@ $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
     .post-page .tips span{
         margin-right: 5px;
     }
+    .post-comments .media{
+        border-bottom: 1px dashed #f2f2f2
+    }
+    .post-comments .media:last-child{
+        border: none
+    }
 </style>
 <div class="container post-page">    
     <ol class="breadcrumb">
