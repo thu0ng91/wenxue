@@ -50,7 +50,7 @@ class Q extends Controller {
         $currentUrl = Yii::app()->request->url;
         $arr = array(
             'login',
-            '/site/',
+            'site/',
             '/error/',
             '/attachments/',
             '/weibo/',
