@@ -1,10 +1,16 @@
+<style>
+    .books-category .media .media-object{
+        width: 78px;
+        height: 104px;
+    }
+</style>
 <div class="container">
     <ol class="breadcrumb">
         <li><?php echo CHtml::link(zmf::config('sitename').'首页',  zmf::config('baseurl'));?></li>
         <li><?php echo CHtml::link($colInfo['title'],  array('book/index','colid'=>$colInfo['id']));?></li>
     </ol>
     <div class="main-part">
-        <div class="module">
+        <div class="module books-category">
             <div class="module-header"><?php echo $colInfo['title'];?></div>
             <div class="module-body">
                 <?php if(!empty($posts)){?>

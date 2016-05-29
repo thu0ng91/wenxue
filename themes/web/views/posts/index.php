@@ -25,6 +25,10 @@
     .forum-page .post-item .tips span{
         margin-right: 5px
     }
+    .forum-page .post-item .media-object{
+        width: 78px;
+        height: 104px;
+    }
     .forum-page .posts-side-show img{
         width: 300px;
         height: 225px;
@@ -55,7 +59,7 @@
                     <?php if($_post['faceimg']){?>
                     <div class="media-left">
                         <a href="<?php echo Yii::app()->createUrl('posts/view',array('id'=>$_post['id']));?>">
-                            <img class="media-object" src="<?php echo $_post['faceimg'];?>" alt="<?php echo $_post['title'];?>">
+                            <img class="media-object lazy" src="<?php echo zmf::lazyImg();?>" data-original="<?php echo $_post['faceimg'];?>" alt="<?php echo $_post['title'];?>">
                         </a>
                     </div>
                     <?php }?>
