@@ -105,6 +105,9 @@ class Attachments extends CActiveRecord {
      * @return boolean
      */
     public static function checkUrlDomain($url){
+        if(!$url){
+            return true;
+        }
         $arr[]=  zmf::config('domain');
         $arr[]=  zmf::config('imgVisitUrl');
         $arr=  array_filter($arr);

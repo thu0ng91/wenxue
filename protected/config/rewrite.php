@@ -5,7 +5,7 @@ return array(
     'showScriptName' => false, //隐藏index.php   
     'urlSuffix' => '', //后缀   
     'rules' => array(
-        'cate/<id:\d+>' => 'posts/view',
+        'category/<cid:\d+>' => 'showcase/index',
         'post/<id:\d+>' => 'posts/view',
         'siteInfo/<code:\w+>' => 'site/info',
         '<controller:\w+>/<action:\w+>' => '<controller>/<action>',
