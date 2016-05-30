@@ -81,7 +81,7 @@
         <?php }?>
         <?php $this->renderPartial('/common/pager',array('pages'=>$pages));?>
         <?php }else{?>
-        <p class="help-block text-center">他很懒，什么动态也没有！</p>
+        <p class="color-grey text-center">他很懒，什么动态也没有！</p>
         <?php }?>
     </div>
 </div>

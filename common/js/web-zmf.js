@@ -222,6 +222,30 @@ function rebind() {
         dialog({msg: '复制失败，请手动复制浏览器链接'});
     });
 }
+function searchType(type,title){
+    if(!type || !title){
+        return false;
+    }
+    $('#searchTypeBtn').attr('data-type',type).html(title+' <span class="caret"></span>');
+}
+function topSearchBtn(){
+    var k=$('#keyword').val();
+    var type=$('#searchTypeBtn').attr('data-type');
+    if(!k){
+        dialog({msg:'请输入关键词'});
+        return false;
+    }else if(!type){
+        dialog({msg:'参数错误'});
+        return false;
+    }
+    var _url=zmf.searchUrl;
+    var sep='?';
+    if(_url.indexOf("?") > -1){
+        sep='&';
+    }
+    var url=_url+sep+'type='+type+'&keyword='+k;
+    window.location.href=url;
+}
 /**
  * 获取内容
  * @param {type} dom
@@ -380,6 +404,18 @@ function favorite(dom) {
             dom.removeClass('btn-default').addClass('btn-danger').html('<i class="fa fa-heart-o"></i> 收藏');
         }else{
             dom.removeClass('btn-danger').addClass('btn-default').html('<i class="fa fa-heart"></i> 已收藏');
+        }
+    }else if(t==='post'){
+        if(dom.hasClass('btn-default')){
+            dom.removeClass('btn-default').addClass('btn-danger').html('<i class="fa fa-thumbs-o-up"></i> 赞');
+        }else{
+            dom.removeClass('btn-danger').addClass('btn-default').html('<i class="fa fa-thumbs-up"></i> 已赞');
+        }
+    }else if(t==='user'){
+        if(dom.hasClass('btn-default')){
+            dom.removeClass('btn-default').addClass('btn-danger').html('<i class="fa fa-star-o"></i> 赞');
+        }else{
+            dom.removeClass('btn-danger').addClass('btn-default').html('<i class="fa fa-star"></i> 已赞');
         }
     }
     $.post(zmf.favoriteUrl, {type: t, data: acdata, YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {

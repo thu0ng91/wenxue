@@ -17,7 +17,7 @@
         <?php $this->renderPartial('/book/_tip',array('data'=>$tip));?>
         <?php }?>
         <?php }else{?>
-        <p class="help-block">还没点评过</p>
+        <p class="color-grey text-center">他很懒，还没点评过！</p>
         <?php }?>        
     </div>
 </div>

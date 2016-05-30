@@ -182,3 +182,17 @@ CREATE TABLE `pre_drafts` (
 
 alter table pre_users add phone char(11) COMMENT '手机号';
 alter table pre_users add phoneChecked tinyint(1) unsigned not null COMMENT '手机号是否已验证';
+
+DROP TABLE IF EXISTS `pre_reports`;
+CREATE TABLE `pre_reports` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uid` int(11) NOT NULL,
+  `logid` int(11) NOT NULL,
+  `classify` varchar(255) NOT NULL,
+  `ip` varchar(15) NOT NULL,
+  `desc` varchar(255) NOT NULL,
+  `url` varchar(255) NOT NULL,
+  `status` tinyint(1) NOT NULL,
+  `cTime` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;

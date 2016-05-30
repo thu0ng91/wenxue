@@ -184,7 +184,11 @@ $cols=  Column::allCols();
                     </div>                
                     <?php }else{?>
                     <div class="btn-group" role="group">
-                        <?php echo CHtml::link('<i class="fa fa-star-o"></i> 关注','javascript:;',array('class'=>'btn btn-'.($this->favorited ? 'danger' :'default'),'action'=>'favorite','action-data'=>$this->toUserInfo['id'],'action-type'=>'user'));?>
+                        <?php if($this->favorited){?>
+                        <?php echo CHtml::link('<i class="fa fa-star"></i> 已关注','javascript:;',array('class'=>'btn btn-default','action'=>'favorite','action-data'=>$this->toUserInfo['id'],'action-type'=>'user'));?>
+                        <?php }else{?>
+                        <?php echo CHtml::link('<i class="fa fa-star-o"></i> 关注','javascript:;',array('class'=>'btn btn-danger','action'=>'favorite','action-data'=>$this->toUserInfo['id'],'action-type'=>'user'));?>
+                        <?php }?>
                     </div>
                     <?php }?>
                 </div>

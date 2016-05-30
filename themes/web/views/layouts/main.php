@@ -17,17 +17,16 @@ $cols=  Column::allCols();
     <div class="header-search">
         <div class="input-group">
             <div class="input-group-btn">
-                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">作者 <span class="caret"></span></button>
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="searchTypeBtn" data-type="author">作者 <span class="caret"></span></button>
                 <ul class="dropdown-menu">
-                    <li><a href="#">作者</a></li>
-                    <li><a href="#">小说</a></li>
-                    <li><a href="#">章节</a></li>
-                    <li><a href="#">用户</a></li>
+                    <?php $types=  SiteInfo::searchTypes('admin');foreach($types as $_type=>$_title){?>
+                    <li><a href="javascript:;" onclick="searchType('<?php echo $_type;?>','<?php echo $_title;?>')"><?php echo $_title;?></a></li>
+                    <?php }?>
                 </ul>
             </div><!-- /btn-group -->
-            <input type="text" class="form-control" placeholder="请输入关键词">
+            <input type="text" class="form-control" placeholder="请输入关键词" id="keyword" name="keyword">
             <span class="input-group-btn">
-                <button class="btn btn-default" type="button">
+                <button class="btn btn-default" type="button" onclick="topSearchBtn()">
                     <i class="fa fa-search"></i>
                 </button>
             </span>

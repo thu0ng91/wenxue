@@ -108,6 +108,10 @@ class Posts extends CActiveRecord {
     public static function model($className = __CLASS__) {
         return parent::model($className);
     }
+    
+    public static function getOne($id){
+        return Posts::model()->findByPk($id);
+    }
 
     public static function exStatus($type) {
         $arr = array(
@@ -165,7 +169,7 @@ class Posts extends CActiveRecord {
      * @return boolean
      */
     public static function updateCount($keyid, $type, $num = 1, $field = 'hits') {
-        if (!$keyid || !$type || !in_array($type, array('Books','Authors','Chapters','Tips','Users'))) {
+        if (!$keyid || !$type || !in_array($type, array('Books','Authors','Chapters','Tips','Users','Posts'))) {
             return false;
         }
         $model = new $type;
@@ -267,7 +271,7 @@ class Posts extends CActiveRecord {
         if (!$code || !$type) {
             return array('status' => 0, 'msg' => '数据不全，请核实');
         }
-        if (!in_array($type, array('book', 'author','tip','user'))) {
+        if (!in_array($type, array('book', 'author','tip','user','post'))) {
             return array('status' => 0, 'msg' => '暂不允许的分类');
         }
         if (is_numeric($code)) {
@@ -324,7 +328,14 @@ class Posts extends CActiveRecord {
         }elseif($type=='user'){
             $postInfo= Users::getOne($id);
             $content="你有了新的粉丝";
-            $noticeUid=$id;            
+            $noticeUid=$id;          
+        }elseif($type=='post'){
+            $postInfo= Posts::getOne($id);
+            if (!$postInfo || $postInfo['status'] != Posts::STATUS_PASSED) {
+                return array('status' => 0, 'msg' => '你所操作的内容不存在');
+            }
+            $content="你的文章【{$postInfo['title']}】有了新的赞";
+            $noticeUid=$postInfo['uid'];
         }
         if (!$postInfo || $postInfo['status'] != Posts::STATUS_PASSED) {
             return array('status' => 0, 'msg' => '你所操作的内容不存在');
@@ -348,6 +359,8 @@ class Posts extends CActiveRecord {
                     Posts::updateCount($id, 'Users', -1, 'favors');
                     //增加我关注了的人数
                     Posts::updateCount($this->uid, 'Users', -1, 'favord');
+                }elseif($type=='post'){
+                    Posts::updateCount($id, 'Posts', -1, 'favorite');    
                 }
                 return array('status' => 1, 'msg' => '取消点赞', 'state' => 3);
             } else {
@@ -369,6 +382,8 @@ class Posts extends CActiveRecord {
                     Posts::updateCount($id, 'Users', 1, 'favors');
                     //增加我关注了的人数
                     Posts::updateCount($uid, 'Users', 1, 'favord');
+                }elseif($type=='post'){
+                    Posts::updateCount($id, 'Posts', 1, 'favorite');    
                 }
                 //点赞后给对方发提醒
                 $_noticedata = array(

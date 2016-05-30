@@ -22,6 +22,9 @@ class UserController extends Q {
         } else {
             Posts::updateCount($id, 'Users', 1, 'hits');
         }
+        if($this->uid){
+            $this->favorited = Favorites::checkFavored($this->toUserInfo['id'], 'user');   
+        }
     }
 
     private function checkLogin() {

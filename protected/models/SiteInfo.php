@@ -101,5 +101,18 @@ class SiteInfo extends CActiveRecord {
         }
         return $arr[$type];
     }
+    
+    public static function searchTypes($type){
+        $arr=array(
+            'author'=>'作者',
+            'book'=>'小说',
+            'chapter'=>'章节',
+            'user'=>'用户',
+        );
+        if ($type == 'admin') {
+            return $arr;
+        }
+        return $arr[$type];
+    }
 
 }

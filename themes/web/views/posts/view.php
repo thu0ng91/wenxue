@@ -49,7 +49,11 @@ $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
                 <div class="post-content">
                     <?php echo $info['content'];?>
                 </div>
-                <p class="text-center"><?php echo CHtml::link('<i class="fa fa-thumbs-o-up"></i> 赞','javascript:;',array('class'=>'btn btn-default btn-small'));?></p>
+                <?php if($this->favorited){?>
+                <p class="text-center"><?php echo CHtml::link('<i class="fa fa-thumbs-up"></i> 已赞','javascript:;',array('class'=>'btn btn-default btn-small','action'=>'favorite','action-data'=>$info['id'],'action-type'=>'post'));?></p>
+                <?php }else{?>
+                <p class="text-center"><?php echo CHtml::link('<i class="fa fa-thumbs-o-up"></i> 赞','javascript:;',array('class'=>'btn btn-danger btn-small','action'=>'favorite','action-data'=>$info['id'],'action-type'=>'post'));?></p>
+                <?php }?>
             </div>
         </div>
         <div class="module">

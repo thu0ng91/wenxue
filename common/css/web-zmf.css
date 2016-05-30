@@ -31,9 +31,21 @@ p{
     white-space: nowrap;
     text-overflow: ellipsis;
 }
+.ui-border-b{
+    border-bottom: 1px dashed #f2f2f2
+}
 .title{
     font-weight: 700
 }
+.w78{
+    width: 78px;
+    height: 104px
+}
+.a74{
+    width: 74px;
+    height: 74px;
+}
+/*头部*/
 .navbar-fixed-top ~ .container {
     border-top: 65px solid transparent;
 }
