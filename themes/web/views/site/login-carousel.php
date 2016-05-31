@@ -15,6 +15,7 @@ $posts=$showcases['reg']['post'];
     .login-reg-module .carousel{
         width: 640px;
         height: 360px;
+        background: #fff
     }
     .login-reg-module .carousel .item img{
         width: 640px;

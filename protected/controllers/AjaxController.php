@@ -17,7 +17,7 @@ class AjaxController extends Q {
 
     public function actionDo() {
         $action = zmf::val('action', 1);
-        if (!in_array($action, array('addTip', 'saveUploadImg', 'publishBook', 'publishChapter', 'saveDraft','report'))) {
+        if (!in_array($action, array('addTip', 'saveUploadImg', 'publishBook', 'publishChapter', 'saveDraft', 'report'))) {
             $this->jsonOutPut(0, Yii::t('default', 'forbiddenaction'));
         }
         $this->$action();
@@ -48,15 +48,15 @@ class AjaxController extends Q {
         if ($ckInfo !== false) {
             $this->jsonOutPut(0, '每章节只能评价一次');
         }
-        $postInfo = Chapters::getOne($keyid);        
+        $postInfo = Chapters::getOne($keyid);
         if (!$postInfo || $postInfo['status'] != Posts::STATUS_PASSED) {
             $this->jsonOutPut(0, '你所评论的内容不存在');
         }
         //小说信息
-        $bookInfo=  Books::getOne($postInfo['bid']);
-        if(!$bookInfo || $bookInfo['status']!=Posts::STATUS_PASSED){
+        $bookInfo = Books::getOne($postInfo['bid']);
+        if (!$bookInfo || $bookInfo['status'] != Posts::STATUS_PASSED) {
             $this->jsonOutPut(0, '你所评论的小说不存在');
-        }elseif ($bookInfo['bookStatus']!=Books::STATUS_PUBLISHED) {
+        } elseif ($bookInfo['bookStatus'] != Books::STATUS_PUBLISHED) {
             $this->jsonOutPut(0, '你所评论的小说暂未发表');
         }
         //处理文本
@@ -104,13 +104,13 @@ class AjaxController extends Q {
                     Notification::add($_noticedata);
                 }
                 //记录用户操作
-                $jsonData=  CJSON::encode(array(
-                    'cid'=>$keyid,
-                    'cTitle'=>$postInfo['title'],
-                    'bid'=>$bookInfo['id'],
-                    'bTitle'=>$bookInfo['title'],
-                    'bDesc'=>$bookInfo['desc'],
-                    'bFaceImg'=>$bookInfo['faceImg'],
+                $jsonData = CJSON::encode(array(
+                            'cid' => $keyid,
+                            'cTitle' => $postInfo['title'],
+                            'bid' => $bookInfo['id'],
+                            'bTitle' => $bookInfo['title'],
+                            'bDesc' => $bookInfo['desc'],
+                            'bFaceImg' => $bookInfo['faceImg'],
                 ));
                 UserAction::recordAction($model->id, 'chapterTip', $jsonData);
                 $html = $this->renderPartial('/book/_tip', array('data' => $intoData, 'postInfo' => $postInfo), true);
@@ -264,36 +264,36 @@ class AjaxController extends Q {
             'uuid' => $hash,
         );
         $draftInfo = Drafts::model()->findByAttributes($attr);
-        $attr['title']=$title;
-        $attr['content']=$content;
-        $attr['cTime']=  zmf::now();
-        if($draftInfo){
-            if($draftInfo['title']==$title && $draftInfo['content']==$content){
+        $attr['title'] = $title;
+        $attr['content'] = $content;
+        $attr['cTime'] = zmf::now();
+        if ($draftInfo) {
+            if ($draftInfo['title'] == $title && $draftInfo['content'] == $content) {
                 $this->jsonOutPut(1, '已自动保存');
             }
-            if(Drafts::model()->updateByPk($draftInfo['id'], $attr)){
+            if (Drafts::model()->updateByPk($draftInfo['id'], $attr)) {
                 $this->jsonOutPut(1, '已自动保存');
-            }else{
+            } else {
                 $this->jsonOutPut(0, '保存草稿失败');
             }
         }
-        $model=new Drafts();
-        $model->attributes=$attr;
-        if($model->save()){
+        $model = new Drafts();
+        $model->attributes = $attr;
+        if ($model->save()) {
             $this->jsonOutPut(1, '已自动保存');
-        }else{
+        } else {
             $this->jsonOutPut(0, '保存草稿失败');
         }
     }
-    
-    private function report(){
+
+    private function report() {
         $data = array();
-        $logid = zmf::val('logid',2);
-        $type = zmf::val('type',1);
-        $desc = zmf::val('reason',1);
-        $contact = zmf::val('contact',1);
-        $url = zmf::val('url',1);
-        $allowType = array('book','chapter','tip','comment','post','user','author');
+        $logid = zmf::val('logid', 2);
+        $type = zmf::val('type', 1);
+        $desc = zmf::val('reason', 1);
+        $contact = zmf::val('contact', 1);
+        $url = zmf::val('url', 1);
+        $allowType = array('book', 'chapter', 'tip', 'comment', 'post', 'user', 'author');
         if (!in_array($type, $allowType)) {
             $this->jsonOutPut(0, '暂不允许的分类');
         }
@@ -308,12 +308,10 @@ class AjaxController extends Q {
         $data['status'] = Posts::STATUS_STAYCHECK;
         $fm = new Reports();
         $fm->attributes = $data;
-        if ($fm->validate()) {
-            if ($fm->save()) {
-                $this->jsonOutPut(1, '感谢你的举报');
-            }
+        if ($fm->save()) {
+            $this->jsonOutPut(1, '感谢你的举报');
         } else {
-            $this->jsonOutPut(0,'举报失败，请稍后重试');
+            $this->jsonOutPut(0, '举报失败，请稍后重试');
         }
     }
 
@@ -497,7 +495,7 @@ class AjaxController extends Q {
         if (!$data || !$type) {
             $this->jsonOutPut(0, '数据不全，请核实');
         }
-        if (!in_array($type, array('comment', 'post', 'notice', 'tag','img','tip'))) {
+        if (!in_array($type, array('comment', 'post', 'notice', 'tag', 'img', 'tip'))) {
             $this->jsonOutPut(0, '暂不允许的分类');
         }
         switch ($type) {
@@ -547,7 +545,7 @@ class AjaxController extends Q {
                 if (!$info) {
                     $this->jsonOutPut(0, '你所查看的内容不存在');
                 } elseif ($info['uid'] != $this->uid) {
-                    $this->jsonOutPut(0, '你无权操作');                    
+                    $this->jsonOutPut(0, '你无权操作');
                 }
                 if (Attachments::model()->updateByPk($data, array('status' => Posts::STATUS_DELED))) {
                     $this->jsonOutPut(1, '已删除');
@@ -559,7 +557,7 @@ class AjaxController extends Q {
                 if (!$info) {
                     $this->jsonOutPut(0, '你所查看的内容不存在');
                 } elseif ($info['uid'] != $this->uid) {
-                    $this->jsonOutPut(0, '你无权操作');                    
+                    $this->jsonOutPut(0, '你无权操作');
                 }
                 if (Tips::model()->updateByPk($data, array('status' => Posts::STATUS_DELED))) {
                     Books::updateScore($info['bid']);

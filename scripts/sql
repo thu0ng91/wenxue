@@ -196,3 +196,5 @@ CREATE TABLE `pre_reports` (
   `cTime` int(11) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+
+alter table pre_reports add contact varchar(255) not null COMMENT '联系方式';

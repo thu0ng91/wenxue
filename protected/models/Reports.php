@@ -21,7 +21,7 @@ class Reports extends CActiveRecord {
             array('cTime', 'default', 'setOnEmpty' => true, 'value' => zmf::now()),
             array('ip', 'default', 'setOnEmpty' => true, 'value' => ip2long(Yii::app()->request->userHostAddress)),
             array('uid, logid, status, cTime', 'numerical', 'integerOnly' => true),
-            array('classify, desc, url', 'length', 'max' => 255),
+            array('classify, desc, url,contact', 'length', 'max' => 255),
             array('ip', 'length', 'max' => 15),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
@@ -54,6 +54,7 @@ class Reports extends CActiveRecord {
             'status' => '状态',
             'cTime' => '举报时间',
             'url' => '举报链接',
+            'contact' => '联系方式',
         );
     }
 

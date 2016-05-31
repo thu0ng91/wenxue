@@ -45,6 +45,11 @@ class AdminCommon extends CActiveRecord {
             'url' => Yii::app()->createUrl('admin/feedback/index'),
             'active' => in_array($c, array('feedback'))
         );
+        $attr['reports'] = array(
+            'title' => '举报',
+            'url' => Yii::app()->createUrl('admin/reports/index'),
+            'active' => in_array($c, array('reports'))
+        );
         $attr['group'] = array(
             'title' => '标签',
             'url' => Yii::app()->createUrl('admin/tags/index'),

@@ -72,16 +72,18 @@ $form=$this->beginWidget('CActiveForm', array(
 <?php }?>
 <table class="table table-striped">
     <tr>
-        <?php foreach($selectArr as $field){if($field=='id')continue;?>
+        <?php foreach($selectArr as $_field){$field= zmf::formatField($_field);if($field=='id')continue;?>
         <th><?php echo $model->getAttributeLabel($field);?></th>
         <?php }?>
         <th>操作</th>
     </tr>
     <?php foreach($posts as $post){?>
     <tr>
-        <?php foreach($selectArr as $field){if($field=='id')continue;?>
+        <?php foreach($selectArr as $_field){$field= zmf::formatField($_field);if($field=='id')continue;?>
         <?php if($field=='uid'){?>
-        <td><?php echo CHtml::link(Users::getUsername($post[$field]),array('users/view','id'=>$post['uid']));?></td>
+        <td><?php echo $post[$field]>0 ? CHtml::link(Users::getUsername($post[$field]),array('users/view','id'=>$post['uid'])) : '匿名者 ';?></td>
+        <?php }elseif($field=='ip'){?>
+        <td><?php echo long2ip($post[$field]);?></td>
         <?php }elseif($field=='classify' && $from=='link'){?>
         <td><span class="label label-info"><?php echo Link::exTypes($post[$field]);?></span></td>
         <?php }elseif($field=='url'){?>
@@ -99,7 +101,11 @@ $form=$this->beginWidget('CActiveForm', array(
         <?php }?>
         <?php }?>
         <td>
+            <?php if($from=='reports'){?>
+            <?php echo CHtml::link('详情',array('view','id'=>$post['id']));?>
+            <?php }else{?>
             <?php echo CHtml::link('编辑',array('update','id'=>$post['id']));?>
+            <?php }?>
             <?php if($from=='books'){?>
             <?php echo CHtml::link('章节',array('chapters','id'=>$post['id']));?>
             <?php }elseif($from=='showcases'){?>
@@ -119,6 +125,8 @@ $form=$this->beginWidget('CActiveForm', array(
                 echo CHtml::link('新增', array('chapters/create','bid'=>$bid), array('class' => 'btn btn-primary'));
             }elseif($from=='showcaseLink') {
                 echo CHtml::link('新增', array('create','sid'=>$sid), array('class' => 'btn btn-primary'));
+            }elseif($from=='reports') {  
+                
             } else {
                 echo CHtml::link('新增', array('create'), array('class' => 'btn btn-primary'));
                 echo CHtml::link('管理', array('admin'), array('class' => 'btn btn-default'));

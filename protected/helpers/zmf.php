@@ -14,7 +14,7 @@ class zmf {
 
     public static function uid() {
         if (Yii::app()->user->isGuest) {
-            return false;
+            return 0;
         } else {
             return Yii::app()->user->id;
         }
@@ -1040,6 +1040,10 @@ class zmf {
             return $arr;
         }
         return $arr[$type];
+    }
+    
+    public static function formatField($field){
+        return str_replace('`', '', $field);
     }
 
 }
