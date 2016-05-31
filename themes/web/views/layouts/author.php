@@ -216,6 +216,7 @@ $cols=  Column::allCols();
             <div class="author-side-info">
                 <p><span class="info-label">入住</span><span class="txt"><?php echo zmf::time($this->authorInfo['cTime'],'Y-m-d');?></span></p>
                 <p><span class="info-label">简介</span><span class="txt"><?php echo $this->authorInfo['content']!='' ? $this->authorInfo['content'] : '未设置';?></span></p>
+                <p><span class="color-grey"><?php echo CHtml::link('<i class="fa fa-exclamation-triangle"></i> 举报','javascript:;',array('action'=>'report','action-type'=>'author','action-id'=>$this->authorInfo['id'],'action-title'=>  $this->authorInfo['authorName']));?></span></p>
             </div>
             <div class="author-side-num">
                 <a class="item" href="<?php echo Yii::app()->createUrl('author/fans',array('id'=>$this->authorInfo['id']));?>">

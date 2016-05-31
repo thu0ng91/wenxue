@@ -17,7 +17,7 @@ class AjaxController extends Q {
 
     public function actionDo() {
         $action = zmf::val('action', 1);
-        if (!in_array($action, array('addTip', 'saveUploadImg', 'publishBook', 'publishChapter', 'saveDraft'))) {
+        if (!in_array($action, array('addTip', 'saveUploadImg', 'publishBook', 'publishChapter', 'saveDraft','report'))) {
             $this->jsonOutPut(0, Yii::t('default', 'forbiddenaction'));
         }
         $this->$action();
@@ -283,6 +283,37 @@ class AjaxController extends Q {
             $this->jsonOutPut(1, '已自动保存');
         }else{
             $this->jsonOutPut(0, '保存草稿失败');
+        }
+    }
+    
+    private function report(){
+        $data = array();
+        $logid = zmf::val('logid',2);
+        $type = zmf::val('type',1);
+        $desc = zmf::val('reason',1);
+        $contact = zmf::val('contact',1);
+        $url = zmf::val('url',1);
+        $allowType = array('book','chapter','tip','comment','post','user','author');
+        if (!in_array($type, $allowType)) {
+            $this->jsonOutPut(0, '暂不允许的分类');
+        }
+        if (!$logid) {
+            $this->jsonOutPut(0, '缺少参数');
+        }
+        $data['logid'] = $logid;
+        $data['classify'] = $type;
+        $data['url'] = $url;
+        $data['desc'] = $desc;
+        $data['contact'] = $contact;
+        $data['status'] = Posts::STATUS_STAYCHECK;
+        $fm = new Reports();
+        $fm->attributes = $data;
+        if ($fm->validate()) {
+            if ($fm->save()) {
+                $this->jsonOutPut(1, '感谢你的举报');
+            }
+        } else {
+            $this->jsonOutPut(0,'举报失败，请稍后重试');
         }
     }
 

@@ -19,6 +19,7 @@
         <p><?php echo nl2br(CHtml::encode($data['content'])); ?></p>
         <p class="help-block">
             <?php echo zmf::formatTime($data['cTime']); ?>
+            <span class="color-grey"><?php echo CHtml::link('举报','javascript:;',array('action'=>'report','action-type'=>'tip','action-id'=>$data['id'],'action-title'=>  zmf::subStr($data['content'],20)));?></span>
             <?php if($this->uid){?>
             <span class="pull-right">
                 <?php 

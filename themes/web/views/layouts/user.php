@@ -231,6 +231,7 @@ $cols=  Column::allCols();
             </div>
             <div class="side-module">
                 <span class="color-grey">主页被访问<?php echo $this->toUserInfo['hits'];?>次</span>
+                <span class="color-grey"><?php echo CHtml::link('<i class="fa fa-exclamation-triangle"></i> 举报','javascript:;',array('action'=>'report','action-type'=>'user','action-id'=>$this->toUserInfo['id'],'action-title'=>  $this->toUserInfo['truename']));?></span>
             </div>
         </div>        
         <?php $this->renderPartial('/common/copyright');?>

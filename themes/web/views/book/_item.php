@@ -22,9 +22,10 @@ $url=  Yii::app()->createUrl('book/view',array('id'=>$data['id']));
             <span><?php echo zmf::time($data['cTime'],'Y-m-d');?></span>
             <?php if($data['bookStatus']==Books::STATUS_PUBLISHED){?>
             <span><?php echo CHtml::link('分享','javascript:;',array('action'=>'share','action-qrcode'=>$qrcode,'action-url'=>$url,'action-img'=>$qrcode,'action-title'=>$data['title']));?></span>
+            <span><?php echo CHtml::link('举报','javascript:;',array('action'=>'report','action-type'=>'book','action-id'=>$data['id'],'action-title'=>$data['title']));?></span>
             <?php }?>
             <?php if($adminLogin){?>
-            <span class="right-actions">                
+            <span class="right-actions">
                 <?php echo CHtml::link('预览',array('book/view','id'=>$data['id']));?>
                 <?php echo CHtml::link('章节',array('author/book','bid'=>$data['id']));?>
                 <?php echo $data['bookStatus']==Books::STATUS_NOTPUBLISHED ? CHtml::link('发表','javascript:;',array('action'=>'publishBook','data-id'=>$data['id'])) : '';?>   

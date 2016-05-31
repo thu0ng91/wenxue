@@ -193,7 +193,72 @@ function rebind() {
         $("button[action=feedback]").unbind('click').click(function () {
             feedback();
         });
-    });    
+    });
+    //举报
+    $("a[action=report]").on('click',function () {
+        var dom=$(this);
+        var type=dom.attr('action-type');
+        var id=dom.attr('action-id');
+        var title=dom.attr('action-title');
+        if(!type){
+            alert('缺少参数');
+            return false;
+        }
+        var html='<div class="form-group"><label>举报对象</label><p class="help-block ui-nowarp">'+title+'</p><input type="hidden" name="report-id" id="report-id" value="'+id+'"/></div>';
+        if(type==='book' || type==='chapter'){
+            html+= '<div class="form-group"><label for="feedback-reason">举报原因</label><select name="report-reason" id="report-reason" class="form-control"><option value="色情低俗">色情低俗</option><option value="暴力血腥">暴力血腥</option><option value="涉政违规">涉政违规</option><option value="欺诈广告">欺诈广告</option><option value="抄袭侵权">抄袭侵权</option><option value="">其他原因</option></select></div>';
+        }else if(type==='tip' || type==='book' || type==='comment' || type==='post' || type==='user' || type==='author'){
+            html+= '<div class="form-group"><label for="feedback-reason">举报原因</label><select name="report-reason" id="report-reason" class="form-control"><option value="恶意攻击">恶意攻击</option><option value="色情低俗">色情低俗</option><option value="暴力血腥">暴力血腥</option><option value="涉政违规">涉政违规</option><option value="欺诈广告">欺诈广告</option><option value="抄袭侵权">抄袭侵权</option><option value="">其他原因</option></select></div>';
+        }else{
+            alert('暂不支持该分类');
+            return false;
+        }
+        html+='<div class="form-group displayNone" id="report-content-holder"><label for="report-content">其他原因</label><textarea id="report-content" class="form-control" max-lenght="255" placeholder="请描述你的举报原因"></textarea></div>';
+        if(!checkLogin()){
+            html+='<div class="form-group"><label for="report-contact">联系方式</label><input type="text" id="report-contact" class="form-control" placeholder="常用联系方式(邮箱、QQ、微信等)，便于告知处理进度(可选)"/></div>';
+        }
+        dialog({msg: html, title: '举报', action: 'doReport'});
+        $('#report-reason').on('change',function(){
+            var reason=$(this).val();
+            if(!reason){
+                $('#report-content-holder').show();
+            }else{
+                $('#report-content-holder').hide();
+            }
+        });
+        $("button[action=doReport]").on('click',function () {
+            var logid=$('#report-id').val();            
+            var reason=$('#report-reason').val();
+            var content=$('#report-content').val();
+            var contact=$('#report-contact').val();
+            if(!logid){
+              alert('缺少参数');
+              return false;
+            }
+            if(!reason && !content){
+                simpleDialog({content:'请填写举报原因'});
+                return false;
+            }else{
+                if(!reason){
+                    reason=content;
+                }
+            }
+            if(!contact){
+                contact='';
+            }
+            $.post(zmf.ajaxUrl, {action:'report',logid:logid,type:type,reason:reason,contact:contact,url:window.location.href,YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {                
+                result = eval('(' + result + ')');
+                if (result['status'] == '1') {
+                    simpleDialog({content:result['msg']});
+                    closeDialog();
+                    return false;
+                } else {
+                    simpleDialog({content:result['msg']});
+                    return false;
+                }
+            });
+        });
+    });
     $('.openGallery').on('click',function(){
         var dom=$(this);
         var holder=dom.attr('data-holder');

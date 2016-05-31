@@ -19,7 +19,13 @@ a{
 p{
     margin:0 0 5px
 }
+.displayNone{
+    display: none
+}
 .color-grey{
+    color: #999
+}
+.color-grey a{
     color: #999
 }
 .color-warning{

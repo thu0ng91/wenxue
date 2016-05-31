@@ -22,6 +22,7 @@
                         <?php }?>
                         <?php echo CHtml::link('分享','javascript:;',array('action'=>'share','action-qrcode'=>$qrcode,'action-url'=>$url,'action-img'=>$qrcode,'action-title'=>$info['title'],'class'=>'btn btn-default btn-xs'));?>
                     </p>
+                    <p class="color-grey" style="margin-top:10px"><?php echo CHtml::link('<i class="fa fa-exclamation-triangle"></i> 举报','javascript:;',array('action'=>'report','action-type'=>'book','action-id'=>$info['id'],'action-title'=>$info['title']));?></p>
                 </div>
                 <div class="media-right">
                     <div class="book-starInfo">
@@ -42,7 +43,7 @@
                         <?php }else{?>
                         <p class="color-grey">暂无评分</p>
                         <?php }?>
-                    </div>                    
+                    </div>
                 </div>
             </div>
             <div class="module-header">内容简介</div>

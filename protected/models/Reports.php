@@ -17,6 +17,9 @@ class Reports extends CActiveRecord {
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
+            array('uid', 'default', 'setOnEmpty' => true, 'value' => zmf::uid()),
+            array('cTime', 'default', 'setOnEmpty' => true, 'value' => zmf::now()),
+            array('ip', 'default', 'setOnEmpty' => true, 'value' => ip2long(Yii::app()->request->userHostAddress)),
             array('uid, logid, status, cTime', 'numerical', 'integerOnly' => true),
             array('classify, desc, url', 'length', 'max' => 255),
             array('ip', 'length', 'max' => 15),
