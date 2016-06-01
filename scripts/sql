@@ -198,3 +198,7 @@ CREATE TABLE `pre_reports` (
 ) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 
 alter table pre_reports add contact varchar(255) not null COMMENT '联系方式';
+alter table pre_reports add times int(10) unsigned not null COMMENT '举报次数';
+
+alter table pre_books add shoufa tinyint(1) unsigned not null COMMENT '是否首发';
+alter table pre_books add iAgree char(3) not null COMMENT '同意协议';

@@ -1,3 +1,4 @@
+<?php if($data['status']==Posts::STATUS_PASSED){?>
 <div class="media" id="tip-<?php echo $data['id']; ?>">
     <div class="media-body">
         <p>
@@ -32,3 +33,8 @@
         </p>
     </div>
 </div>
+<?php }else{?>
+<div class="alert alert-danger">
+    你的点评包含敏感词，暂不能显示。
+</div>
+<?php } 

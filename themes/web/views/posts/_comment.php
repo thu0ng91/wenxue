@@ -9,6 +9,7 @@
  */
 $_uname=$data['loginUsername'];
 ?>
+<?php if($data['status']==Posts::STATUS_PASSED){?>
 <div class="media" id="comment-<?php echo $data['id']; ?>">
     <div class="media-body">
         <p>
@@ -34,3 +35,8 @@ $_uname=$data['loginUsername'];
         </p>
     </div>
 </div>
+<?php }else{?>
+<div class="alert alert-danger">
+    你的评论包含敏感词，暂不能显示。
+</div>
+<?php } 

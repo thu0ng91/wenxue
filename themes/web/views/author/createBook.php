@@ -51,6 +51,21 @@
                 <?php echo $form->error($model,'content'); ?>
             </div>
             <div class="form-group">
+                <?php echo $form->labelEx($model,'iAgree'); ?>
+                <div class="row">
+                    <div class="col-xs-4">
+                        <?php echo $form->textField($model,'iAgree',array('size'=>60,'maxlength'=>3,'class'=>'form-control')); ?>
+                        <?php echo $form->error($model,'iAgree'); ?>
+                    </div>
+                    <div class="col-xs-8">
+                        <p>输入“<font style="color: red">我同意</font>”，即表示接受<?php echo CHtml::link('本站协议',array('site/info','code'=>'terms'));?>。</p>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="checkbox"><label><?php echo CHtml::activeCheckBox($model, 'shoufa');?> 作品在本站首发</label></div>
+            </div>            
+            <div class="form-group text-center">
                 <?php echo CHtml::submitButton($model->isNewRecord ? '新增' : '更新',array('class'=>'btn btn-primary')); ?>
             </div>
         </div>

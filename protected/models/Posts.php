@@ -29,7 +29,6 @@ class Posts extends CActiveRecord {
     const STATUS_PASSED = 1;
     const STATUS_STAYCHECK = 2;
     const STATUS_DELED = 3;
-    
     const CLASSIFY_POST = 1;
     const CLASSIFY_AUTHOR = 2;
     const CLASSIFY_READER = 3;
@@ -82,9 +81,6 @@ class Posts extends CActiveRecord {
             'content' => '正文',
             'faceimg' => '封面图',
             'classify' => '分类',
-            'lat' => '纬度',
-            'long' => '经度',
-            'mapZoom' => '地图缩放级别',
             'comments' => '评论数',
             'favors' => '点赞数',
             'favorite' => '收藏数',
@@ -94,8 +90,6 @@ class Posts extends CActiveRecord {
             'status' => 'Status',
             'cTime' => '创建世界',
             'updateTime' => '最近更新时间',
-            'zazhi' => '所属杂志',
-            'order' => '文章顺序',
         );
     }
 
@@ -108,8 +102,8 @@ class Posts extends CActiveRecord {
     public static function model($className = __CLASS__) {
         return parent::model($className);
     }
-    
-    public static function getOne($id){
+
+    public static function getOne($id) {
         return Posts::model()->findByPk($id);
     }
 
@@ -124,7 +118,7 @@ class Posts extends CActiveRecord {
         }
         return $arr[$type];
     }
-    
+
     public static function exClassify($type) {
         $arr = array(
             self::CLASSIFY_AUTHOR => '作者专区',
@@ -135,14 +129,14 @@ class Posts extends CActiveRecord {
         }
         return $arr[$type];
     }
-    
-    public static function exType($type){
+
+    public static function exType($type) {
         $arr = array(
-            'author'=>self::CLASSIFY_AUTHOR,
-            'reader'=>self::CLASSIFY_READER,
+            'author' => self::CLASSIFY_AUTHOR,
+            'reader' => self::CLASSIFY_READER,
         );
-        if(is_numeric($type)){
-            $arr=array_flip($arr);
+        if (is_numeric($type)) {
+            $arr = array_flip($arr);
         }
         return $arr[$type];
     }
@@ -169,7 +163,7 @@ class Posts extends CActiveRecord {
      * @return boolean
      */
     public static function updateCount($keyid, $type, $num = 1, $field = 'hits') {
-        if (!$keyid || !$type || !in_array($type, array('Books','Authors','Chapters','Tips','Users','Posts'))) {
+        if (!$keyid || !$type || !in_array($type, array('Books', 'Authors', 'Chapters', 'Tips', 'Users', 'Posts'))) {
             return false;
         }
         $model = new $type;
@@ -181,45 +175,55 @@ class Posts extends CActiveRecord {
      * @param type $content
      * @return type
      */
-    public static function handleContent($content) {
-        $pattern = '/<img[\s\S]+?(data|mapinfo|video)=("|\')([^\2]+?)\2[^>]+?>/i';
-        preg_match_all($pattern, $content, $matches);
-        $arr_attachids = $arr_videoids = array();
-        if (!empty($matches[0])) {
-            $arr = array();
-            foreach ($matches[0] as $key => $val) {
-                $_type = $matches[1][$key];
-                if ($_type == 'data') {//处理图片
-                    $thekey = $matches[3][$key];
-                    $imgsrc = $matches[0][$key];
-                    $content = str_ireplace("{$imgsrc}", '[attach]' . $thekey . '[/attach]', $content);
-                    $arr_attachids[] = $thekey;
-                } elseif ($_type == 'video') {//处理视频
-                    $thekey = $matches[3][$key];
-                    $imgsrc = $matches[0][$key];
-                    $content = str_ireplace("{$imgsrc}", '[video]' . $thekey . '[/video]', $content);
-                    $arr_videoids[] = $thekey;
-                } elseif ($_type == 'mapinfo') {//处理地图信息
-                    $thekey = $matches[3][$key];
-                    $imgsrc = $matches[0][$key];
-                    $content = str_ireplace("{$imgsrc}", '[map]' . $thekey . '[/map]', $content);
+    public static function handleContent($content, $fullText = TRUE) {
+        if ($fullText) {
+            $pattern = '/<img[\s\S]+?(data|mapinfo|video)=("|\')([^\2]+?)\2[^>]+?>/i';
+            preg_match_all($pattern, $content, $matches);
+            $arr_attachids = $arr_videoids = array();
+            if (!empty($matches[0])) {
+                $arr = array();
+                foreach ($matches[0] as $key => $val) {
+                    $_type = $matches[1][$key];
+                    if ($_type == 'data') {//处理图片
+                        $thekey = $matches[3][$key];
+                        $imgsrc = $matches[0][$key];
+                        $content = str_ireplace("{$imgsrc}", '[attach]' . $thekey . '[/attach]', $content);
+                        $arr_attachids[] = $thekey;
+                    } elseif ($_type == 'video') {//处理视频
+                        $thekey = $matches[3][$key];
+                        $imgsrc = $matches[0][$key];
+                        $content = str_ireplace("{$imgsrc}", '[video]' . $thekey . '[/video]', $content);
+                        $arr_videoids[] = $thekey;
+                    } elseif ($_type == 'mapinfo') {//处理地图信息
+                        $thekey = $matches[3][$key];
+                        $imgsrc = $matches[0][$key];
+                        $content = str_ireplace("{$imgsrc}", '[map]' . $thekey . '[/map]', $content);
+                    }
                 }
             }
+            $content = strip_tags($content, '<b><strong><em><span><a><p><u><i><img><br><br/><div><blockquote><h1><h2><h3><h4><h5><h6><ol><ul><li><hr>');
+            $replace = array(
+                "/style=\"[^\"]*?\"/i",
+                "/<p><br\/><\/p>/i",
+                "/<p><\/p>/i",
+            );
+            $to = array(
+                ''
+            );
+            $content = preg_replace($replace, $to, $content);
+        } else {
+            $content = strip_tags($content);
+            $content = zmf::removeEmoji($content);
         }
-        $content = strip_tags($content, '<b><strong><em><span><a><p><u><i><img><br><br/><div><blockquote><h1><h2><h3><h4><h5><h6><ol><ul><li><hr>');
-        $replace = array(
-            "/style=\"[^\"]*?\"/i",
-            "/<p><br\/><\/p>/i",
-            "/<p><\/p>/i",
-        );
-        $to = array(
-            ''
-        );
-        $content = preg_replace($replace, $to, $content);
+        $status = Posts::STATUS_PASSED;
+        if (Words::checkWords($content)) {
+            $status = Posts::STATUS_STAYCHECK;
+        }
         $data = array(
             'content' => $content,
             'attachids' => $arr_attachids,
             'videoIds' => $arr_videoids,
+            'status' => $status,
         );
         return $data;
     }
@@ -244,7 +248,7 @@ class Posts extends CActiveRecord {
         $com->bindValue(':limit', $pages->pageSize);
         $comLists = $com->queryAll();
     }
-    
+
     public static function getByPage($params) {
         $sql = $params['sql'];
         if (!$sql) {
@@ -252,11 +256,11 @@ class Posts extends CActiveRecord {
         }
         $pageSize = (is_numeric($params['pageSize']) && $params['pageSize'] > 0) ? $params['pageSize'] : 30;
         $page = (is_numeric($params['page']) && $params['page'] > 1) ? $params['page'] : 1;
-        $bindValues=!empty($params['bindValues']) ? $params['bindValues'] : array();
-        $bindValues[':offset']=($page-1) * $pageSize;
-        $bindValues[':limit']=$pageSize;
+        $bindValues = !empty($params['bindValues']) ? $params['bindValues'] : array();
+        $bindValues[':offset'] = ($page - 1) * $pageSize;
+        $bindValues[':limit'] = $pageSize;
         $com = Yii::app()->db->createCommand($sql . " LIMIT :offset,:limit");
-        $com->bindValues($bindValues);        
+        $com->bindValues($bindValues);
         $posts = $com->queryAll();
         return $posts;
     }
@@ -271,7 +275,7 @@ class Posts extends CActiveRecord {
         if (!$code || !$type) {
             return array('status' => 0, 'msg' => '数据不全，请核实');
         }
-        if (!in_array($type, array('book', 'author','tip','user','post'))) {
+        if (!in_array($type, array('book', 'author', 'tip', 'user', 'post'))) {
             return array('status' => 0, 'msg' => '暂不允许的分类');
         }
         if (is_numeric($code)) {
@@ -286,56 +290,56 @@ class Posts extends CActiveRecord {
         if (!$uid) {
             $uid = zmf::uid();
         }
-        if(!$uid){
+        if (!$uid) {
             return array('status' => 0, 'msg' => '请先登录');
         }
         if (zmf::actionLimit('favorite-' . $type, $id)) {
             return array('status' => 0, 'msg' => '操作太频繁，请稍后再试');
         }
-        if($type=='book'){
-            $postInfo=  Books::getOne($id);            
-            $content="你的小说【{$postInfo['title']}】有了新的收藏者";
-            $noticeUid=$postInfo['uid'];
+        if ($type == 'book') {
+            $postInfo = Books::getOne($id);
+            $content = "你的小说【{$postInfo['title']}】有了新的收藏者";
+            $noticeUid = $postInfo['uid'];
             //记录用户操作
-            $jsonData=  CJSON::encode(array(
-                'bid'=>$id,
-                'bTitle'=>$postInfo['title'],
-                'bDesc'=>$postInfo['desc'],
-                'bFaceImg'=>$postInfo['faceImg']
+            $jsonData = CJSON::encode(array(
+                        'bid' => $id,
+                        'bTitle' => $postInfo['title'],
+                        'bDesc' => $postInfo['desc'],
+                        'bFaceImg' => $postInfo['faceImg']
             ));
-        }elseif($type=='author'){
-            $postInfo=  Authors::getOne($id);
-            $content="你的作者主页【{$postInfo['authorName']}】有了新的追随者";
-            $noticeUid=$postInfo['uid'];
+        } elseif ($type == 'author') {
+            $postInfo = Authors::getOne($id);
+            $content = "你的作者主页【{$postInfo['authorName']}】有了新的追随者";
+            $noticeUid = $postInfo['uid'];
             //记录用户操作
-            $jsonData=  CJSON::encode(array(
-                'aid'=>$id,
-                'authorName'=>$postInfo['authorName'],
-                'avatar'=>$postInfo['avatar'],
-                'content'=>$postInfo['content']
+            $jsonData = CJSON::encode(array(
+                        'aid' => $id,
+                        'authorName' => $postInfo['authorName'],
+                        'avatar' => $postInfo['avatar'],
+                        'content' => $postInfo['content']
             ));
-        }elseif($type=='tip'){
-            $postInfo=  Tips::getOne($id);
+        } elseif ($type == 'tip') {
+            $postInfo = Tips::getOne($id);
             if (!$postInfo || $postInfo['status'] != Posts::STATUS_PASSED) {
                 return array('status' => 0, 'msg' => '你所操作的内容不存在');
             }
-            $chapterInfo=  Chapters::getOne($postInfo['logid']);
+            $chapterInfo = Chapters::getOne($postInfo['logid']);
             if (!$chapterInfo || $chapterInfo['status'] != Posts::STATUS_PASSED) {
                 return array('status' => 0, 'msg' => '你所操作的内容不存在');
             }
-            $content="你点评【{$chapterInfo['title']}】有了新的赞同";
-            $noticeUid=$postInfo['uid'];
-        }elseif($type=='user'){
-            $postInfo= Users::getOne($id);
-            $content="你有了新的粉丝";
-            $noticeUid=$id;          
-        }elseif($type=='post'){
-            $postInfo= Posts::getOne($id);
+            $content = "你点评【{$chapterInfo['title']}】有了新的赞同";
+            $noticeUid = $postInfo['uid'];
+        } elseif ($type == 'user') {
+            $postInfo = Users::getOne($id);
+            $content = "你有了新的粉丝";
+            $noticeUid = $id;
+        } elseif ($type == 'post') {
+            $postInfo = Posts::getOne($id);
             if (!$postInfo || $postInfo['status'] != Posts::STATUS_PASSED) {
                 return array('status' => 0, 'msg' => '你所操作的内容不存在');
             }
-            $content="你的文章【{$postInfo['title']}】有了新的赞";
-            $noticeUid=$postInfo['uid'];
+            $content = "你的文章【{$postInfo['title']}】有了新的赞";
+            $noticeUid = $postInfo['uid'];
         }
         if (!$postInfo || $postInfo['status'] != Posts::STATUS_PASSED) {
             return array('status' => 0, 'msg' => '你所操作的内容不存在');
@@ -344,23 +348,23 @@ class Posts extends CActiveRecord {
             'uid' => $uid,
             'logid' => $id,
             'classify' => $type
-        );        
+        );
         $info = Favorites::model()->findByAttributes($attr);
         if ($info) {
             if (Favorites::model()->deleteByPk($info['id'])) {
                 if ($type == 'book') {
                     Posts::updateCount($id, 'Books', -1, 'favorites');
-                }elseif($type=='author'){
+                } elseif ($type == 'author') {
                     Posts::updateCount($id, 'Authors', -1, 'favors');
-                }elseif($type=='tip'){
+                } elseif ($type == 'tip') {
                     Posts::updateCount($id, 'Tips', -1, 'favors');
-                }elseif($type=='user'){
+                } elseif ($type == 'user') {
                     //更新被收藏的用户的粉丝数
                     Posts::updateCount($id, 'Users', -1, 'favors');
                     //增加我关注了的人数
                     Posts::updateCount($this->uid, 'Users', -1, 'favord');
-                }elseif($type=='post'){
-                    Posts::updateCount($id, 'Posts', -1, 'favorite');    
+                } elseif ($type == 'post') {
+                    Posts::updateCount($id, 'Posts', -1, 'favorite');
                 }
                 return array('status' => 1, 'msg' => '取消点赞', 'state' => 3);
             } else {
@@ -373,17 +377,17 @@ class Posts extends CActiveRecord {
             if ($model->save()) {
                 if ($type == 'book') {
                     Posts::updateCount($id, 'Books', 1, 'favorites');
-                }elseif($type=='author'){
+                } elseif ($type == 'author') {
                     Posts::updateCount($id, 'Authors', 1, 'favors');
-                }elseif($type=='tip'){
+                } elseif ($type == 'tip') {
                     Posts::updateCount($id, 'Tips', 1, 'favors');
-                }elseif($type=='user'){
+                } elseif ($type == 'user') {
                     //更新被收藏的用户的粉丝数
                     Posts::updateCount($id, 'Users', 1, 'favors');
                     //增加我关注了的人数
                     Posts::updateCount($uid, 'Users', 1, 'favord');
-                }elseif($type=='post'){
-                    Posts::updateCount($id, 'Posts', 1, 'favorite');    
+                } elseif ($type == 'post') {
+                    Posts::updateCount($id, 'Posts', 1, 'favorite');
                 }
                 //点赞后给对方发提醒
                 $_noticedata = array(
@@ -398,7 +402,7 @@ class Posts extends CActiveRecord {
                 );
                 Notification::add($_noticedata);
                 //记录用户操作
-                UserAction::recordAction($id, 'favorite'.  ucfirst($type), $jsonData);
+                UserAction::recordAction($id, 'favorite' . ucfirst($type), $jsonData);
                 return array('status' => 1, 'msg' => '点赞成功', 'state' => 1);
             } else {
                 return array('status' => 0, 'msg' => '点赞失败', 'state' => 2);

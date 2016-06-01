@@ -63,7 +63,7 @@
                 <?php $this->renderPartial('//common/editor_um', array('model' => $model,'content' => $model->content,'uploadurl'=>$uploadurl,'mini'=>true,'editorWidth'=>620,'editorHeight'=>360)); ?>      
             </div>
             <div class="form-group text-right">
-                <?php echo CHtml::submitButton($model->isNewRecord ? '提交' : '更新',array('class'=>'btn btn-success','id'=>'editorSubmit')); ?>
+                <?php echo CHtml::submitButton($model->isNewRecord ? '提交' : '更新',array('class'=>'btn btn-success','id'=>'add-post-btn')); ?>
             </div>            
         </div>
         <div class="aside-part">

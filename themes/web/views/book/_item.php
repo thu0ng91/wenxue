@@ -15,7 +15,7 @@ $url=  Yii::app()->createUrl('book/view',array('id'=>$data['id']));
     <div class="media-body">
         <h4><?php echo CHtml::link($data['title'],$urlArr);?></h4>
         <p><?php if($data['scorer']>0){echo Books::starCss($data['score']);?> （<?php echo $data['scorer'];?>人评价）<?php }else{?><span class="color-grey">暂无评分</span><?php }?></p>
-        <p class="help-block ui-nowrap"><?php echo $data['desc'];?></p>
+        <p class="help-block"><?php echo zmf::subStr($data['desc'],100);?></p>
         <p class="help-block">
             <span class="<?php echo $data['bookStatus']==Books::STATUS_PUBLISHED ? 'success' : 'danger';?>"><?php echo Books::exStatus($data['bookStatus']);?></span>
             <span>总字<?php echo $data['words'];?></span>

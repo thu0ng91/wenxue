@@ -41,7 +41,6 @@ class AjaxController extends Q {
         if (!$content) {
             $this->jsonOutPut(0, '评论不能为空哦~');
         }
-        $status = Posts::STATUS_PASSED;
         $uid = $this->uid;
         //todo，按分类获取信息
         $ckInfo = Chapters::checkTip($keyid, $uid);
@@ -59,12 +58,12 @@ class AjaxController extends Q {
         } elseif ($bookInfo['bookStatus'] != Books::STATUS_PUBLISHED) {
             $this->jsonOutPut(0, '你所评论的小说暂未发表');
         }
-        //处理文本
-        $filter = Posts::handleContent($content);
+        //处理文本，不是富文本
+        $filter = Posts::handleContent($content, FALSE);
         $content = $filter['content'];
+        $status = $filter['status'];
         $model = new Tips();
         $toNotice = true;
-        $toUserInfo = array();
         $touid = $postInfo['uid'];
         $intoData = array(
             'bid' => $postInfo['bid'],
@@ -195,9 +194,14 @@ class AjaxController extends Q {
         }
         $bookInfo = Books::getOne($id);
         if (!$bookInfo || $bookInfo['status'] != Posts::STATUS_PASSED) {
+            if ($bookInfo && $bookInfo['status'] == Books::STATUS_STAYCHECK) {
+                $this->jsonOutPut(0, '该小说已被锁定');
+            }
             $this->jsonOutPut(0, '小说不存在或已删除');
         } elseif ($bookInfo['uid'] != $this->uid || $bookInfo['aid'] != $this->userInfo['authorId']) {
             $this->jsonOutPut(0, '你无权本操作');
+        } elseif (!$bookInfo['iAgree']) {
+            $this->jsonOutPut(0, '请先同意本站协议');
         } elseif ($bookInfo['bookStatus'] == Books::STATUS_PUBLISHED) {
             $this->jsonOutPut(1, '已发表');
         }
@@ -205,7 +209,7 @@ class AjaxController extends Q {
             $this->jsonOutPut(0, '你无权本操作');
         }
         //统计已发表的章节
-        $chapters = Chapters::model()->count('uid=:uid AND aid=:aid AND bid=:bid', array(':uid' => $this->uid, ':aid' => $this->userInfo['authorId'], ':bid' => $id));
+        $chapters = Chapters::model()->count('uid=:uid AND aid=:aid AND bid=:bid AND status=' . Books::STATUS_PUBLISHED, array(':uid' => $this->uid, ':aid' => $this->userInfo['authorId'], ':bid' => $id));
         if ($chapters < 1) {
             $this->jsonOutPut(0, '小说暂无已发表章节，请先发表章节');
         }
@@ -226,9 +230,14 @@ class AjaxController extends Q {
         $chapterInfo = Chapters::getOne($id);
         $bookInfo = Books::getOne($chapterInfo['bid']);
         if (!$bookInfo || $bookInfo['status'] != Posts::STATUS_PASSED) {
-            $this->jsonOutPut(0, '小说不存在或已删除');
+            if ($bookInfo && $bookInfo['status'] == Books::STATUS_STAYCHECK) {
+                $this->jsonOutPut(0, '小说已被锁定，不能再发表章节！');
+            }
+            $this->jsonOutPut(0, '小说不存在或已删除，不能再发表章节！');
         } elseif ($bookInfo['uid'] != $this->uid || $bookInfo['aid'] != $this->userInfo['authorId']) {
-            $this->jsonOutPut(0, '你无权本操作');
+            $this->jsonOutPut(0, '你无权本操作！');
+        } elseif (!$bookInfo['iAgree']) {
+            $this->jsonOutPut(0, '请先同意本站协议');
         }
         if (!$chapterInfo) {
             $this->jsonOutPut(0, '操作对象不存在，请核实');
@@ -236,6 +245,8 @@ class AjaxController extends Q {
             $this->jsonOutPut(0, '你无权本操作');
         } elseif ($chapterInfo['status'] == Books::STATUS_PUBLISHED) {
             $this->jsonOutPut(1, '已发表');
+        } elseif ($chapterInfo['status'] == Books::STATUS_STAYCHECK) {
+            $this->jsonOutPut(0, '该章节待审核，请审核通过后再发表！');
         }
         if (!Authors::checkLogin($this->userInfo, $chapterInfo['aid'])) {
             $this->jsonOutPut(0, '你无权本操作');
@@ -300,18 +311,40 @@ class AjaxController extends Q {
         if (!$logid) {
             $this->jsonOutPut(0, '缺少参数');
         }
+        //一个小时内最多只能对同一对象举报4次
+        if (zmf::actionLimit('report', $type . '-' . $logid, 3, 3600)) {
+            $this->jsonOutPut(0, '我们已收到你的举报，请勿频繁操作');
+        }
         $data['logid'] = $logid;
         $data['classify'] = $type;
-        $data['url'] = $url;
-        $data['desc'] = $desc;
-        $data['contact'] = $contact;
-        $data['status'] = Posts::STATUS_STAYCHECK;
-        $fm = new Reports();
-        $fm->attributes = $data;
-        if ($fm->save()) {
+        $info = false;
+        if ($this->uid) {
+            $data['uid'] = $this->uid;
+            $info = Reports::model()->findByAttributes($data);
+        }
+        if ($info) {
+            $data['desc'] = $info['desc'] . $desc;
+            $data['contact'] = $info['contact'] . $contact;
+            $data['status'] = Posts::STATUS_STAYCHECK;
+            $data['times'] = $info['times'] + 1;
+            $data['cTime'] = zmf::now();
+            if (Reports::model()->updateByPk($info['id'], $data)) {
+                $this->jsonOutPut(1, '感谢你的举报');
+            }
             $this->jsonOutPut(1, '感谢你的举报');
         } else {
-            $this->jsonOutPut(0, '举报失败，请稍后重试');
+            $data['url'] = $url;
+            $data['desc'] = $desc;
+            $data['contact'] = $contact;
+            $data['status'] = Posts::STATUS_STAYCHECK;
+            $data['times'] = 1;
+            $fm = new Reports();
+            $fm->attributes = $data;
+            if ($fm->save()) {
+                $this->jsonOutPut(1, '感谢你的举报');
+            } else {
+                $this->jsonOutPut(0, '举报失败，请稍后重试');
+            }
         }
     }
 
@@ -358,15 +391,15 @@ class AjaxController extends Q {
         if (!$content) {
             $this->jsonOutPut(0, '评论不能为空哦~');
         }
-        $status = Posts::STATUS_PASSED;
         $uid = $this->uid;
         $postInfo = Posts::model()->findByPk($keyid);
         if (!$postInfo || $postInfo['status'] != Posts::STATUS_PASSED) {
             $this->jsonOutPut(0, '你所评论的内容不存在');
         }
-        //处理文本
-        $filter = Posts::handleContent($content);
+        //处理文本，不是富文本
+        $filter = Posts::handleContent($content, FALSE);
         $content = $filter['content'];
+        $status = $filter['status'];
         $model = new Comments();
         $toNotice = true;
         $toUserInfo = array();
@@ -394,8 +427,6 @@ class AjaxController extends Q {
             'platform' => '', //$this->platform
             'tocommentid' => $to,
             'status' => $status,
-            'username' => $username,
-            'email' => $email,
         );
         unset(Yii::app()->session['checkHasBadword']);
         $model->attributes = $intoData;
@@ -428,11 +459,7 @@ class AjaxController extends Q {
                     $intoData['loginUsername'] = $this->userInfo['truename'];
                     $intoData['toUserInfo'] = $toUserInfo;
                 }
-                if ($postInfo['zazhi'] > 0) {
-                    $html = $this->renderPartial('/zazhi/_comment', array('data' => $intoData, 'postInfo' => $postInfo), true);
-                } else {
-                    $html = $this->renderPartial('/posts/_comment', array('data' => $intoData, 'postInfo' => $postInfo), true);
-                }
+                $html = $this->renderPartial('/posts/_comment', array('data' => $intoData, 'postInfo' => $postInfo), true);
                 $this->jsonOutPut(1, $html);
             } else {
                 $this->jsonOutPut(0, '新增评论失败');

@@ -28,6 +28,7 @@ class Books extends CActiveRecord {
 
     const STATUS_NOTPUBLISHED = 0;
     const STATUS_PUBLISHED = 1;
+    const STATUS_STAYCHECK=2;//待审核
 
     /**
      * @return string the associated database table name
@@ -47,12 +48,12 @@ class Books extends CActiveRecord {
             array('uid', 'default', 'setOnEmpty' => true, 'value' => zmf::uid()),
             array('status', 'default', 'setOnEmpty' => true, 'value' => Posts::STATUS_PASSED),
             array('bookStatus', 'default', 'setOnEmpty' => true, 'value' => Books::STATUS_NOTPUBLISHED),
-            array('uid, aid,colid, title,content,desc', 'required'),
+            array('uid, aid,colid, title,content,desc,iAgree', 'required'),
             array('faceImg', 'checkUrl'),
-            array('vip, bookStatus, status,top', 'numerical', 'integerOnly' => true),
+            array('vip, bookStatus, status,top,shoufa', 'numerical', 'integerOnly' => true),
             array('uid, aid,colid,favorites, hits, chapters, comments, words,topTime,scorer,score1,score2,score3,score4,score5', 'length', 'max' => 10),
             array('title, faceImg, desc', 'length', 'max' => 255),
-            array('score', 'length', 'max' => 3),
+            array('score,iAgree', 'length', 'max' => 3),
             array('content', 'safe'),
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
@@ -102,6 +103,8 @@ class Books extends CActiveRecord {
             'score3' => '评3分',
             'score4' => '评4分',
             'score5' => '评5分',
+            'shoufa' => '首发',
+            'iAgree' => '同意协议',
         );
     }
 

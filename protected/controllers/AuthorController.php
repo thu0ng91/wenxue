@@ -25,7 +25,7 @@ class AuthorController extends Q {
             $this->adminLogin = Authors::checkLogin($this->userInfo, $id);
             $this->favorited = Favorites::checkFavored($id, 'author');
         }
-        $this->pageTitle=$this->authorInfo['authorName'].' - '.zmf::config('sitename');
+        $this->pageTitle = $this->authorInfo['authorName'] . ' - ' . zmf::config('sitename');
     }
 
     private function checkAuthorLogin() {
@@ -61,8 +61,8 @@ class AuthorController extends Q {
     public function actionFans() {
         $sql = "SELECT u.id,u.truename,u.avatar FROM {{users}} u,{{favorites}} f WHERE f.logid='{$this->authorInfo['id']}' AND f.classify='author' AND f.uid=u.id ORDER BY f.cTime DESC";
         Posts::getAll(array('sql' => $sql), $pages, $posts);
-        foreach ($posts as $k=>$val){
-            $posts[$k]['avatar']=  zmf::getThumbnailUrl($val['avatar'], 'a120', 'avatar');
+        foreach ($posts as $k => $val) {
+            $posts[$k]['avatar'] = zmf::getThumbnailUrl($val['avatar'], 'a120', 'avatar');
         }
         $this->selectNav = 'fans';
         $data = array(
@@ -86,7 +86,7 @@ class AuthorController extends Q {
     public function actionCreateBook($bid = '') {
         $this->checkAuthorLogin();
         if ($bid) {
-            $model = Books::getOne($bid);
+            $model = Books::getOne($bid,'');
             if (!$model || $model['status'] != Posts::STATUS_PASSED) {
                 throw new CHttpException(404, '你所编辑的小说不存在，请核实');
             } elseif ($model['uid'] != $this->uid || $model['aid'] != $this->userInfo['authorId']) {
@@ -98,9 +98,31 @@ class AuthorController extends Q {
             $model->aid = $this->userInfo['authorId'];
         }
         if (isset($_POST['Books'])) {
-            $model->attributes = $_POST['Books'];
-            if ($model->save()) {
-                $this->redirect(array('author/book', 'bid' => $model->id));
+            $filterTitle = Posts::handleContent($_POST['Books']['title'], FALSE);
+            $filterDesc = Posts::handleContent($_POST['Books']['desc'], FALSE);
+            $filterContent = Posts::handleContent($_POST['Books']['content'], FALSE);
+            $faceImg = zmf::filterInput($_POST['Books']['faceImg'], 1);
+            $colid = zmf::filterInput($_POST['Books']['colid'], 2);
+            $iAgree = zmf::filterInput($_POST['Books']['iAgree'], 1);
+            $shoufa = zmf::filterInput($_POST['Books']['shoufa'], 2);
+            $attr = array(
+                'title' => $filterTitle['content'],
+                'desc' => $filterDesc['content'],
+                'content' => $filterContent['content'],
+                'faceImg' => $faceImg != '' ? $faceImg : '',
+                'colid' => $colid > 0 ? $colid : '',
+                'shoufa' => ($shoufa > 1 && $shoufa < 0) ? 0 : 1,
+                'iAgree' => $iAgree,
+            );
+            $model->attributes = $attr;
+            if ($iAgree != '我同意') {
+                $model->addError('iAgree', '请同意本站协议');
+            } elseif ($filterTitle['status'] != Posts::STATUS_PASSED || $filterDesc['status'] != Posts::STATUS_PASSED || $filterContent['status'] != Posts::STATUS_PASSED) {
+                $model->addError('content', '文本包含敏感词，请修改');
+            } else {
+                if ($model->save()) {
+                    $this->redirect(array('author/book', 'bid' => $model->id));
+                }
             }
         }
         $this->selectNav = 'createBook';
@@ -141,35 +163,40 @@ class AuthorController extends Q {
             } elseif ($model['uid'] != $this->uid) {
                 throw new CHttpException(403, '你无权本操作');
             }
+            $bid = $model->bid;
         } else {
             $bid = zmf::val('bid', 2);
             if (!$bid) {
                 throw new CHttpException(404, '请选择小说');
             }
             $model = new Chapters;
-            $bookInfo = Books::getOne($bid);
-            if ($bookInfo) {
-                $model->bid = $bid;
-                $model->uid = $bookInfo['uid'];
-                $model->aid = $bookInfo['aid'];
-            } else {
-                if ($bookInfo['uid'] != $this->uid || $bookInfo['aid'] != $this->userInfo['authorId']) {
-                    throw new CHttpException(403, '你无权本操作');
-                } else {
-                    throw new CHttpException(404, '你所操作的小说不存在');
-                }
-            }
         }
+        $bookInfo = Books::getOne($bid);
+        if (!$bookInfo) {
+            throw new CHttpException(404, '你所操作的小说不存在');
+        } elseif ($bookInfo['uid'] != $this->uid || $bookInfo['aid'] != $this->userInfo['authorId']) {
+            throw new CHttpException(403, '你无权本操作');
+        } elseif (!$bookInfo['iAgree']) {
+            $this->message(0, '请先同意本站协议', Yii::app()->createUrl('author/updateBook', array('bid' => $bid)));
+        }
+        $model->bid = $bid;
+        $model->uid = $bookInfo['uid'];
+        $model->aid = $bookInfo['aid'];
         if (isset($_POST['Chapters'])) {
-            $title = zmf::filterInput($_POST['Chapters']['title'], 1);
-            $content = Chapters::handleContent($_POST['Chapters']['content']);
-            $postscript = zmf::filterInput($_POST['Chapters']['postscript'], 1);
+            $filterTitle = Posts::handleContent($_POST['Chapters']['title'], FALSE);
+            $filterContent = Posts::handleContent($_POST['Chapters']['content']);
+            $filterPostscript = Posts::handleContent($_POST['Chapters']['postscript'], FALSE);
             $psPosition = zmf::filterInput($_POST['Chapters']['psPosition'], 2);
+            $status = Posts::STATUS_NOTPASSED;
+            if ($filterTitle['status'] != Posts::STATUS_PASSED || $filterPostscript['status'] != Posts::STATUS_PASSED || $filterContent['status'] != Posts::STATUS_PASSED) {
+                $status = Posts::STATUS_STAYCHECK;
+            }
             $attr = array(
-                'title' => $title,
-                'content' => $content,
-                'postscript' => $postscript,
+                'title' => $filterTitle['content'],
+                'content' => $filterContent['content'],
+                'postscript' => $filterPostscript['content'],
                 'psPosition' => ($psPosition < 0 || $psPosition > 1) ? 0 : $psPosition,
+                'status' => $status
             );
             $model->attributes = $attr;
             if ($model->save()) {

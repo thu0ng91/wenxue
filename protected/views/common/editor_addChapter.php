@@ -47,20 +47,20 @@ $cs->registerScriptFile(Yii::app()->baseUrl.'/umeditor/lang/zh-cn/zh-cn.js', CCl
                 $(window).bind('beforeunload', function () {
                     return '你输入的内容可能未保存，确定离开此页面吗？';
                 });
-                $('#submit-btn').removeAttr('disabled');
+                $('#add-post-btn').removeAttr('disabled');
                 $('#preview-btn').removeAttr('disabled');
                 //开始重复
                 if(!internal){
                     internal=window.setInterval("saveDrafts()",60000);
                 }
             } else {
-                $('#submit-btn').attr('disabled', 'disabled');
+                $('#add-post-btn').attr('disabled', 'disabled');
                 $('#preview-btn').attr('disabled', 'disabled');
                 window.clearInterval(internal); 
                 internal=false;
             }
         });
-        $('#submit-btn').click(function () {
+        $('#add-post-btn').click(function () {
             submitChapterForm();
         })
         }

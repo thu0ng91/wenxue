@@ -40,7 +40,7 @@ class ReportsController extends Admin {
         $model = new Reports();
         $criteria = new CDbCriteria();
         $criteria->select = $select;
-        $criteria->order = 'cTime DESC';
+        $criteria->order = 'times DESC,cTime DESC';
         $count = $model->count($criteria);
         $pager = new CPagination($count);
         $pager->pageSize = 30;

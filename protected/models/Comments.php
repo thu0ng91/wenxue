@@ -95,7 +95,7 @@ class Comments extends CActiveRecord {
         return $info;
     }
 
-    public static function getCommentsByPage($id, $classify, $page = 1, $pageSize = 30, $field = "id,uid,username,logid,tocommentid,content,cTime") {
+    public static function getCommentsByPage($id, $classify, $page = 1, $pageSize = 30, $field = "id,uid,username,logid,tocommentid,content,cTime,status") {
         if (!$id || !$classify) {
             return array();
         }
