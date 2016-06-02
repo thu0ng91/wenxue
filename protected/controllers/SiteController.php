@@ -56,7 +56,9 @@ class SiteController extends Q {
             $model = new FrontLogin;
             if (isset($_POST['FrontLogin'])) {
                 $model->attributes = $_POST['FrontLogin'];
-                if ($model->validate() && $model->login()) {
+                if(!zmf::checkPhoneNumber($_POST['FrontLogin']['phone'])){
+                    $model->addError('phone', '请输入正确的手机号');
+                }elseif ($model->validate() && $model->login()) {
                     $arr = array(
                         'latestLoginTime' => zmf::now(),
                     );
@@ -106,21 +108,19 @@ class SiteController extends Q {
             $truename = zmf::filterInput($_POST['Users']['truename'], 1);
             $phone = zmf::filterInput($_POST['Users']['phone'], 2);
             $password = $_POST['Users']['password'];
+            $modelUser->attributes=$_POST['Users'];
             if (!$truename) {
-                $modelUser->addError('truename', '用户昵称不能为空');
-                $modelUser->attributes=$_POST['Users'];
+                $modelUser->addError('truename', '用户昵称不能为空');                
             }elseif (!$phone) {
-                $modelUser->addError('phone', '请输入手机号');
-                $modelUser->attributes=$_POST['Users'];
+                $modelUser->addError('phone', '请输入手机号');                
+            }elseif(!zmf::checkPhoneNumber($phone)){
+                $modelUser->addError('phone', '请输入正确的手机号');
             } elseif (!$password || strlen($password) < 6) {
-                $modelUser->addError('password', '密码不能为空且不能小于6位');
-                $modelUser->attributes=$_POST['Users'];
+                $modelUser->addError('password', '密码不能为空且不能小于6位');                
             }elseif(Users::findByName($truename)){
-                $modelUser->addError('truename', '该用户昵称已被注册');
-                $modelUser->attributes=$_POST['Users'];
+                $modelUser->addError('truename', '该用户昵称已被注册');                
             }elseif(Users::findByPhone($phone)){
-                $modelUser->addError('truename', '该手机号已被注册');
-                $modelUser->attributes=$_POST['Users'];                
+                $modelUser->addError('truename', '该手机号已被注册');                 
             } else {
                 $inputData = array(
                     'truename' => $truename,

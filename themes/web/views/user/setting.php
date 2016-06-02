@@ -10,6 +10,7 @@
  */
 ?>
 <div class="module">
+    <?php if($action=='baseInfo'){?>
     <div class="module-header">修改基本信息</div>
     <div class="module-body">
         <?php $form=$this->beginWidget('CActiveForm', array(
@@ -37,6 +38,8 @@
         </div>
         <?php $this->endWidget(); ?>
     </div>
+    <?php }?>
+    <?php if($action=='passwd'){?>
     <div class="module-header">修改密码</div>
     <div class="module-body">
         <?php $form=$this->beginWidget('CActiveForm', array(
@@ -60,6 +63,8 @@
         </div>
         <?php $this->endWidget(); ?>
     </div>
+    <?php }?>
+    <?php if($action=='skin'){?>
     <div class="module-header">更换头像</div>
     <div class="module-body">
         <?php $form=$this->beginWidget('CActiveForm', array(
@@ -83,4 +88,28 @@
         </div>
         <?php $this->endWidget(); ?>
     </div>
+    <?php }?>
+    
+    <?php if($action=='checkPhone'){?>
+    <div class="module-header">验证手机号</div>
+    <div class="module-body" id="send-sms-form">
+        <div class="form-group">
+            <label>手机号</label>
+            <div class="input-group">
+                <input type="text" class="form-control" value="<?php echo zmf::hideWord($model->phone);?>" disabled="disabled" id="user-phone"/>
+                <span class="input-group-btn">
+                    <button class="btn btn-default sendSms-btn" type="button"  data-target="user-phone" data-type="checkPhone">发送验证码</button>
+                </span>
+            </div><!-- /input-group -->            
+        </div>
+        <div class="form-group">
+            <div class="input-group">
+                <input type="text" class="form-control bitian" placeholder="验证码" id="verifycode">
+                <span class="input-group-btn">
+                    <button class="btn btn-primary nextStep-btn" type="button" data-type="checkPhone" data-target="user-phone">验证手机号</button>
+                </span>
+            </div><!-- /input-group -->
+        </div>
+    </div>
+    <?php }?>
 </div>

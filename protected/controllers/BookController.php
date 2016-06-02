@@ -183,6 +183,7 @@ class BookController extends Q {
         if (!$this->uid) {
             $this->redirect(array('site/login'));
         }
+        $this->checkUserStatus();
         $tid = zmf::val('tid', 2);
         $model = Tips::model()->findByPk($tid);
         if (!$model || $model->classify != 'chapter') {

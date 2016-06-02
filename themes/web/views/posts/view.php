@@ -57,6 +57,7 @@ $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
                 <?php }?>
             </div>
         </div>
+        <?php if(!empty($comments) || $info['open']==Posts::STATUS_OPEN){?>
         <div class="module">
             <div class="module-header">评论</div>
             <div class="module-body">
@@ -74,11 +75,14 @@ $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
                     <div class="loading-holder"><a class="btn btn-default btn-block" action="get-contents" action-data="<?php echo $info['id'];?>" action-type="comments" action-target="comments-posts-<?php echo $info['id'];?>" href="javascript:;" action-page="2">加载更多</a></div>
                     <?php }?>
                 </div>
+                <?php if($info['open']==Posts::STATUS_OPEN){?>
                 <div id="add-comments">
                     <?php $this->renderPartial('/posts/_addComment', array('keyid' => $info['id'], 'type' => 'posts')); ?>
                 </div>
+                <?php }?>
             </div>
         </div>
+        <?php }?>
     </div>
     <div class="aside-part">
         <?php if(!empty($tags)){?>

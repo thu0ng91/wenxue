@@ -87,6 +87,7 @@ class UserController extends Q {
 
     public function actionAuthor() {
         $this->checkLogin();
+        $this->checkUserStatus();
         $authorInfo = Authors::findByUid($this->uid);
         if ($authorInfo) {
             throw new CHttpException(403, '你已成为作者，请勿重复操作');
@@ -115,6 +116,7 @@ class UserController extends Q {
 
     public function actionAuthorAuth() {
         $this->checkLogin();
+        $this->checkUserStatus();
         $authorInfo = Authors::findByUid($this->uid);
         if (!$authorInfo) {
             throw new CHttpException(403, '你尚未成为作者');
@@ -216,12 +218,12 @@ class UserController extends Q {
     }
 
     public function actionSetting() {
+        $action=  zmf::val('action',1);
+        if (!in_array($action, array('baseInfo', 'passwd', 'skin','checkPhone'))) {
+            $action='baseInfo';
+        }
         $model = Users::model()->findByPk($this->uid);
         if (isset($_POST['Users'])) {
-            $action = zmf::val('action', 1);
-            if (!in_array($action, array('baseInfo', 'passwd', 'skin'))) {
-                throw new CHttpException(403, '不被允许的操作');
-            }
             if ($action == 'baseInfo') {
                 $truename = zmf::filterInput($_POST['Users']['truename'], 1);
                 $content = zmf::filterInput($_POST['Users']['content'], 1);
@@ -274,6 +276,7 @@ class UserController extends Q {
         $this->pageTitle = '设置 - ' . zmf::config('sitename');
         $this->render('setting', array(
             'model' => $model,
+            'action' => $action,
         ));
     }
 

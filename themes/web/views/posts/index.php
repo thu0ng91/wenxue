@@ -19,8 +19,11 @@
     .forum-page .post-item{
         border-bottom: 1px dashed #eee
     }
-    .forum-page .post-item .title{
+    .forum-page .post-item .bold,.forum-page .post-item .bold a{
         font-weight: 700
+    }
+    .forum-page .post-item .red,.forum-page .post-item .red a{
+        color: red
     }
     .forum-page .post-item .tips span{
         margin-right: 5px
@@ -64,7 +67,7 @@
                     </div>
                     <?php }?>
                     <div class="media-body">
-                        <p class="no-wrap title"><?php echo CHtml::link($_post['title'],array('posts/view','id'=>$_post['id']));?></p>
+                        <p class="no-wrap <?php echo Posts::exTopClass($_post['styleStatus']);?>"><?php echo CHtml::link($_post['title'],array('posts/view','id'=>$_post['id']));?></p>
                         <p class="color-grey tips">
                             <?php if($_post['classify']==Posts::CLASSIFY_AUTHOR){?>
                             <span><?php echo CHtml::link($_post['username'],array('author/view','id'=>$_post['aid']));?></span>  

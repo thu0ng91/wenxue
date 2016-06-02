@@ -13,11 +13,11 @@ class PostsController extends Q {
         if ($type == 'author') {
             $classify = Posts::CLASSIFY_AUTHOR;
             $label = '作者专区';
-            $sql = "SELECT p.id,p.title,p.aid,a.authorName AS username,p.cTime,p.comments,p.favors,p.classify FROM {{posts}} p,{{authors}} a WHERE p.classify='{$classify}' AND p.status=" . Posts::STATUS_PASSED . " AND p.aid=a.id AND a.status=" . Posts::STATUS_PASSED . " ORDER BY p.top DESC,p.cTime DESC";
+            $sql = "SELECT p.id,p.title,p.aid,a.authorName AS username,p.cTime,p.comments,p.favors,p.classify,p.styleStatus FROM {{posts}} p,{{authors}} a WHERE p.classify='{$classify}' AND p.status=" . Posts::STATUS_PASSED . " AND p.aid=a.id AND a.status=" . Posts::STATUS_PASSED . " ORDER BY p.top DESC,p.cTime DESC";
         } elseif ($type == 'reader') {
             $classify = Posts::CLASSIFY_READER;
             $label = '读者专区';
-            $sql = "SELECT p.id,p.title,p.uid,u.truename AS username,p.cTime,p.comments,p.favors,p.classify FROM {{posts}} p,{{users}} u WHERE p.classify='{$classify}' AND p.status=" . Posts::STATUS_PASSED . " AND p.uid=u.id AND u.status=" . Posts::STATUS_PASSED . " ORDER BY p.top DESC,p.cTime DESC";
+            $sql = "SELECT p.id,p.title,p.uid,u.truename AS username,p.cTime,p.comments,p.favors,p.classify,p.styleStatus FROM {{posts}} p,{{users}} u WHERE p.classify='{$classify}' AND p.status=" . Posts::STATUS_PASSED . " AND p.uid=u.id AND u.status=" . Posts::STATUS_PASSED . " ORDER BY p.top DESC,p.cTime DESC";
         }
         Posts::getAll(array('sql' => $sql, 'pageSize' => $this->pageSize), $pages, $posts);
         //获取展示
@@ -93,6 +93,7 @@ class PostsController extends Q {
         if (!$this->uid) {
             $this->redirect(array('site/login'));
         }
+        $this->checkUserStatus();
         if ($id) {
             $id = zmf::myint($id);
             $model = $this->loadModel($id);
@@ -116,6 +117,7 @@ class PostsController extends Q {
                 $model->aid = $this->userInfo['authorId'];
             }
             $model->classify = Posts::exType($type);
+            $model->open=  Posts::STATUS_OPEN;//是否允许评论
             $isNew = true;
         }
         if (isset($_POST['ajax']) && $_POST['ajax'] === 'posts-form') {
@@ -141,6 +143,7 @@ class PostsController extends Q {
             $tagids = array_unique(array_filter($_POST['tags']));
             //如果标题包含敏感词则直接标记为未通过
             $attr['status'] = $filterTitle['status'] == Posts::STATUS_PASSED ? $filterContent['status'] : $filterTitle['status'];
+            $attr['open']= ($_POST['Posts']['open']==  Posts::STATUS_OPEN) ? 1 : 0;
             $model->attributes = $attr;
             if ($model->save()) {
                 //将上传的图片置为通过

@@ -22,8 +22,14 @@ $posts=$showcases['reg']['post'];
         height: 360px;
     }
     .login-reg-module .aside-part .module{
-        height: 360px;
-        margin-bottom: 0
+        height: 320px;
+        margin-bottom: 0;
+        border-top: none;
+        box-shadow: none;
+        overflow: hidden;
+        border-left: 1px solid #ccc;
+        border-bottom: 1px solid #ccc;
+        border-right: 1px solid #ccc;
     }
 </style>
 <?php if(!empty($posts)){?>

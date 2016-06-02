@@ -278,6 +278,90 @@ function rebind() {
             }
         });
     });
+    $('.sendSms-btn').on('click',function () {
+        var dom = $(this);
+        var _target = dom.attr('data-target');
+        if (!_target) {
+            dialog({msg: '请输入手机号'});
+            return false;
+        }
+        var phone = $('#' + _target).val();
+        if (!phone) {
+            dialog({msg: '请输入手机号'});
+            return false;
+        }
+        var type = dom.attr('data-type');
+        if (!type) {
+            dialog({msg: '缺少类型参数'});
+            return false;
+        }
+        $.post(zmf.ajaxUrl, {action: 'sendSms', type: type, phone: phone, YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
+            result = eval('(' + result + ')');
+            if (result['status'] === 1) {
+                var totalTime=60,times=0;
+                dom.text('重新发送 '+totalTime+'s').attr('disabled','disabled');                
+                var interval = setInterval(function(){
+                    times+=1;
+                    var time = totalTime-times;
+                    dom.text('重新发送 '+time+'s');
+                    if(time <= 0) {
+                        clearInterval(interval);
+                        dom.removeAttr('disabled').text('重新发送');
+                    }
+                }, 1000);
+            } else {
+                dialog({msg: result['msg']});
+            }
+        });
+    });
+    $('.nextStep-btn').on('click',function () {
+        var dom = $(this);
+        var hasError = false;
+        $('#send-sms-form .bitian').each(function () {
+            var _dom = $(this);
+            if (!_dom.val()) {
+                hasError = true;
+                dialog({msg: _dom.attr('placeholder') + '不能为空'});
+                return false;
+            }
+        });
+        var type = dom.attr('data-type');
+        if (!type) {
+            dialog({msg: '缺少类型参数'});
+            return false;
+        }
+        var _target = dom.attr('data-target');
+        if (!_target) {
+            dialog({msg: '请输入手机号'});
+            return false;
+        }
+        var phone = $('#' + _target).val();
+        if (!phone) {
+            dialog({msg: '请输入手机号'});
+            return false;
+        }
+        var vcode = $('#verifycode').val();
+        if (hasError) {
+            return false;
+        }
+        $.post(zmf.ajaxUrl, {action: 'checkSms', type: type, phone: phone, code: vcode, YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
+            result = eval('(' + result + ')');
+            if (result.status === 1) {
+                if(type==='exphone'){
+                    dialog({msg: '手机号修改成功'});
+                    window.location.href = result.msg;
+                }else if(type==='checkPhone'){
+                    dialog({msg: '手机号已验证'});
+                    window.location.href = result.msg;
+                }else{
+                    $('#hashCode').val(result.msg);
+                    $('#send-sms-form').submit();
+                }
+            } else {
+                dialog({msg: result.msg});
+            }
+        });
+    });
     //调用复制
     var clipboard = new Clipboard('.btn-copy');
     clipboard.on('success', function (e) {

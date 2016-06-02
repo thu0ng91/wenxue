@@ -85,6 +85,7 @@ class AuthorController extends Q {
 
     public function actionCreateBook($bid = '') {
         $this->checkAuthorLogin();
+        $this->checkUserStatus();
         if ($bid) {
             $model = Books::getOne($bid,'');
             if (!$model || $model['status'] != Posts::STATUS_PASSED) {
@@ -154,6 +155,7 @@ class AuthorController extends Q {
 
     public function actionAddChapter($cid = '') {
         $this->checkAuthorLogin();
+        $this->checkUserStatus();
         $this->layout = 'common';
         $draft = zmf::val('draft', 1);
         if ($cid) {
@@ -231,6 +233,7 @@ class AuthorController extends Q {
 
     public function actionSetting() {
         $this->checkAuthorLogin();
+        $this->checkUserStatus();
         $type = zmf::val('type', 1);
         if (!in_array($type, array('info', 'skin', 'passwd'))) {
             throw new CHttpException(403, '不允许的分类');

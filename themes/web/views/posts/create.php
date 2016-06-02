@@ -19,7 +19,7 @@
         padding: 10px
     }
     .tags-body{
-        min-height: 385px;
+        min-height: 330px;
     }
     .tags-body .tag-item{
         border:1px solid #93ba5f;
@@ -35,6 +35,10 @@
     }
     .tags-body .tag-item input{
         display: none
+    }
+    .add-post-page .power-body{
+        padding-top: 0;
+        padding-bottom: 0;
     }
 </style>
 <?php $uploadurl=Yii::app()->createUrl('attachments/upload',array('type'=>'posts','imgsize'=>600));?>
@@ -67,6 +71,7 @@
             </div>            
         </div>
         <div class="aside-part">
+            <?php if(!empty($tags)){?>
             <div class="module-header">选择标签</div>
             <div class="module-body tags-body">
                 <?php foreach ($tags as $tagid=>$tag){?>
@@ -76,7 +81,13 @@
                 </span>
                 <?php }?>
             </div>
-            
+            <?php }?>
+            <div class="module-header">文章设置</div>
+            <div class="module-body power-body">
+                <div class="checkbox">
+                    <label><?php echo CHtml::activeCheckBox($model, 'open');?> 开放评论</label>
+                </div>
+            </div>
         </div>
         <?php $this->endWidget(); ?>
     </div>

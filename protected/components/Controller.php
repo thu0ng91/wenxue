@@ -2,28 +2,24 @@
 
 class Controller extends CController {
 
-    public function message($status = 0, $message = '', $url = '', $time = 3, $jump = true, $render = true) {
+    public function message($code = 0, $message = '', $url = '', $time = 3) {
         $this->layout='common';
         if (empty($url)) {
             $url = Yii::app()->user->returnUrl;
         }
-        if ($status) {
-            $success = $message;
-        } else {
-            $error = $message;
+        if($code){
+            $icon='<i class="fa fa-check-circle success"></i>';
+        }else{
+            $icon='<i class="fa fa-info-circle error"></i>';
         }
         $data = array(
-            'error' => $error,
-            'success' => $success,
+            'message' => $message,
             'jumpUrl' => $url,
             'waitSecond' => $time,
-            'jumpStatus' => $jump
+            'icon' => $icon
         );
-        if ($render) {
-            $this->render('//msg/error', $data);
-        } else {
-            $this->renderPartial('//msg/error', $data);
-        }
+        $this->pageTitle='跳转提示';
+        $this->render('//msg/error', $data);
         Yii::app()->end();
     }
 

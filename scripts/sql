@@ -202,3 +202,6 @@ alter table pre_reports add times int(10) unsigned not null COMMENT '举报次�
 
 alter table pre_books add shoufa tinyint(1) unsigned not null COMMENT '是否首发';
 alter table pre_books add iAgree char(3) not null COMMENT '同意协议';
+
+alter table pre_posts add styleStatus tinyint(1) unsigned not null COMMENT '显示状态';
+alter table pre_posts add open tinyint(1) unsigned not null COMMENT '是否允许评论';

@@ -32,6 +32,13 @@ class Posts extends CActiveRecord {
     const CLASSIFY_POST = 1;
     const CLASSIFY_AUTHOR = 2;
     const CLASSIFY_READER = 3;
+    //关于置顶    
+    const STATUS_BOLD=1;//仅加粗
+    const STATUS_RED=2;//仅标红
+    const STATUS_BOLDRED=3;//加粗标红
+    //关于可否评论
+    const STATUS_UNOPEN=0;
+    const STATUS_OPEN=1;
 
     /**
      * @return string the associated database table name
@@ -51,7 +58,7 @@ class Posts extends CActiveRecord {
             array('cTime,updateTime', 'default', 'setOnEmpty' => true, 'value' => zmf::now()),
             array('status', 'default', 'setOnEmpty' => true, 'value' => Posts::STATUS_PASSED),
             array('uid, title, content', 'required'),
-            array('uid, faceimg, classify, mapZoom, comments, top, hits, status, cTime, updateTime', 'numerical', 'integerOnly' => true),
+            array('uid, faceimg, classify, mapZoom, comments, top, hits, status, cTime, updateTime,styleStatus,open', 'numerical', 'integerOnly' => true),
             array('title, tagids', 'length', 'max' => 255),
             array('lat, long', 'length', 'max' => 50),
             array('favors', 'length', 'max' => 11),
@@ -90,6 +97,8 @@ class Posts extends CActiveRecord {
             'status' => 'Status',
             'cTime' => '创建世界',
             'updateTime' => '最近更新时间',
+            'styleStatus' => '显示状态',
+            'open' => '是否允许评论',
         );
     }
 
@@ -139,6 +148,22 @@ class Posts extends CActiveRecord {
             $arr = array_flip($arr);
         }
         return $arr[$type];
+    }
+    
+    public static function exTopClass($status){
+        if($status<1){
+            return '';
+        }
+        if($status==Posts::STATUS_BOLD){
+            return 'bold';
+        }
+        if($status==Posts::STATUS_RED){
+            return 'red';
+        }
+        if($status==Posts::STATUS_BOLDRED){
+            return 'bold red';
+        }
+        return '';
     }
 
     public static function encode($id, $type = 'post') {

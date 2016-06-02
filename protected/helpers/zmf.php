@@ -19,9 +19,9 @@ class zmf {
             return Yii::app()->user->id;
         }
     }
-    
-    public static function powered(){
-        return CHtml::link('新灵中国 提供技术支持','http://newsoul.cn',array('target'=>'_blank'));
+
+    public static function powered() {
+        return CHtml::link('新灵中国 提供技术支持', 'http://newsoul.cn', array('target' => '_blank'));
     }
 
     /**
@@ -50,7 +50,7 @@ class zmf {
             return stripcslashes(Yii::app()->params['c'][$type]);
         }
     }
-    
+
     /**
      * 将配置写入缓存
      * @param type $array
@@ -230,8 +230,8 @@ class zmf {
         //c132|c120|c180|c105|c360
         $appStatus = self::config('appStatus');
         $visitUrl = self::config('imgVisitUrl');
-        $csize = ($size != '' && $visitUrl != '') ? (is_numeric($size) ? '/c' . $size : '/'.$size) : '';        
-        $reurl = $url . $csize;        
+        $csize = ($size != '' && $visitUrl != '') ? (is_numeric($size) ? '/c' . $size : '/' . $size) : '';
+        $reurl = $url . $csize;
         return $reurl;
     }
 
@@ -848,9 +848,9 @@ class zmf {
                     $thekey = $match[0][$key];
                     $src = Attachments::getOne($val);
                     if ($src) {
-                        $_originImgUrl = Attachments::getUrl($src, ''); 
-                        $_imgurl=  zmf::getThumbnailUrl($_originImgUrl, $size, $src['classify']);
-                        $_zoomImgUrl=  zmf::getThumbnailUrl($_originImgUrl, '960', $src['classify']);
+                        $_originImgUrl = Attachments::getUrl($src, '');
+                        $_imgurl = zmf::getThumbnailUrl($_originImgUrl, $size, $src['classify']);
+                        $_zoomImgUrl = zmf::getThumbnailUrl($_originImgUrl, '960', $src['classify']);
                         if ($lazyload) {
                             $_width = $_height = 0;
                             if ($src['width'] <= $width) {
@@ -860,7 +860,7 @@ class zmf {
                                 $_width = $width;
                             }
                             //$_extra = " width='" . $_width . "px'";                                
-                            $imgurl = "<a href='javascript:;' action='zoom' action-type='img' action-data='{$_zoomImgUrl}'><img src='" . self::lazyImg() . "' class='lazy img-responsive' data-original='{$_imgurl}' " . ($action == 'edit' ? 'data="' . $val . '"' : '') . $_extra ."/></a>";
+                            $imgurl = "<a href='javascript:;' action='zoom' action-type='img' action-data='{$_zoomImgUrl}'><img src='" . self::lazyImg() . "' class='lazy img-responsive' data-original='{$_imgurl}' " . ($action == 'edit' ? 'data="' . $val . '"' : '') . $_extra . "/></a>";
                         } else {
                             $imgurl = "<img src='{$_imgurl}' class='img-responsive' " . ($action == 'edit' ? 'data="' . $val . '"' : '') . "/>";
                         }
@@ -880,9 +880,9 @@ class zmf {
                     $src = Videos::getOne($val);
                     if ($src) {
                         $videoHolderId = zmf::randMykeys(8, 2);
-                        if($action=='edit'){
-                            $_videoHtml = '<p><img src="' . $src['faceimg'] . '" style="width:100%" '.('video="' . $val . '"').'/></p>';
-                        }else{
+                        if ($action == 'edit') {
+                            $_videoHtml = '<p><img src="' . $src['faceimg'] . '" style="width:100%" ' . ('video="' . $val . '"') . '/></p>';
+                        } else {
                             $_videoHtml = '<div class="media-item" id="' . $videoHolderId . '"><div class="media-cover" onclick="playVideo(\'' . $src['company'] . '\',\'' . $src['videoid'] . '\',\'' . $videoHolderId . '\',this)"><i class="fa fa-play"></i><img src="' . $src['faceimg'] . '" style="width:100%"/></div><div class="media-content"><p class="media-title">' . $src['title'] . '</p><p>' . $src['content'] . '</p></div></div>';
                         }
                         $content = str_ireplace("<p>{$thekey}</p>", $_videoHtml, $content);
@@ -897,9 +897,9 @@ class zmf {
             if (!empty($match[1])) {
                 foreach ($match[1] as $key => $val) {
                     $thekey = $match[0][$key];
-                    $latLongArr=  explode('#', $val);
-                    if (count($latLongArr)==3) {
-                        $_html='<a href="javascript:;"><img data-original="http://ditu.google.cn/maps/api/staticmap?center='.$latLongArr[0].','.$latLongArr[1].'&amp;zoom='.$latLongArr[2].'&amp;size=640x480&amp;markers=color:red%7Clabel:A%7C'.$latLongArr[0].','.$latLongArr[1].'&amp;sensor=false&amp;key='.self::config('googleApiKey').'" src="'.self::lazyImg().'" class="img-responsive lazy" '.($action=='edit' ? 'mapinfo="'.$latLongArr[0].'#'.$latLongArr[1].'#'.$latLongArr[2].'"' : '').'/></a>';
+                    $latLongArr = explode('#', $val);
+                    if (count($latLongArr) == 3) {
+                        $_html = '<a href="javascript:;"><img data-original="http://ditu.google.cn/maps/api/staticmap?center=' . $latLongArr[0] . ',' . $latLongArr[1] . '&amp;zoom=' . $latLongArr[2] . '&amp;size=640x480&amp;markers=color:red%7Clabel:A%7C' . $latLongArr[0] . ',' . $latLongArr[1] . '&amp;sensor=false&amp;key=' . self::config('googleApiKey') . '" src="' . self::lazyImg() . '" class="img-responsive lazy" ' . ($action == 'edit' ? 'mapinfo="' . $latLongArr[0] . '#' . $latLongArr[1] . '#' . $latLongArr[2] . '"' : '') . '/></a>';
                         $content = str_ireplace("{$thekey}", $_html, $content);
                     } else {
                         $content = str_ireplace("{$thekey}", '', $content);
@@ -1025,7 +1025,7 @@ class zmf {
             return $str;
         }
     }
-    
+
     /**
      * Yes OR NO
      * @param string $type
@@ -1041,9 +1041,21 @@ class zmf {
         }
         return $arr[$type];
     }
-    
-    public static function formatField($field){
+
+    public static function formatField($field) {
         return str_replace('`', '', $field);
+    }
+
+    /**
+     * 判断是否是手机号
+     * @param int $mobile
+     * @return boolean
+     */
+    public static function checkPhoneNumber($mobile) {
+        if (!is_numeric($mobile)) {
+            return false;
+        }
+        return preg_match('#^13[\d]{9}$|^14[5,7]{1}\d{8}$|^15[^4]{1}\d{8}$|^17[0,6,7,8]{1}\d{8}$|^18[\d]{9}$#', $mobile) ? true : false;
     }
 
 }

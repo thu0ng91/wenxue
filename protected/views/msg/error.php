@@ -1,45 +1,19 @@
-<html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <title>跳转提示</title>   
-    </head>
-    <body>
 <style>
-div.message{margin:100px auto 0 auto;clear:both;text-align:center; width:100%;border:1px solid #04AEDA}
-.msg,.tip,.error,.success{width:100%;height:50px;line-height:50px}
-.msg{background:none;font-size:14px}
-.msg{background:none;color:#04AEDA}
-.tip{font-size:12px;color:#FFF;background:#04AEDA}
-.wait{color:#C71585;font-weight:bold}
-.error{color:#C71585}
-.success{color:green}
-</style>   
-<div class="message">	
-<div class="msg">
-<?php if(!empty($success)){?>
- <p class="success"><?php echo($success); ?></p>   
-<?php }else{?>
- <p class="error"><?php echo($error); ?></p>   
-<?php }?>
-</div>
-<div class="tip">
-<p class="detail"></p>
-<p class="jump">
-页面自动 <a id="href" href="<?php echo($jumpUrl); ?>" target="_top">跳转</a> 等待时间： <b id="wait"><?php echo($waitSecond); ?></b>
-</p>
-</div>
+body{background: #fff}
+.error-tips h1{font-size: 96px;text-shadow: 10px 15px 10px #ccc;}
+.error-tips .success{color: #93ba5f}
+.error-tips .error{color: #BF1031}
+.error-tips .error-msg{color: #333;font-size: 14px;font-weight: 700}
+</style>
+<div class="alert text-center error-tips">
+    <h1><?php echo $icon; ?></h1>
+    <p class="error-msg"><?php echo CHtml::encode($message); ?></p>
+    <p class="color-grey"><span id="wait"><?php echo($waitSecond); ?></span>秒后自动跳转</p>
+    <p>
+        <?php echo CHtml::link('立即跳转',  $jumpUrl,array('class'=>'btn btn-default btn-xs','id'=>'href','target'=>'_top'));?>
+        <?php echo CHtml::link('返回首页',  zmf::config('baseurl'),array('class'=>'btn btn-default btn-xs'));?>
+    </p>
 </div>
 <script type="text/javascript">
-(function(){
-var wait = document.getElementById('wait'),href = document.getElementById('href').href;
-var interval = setInterval(function(){
-	var time = --wait.innerHTML;
-	if(time <= 0) {
-		location.href = href;
-		clearInterval(interval);
-	};
-}, 1000);
-})();
+(function(){var wait = document.getElementById('wait'),href = document.getElementById('href').href;var interval = setInterval(function(){var time = --wait.innerHTML;if(time <= 0) {location.href = href;clearInterval(interval);};}, 1000);})();
 </script>
-</body>
-</html>

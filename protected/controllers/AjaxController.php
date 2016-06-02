@@ -17,7 +17,7 @@ class AjaxController extends Q {
 
     public function actionDo() {
         $action = zmf::val('action', 1);
-        if (!in_array($action, array('addTip', 'saveUploadImg', 'publishBook', 'publishChapter', 'saveDraft', 'report'))) {
+        if (!in_array($action, array('addTip', 'saveUploadImg', 'publishBook', 'publishChapter', 'saveDraft', 'report','sendSms','checkSms'))) {
             $this->jsonOutPut(0, Yii::t('default', 'forbiddenaction'));
         }
         $this->$action();
@@ -25,6 +25,7 @@ class AjaxController extends Q {
 
     private function addTip() {
         $this->checkLogin();
+        $this->checkUserStatus();
         $keyid = zmf::val('k', 2);
         $type = zmf::val('t', 1);
         $content = zmf::val('c', 1);
@@ -188,6 +189,7 @@ class AjaxController extends Q {
 
     private function publishBook() {
         $this->checkLogin();
+        $this->checkUserStatus();
         $id = zmf::val('id', 2);
         if (!$id) {
             $this->jsonOutPut(0, '缺少参数哦~');
@@ -223,6 +225,7 @@ class AjaxController extends Q {
 
     private function publishChapter() {
         $this->checkLogin();
+        $this->checkUserStatus();
         $id = zmf::val('id', 2);
         if (!$id) {
             $this->jsonOutPut(0, '缺少参数哦~');
@@ -347,6 +350,175 @@ class AjaxController extends Q {
             }
         }
     }
+    
+    /**
+     * 发送短信
+     */
+    private function sendSms() {
+        $phone = zmf::val('phone', 2);
+        $type = zmf::val('type', 1);
+        if (!$phone) {
+            $this->jsonOutPut(0, '请输入手机号');
+        }
+        if (!in_array($type, array('reg', 'forget', 'exphone','checkPhone'))) {
+            $this->jsonOutPut(0, '不被允许的类型:' . $type);
+        }elseif($type=='checkPhone'){
+            $this->checkLogin();
+            $phone=  $this->userInfo['phone'];
+            if(!$phone){
+                $this->jsonOutPut(0, '参数错误，缺少手机号');
+            }
+        }else{
+            if(!zmf::checkPhoneNumber($phone)){
+                $this->jsonOutPut(0, '请输入正确的手机号');
+            }
+        }        
+        $now = zmf::now();
+        $sendInfo = Msg::model()->find('phone=:phone AND type=:type AND expiredTime>=:now AND status=0', array(':phone' => $phone, ':type' => $type, ':now' => $now));
+        if ($sendInfo) {
+            $params = array(
+                'phone' => $phone,
+                'code' => $sendInfo['code'],
+                'template' => Msg::returnTemplate($type),
+            );
+            $status = Msg::sendOne($params);
+            if($status){
+                $this->jsonOutPut(1, '发送成功');
+            }else{
+                $this->jsonOutPut(0, '操作太频繁，请稍安勿躁');
+            }
+        }
+        if ($type == 'exphone') {
+            $this->checkLogin();
+            if ($this->userInfo['phone'] == $phone) {
+                $this->jsonOutPut(0, '该号码已被使用');
+            } else {
+                $info = Users::model()->find('phone=:p', array(':p' => $phone));
+                if ($info) {
+                    $this->jsonOutPut(0, '该号码已被使用');
+                } elseif ($info && $info['status'] != Posts::STATUS_PASSED) {
+                    $this->jsonOutPut(0, '该用户禁止访问');
+                }
+            }
+            $this->userInfo['phone'] = $phone;
+        } elseif ($type == 'forget') {
+            //如果已经登录时则认为是修改密码，只能输入自己的手机号
+            if($this->uid && $phone!=$this->userInfo['phone']){
+                $this->jsonOutPut(0, '号码有误，请重新输入');
+            }
+            $info = Users::model()->find('phone=:p', array(':p' => $phone));
+            if (!$info) {
+                $this->jsonOutPut(0, '该号码尚未注册');
+            } elseif ($info['status'] != Posts::STATUS_PASSED) {
+                $this->jsonOutPut(0, '该用户禁止访问');
+            }
+            $this->userInfo['phone'] = $phone;
+        } elseif ($type == 'checkPhone') {
+            
+        } else {
+            if ($type == 'reg') {
+                //验证手机号是否已被注册
+                $info = Users::model()->find('phone=:p', array(':p' => $phone));
+                if ($info) {
+                    $this->jsonOutPut(0, '该手机号已被注册');
+                }
+            }
+            $this->userInfo['phone'] = $phone;
+        }
+        $count = Msg::statByPhone($phone);
+        if ($count >= 20) {
+            $this->jsonOutPut(0, '您今天的短信次数已用完');
+        }
+        //将该手机号及该操作下的所有短信置为已过期
+        //Msg::model()->updateAll(array('status' => -1), 'phone=:p AND type=:type AND status=0', array(':p' => $phone, ':type' => $type));
+        //发送一条短信验证码
+        $res = Msg::initSend($this->userInfo, $type);
+        if ($res) {
+            if ($type == 'exphone') {
+                //记录操作
+                //UserLog::add($this->uid, '发送短信请求更换手机');
+            } elseif ($type == 'forget') {
+                //记录操作
+                //UserLog::add($this->uid, '发送短信请求找回密码');
+            }
+            $this->jsonOutPut(1, '发送成功');
+        } else {
+            $this->jsonOutPut(0, '发送失败');
+        }
+    }
+
+    /**
+     * 短信验证
+     */
+    private function checkSms() {
+        $phone = zmf::val('phone', 2);
+        $code = zmf::val('code', 1);
+        $type = zmf::val('type', 1);
+        if(!$code){
+            $this->jsonOutPut(0, '请输入验证码');
+        }
+        if (!in_array($type, array('reg', 'forget', 'exphone','checkPhone'))) {
+            $this->jsonOutPut(0, '不被允许的类型');
+        }
+        if (!$phone) {
+            $this->jsonOutPut(0, '请输入手机号');
+        }elseif($type=='checkPhone'){
+            $this->checkLogin();
+            $phone=  $this->userInfo['phone'];
+            if(!$phone){
+                $this->jsonOutPut(0, '参数错误，缺少手机号');
+            }
+        }else{
+            if(!zmf::checkPhoneNumber($phone)){
+                $this->jsonOutPut(0, '请输入正确的手机号');
+            }
+        }
+        $now = zmf::now();
+        //查询是否有已发送记录
+        if ($type == 'exphone') {
+            $this->checkLogin();
+            $info = Msg::model()->find('uid=:uid AND phone=:p AND type=:t AND code=:code AND expiredTime>=:now', array(':uid' => $this->uid, ':p' => $phone, ':t' => $type, ':code' => $code, ':now' => $now));
+        } elseif ($type == 'reg') {
+            $uinfo = Users::model()->find('phone=:p', array(':p' => $phone));
+            if ($uinfo) {
+                $this->jsonOutPut(0, '该手机号已被注册');
+            }
+            $info = Msg::model()->find('phone=:p AND type=:t AND code=:code', array(':p' => $phone, ':t' => $type, ':code' => $code));
+        } elseif ($type == 'checkPhone') {
+            $info = Msg::model()->find('phone=:p AND type=:t AND code=:code', array(':p' => $phone, ':t' => $type, ':code' => $code));
+        }elseif ($type == 'forget') {
+            //如果已经登录时则认为是修改密码，只能输入自己的手机号
+            if($this->uid && $phone!=$this->userInfo['phone']){
+                $this->jsonOutPut(0, '号码有误，请重新输入');
+            }
+            $uinfo = Users::model()->find('phone=:p', array(':p' => $phone));
+            if (!$uinfo) {
+                $this->jsonOutPut(0, '该号码尚未注册');
+            }
+            $info = Msg::model()->find('phone=:p AND type=:t AND code=:code', array(':p' => $phone, ':t' => $type, ':code' => $code));
+        }
+        if (!$info) {
+            $this->jsonOutPut(0, '验证码错误，请重试');
+        } elseif ($info['expiredTime'] < $now) {
+            $this->jsonOutPut(0, '验证码已过期，请重新发送');
+        }
+        if ($type == 'exphone') {
+            //相等以后则修改用户手机号
+            Users::model()->updateByPk($this->uid, array('phone' => $phone));
+            //更新缓存
+            zmf::delFCache("userInfo-{$this->uid}");
+            $this->jsonOutPut(1, Yii::app()->createUrl('users/setting'));
+        }
+        Msg::model()->updateByPk($info['id'], array('status' => 1));
+        if($type=='checkPhone'){
+            Users::model()->updateByPk($this->uid, array('phoneChecked'=>1));
+            $returnCode=Yii::app()->createUrl('user/index');
+        }else{
+            //验证通过，将验证码标记为已使用
+            $returnCode = zmf::jiaMi($phone . '#' . $type . '#' . zmf::now());
+        }
+        $this->jsonOutPut(1, $returnCode);
+    }
 
     public function actionFeedback() {
         $content = zmf::val('content', 1);
@@ -378,6 +550,7 @@ class AjaxController extends Q {
 
     public function actionAddComment() {
         $this->checkLogin();
+        $this->checkUserStatus();
         $keyid = zmf::val('k', 2);
         $to = zmf::val('to', 2);
         $type = zmf::val('t', 1);
@@ -395,6 +568,8 @@ class AjaxController extends Q {
         $postInfo = Posts::model()->findByPk($keyid);
         if (!$postInfo || $postInfo['status'] != Posts::STATUS_PASSED) {
             $this->jsonOutPut(0, '你所评论的内容不存在');
+        }elseif($postInfo['open']!=Posts::STATUS_OPEN){
+            $this->jsonOutPut(0, '评论功能已关闭');
         }
         //处理文本，不是富文本
         $filter = Posts::handleContent($content, FALSE);
@@ -607,59 +782,6 @@ class AjaxController extends Q {
             default:
                 $this->jsonOutPut(0, '操作有误');
                 break;
-        }
-    }
-
-    public function actionSetStatus() {
-        $this->checkLogin();
-        $keyid = zmf::val('a', 2);
-        $classify = zmf::val('b', 1);
-        $_status = zmf::val('c', 1);
-        if (!$keyid) {
-            $this->jsonOutPut(0, '请选择对象');
-        }
-        if (!in_array($classify, array('posts', 'comments'))) {
-            $this->jsonOutPut(0, '不允许的类型');
-        }
-        if (!in_array($_status, array('del', 'passed'))) {
-            $this->jsonOutPut(0, '不允许的类型');
-        }
-        if ($_status == 'top') {
-            if ($classify == 'posts') {
-                $attr = array(
-                    'top' => 1,
-                    'updateTime' => zmf::now()
-                );
-            } else {
-                $attr = array(
-                    'top' => 1
-                );
-            }
-        } else if ($_status == 'canceltop') {
-            $attr = array(
-                'top' => 0,
-            );
-        } else if ($_status == 'del') {
-            $attr = array(
-                'status' => Posts::STATUS_DELED,
-            );
-        } else if ($_status == 'passed') {
-            $attr = array(
-                'status' => Posts::STATUS_PASSED,
-            );
-        }
-        $ucClassify = ucfirst($classify);
-        if (!class_exists($ucClassify)) {
-            $this->jsonOutPut(0, '不存在的类型');
-        }
-        $model = new $ucClassify;
-        if ($model->updateByPk($keyid, $attr)) {
-            if ($classify == 'comments') {
-                Posts::updateCommentsNum($keyid);
-            }
-            $this->jsonOutPut(1, '操作成功');
-        } else {
-            $this->jsonOutPut(0, '操作失败');
         }
     }
 

@@ -3,6 +3,10 @@
         <?php $this->renderPartial('/site/login-carousel');?>
     </div>
     <div class="aside-part">
+        <ul class="nav nav-tabs">
+            <li role="presentation" class="active"><?php echo CHtml::link('登录',array('site/login'));?></li>            
+            <li role="presentation"><?php echo CHtml::link('注册',array('site/reg'));?></li>            
+        </ul>
         <div class="module">
             <div class="module-body">
                 <?php if($canLogin){$form=$this->beginWidget('CActiveForm', array(
@@ -31,9 +35,8 @@
                 <div class="checkbox"><label><?php echo $form->checkBox($model, 'rememberMe', array('class' => 'remember')); ?> 记住登录状态</label></div>
                 <div class="form-group text-center">
                     <div class="btn-group" role="group">
-                        <input type="submit" name="login" class="btn btn-success" value="登录"/>
-                        <?php echo CHtml::link('注册 <i class="fa fa-angle-double-right"></i>',array('site/reg'),array('class'=>'btn btn-default'));?>
-                    </div>              
+                        <input type="submit" name="login" class="btn btn-success" value="登录"/>                        
+                    </div>
                 </div>                
                 <?php $this->endWidget();}else{ ?>
                     <div class="alert alert-danger">
