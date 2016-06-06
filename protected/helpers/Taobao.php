@@ -13,8 +13,8 @@ require_once(Yii::app()->basePath . '/../taobao/TopSdk.php');
 class Taobao extends TopClient {
 
     public function __construct() {
-        $this->appkey = '23346051';
-        $this->secretKey = 'd7cb6487a44035b325fafeb4e2d349b7';
+        $this->appkey = '23381563';
+        $this->secretKey = '3796df193d33cac6562d5b9b34ac649d';
         $this->format='json';
         $this->simplify=true;
     }

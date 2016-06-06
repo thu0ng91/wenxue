@@ -32,7 +32,14 @@
                     <?php $this->widget ( 'CCaptcha', array ('showRefreshButton' => true, 'clickableImage' => true, 'buttonType' => 'link', 'buttonLabel' => '换一换', 'imageOptions' => array ('alt' => zmf::t('change_verify'), 'align'=>'absmiddle'  ) ) );?>
                 </div>
                 <?php }?>
-                <div class="checkbox"><label><?php echo $form->checkBox($model, 'rememberMe', array('class' => 'remember')); ?> 记住登录状态</label></div>
+                <div class="row">
+                    <div class="col-xs-8">
+                        <div class="checkbox"><label><?php echo $form->checkBox($model, 'rememberMe', array('class' => 'remember')); ?> 记住登录状态</label></div>
+                    </div>
+                    <div class="col-xs-4">
+                        <span class="text-right color-grey"><?php echo CHtml::link('忘记密码？',array('site/forgot'));?></span>
+                    </div>
+                </div>
                 <div class="form-group text-center">
                     <div class="btn-group" role="group">
                         <input type="submit" name="login" class="btn btn-success" value="登录"/>                        

@@ -452,7 +452,7 @@ class AjaxController extends Q {
      */
     private function checkSms() {
         $phone = zmf::val('phone', 2);
-        $code = zmf::val('code', 1);
+        $code = zmf::val('code', 2);
         $type = zmf::val('type', 1);
         if(!$code){
             $this->jsonOutPut(0, '请输入验证码');
@@ -487,6 +487,10 @@ class AjaxController extends Q {
         } elseif ($type == 'checkPhone') {
             $info = Msg::model()->find('phone=:p AND type=:t AND code=:code', array(':p' => $phone, ':t' => $type, ':code' => $code));
         }elseif ($type == 'forget') {
+            $password = zmf::val('password', 1);
+            if(!$password || strlen($password)<6){                
+                $this->jsonOutPut(0, '请输入长度不小于6位的有效密码');
+            }            
             //如果已经登录时则认为是修改密码，只能输入自己的手机号
             if($this->uid && $phone!=$this->userInfo['phone']){
                 $this->jsonOutPut(0, '号码有误，请重新输入');
@@ -513,6 +517,12 @@ class AjaxController extends Q {
         if($type=='checkPhone'){
             Users::model()->updateByPk($this->uid, array('phoneChecked'=>1));
             $returnCode=Yii::app()->createUrl('user/index');
+        }elseif($type=='forget'){
+            if(Users::updateInfo($uinfo['id'],'password',md5($password))){                
+                $this->jsonOutPut(1, '密码修改成功，正在跳转至登录页面');
+            }else{
+                $this->jsonOutPut(0, '密码修改失败，未知错误');
+            }
         }else{
             //验证通过，将验证码标记为已使用
             $returnCode = zmf::jiaMi($phone . '#' . $type . '#' . zmf::now());

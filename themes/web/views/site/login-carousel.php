@@ -31,6 +31,12 @@ $posts=$showcases['reg']['post'];
         border-bottom: 1px solid #ccc;
         border-right: 1px solid #ccc;
     }
+    .login-reg-module .checkbox{
+        margin-top: 0
+    }
+    .login-reg-module input[type=checkbox]{
+        margin-top: 2px
+    }
 </style>
 <?php if(!empty($posts)){?>
 <div id="carousel-example-generic" class="carousel slide" data-ride="carousel" style="">

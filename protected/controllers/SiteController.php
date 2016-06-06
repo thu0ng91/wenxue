@@ -143,6 +143,11 @@ class SiteController extends Q {
             'model' => $modelUser
         ));
     }
+    
+    public function actionForgot(){
+        $this->pageTitle = '找回密码';
+        $this->render('forgot', $data);
+    }
 
     public function actionInfo() {
         $code = zmf::val('code', 1);

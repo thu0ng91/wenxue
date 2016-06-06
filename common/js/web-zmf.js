@@ -344,7 +344,27 @@ function rebind() {
         if (hasError) {
             return false;
         }
-        $.post(zmf.ajaxUrl, {action: 'checkSms', type: type, phone: phone, code: vcode, YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
+        var passData={
+            action:'checkSms',
+            type: type, 
+            phone: phone, 
+            code: vcode, 
+            YII_CSRF_TOKEN: zmf.csrfToken
+        };
+        var passwd='';
+        if(type==='forget'){
+            if(phone.length!==11){
+                dialog({msg: '请输入有效的11位手机号码'});
+                return false;
+            }            
+            passwd=$('#password').val();
+            if(!passwd || passwd.length<6){
+                dialog({msg: '请输入长度不小于6位的有效密码'});
+                return false;
+            }
+            passData.password=passwd;
+        }
+        $.post(zmf.ajaxUrl, passData, function (result) {
             result = eval('(' + result + ')');
             if (result.status === 1) {
                 if(type==='exphone'){
@@ -352,7 +372,12 @@ function rebind() {
                     window.location.href = result.msg;
                 }else if(type==='checkPhone'){
                     dialog({msg: '手机号已验证'});
-                    window.location.href = result.msg;
+                    window.location.href = result.msg;   
+                }else if(type==='forget'){
+                    dialog({msg: result.msg});
+                    setTimeout(function(){
+                        location.href=zmf.loginUrl;
+                    },1000);
                 }else{
                     $('#hashCode').val(result.msg);
                     $('#send-sms-form').submit();

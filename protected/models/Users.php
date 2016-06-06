@@ -150,5 +150,16 @@ class Users extends CActiveRecord {
         ));
         return $info;
     }
+    
+    public static function updateInfo($uid,$field,$value=''){
+        if(!$uid || !$field){
+            return false;
+        }
+        if(!in_array($field, array('password'))){
+            return false;
+        }
+        $attr[$field]=$value;
+        return Users::model()->updateByPk($uid, $attr);
+    }
 
 }

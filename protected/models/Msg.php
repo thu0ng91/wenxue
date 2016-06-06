@@ -114,13 +114,13 @@ class Msg extends CActiveRecord {
     public static function returnTemplate($type) {
         switch ($type) {
             case 'reg':
-                $content = 'SMS_7785619';
+                $content = 'SMS_10390068';
                 break;
             case 'forget':
-                $content = 'SMS_7785619';
+                $content = 'SMS_10390068';
                 break;
             default :
-                $content = 'SMS_7785619';
+                $content = 'SMS_10390068';
                 break;
         }
         return $content;
@@ -179,11 +179,11 @@ class Msg extends CActiveRecord {
 
     public static function sendOne($params) {
         $attr = array(
-            'sign' => '重庆好婚礼',
+            'sign' => '初心创文',
             'phone' => $params['phone'],
             'attr' => array(
                 'code' => $params['code'],
-                'product' => '重庆好婚礼',
+                'product' => '初心创文',
                 'time' => '15',
             ),
             'template' => $params['template'],
