@@ -102,8 +102,9 @@ button, input, select, textarea,.form-control,.btn{
     width: 205px;
     height: 90px;
     margin: 10px 0;
-    background: #93ba5f;
-    float: left
+    background: url(../images/logo.png) no-repeat left center;
+    float: left;
+    display: block
 }
 .header-search{
     width: 350px;
