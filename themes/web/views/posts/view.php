@@ -105,6 +105,5 @@ $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
             </div>
         </div>
         <?php }?>
-        <?php $this->renderPartial('/common/copyright');?>
     </div>
 </div>
