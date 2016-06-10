@@ -8,7 +8,7 @@
  * @copyright Copyright©2015 阿年飞少 
  * @datetime 2016-6-6  10:52:18 
  */
-$cols=  Column::allCols();
+//$cols=  Column::allCols();
 ?>
 <ul class="nav navbar-nav">
     <li<?php echo $this->selectNav == 'zazhi' ? ' class="active"' : ''; ?>><?php echo CHtml::link('首页', zmf::config('baseurl')); ?></li>

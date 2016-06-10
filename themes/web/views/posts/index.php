@@ -76,7 +76,7 @@
                             <?php }?>
                             <span><?php echo zmf::formatTime($_post['cTime']);?></span>                            
                             <span><?php echo $_post['comments'];?>评论</span>                            
-                            <span><?php echo $_post['favors'];?>赞</span>                            
+                            <span><?php echo $_post['favorite'];?>赞</span>                            
                         </p>
                     </div>
                 </div>

@@ -195,7 +195,6 @@ $this->beginContent('/layouts/common');
                             <?php if($this->toUserInfo['id']==$this->uid){?>
                             <li<?php echo $this->selectNav == 'notice' ? ' class="active"' : ''; ?>><?php echo CHtml::link('消息', array('user/notice')); ?></li>
                             <li<?php echo $this->selectNav == 'gallery' ? ' class="active"' : ''; ?>><?php echo CHtml::link('相册', array('user/gallery')); ?></li>
-                            <li></li>
                             <li role="presentation" class="dropdown <?php echo $this->selectNav == 'setting' ? 'active' : ''; ?>">
                                 <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                                     设置 <span class="caret"></span>
