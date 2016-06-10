@@ -19,6 +19,9 @@
     .forum-page .post-item{
         border-bottom: 1px dashed #eee
     }
+    .forum-page .last-toped{
+        border-bottom: 2px solid #eee
+    }
     .forum-page .post-item .bold,.forum-page .post-item .bold a{
         font-weight: 700
     }
@@ -57,8 +60,8 @@
                 ?>
             </div>
             <div class="module-body">
-                <?php foreach ($posts as $_post){?>
-                <div class="media post-item">
+                <?php foreach ($posts as $k=>$_post){?>
+                <div class="media post-item <?php echo $_post['top'] && !$posts[$k+1]['top'] ? 'last-toped' : '';?>">
                     <?php if($_post['faceimg']){?>
                     <div class="media-left">
                         <a href="<?php echo Yii::app()->createUrl('posts/view',array('id'=>$_post['id']));?>">
@@ -69,6 +72,12 @@
                     <div class="media-body">
                         <p class="no-wrap <?php echo Posts::exTopClass($_post['styleStatus']);?>"><?php echo CHtml::link($_post['title'],array('posts/view','id'=>$_post['id']));?></p>
                         <p class="color-grey tips">
+                            <?php if($_post['top']){?>
+                            <span style="color:red" title="置顶"><i class="fa fa-bookmark"></i></span>
+                            <?php }?>
+                            <?php if($_post['styleStatus']){?>
+                            <span style="color:red" title="加精"><i class="fa fa-flag"></i></span>
+                            <?php }?>
                             <?php if($_post['classify']==Posts::CLASSIFY_AUTHOR){?>
                             <span><?php echo CHtml::link($_post['username'],array('author/view','id'=>$_post['aid']));?></span>  
                             <?php }else{?>

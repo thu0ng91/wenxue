@@ -13,11 +13,11 @@ class PostsController extends Q {
         if ($type == 'author') {
             $classify = Posts::CLASSIFY_AUTHOR;
             $label = '作者专区';
-            $sql = "SELECT p.id,p.title,p.aid,a.authorName AS username,p.cTime,p.comments,p.favorite,p.classify,p.styleStatus FROM {{posts}} p,{{authors}} a WHERE p.classify='{$classify}' AND p.status=" . Posts::STATUS_PASSED . " AND p.aid=a.id AND a.status=" . Posts::STATUS_PASSED . " ORDER BY p.top DESC,p.cTime DESC";
+            $sql = "SELECT p.id,p.title,p.aid,a.authorName AS username,p.cTime,p.comments,p.favorite,p.classify,p.top,p.styleStatus FROM {{posts}} p,{{authors}} a WHERE p.classify='{$classify}' AND p.status=" . Posts::STATUS_PASSED . " AND p.aid=a.id AND a.status=" . Posts::STATUS_PASSED . " ORDER BY p.top DESC,p.cTime DESC";
         } elseif ($type == 'reader') {
             $classify = Posts::CLASSIFY_READER;
             $label = '读者专区';
-            $sql = "SELECT p.id,p.title,p.uid,u.truename AS username,p.cTime,p.comments,p.favorite,p.classify,p.styleStatus FROM {{posts}} p,{{users}} u WHERE p.classify='{$classify}' AND p.status=" . Posts::STATUS_PASSED . " AND p.uid=u.id AND u.status=" . Posts::STATUS_PASSED . " ORDER BY p.top DESC,p.cTime DESC";
+            $sql = "SELECT p.id,p.title,p.uid,u.truename AS username,p.cTime,p.comments,p.favorite,p.classify,p.top,p.styleStatus FROM {{posts}} p,{{users}} u WHERE p.classify='{$classify}' AND p.status=" . Posts::STATUS_PASSED . " AND p.uid=u.id AND u.status=" . Posts::STATUS_PASSED . " ORDER BY p.top DESC,p.cTime DESC";
         }
         Posts::getAll(array('sql' => $sql, 'pageSize' => $this->pageSize), $pages, $posts);
         //获取展示

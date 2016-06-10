@@ -70,6 +70,11 @@ class AdminCommon extends CActiveRecord {
             'url' => Yii::app()->createUrl('admin/siteInfo/index'),
             'active' => in_array($c, array('siteInfo'))
         );
+        $attr['words'] = array(
+            'title' => '敏感词',
+            'url' => Yii::app()->createUrl('admin/words/index'),
+            'active' => in_array($c, array('words'))
+        );
         $attr['system'] = array(
             'title' => '系统',
             'url' => Yii::app()->createUrl('admin/config/index'),

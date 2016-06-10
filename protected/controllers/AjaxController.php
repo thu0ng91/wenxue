@@ -815,6 +815,9 @@ class AjaxController extends Q {
         if(!in_array($action, array('top','red','bold','boldAndRed'))){
             $this->jsonOutPut(0, '不被允许的操作');
         }
+        if(!$this->userInfo['isAdmin']){
+            $this->jsonOutPut(0, '无权本操作');
+        }
         $postInfo=  Posts::getOne($id);
         if(!$postInfo || $postInfo['status']!=Posts::STATUS_PASSED){
             $this->jsonOutPut(0, '操作的内容不存在');

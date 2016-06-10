@@ -129,7 +129,7 @@ $form=$this->beginWidget('CActiveForm', array(
                 
             } else {
                 echo CHtml::link('新增', array('create'), array('class' => 'btn btn-primary'));
-                echo CHtml::link('管理', array('admin'), array('class' => 'btn btn-default'));
+                //echo CHtml::link('管理', array('admin'), array('class' => 'btn btn-default'));
             }
             ?>
         </div>
