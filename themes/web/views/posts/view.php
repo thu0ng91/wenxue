@@ -45,6 +45,8 @@ $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
                 <p class="color-grey tips">
                     <span><?php echo zmf::time($info['cTime'],'Y-m-d H:i');?></span>
                     <span><?php echo CHtml::link($authorInfo['title'],$authorInfo['url']);?></span>
+                    <span><?php echo CHtml::link($info['comments'].' 评论','javascript:;',array('action'=>'scroll','action-target'=>'comments-posts-'.$info['id'].'-box'));?></span>
+                    <span><?php echo $info['favorite'].' 收藏';?></span>
                     <span><?php echo CHtml::link('举报','javascript:;',array('action'=>'report','action-type'=>'post','action-id'=>$info['id'],'action-title'=>$info['title']));?></span>
                 </p>
                 <div class="post-content">
