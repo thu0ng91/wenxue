@@ -46,8 +46,15 @@ $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
                     <span><?php echo zmf::time($info['cTime'],'Y-m-d H:i');?></span>
                     <span><?php echo CHtml::link($authorInfo['title'],$authorInfo['url']);?></span>
                     <span><?php echo CHtml::link($info['comments'].' 评论','javascript:;',array('action'=>'scroll','action-target'=>'comments-posts-'.$info['id'].'-box'));?></span>
-                    <span><?php echo $info['favorite'].' 收藏';?></span>
+                    <span><?php echo $info['favorite'].' 赞';?></span>
+                    <?php if($this->userInfo['isAdmin']){?>
+                    <span><?php echo CHtml::link($info['top'] ? '已置顶' : '置顶','javascript:;',array('action'=>'setStatus','data-type'=>'post','data-action'=>'top','data-id'=>$info['id']));?></span>
+                    <span><?php echo CHtml::link($info['styleStatus']==Posts::STATUS_BOLD ? '已加粗' : '加粗','javascript:;',array('action'=>'setStatus','data-type'=>'post','data-action'=>'bold','data-id'=>$info['id']));?></span>
+                    <span><?php echo CHtml::link($info['styleStatus']==Posts::STATUS_RED ? '已标红' : '标红','javascript:;',array('action'=>'setStatus','data-type'=>'post','data-action'=>'red','data-id'=>$info['id']));?></span>
+                    <span><?php echo CHtml::link($info['styleStatus']==Posts::STATUS_BOLDRED ? '已加粗标红' : '加粗标红','javascript:;',array('action'=>'setStatus','data-type'=>'post','data-action'=>'boldAndRed','data-id'=>$info['id']));?></span>
+                    <?php }else{?>
                     <span><?php echo CHtml::link('举报','javascript:;',array('action'=>'report','action-type'=>'post','action-id'=>$info['id'],'action-title'=>$info['title']));?></span>
+                    <?php }?>
                 </p>
                 <div class="post-content">
                     <?php echo $info['content'];?>

@@ -101,6 +101,36 @@ function rebind() {
         var dom = $(this);
         share(dom);
     });
+    $("a[action=setStatus]").on('click',function () {
+        var dom = $(this);
+        var id=parseInt(dom.attr('data-id'));
+        if(!id){
+            alert('缺少参数1');
+            return false;
+        }
+        var type=dom.attr('data-type');
+        if(!type){
+            alert('缺少参数2');
+            return false;
+        }
+        var action=dom.attr('data-action');
+        if(!action){
+            alert('缺少参数3');
+            return false;
+        }
+        if(confirm('确定该操作？')){
+            $.post(zmf.ajaxUrl, {action:'setStatus',type:type,id:id,actype:action,YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {                
+                result = eval('(' + result + ')');
+                if (result['status'] == '1') {
+                    window.location.reload();                    
+                } else {
+                    dialog({msg:result['msg']});
+                    return false;
+                }
+            });
+        }
+    });
+    
     $("a[action=publishBook]").on('click',function () {
         var dom = $(this);
         var id=parseInt(dom.attr('data-id'));

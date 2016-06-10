@@ -17,7 +17,7 @@ class AjaxController extends Q {
 
     public function actionDo() {
         $action = zmf::val('action', 1);
-        if (!in_array($action, array('addTip', 'saveUploadImg', 'publishBook', 'publishChapter', 'saveDraft', 'report','sendSms','checkSms'))) {
+        if (!in_array($action, array('addTip', 'saveUploadImg', 'publishBook', 'publishChapter', 'saveDraft', 'report','sendSms','checkSms','setStatus'))) {
             $this->jsonOutPut(0, Yii::t('default', 'forbiddenaction'));
         }
         $this->$action();
@@ -800,6 +800,44 @@ class AjaxController extends Q {
         $type = zmf::val('type', 1);
         $ckinfo = Posts::favorite($data, $type, 'web');
         $this->jsonOutPut($ckinfo['state'], $ckinfo['msg']);
+    }
+    
+    private function setStatus(){
+        $type=  zmf::val('type',1);
+        $id=  zmf::val('id',2);
+        $action=  zmf::val('actype',1);
+        if(!$type || !$id){
+            $this->jsonOutPut(0, '缺少参数');
+        }
+        if(!in_array($type, array('post'))){
+            $this->jsonOutPut(0, '不被允许的分类');
+        }
+        if(!in_array($action, array('top','red','bold','boldAndRed'))){
+            $this->jsonOutPut(0, '不被允许的操作');
+        }
+        $postInfo=  Posts::getOne($id);
+        if(!$postInfo || $postInfo['status']!=Posts::STATUS_PASSED){
+            $this->jsonOutPut(0, '操作的内容不存在');
+        }
+        if($action=='top'){
+            $status=$postInfo['top']>0 ? 0 : 1;
+            $filed='top';
+        }elseif(in_array($action, array('red','bold','boldAndRed'))){
+            if($action=='red'){
+                $_status=  Posts::STATUS_RED;
+            }elseif($action=='bold'){
+                $_status=  Posts::STATUS_BOLD;
+            }else{
+                $_status=  Posts::STATUS_BOLDRED;
+            }
+            $status=$postInfo['styleStatus']==$_status ? 0 : $_status;
+            $filed='styleStatus';
+        }
+        if(Posts::model()->updateByPk($id, array($filed=>$status))){
+            $this->jsonOutPut(1, '已设置');
+        }else{
+            $this->jsonOutPut(0, '操作失败，请重试');
+        }
     }
 
 }

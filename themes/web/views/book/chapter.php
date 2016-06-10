@@ -147,6 +147,7 @@
                 <span>小说：<?php echo CHtml::link($bookInfo['title'],array('book/view','id'=>$bookInfo['id'])); ?></span>
                 <span>作者：<?php echo CHtml::link($authorInfo['authorName'],array('author/view','id'=>$chapterInfo['aid'])); ?></span>
                 <span>字数：<?php echo $chapterInfo['words']; ?></span>
+                <span>点击：<?php echo $chapterInfo['hits']; ?></span>
                 <span>更新时间：<?php echo zmf::time($chapterInfo['updateTime']); ?></span>
                 <span><?php echo CHtml::link('举报','javascript:;',array('action'=>'report','action-type'=>'chapter','action-id'=>$chapterInfo['id'],'action-title'=>$chapterInfo['title']));?></span>
             </p>
