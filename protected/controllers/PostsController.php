@@ -46,6 +46,7 @@ class PostsController extends Q {
         $relatePosts = Posts::getRelations($id, 5);
         //作者信息
         $authorInfo = array();
+        $type='';
         if ($info['classify'] == Posts::CLASSIFY_AUTHOR) {
             $author = Authors::getOne($info['aid']);
             if (!$author) {
@@ -56,6 +57,7 @@ class PostsController extends Q {
                 'url' => array('author/view', 'id' => $info['aid']),
             );
             $this->selectNav = 'authorForum';
+            $type='author';
         } else {
             $user = Users::getOne($info['uid']);
             if (!$user) {
@@ -66,6 +68,7 @@ class PostsController extends Q {
                 'url' => array('user/index', 'id' => $info['uid']),
             );
             $this->selectNav = 'readerForum';
+            $type='reader';
         }
         if (!zmf::actionLimit('visit-Posts', $id, 5, 60)) {
             Posts::updateCount($id, 'Posts', 1, 'hits');
@@ -81,6 +84,7 @@ class PostsController extends Q {
             'comments' => $comments,
             'tags' => $tags,
             'relatePosts' => $relatePosts,
+            'type' => $type,
             'loadMore' => count($comments) == $pageSize ? 1 : 0,
         );
         $this->favorited = Favorites::checkFavored($id, 'post');

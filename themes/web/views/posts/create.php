@@ -85,7 +85,7 @@
             <div class="module-header">文章设置</div>
             <div class="module-body power-body">
                 <div class="checkbox">
-                    <label><?php echo CHtml::activeCheckBox($model, 'open');?> 开放评论</label>
+                    <label><?php echo CHtml::activeCheckBox($model, 'open');?> 开放评论和点赞</label>
                 </div>
             </div>
         </div>

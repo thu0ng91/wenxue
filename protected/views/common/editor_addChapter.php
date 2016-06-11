@@ -33,7 +33,7 @@ $cs->registerScriptFile(Yii::app()->baseUrl.'/umeditor/lang/zh-cn/zh-cn.js', CCl
            elementPathEnabled : false,       
            contextMenu:[],       
            autoHeightEnabled:true,
-           initialStyle:'.edui-container .edui-editor-body{background:transparent !important}.edui-editor-body .edui-body-container p{font-size:13px;line-height:1.42857143;margin:0 0 10px;}.edui-container .edui-toolbar{z-index:1 !important}',
+           initialStyle:'.edui-container .edui-editor-body{background:transparent !important}.edui-editor-body .edui-body-container p{font-size:13px;line-height:1.42857143;margin:0 0 10px;word-break: break-all;}.edui-container .edui-toolbar{z-index:1 !important}',
            removeFormatTags:'b,big,code,del,dfn,em,font,i,ins,kbd,q,samp,small,span,strike,strong,sub,sup,tt,u,var',
            removeFormatAttributes: 'class,style,lang,width,height,align,hspace,valign',
            imageScaleEnabled: false,

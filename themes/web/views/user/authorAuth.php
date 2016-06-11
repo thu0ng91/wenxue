@@ -22,6 +22,7 @@
             </div>
             <div class="form-group">
                 <?php echo CHtml::submitButton('验证',array('class'=>'btn btn-primary')); ?>
+                <span class="pull-right color-grey"><?php echo CHtml::link('忘记密码？',array('user/forgotAuthorPass'));?></span>
             </div>
         <?php $this->endWidget(); ?>
     </div>

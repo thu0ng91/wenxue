@@ -10,7 +10,7 @@
         <a href="<?php echo $data['original'];?>" class="btn btn-xs btn-default" target="_blank">查看大图</a>
     </div>
     <div class="fixed-badge">
-        <?php echo CHtml::link('<i class="fa fa-remove"></i>','javascript:;',array('action'=>'del-content','action-type'=>'img','action-data'=>  $data['id'],'action-confirm'=>1,'action-target'=>'img-'.$data['id'])); ?>
+        <?php echo CHtml::link('<i class="fa fa-remove"></i>','javascript:;',array('action'=>'delContent','data-type'=>'img','data-id'=>  $data['id'],'data-confirm'=>1,'data-target'=>'img-'.$data['id'])); ?>
     </div>
     <?php }?>
 </div>

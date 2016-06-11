@@ -47,11 +47,16 @@ $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
                     <span><?php echo CHtml::link($authorInfo['title'],$authorInfo['url']);?></span>
                     <span><?php echo CHtml::link($info['comments'].' 评论','javascript:;',array('action'=>'scroll','action-target'=>'comments-posts-'.$info['id'].'-box'));?></span>
                     <span><?php echo $info['favorite'].' 赞';?></span>
+                    <span>|</span>
                     <?php if($this->userInfo['isAdmin']){?>
                     <span><?php echo CHtml::link($info['top'] ? '已置顶' : '置顶','javascript:;',array('action'=>'setStatus','data-type'=>'post','data-action'=>'top','data-id'=>$info['id']));?></span>
                     <span><?php echo CHtml::link($info['styleStatus']==Posts::STATUS_BOLD ? '已加粗' : '加粗','javascript:;',array('action'=>'setStatus','data-type'=>'post','data-action'=>'bold','data-id'=>$info['id']));?></span>
                     <span><?php echo CHtml::link($info['styleStatus']==Posts::STATUS_RED ? '已标红' : '标红','javascript:;',array('action'=>'setStatus','data-type'=>'post','data-action'=>'red','data-id'=>$info['id']));?></span>
                     <span><?php echo CHtml::link($info['styleStatus']==Posts::STATUS_BOLDRED ? '已加粗标红' : '加粗标红','javascript:;',array('action'=>'setStatus','data-type'=>'post','data-action'=>'boldAndRed','data-id'=>$info['id']));?></span>
+                    <span>|</span>
+                    <span><?php echo CHtml::link('锁定','javascript:;',array('action'=>'setStatus','data-type'=>'post','data-action'=>'lock','data-id'=>$info['id']));?></span>
+                    <span><?php echo CHtml::link('编辑',array('posts/create','id'=>$info['id']));?></span>
+                    <span><?php echo CHtml::link('删除','javascript:;',array('action'=>'delContent','data-type'=>'post','data-id'=>$info['id'],'data-confirm'=>1,'data-redirect'=>Yii::app()->createUrl('posts/index',array('type'=>$type))));?></span>
                     <?php }else{?>
                     <span><?php echo CHtml::link('举报','javascript:;',array('action'=>'report','action-type'=>'post','action-id'=>$info['id'],'action-title'=>$info['title']));?></span>
                     <?php }?>
@@ -59,10 +64,12 @@ $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
                 <div class="post-content">
                     <?php echo $info['content'];?>
                 </div>
-                <?php if($this->favorited){?>
-                <p class="text-center"><?php echo CHtml::link('<i class="fa fa-thumbs-up"></i> 已赞','javascript:;',array('class'=>'btn btn-default btn-small','action'=>'favorite','action-data'=>$info['id'],'action-type'=>'post'));?></p>
-                <?php }else{?>
-                <p class="text-center"><?php echo CHtml::link('<i class="fa fa-thumbs-o-up"></i> 赞','javascript:;',array('class'=>'btn btn-danger btn-small','action'=>'favorite','action-data'=>$info['id'],'action-type'=>'post'));?></p>
+                <?php if($info['open']==Posts::STATUS_OPEN){?>
+                    <?php if($this->favorited){?>
+                    <p class="text-center"><?php echo CHtml::link('<i class="fa fa-thumbs-up"></i> 已赞','javascript:;',array('class'=>'btn btn-default btn-small','action'=>'favorite','action-data'=>$info['id'],'action-type'=>'post'));?></p>
+                    <?php }else{?>
+                    <p class="text-center"><?php echo CHtml::link('<i class="fa fa-thumbs-o-up"></i> 赞','javascript:;',array('class'=>'btn btn-danger btn-small','action'=>'favorite','action-data'=>$info['id'],'action-type'=>'post'));?></p>
+                    <?php }?>
                 <?php }?>
             </div>
         </div>
@@ -74,7 +81,7 @@ $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
                     <div id="comments-posts-<?php echo $info['id'];?>">
                         <?php if(!empty($comments)){?>
                         <?php foreach($comments as $comment){?>
-                        <?php $this->renderPartial('/posts/_comment',array('data'=>$comment));?>
+                        <?php $this->renderPartial('/posts/_comment',array('data'=>$comment,'postInfo'=>$info));?>
                         <?php }?>
                         <?php }else{?>
                         <p class="help-block text-center">暂无评论！</p>

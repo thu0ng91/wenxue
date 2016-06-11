@@ -141,7 +141,7 @@ $this->beginContent('/layouts/common');
                 <div class="media">
                     <div class="media-left">
                         <img class="media-object lazy" src="<?php echo zmf::lazyImg();?>" data-original="<?php echo zmf::getThumbnailUrl($this->toUserInfo['avatar'], 'a120', 'avatar');?>" alt="<?php echo $this->toUserInfo['truename'];?>">  
-                        <div class="fixed-btn"><?php echo CHtml::link('更改头像',array('user/setting','#'=>'avatar'));?></div>
+                        <div class="fixed-btn"><?php echo CHtml::link('更改头像',array('user/setting','action'=>'skin'));?></div>
                     </div>
                     <div class="media-body">
                         <p><span class="uinfo-label">姓别</span><span class="uinfo-txt"><?php echo Users::userSex($this->toUserInfo['sex']);?></span></p>

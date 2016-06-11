@@ -11,6 +11,7 @@ return array(
         'author/<id:\d+>' => 'author/view',
         'user/<id:\d+>' => 'user/index',
         'forum/<type:\w+>' => 'posts/index',
+        'updatePost/<id:\d+>' => 'posts/create',
         'post/<id:\d+>' => 'posts/view',
         'siteInfo/<code:\w+>' => 'site/info',
         '<controller:\w+>/<action:\w+>' => '<controller>/<action>',

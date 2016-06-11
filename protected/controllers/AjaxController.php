@@ -17,7 +17,7 @@ class AjaxController extends Q {
 
     public function actionDo() {
         $action = zmf::val('action', 1);
-        if (!in_array($action, array('addTip', 'saveUploadImg', 'publishBook', 'publishChapter', 'saveDraft', 'report','sendSms','checkSms','setStatus'))) {
+        if (!in_array($action, array('addTip', 'saveUploadImg', 'publishBook', 'publishChapter', 'saveDraft', 'report','sendSms','checkSms','setStatus','delContent','getNotice'))) {
             $this->jsonOutPut(0, Yii::t('default', 'forbiddenaction'));
         }
         $this->$action();
@@ -360,13 +360,28 @@ class AjaxController extends Q {
         if (!$phone) {
             $this->jsonOutPut(0, '请输入手机号');
         }
-        if (!in_array($type, array('reg', 'forget', 'exphone','checkPhone'))) {
+        if (!in_array($type, array('reg', 'forget', 'exphone','checkPhone','authorPass'))) {
             $this->jsonOutPut(0, '不被允许的类型:' . $type);
         }elseif($type=='checkPhone'){
             $this->checkLogin();
             $phone=  $this->userInfo['phone'];
             if(!$phone){
                 $this->jsonOutPut(0, '参数错误，缺少手机号');
+            }
+        }elseif($type=='authorPass'){
+            $this->checkLogin();
+            $phone=  $this->userInfo['phone'];
+            if(!$phone){
+                $this->jsonOutPut(0, '参数错误，缺少手机号');
+            }
+            if(!$this->userInfo['authorId']){
+                $this->jsonOutPut(0, '你无权本操作');
+            }elseif(!$this->userInfo['phoneChecked']){
+                $this->jsonOutPut(0, '请先验证手机号');
+            }
+            $authorInfo=  Authors::getOne($this->userInfo['authorId']);
+            if(!$authorInfo || $authorInfo['status']!=Posts::STATUS_PASSED){
+                $this->jsonOutPut(0, '你创建的作者不存在或已删除');
             }
         }else{
             if(!zmf::checkPhoneNumber($phone)){
@@ -413,7 +428,7 @@ class AjaxController extends Q {
                 $this->jsonOutPut(0, '该用户禁止访问');
             }
             $this->userInfo['phone'] = $phone;
-        } elseif ($type == 'checkPhone') {
+        } elseif ($type == 'checkPhone' || $type=='authorPass') {
             
         } else {
             if ($type == 'reg') {
@@ -433,6 +448,7 @@ class AjaxController extends Q {
         //Msg::model()->updateAll(array('status' => -1), 'phone=:p AND type=:type AND status=0', array(':p' => $phone, ':type' => $type));
         //发送一条短信验证码
         $res = Msg::initSend($this->userInfo, $type);
+        zmf::fp($res,1);
         if ($res) {
             if ($type == 'exphone') {
                 //记录操作
@@ -457,7 +473,7 @@ class AjaxController extends Q {
         if(!$code){
             $this->jsonOutPut(0, '请输入验证码');
         }
-        if (!in_array($type, array('reg', 'forget', 'exphone','checkPhone'))) {
+        if (!in_array($type, array('reg', 'forget', 'exphone','checkPhone','authorPass'))) {
             $this->jsonOutPut(0, '不被允许的类型');
         }
         if (!$phone) {
@@ -467,6 +483,21 @@ class AjaxController extends Q {
             $phone=  $this->userInfo['phone'];
             if(!$phone){
                 $this->jsonOutPut(0, '参数错误，缺少手机号');
+            }
+        }elseif($type=='authorPass'){
+            $this->checkLogin();
+            $phone=  $this->userInfo['phone'];
+            if(!$phone){
+                $this->jsonOutPut(0, '参数错误，缺少手机号');
+            }
+            if(!$this->userInfo['authorId']){
+                $this->jsonOutPut(0, '你无权本操作');
+            }elseif(!$this->userInfo['phoneChecked']){
+                $this->jsonOutPut(0, '请先验证手机号');
+            }
+            $authorInfo=  Authors::getOne($this->userInfo['authorId']);
+            if(!$authorInfo || $authorInfo['status']!=Posts::STATUS_PASSED){
+                $this->jsonOutPut(0, '你创建的作者不存在或已删除');
             }
         }else{
             if(!zmf::checkPhoneNumber($phone)){
@@ -500,6 +531,16 @@ class AjaxController extends Q {
                 $this->jsonOutPut(0, '该号码尚未注册');
             }
             $info = Msg::model()->find('phone=:p AND type=:t AND code=:code', array(':p' => $phone, ':t' => $type, ':code' => $code));
+        }elseif ($type == 'authorPass') {            
+            $password = zmf::val('password', 1);
+            if(!$password || strlen($password)<6){
+                $this->jsonOutPut(0, '请输入长度不小于6位的有效密码');
+            }            
+            //如果已经登录时则认为是修改密码，只能输入自己的手机号
+            if($phone!=$this->userInfo['phone']){
+                $this->jsonOutPut(0, '号码有误，请重新输入');
+            }
+            $info = Msg::model()->find('phone=:p AND type=:t AND code=:code', array(':p' => $phone, ':t' => $type, ':code' => $code));
         }
         if (!$info) {
             $this->jsonOutPut(0, '验证码错误，请重试');
@@ -523,11 +564,23 @@ class AjaxController extends Q {
             }else{
                 $this->jsonOutPut(0, '密码修改失败，未知错误');
             }
+        }elseif($type=='authorPass'){
+            if(Authors::model()->updateByPk($this->userInfo['authorId'], array('password'=>  md5($password.$authorInfo['hashCode'])))){
+                $this->jsonOutPut(1, Yii::app()->createUrl('user/authorAuth'));
+            }else{
+                $this->jsonOutPut(0, '密码修改失败，未知错误');
+            }   
         }else{
             //验证通过，将验证码标记为已使用
             $returnCode = zmf::jiaMi($phone . '#' . $type . '#' . zmf::now());
         }
         $this->jsonOutPut(1, $returnCode);
+    }
+    
+    private function getNotice(){
+        $this->checkLogin();
+        $noticeNum = Notification::getNum();
+        $this->jsonOutPut(1, $noticeNum);
     }
 
     public function actionFeedback() {
@@ -700,9 +753,9 @@ class AjaxController extends Q {
         $this->jsonOutPut(1, $data);
     }
 
-    public function actionDelContent() {
+    private function delContent() {
         $this->checkLogin();
-        $data = zmf::val('data', 1);
+        $data = zmf::val('data', 2);
         $type = zmf::val('type', 1);
         if (!$data || !$type) {
             $this->jsonOutPut(0, '数据不全，请核实');

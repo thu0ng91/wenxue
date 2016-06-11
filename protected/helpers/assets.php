@@ -23,7 +23,6 @@ class assets {
             'csrfToken' => Yii::app()->request->csrfToken,
             'currentSessionId' => Yii::app()->session->sessionID,
             'addCommentUrl' => zmf::config('domain') . Yii::app()->createUrl('/ajax/addComment'),
-            'searchUrl' => zmf::config('domain') . Yii::app()->createUrl('/search/do'),
         );
         $arr['web'] = array(
             'editor' => '',

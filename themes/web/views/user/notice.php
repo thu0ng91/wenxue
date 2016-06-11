@@ -7,7 +7,7 @@
             <?php echo $row['content']; ?>
             <span class="pull-right">
                 <?php echo zmf::formatTime($row['cTime']);?>
-                <?php echo CHtml::link('<i class="fa fa-remove"></i>','javascript:;',array('action'=>'del-content','action-type'=>'notice','action-data'=>  $row['id'],'action-confirm'=>1,'action-target'=>'notice-'.$row['id']));?>
+                <?php echo CHtml::link('<i class="fa fa-remove"></i>','javascript:;',array('action'=>'delContent','data-type'=>'notice','data-id'=>  $row['id'],'data-confirm'=>1,'data-target'=>'notice-'.$row['id'],'title'=>'删除此消息'));?>
             </span>
         </p>
         <?php endforeach; ?>     

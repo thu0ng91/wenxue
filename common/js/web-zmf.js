@@ -25,9 +25,46 @@ function rebind() {
         var dom = $(this);
         getContents(dom);
     });
-    $("a[action=del-content]").unbind('click').click(function () {
+    $("a[action=delContent]").on('click',function () {
         var dom = $(this);
-        delContent(dom);
+        var acdata = dom.attr("data-id");
+        var t = dom.attr("data-type");
+        var cf = dom.attr('data-confirm');
+        var rurl = dom.attr('data-redirect');
+        var targetBox = dom.attr('data-target');
+        if (!acdata || !t) {
+            return false;
+        }
+        var todo = true;
+        if (parseInt(cf) === 1) {
+            if (confirm('确定删除此内容？')) {
+                todo = true;
+            } else {
+                todo = false;
+            }
+        }
+        if (!todo) {
+            return false;
+        }
+        if (!checkAjax()) {
+            return false;
+        }
+        $.post(zmf.ajaxUrl, {action:'delContent',type: t, data: acdata, YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
+            ajaxReturn = true;
+            result = $.parseJSON(result);
+            if (result.status === 1) {
+                if (rurl) {
+                    window.location.href = rurl;
+                } else if (targetBox) {
+                    $('#' + targetBox).fadeOut(500).remove();
+                } else {
+                    alert(result.msg);
+                }
+            } else {
+                dialog({msg: result.msg});
+            }
+            return false;
+        });
     });
     $("a[action=favorite]").unbind('click').click(function () {
         var dom = $(this);
@@ -382,7 +419,7 @@ function rebind() {
             YII_CSRF_TOKEN: zmf.csrfToken
         };
         var passwd='';
-        if(type==='forget'){
+        if(type==='forget' || type==='authorPass'){
             if(phone.length!==11){
                 dialog({msg: '请输入有效的11位手机号码'});
                 return false;
@@ -408,6 +445,11 @@ function rebind() {
                     setTimeout(function(){
                         location.href=zmf.loginUrl;
                     },1000);
+                }else if(type==='authorPass'){
+                    dialog({msg: '密码修改成功，正在跳转至登录页面'});
+                    setTimeout(function(){
+                        location.href=result.msg;
+                    },1000);    
                 }else{
                     $('#hashCode').val(result.msg);
                     $('#send-sms-form').submit();
@@ -430,25 +472,8 @@ function searchType(type,title){
     if(!type || !title){
         return false;
     }
-    $('#searchTypeBtn').attr('data-type',type).html(title+' <span class="caret"></span>');
-}
-function topSearchBtn(){
-    var k=$('#keyword').val();
-    var type=$('#searchTypeBtn').attr('data-type');
-    if(!k){
-        dialog({msg:'请输入关键词'});
-        return false;
-    }else if(!type){
-        dialog({msg:'参数错误'});
-        return false;
-    }
-    var _url=zmf.searchUrl;
-    var sep='?';
-    if(_url.indexOf("?") > -1){
-        sep='&';
-    }
-    var url=_url+sep+'type='+type+'&keyword='+k;
-    window.location.href=url;
+    $('#searchTypeBtn').html(title+' <span class="caret"></span>');
+    $('#search-type').val(type);
 }
 /**
  * 获取内容
@@ -533,46 +558,6 @@ function selectThisImg(dom,holder,field){
     if(field){
         $('#'+field).val(_origin);
     }
-}
-function delContent(dom) {
-    var acdata = dom.attr("action-data");
-    var t = dom.attr("action-type");
-    var cf = dom.attr('action-confirm');
-    var rurl = dom.attr('action-redirect');
-    var targetBox = dom.attr('action-target');
-    if (!acdata || !t) {
-        return false;
-    }
-    var todo = true;
-    if (parseInt(cf) === 1) {
-        if (confirm('确定删除此内容？')) {
-            todo = true;
-        } else {
-            todo = false;
-        }
-    }
-    if (!todo) {
-        return false;
-    }
-    if (!checkAjax()) {
-        return false;
-    }
-    $.post(zmf.delContentUrl, {type: t, data: acdata, YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
-        ajaxReturn = true;
-        result = $.parseJSON(result);
-        if (result.status === 1) {
-            if (rurl) {
-                window.location.href = rurl;
-            } else if (targetBox) {
-                $('#' + targetBox).fadeOut(500).remove();
-            } else {
-                alert(result.msg);
-            }
-        } else {
-            dialog({msg: result.msg});
-        }
-        return false;
-    });
 }
 function favorite(dom) {
     var acdata = dom.attr("action-data");
@@ -698,6 +683,63 @@ function setStatus(a, b, c) {
             dialog({msg: result['msg']});
         }
     });
+}
+// 使用message对象封装消息  
+var flashTitle = {  
+    time: 0,  
+    title: document.title,  
+    timer: null,  
+    // 显示新消息提示  
+    show: function () {  
+        var title = flashTitle.title.replace("【　　　】", "").replace("【新消息】", "");  
+        // 定时器，设置消息切换频率闪烁效果就此产生  
+        flashTitle.timer = setTimeout(function () {  
+            flashTitle.time++;  
+            flashTitle.show();  
+            if (flashTitle.time % 2 == 0) {  
+                document.title = "【新消息】" + title  
+            } else {  
+                document.title = "【　　　】" + title  
+            };  
+        }, 600);  
+        return [flashTitle.timer, flashTitle.title];  
+    },  
+    // 取消新消息提示  
+    clear: function () {  
+        clearTimeout(flashTitle.timer);  
+        document.title = flashTitle.title;  
+    }  
+};  
+function getNotice(){
+    window.setInterval("doGetNotice()",3000);
+}
+function doGetNotice(){
+    if(!checkLogin()){
+        return false;
+    }
+    if (!checkAjax()) {
+        return false;
+    }
+    $.post(zmf.ajaxUrl, {action:'getNotice',YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
+        ajaxReturn = true;
+        result = $.parseJSON(result);
+        if (result.status === 1) {
+            var _num=parseInt(result.msg);
+            if(_num>0){
+                $('#top-nav-count').html(_num).css('display','inline-block');
+                if(flashTitle.timer===null){
+                    flashTitle.show();
+                    console.log('heheh');
+                }
+                
+            }else{
+                $('#top-nav-count').hide();
+                flashTitle.clear();
+            }
+        }else{
+            
+        }
+    })
 }
 /**
  * 意见反馈
@@ -1555,3 +1597,4 @@ function uuid(len, radix) {
             }, {"./clipboard-action": 8, "good-listener": 5, "tiny-emitter": 7}]}, {}, [9])(9)
 });
 rebind();
+getNotice();

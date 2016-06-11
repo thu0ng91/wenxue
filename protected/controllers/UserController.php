@@ -138,6 +138,11 @@ class UserController extends Q {
             'model' => $model,
         ));
     }
+    
+    public function actionForgotAuthorPass(){
+        $this->pageTitle = '找回密码';
+        $this->render('forgot', $data);
+    }
 
     public function actionComment() {
         //获取点评列表
@@ -221,6 +226,9 @@ class UserController extends Q {
         $action=  zmf::val('action',1);
         if (!in_array($action, array('baseInfo', 'passwd', 'skin','checkPhone'))) {
             $action='baseInfo';
+        }
+        if($action=='checkPhone' && $this->userInfo['phoneChecked']){
+            $this->message(0, '你的号码已验证，不需要重复验证');
         }
         $model = Users::model()->findByPk($this->uid);
         if (isset($_POST['Users'])) {
