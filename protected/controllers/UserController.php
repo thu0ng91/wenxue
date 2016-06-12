@@ -256,7 +256,7 @@ class UserController extends Q {
                     $msg = '用户名不能为空哦~';
                 } else {
                     $_uinfo = Users::findByName($truename);
-                    if ($_uinfo['id'] != $this->uid) {
+                    if ($_uinfo['id'] != $this->uid && $_uinfo) {
                         $field = 'truename';
                         $msg = '用户名已被占用';
                     } else {

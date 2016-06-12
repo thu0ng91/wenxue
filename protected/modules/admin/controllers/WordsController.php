@@ -74,7 +74,7 @@ class WordsController extends Admin {
      * Lists all models.
      */
     public function actionIndex() {
-        $select = "id,word,type,len,uid";
+        $select = "id,uid,word,type,status";
         $model = new Words();
         $criteria = new CDbCriteria();
         $criteria->select = $select;

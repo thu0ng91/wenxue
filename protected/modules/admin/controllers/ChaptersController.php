@@ -90,6 +90,10 @@ class ChaptersController extends Admin {
         }else{
             $criteria->addCondition('status!='.Posts::STATUS_DELED);
         }
+        $bid=  zmf::val('bid',2);
+        if($bid){
+            $criteria->addCondition('bid='.$bid);
+        }
         $criteria->select = $select;
         $count = $model->count($criteria);
         $pager = new CPagination($count);

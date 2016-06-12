@@ -31,8 +31,9 @@ class Words extends CActiveRecord {
         // will receive user inputs.
         return array(
             array('uid', 'default', 'setOnEmpty' => true, 'value' => zmf::uid()),
+            array('status', 'default', 'setOnEmpty' => true, 'value' => Posts::STATUS_PASSED),
             array('word,type,uid', 'required'),
-            array('type, len', 'numerical', 'integerOnly' => true),
+            array('type, len,status', 'numerical', 'integerOnly' => true),
             array('word', 'length', 'max' => 255),
             array('word', 'unique'),
             array('uid', 'length', 'max' => 10),
@@ -62,6 +63,7 @@ class Words extends CActiveRecord {
             'type' => '分类',
             'len' => '长度',
             'uid' => '操作者',
+            'status' => '状态',
         );
     }
 
