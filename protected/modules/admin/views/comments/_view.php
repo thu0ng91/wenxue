@@ -33,7 +33,7 @@ if(!$_uname){
                 }elseif($data['status']==Posts::STATUS_PASSED){
                     echo CHtml::link('回复',array('/posts/view','id'=>$data['logid'],'#'=>'comment-'.$data['id']),array('target'=>'_blank'));
                 }
-                echo CHtml::link('删除','javascript:;',array('action'=>'del-content','action-type'=>'comment','action-data'=>  $data['id'],'action-confirm'=>1,'action-target'=>'comment-'.$data['id']));
+                echo CHtml::link('删除','javascript:;',array('action'=>'delContent','data-type'=>'comment','data-id'=>  $data['id'],'data-confirm'=>1,'data-target'=>'comment-'.$data['id']));
                 ?>
             </span>
         </p>

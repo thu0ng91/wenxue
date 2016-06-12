@@ -157,5 +157,16 @@ class Words extends CActiveRecord {
         }
         return false;
     }
+    
+    public static function highLight($str){
+        $words = Words::getWords();
+        if (empty($words)) {
+            return $str;
+        }
+        foreach ($words as $word) {
+            $str = preg_replace("/($word)/i", "<span style='color:red'>{$word}</span>", $str);
+        }
+        return $str;
+    }
 
 }

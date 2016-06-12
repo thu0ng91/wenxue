@@ -17,7 +17,7 @@ class AjaxController extends Q {
 
     public function actionDo() {
         $action = zmf::val('action', 1);
-        if (!in_array($action, array('addTip', 'saveUploadImg', 'publishBook', 'publishChapter', 'saveDraft', 'report','sendSms','checkSms','setStatus','delContent','getNotice'))) {
+        if (!in_array($action, array('addTip', 'saveUploadImg', 'publishBook', 'publishChapter', 'saveDraft', 'report', 'sendSms', 'checkSms', 'setStatus', 'delContent', 'getNotice', 'getContents'))) {
             $this->jsonOutPut(0, Yii::t('default', 'forbiddenaction'));
         }
         $this->$action();
@@ -350,7 +350,7 @@ class AjaxController extends Q {
             }
         }
     }
-    
+
     /**
      * 发送短信
      */
@@ -360,34 +360,34 @@ class AjaxController extends Q {
         if (!$phone) {
             $this->jsonOutPut(0, '请输入手机号');
         }
-        if (!in_array($type, array('reg', 'forget', 'exphone','checkPhone','authorPass'))) {
+        if (!in_array($type, array('reg', 'forget', 'exphone', 'checkPhone', 'authorPass'))) {
             $this->jsonOutPut(0, '不被允许的类型:' . $type);
-        }elseif($type=='checkPhone'){
+        } elseif ($type == 'checkPhone') {
             $this->checkLogin();
-            $phone=  $this->userInfo['phone'];
-            if(!$phone){
+            $phone = $this->userInfo['phone'];
+            if (!$phone) {
                 $this->jsonOutPut(0, '参数错误，缺少手机号');
             }
-        }elseif($type=='authorPass'){
+        } elseif ($type == 'authorPass') {
             $this->checkLogin();
-            $phone=  $this->userInfo['phone'];
-            if(!$phone){
+            $phone = $this->userInfo['phone'];
+            if (!$phone) {
                 $this->jsonOutPut(0, '参数错误，缺少手机号');
             }
-            if(!$this->userInfo['authorId']){
+            if (!$this->userInfo['authorId']) {
                 $this->jsonOutPut(0, '你无权本操作');
-            }elseif(!$this->userInfo['phoneChecked']){
+            } elseif (!$this->userInfo['phoneChecked']) {
                 $this->jsonOutPut(0, '请先验证手机号');
             }
-            $authorInfo=  Authors::getOne($this->userInfo['authorId']);
-            if(!$authorInfo || $authorInfo['status']!=Posts::STATUS_PASSED){
+            $authorInfo = Authors::getOne($this->userInfo['authorId']);
+            if (!$authorInfo || $authorInfo['status'] != Posts::STATUS_PASSED) {
                 $this->jsonOutPut(0, '你创建的作者不存在或已删除');
             }
-        }else{
-            if(!zmf::checkPhoneNumber($phone)){
+        } else {
+            if (!zmf::checkPhoneNumber($phone)) {
                 $this->jsonOutPut(0, '请输入正确的手机号');
             }
-        }        
+        }
         $now = zmf::now();
         $sendInfo = Msg::model()->find('phone=:phone AND type=:type AND expiredTime>=:now AND status=0', array(':phone' => $phone, ':type' => $type, ':now' => $now));
         if ($sendInfo) {
@@ -397,9 +397,9 @@ class AjaxController extends Q {
                 'template' => Msg::returnTemplate($type),
             );
             $status = Msg::sendOne($params);
-            if($status){
+            if ($status) {
                 $this->jsonOutPut(1, '发送成功');
-            }else{
+            } else {
                 $this->jsonOutPut(0, '操作太频繁，请稍安勿躁');
             }
         }
@@ -418,7 +418,7 @@ class AjaxController extends Q {
             $this->userInfo['phone'] = $phone;
         } elseif ($type == 'forget') {
             //如果已经登录时则认为是修改密码，只能输入自己的手机号
-            if($this->uid && $phone!=$this->userInfo['phone']){
+            if ($this->uid && $phone != $this->userInfo['phone']) {
                 $this->jsonOutPut(0, '号码有误，请重新输入');
             }
             $info = Users::model()->find('phone=:p', array(':p' => $phone));
@@ -428,7 +428,7 @@ class AjaxController extends Q {
                 $this->jsonOutPut(0, '该用户禁止访问');
             }
             $this->userInfo['phone'] = $phone;
-        } elseif ($type == 'checkPhone' || $type=='authorPass') {
+        } elseif ($type == 'checkPhone' || $type == 'authorPass') {
             
         } else {
             if ($type == 'reg') {
@@ -448,7 +448,7 @@ class AjaxController extends Q {
         //Msg::model()->updateAll(array('status' => -1), 'phone=:p AND type=:type AND status=0', array(':p' => $phone, ':type' => $type));
         //发送一条短信验证码
         $res = Msg::initSend($this->userInfo, $type);
-        zmf::fp($res,1);
+        zmf::fp($res, 1);
         if ($res) {
             if ($type == 'exphone') {
                 //记录操作
@@ -470,37 +470,37 @@ class AjaxController extends Q {
         $phone = zmf::val('phone', 2);
         $code = zmf::val('code', 2);
         $type = zmf::val('type', 1);
-        if(!$code){
+        if (!$code) {
             $this->jsonOutPut(0, '请输入验证码');
         }
-        if (!in_array($type, array('reg', 'forget', 'exphone','checkPhone','authorPass'))) {
+        if (!in_array($type, array('reg', 'forget', 'exphone', 'checkPhone', 'authorPass'))) {
             $this->jsonOutPut(0, '不被允许的类型');
         }
         if (!$phone) {
             $this->jsonOutPut(0, '请输入手机号');
-        }elseif($type=='checkPhone'){
+        } elseif ($type == 'checkPhone') {
             $this->checkLogin();
-            $phone=  $this->userInfo['phone'];
-            if(!$phone){
+            $phone = $this->userInfo['phone'];
+            if (!$phone) {
                 $this->jsonOutPut(0, '参数错误，缺少手机号');
             }
-        }elseif($type=='authorPass'){
+        } elseif ($type == 'authorPass') {
             $this->checkLogin();
-            $phone=  $this->userInfo['phone'];
-            if(!$phone){
+            $phone = $this->userInfo['phone'];
+            if (!$phone) {
                 $this->jsonOutPut(0, '参数错误，缺少手机号');
             }
-            if(!$this->userInfo['authorId']){
+            if (!$this->userInfo['authorId']) {
                 $this->jsonOutPut(0, '你无权本操作');
-            }elseif(!$this->userInfo['phoneChecked']){
+            } elseif (!$this->userInfo['phoneChecked']) {
                 $this->jsonOutPut(0, '请先验证手机号');
             }
-            $authorInfo=  Authors::getOne($this->userInfo['authorId']);
-            if(!$authorInfo || $authorInfo['status']!=Posts::STATUS_PASSED){
+            $authorInfo = Authors::getOne($this->userInfo['authorId']);
+            if (!$authorInfo || $authorInfo['status'] != Posts::STATUS_PASSED) {
                 $this->jsonOutPut(0, '你创建的作者不存在或已删除');
             }
-        }else{
-            if(!zmf::checkPhoneNumber($phone)){
+        } else {
+            if (!zmf::checkPhoneNumber($phone)) {
                 $this->jsonOutPut(0, '请输入正确的手机号');
             }
         }
@@ -517,13 +517,13 @@ class AjaxController extends Q {
             $info = Msg::model()->find('phone=:p AND type=:t AND code=:code', array(':p' => $phone, ':t' => $type, ':code' => $code));
         } elseif ($type == 'checkPhone') {
             $info = Msg::model()->find('phone=:p AND type=:t AND code=:code', array(':p' => $phone, ':t' => $type, ':code' => $code));
-        }elseif ($type == 'forget') {
+        } elseif ($type == 'forget') {
             $password = zmf::val('password', 1);
-            if(!$password || strlen($password)<6){                
+            if (!$password || strlen($password) < 6) {
                 $this->jsonOutPut(0, '请输入长度不小于6位的有效密码');
-            }            
+            }
             //如果已经登录时则认为是修改密码，只能输入自己的手机号
-            if($this->uid && $phone!=$this->userInfo['phone']){
+            if ($this->uid && $phone != $this->userInfo['phone']) {
                 $this->jsonOutPut(0, '号码有误，请重新输入');
             }
             $uinfo = Users::model()->find('phone=:p', array(':p' => $phone));
@@ -531,13 +531,13 @@ class AjaxController extends Q {
                 $this->jsonOutPut(0, '该号码尚未注册');
             }
             $info = Msg::model()->find('phone=:p AND type=:t AND code=:code', array(':p' => $phone, ':t' => $type, ':code' => $code));
-        }elseif ($type == 'authorPass') {            
+        } elseif ($type == 'authorPass') {
             $password = zmf::val('password', 1);
-            if(!$password || strlen($password)<6){
+            if (!$password || strlen($password) < 6) {
                 $this->jsonOutPut(0, '请输入长度不小于6位的有效密码');
-            }            
+            }
             //如果已经登录时则认为是修改密码，只能输入自己的手机号
-            if($phone!=$this->userInfo['phone']){
+            if ($phone != $this->userInfo['phone']) {
                 $this->jsonOutPut(0, '号码有误，请重新输入');
             }
             $info = Msg::model()->find('phone=:p AND type=:t AND code=:code', array(':p' => $phone, ':t' => $type, ':code' => $code));
@@ -555,29 +555,29 @@ class AjaxController extends Q {
             $this->jsonOutPut(1, Yii::app()->createUrl('users/setting'));
         }
         Msg::model()->updateByPk($info['id'], array('status' => 1));
-        if($type=='checkPhone'){
-            Users::model()->updateByPk($this->uid, array('phoneChecked'=>1));
-            $returnCode=Yii::app()->createUrl('user/index');
-        }elseif($type=='forget'){
-            if(Users::updateInfo($uinfo['id'],'password',md5($password))){                
+        if ($type == 'checkPhone') {
+            Users::model()->updateByPk($this->uid, array('phoneChecked' => 1));
+            $returnCode = Yii::app()->createUrl('user/index');
+        } elseif ($type == 'forget') {
+            if (Users::updateInfo($uinfo['id'], 'password', md5($password))) {
                 $this->jsonOutPut(1, '密码修改成功，正在跳转至登录页面');
-            }else{
+            } else {
                 $this->jsonOutPut(0, '密码修改失败，未知错误');
             }
-        }elseif($type=='authorPass'){
-            if(Authors::model()->updateByPk($this->userInfo['authorId'], array('password'=>  md5($password.$authorInfo['hashCode'])))){
+        } elseif ($type == 'authorPass') {
+            if (Authors::model()->updateByPk($this->userInfo['authorId'], array('password' => md5($password . $authorInfo['hashCode'])))) {
                 $this->jsonOutPut(1, Yii::app()->createUrl('user/authorAuth'));
-            }else{
+            } else {
                 $this->jsonOutPut(0, '密码修改失败，未知错误');
-            }   
-        }else{
+            }
+        } else {
             //验证通过，将验证码标记为已使用
             $returnCode = zmf::jiaMi($phone . '#' . $type . '#' . zmf::now());
         }
         $this->jsonOutPut(1, $returnCode);
     }
-    
-    private function getNotice(){
+
+    private function getNotice() {
         $this->checkLogin();
         $noticeNum = Notification::getNum();
         $this->jsonOutPut(1, $noticeNum);
@@ -618,7 +618,7 @@ class AjaxController extends Q {
         $to = zmf::val('to', 2);
         $type = zmf::val('t', 1);
         $content = zmf::val('c', 1);
-        if (!isset($type) OR ! in_array($type, array('posts'))) {
+        if (!isset($type) OR ! in_array($type, array('posts','tipComments'))) {
             $this->jsonOutPut(0, Yii::t('default', 'forbiddenaction'));
         }
         if (!isset($keyid) OR ! is_numeric($keyid)) {
@@ -628,11 +628,19 @@ class AjaxController extends Q {
             $this->jsonOutPut(0, '评论不能为空哦~');
         }
         $uid = $this->uid;
-        $postInfo = Posts::model()->findByPk($keyid);
-        if (!$postInfo || $postInfo['status'] != Posts::STATUS_PASSED) {
-            $this->jsonOutPut(0, '你所评论的内容不存在');
-        }elseif($postInfo['open']!=Posts::STATUS_OPEN){
-            $this->jsonOutPut(0, '评论功能已关闭');
+        if($type=='posts'){
+            $postInfo = Posts::model()->findByPk($keyid);
+            if (!$postInfo || $postInfo['status'] != Posts::STATUS_PASSED) {
+                $this->jsonOutPut(0, '你所评论的内容不存在');
+            } elseif ($postInfo['open'] != Posts::STATUS_OPEN) {
+                $this->jsonOutPut(0, '评论功能已关闭');
+            }
+        }elseif($type=='tipComments'){
+            $postInfo = Tips::model()->findByPk($keyid);
+            if (!$postInfo || $postInfo['status'] != Posts::STATUS_PASSED) {
+                $this->jsonOutPut(0, '你所评论的内容不存在');
+            }
+            $type='tip';
         }
         //处理文本，不是富文本
         $filter = Posts::handleContent($content, FALSE);
@@ -676,6 +684,12 @@ class AjaxController extends Q {
                         Posts::updateCommentsNum($keyid);
                     }
                     $_content = '你的文章【' . $postInfo['title'] . '】有了新的评论,' . $_url;
+                }elseif($type=='tip'){
+                    $_url = CHtml::link('查看详情', array('book/chapter', 'cid' => $postInfo['logid']));
+                    if ($status == Posts::STATUS_PASSED) {
+                        Posts::updateCount($keyid,'Tips',1,'comments');
+                    }
+                    $_content = '你的点评有了新的评论,' . $_url;
                 }
                 if ($to && $_url) {
                     $_content = '你的评论有了新的回复,' . $_url;
@@ -707,34 +721,29 @@ class AjaxController extends Q {
         }
     }
 
-    public function actionGetContents() {
-        $data = zmf::filterInput($_POST['data']);
-        $page = zmf::filterInput($_POST['page']);
-        $type = zmf::filterInput($_POST['type'], 't', 1);
-        if (!$data || !$type) {
+    private function getContents() {
+        $id = zmf::val('data', 2);
+        $page = zmf::val('page', 2);
+        $type = zmf::val('type', 1);
+        if (!$id || !$type) {
             $this->jsonOutPut(0, '数据不全，请核实');
         }
-        if (!in_array($type, array('comments'))) {
+        if (!in_array($type, array('tipComments'))) {
             $this->jsonOutPut(0, '暂不允许的分类');
         }
         if ($page < 1 || !is_numeric($page)) {
             $page = 1;
         }
-        $limit = 30;
         $longHtml = '';
-        $postInfo = Posts::model()->findByPk($data);
-        if (!$postInfo || $postInfo['status'] != Posts::STATUS_PASSED) {
-            $this->jsonOutPut(0, '你所评论的内容不存在');
-        }
         switch ($type) {
-            case 'comments':
-                $limit = 30;
-                $posts = Comments::getCommentsByPage($data, 'posts', $page, $limit);
-                if ($postInfo['zazhi'] > 0) {
-                    $view = '/zazhi/_comment';
-                } else {
-                    $view = '/posts/_comment';
+            case 'tipComments':
+                $postInfo = Tips::model()->findByPk($id);
+                if (!$postInfo || $postInfo['status'] != Posts::STATUS_PASSED) {
+                    $this->jsonOutPut(0, '你所评论的内容不存在');
                 }
+                $limit = 30;
+                $posts = Comments::getCommentsByPage($id, 'tip', $page, $limit);
+                $view = '/posts/_comment';
                 break;
             default:
                 $posts = array();
@@ -742,13 +751,13 @@ class AjaxController extends Q {
         }
         if (!empty($posts)) {
             foreach ($posts as $k => $row) {
-                $longHtml.=$this->renderPartial($view, array('data' => $row, 'k' => $k, 'postInfo' => $postInfo), true);
+                $longHtml.=$this->renderPartial($view, array('data' => $row, 'k' => $k, 'postInfo' => $postInfo,'from'=>'tip'), true);
             }
         }
         $data = array(
             'html' => $longHtml,
             'loadMore' => (count($posts) == $limit) ? 1 : 0,
-            'formHtml' => ''
+            'formHtml' => $this->renderPartial('/posts/_addComment', array('type' => $type, 'keyid' => $id), true)
         );
         $this->jsonOutPut(1, $data);
     }
@@ -763,6 +772,7 @@ class AjaxController extends Q {
         if (!in_array($type, array('comment', 'post', 'notice', 'tag', 'img', 'tip'))) {
             $this->jsonOutPut(0, '暂不允许的分类');
         }
+        $status=  Posts::STATUS_DELED;
         switch ($type) {
             case 'comment':
                 $info = Comments::model()->findByPk($data);
@@ -771,11 +781,17 @@ class AjaxController extends Q {
                 } elseif ($info['uid'] != $this->uid) {
                     if ($this->checkPower('delComment', $this->uid, true)) {
                         //我是管理员，我就可以删除
+                        $status=  Posts::STATUS_STAYCHECK;
                     } else {
                         $this->jsonOutPut(0, '你无权操作');
                     }
                 }
-                if (Comments::model()->updateByPk($data, array('status' => Posts::STATUS_DELED))) {
+                if (Comments::model()->updateByPk($data, array('status' => $status))) {
+                    if($info['classify']=='posts'){
+                        Posts::updateCount($info['logid'], 'Posts', -1, 'comments');
+                    }elseif ($info['classify']=='tip') {
+                        Posts::updateCount($info['logid'], 'Tips', -1, 'comments');
+                    }
                     $this->jsonOutPut(1, '已删除');
                 }
                 $this->jsonOutPut(1, '已删除');
@@ -787,11 +803,12 @@ class AjaxController extends Q {
                 } elseif ($info['uid'] != $this->uid) {
                     if ($this->checkPower('delPost', $this->uid, true)) {
                         //我是管理员，我就可以删除
+                        $status=  Posts::STATUS_STAYCHECK;
                     } else {
                         $this->jsonOutPut(0, '你无权操作');
                     }
                 }
-                if (Posts::model()->updateByPk($data, array('status' => Posts::STATUS_DELED))) {
+                if (Posts::model()->updateByPk($data, array('status' => $status))) {
                     $this->jsonOutPut(1, '已删除');
                 }
                 $this->jsonOutPut(1, '已删除');
@@ -824,7 +841,7 @@ class AjaxController extends Q {
                 } elseif ($info['uid'] != $this->uid) {
                     $this->jsonOutPut(0, '你无权操作');
                 }
-                if (Tips::model()->updateByPk($data, array('status' => Posts::STATUS_DELED))) {
+                if (Tips::model()->updateByPk($data, array('status' => $status))) {
                     Books::updateScore($info['bid']);
                     $this->jsonOutPut(1, '已删除');
                 }
@@ -854,44 +871,47 @@ class AjaxController extends Q {
         $ckinfo = Posts::favorite($data, $type, 'web');
         $this->jsonOutPut($ckinfo['state'], $ckinfo['msg']);
     }
-    
-    private function setStatus(){
-        $type=  zmf::val('type',1);
-        $id=  zmf::val('id',2);
-        $action=  zmf::val('actype',1);
-        if(!$type || !$id){
+
+    private function setStatus() {
+        $type = zmf::val('type', 1);
+        $id = zmf::val('id', 2);
+        $action = zmf::val('actype', 1);
+        if (!$type || !$id) {
             $this->jsonOutPut(0, '缺少参数');
         }
-        if(!in_array($type, array('post'))){
+        if (!in_array($type, array('post'))) {
             $this->jsonOutPut(0, '不被允许的分类');
         }
-        if(!in_array($action, array('top','red','bold','boldAndRed'))){
+        if (!in_array($action, array('top', 'red', 'bold', 'boldAndRed','lock'))) {
             $this->jsonOutPut(0, '不被允许的操作');
         }
-        if(!$this->userInfo['isAdmin']){
+        if (!$this->userInfo['isAdmin']) {
             $this->jsonOutPut(0, '无权本操作');
         }
-        $postInfo=  Posts::getOne($id);
-        if(!$postInfo || $postInfo['status']!=Posts::STATUS_PASSED){
+        $postInfo = Posts::getOne($id);
+        if (!$postInfo || $postInfo['status'] != Posts::STATUS_PASSED) {
             $this->jsonOutPut(0, '操作的内容不存在');
         }
-        if($action=='top'){
-            $status=$postInfo['top']>0 ? 0 : 1;
-            $filed='top';
-        }elseif(in_array($action, array('red','bold','boldAndRed'))){
-            if($action=='red'){
-                $_status=  Posts::STATUS_RED;
-            }elseif($action=='bold'){
-                $_status=  Posts::STATUS_BOLD;
-            }else{
-                $_status=  Posts::STATUS_BOLDRED;
+        if ($action == 'top') {
+            $status = $postInfo['top'] > 0 ? 0 : 1;
+            $filed = 'top';
+        } elseif (in_array($action, array('red', 'bold', 'boldAndRed'))) {
+            if ($action == 'red') {
+                $_status = Posts::STATUS_RED;
+            } elseif ($action == 'bold') {
+                $_status = Posts::STATUS_BOLD;
+            } else {
+                $_status = Posts::STATUS_BOLDRED;
             }
-            $status=$postInfo['styleStatus']==$_status ? 0 : $_status;
-            $filed='styleStatus';
+            $status = $postInfo['styleStatus'] == $_status ? 0 : $_status;
+            $filed = 'styleStatus';
+        }elseif($action == 'lock') {
+            $filed = 'open';
+            $status=0;
         }
-        if(Posts::model()->updateByPk($id, array($filed=>$status))){
+        if (Posts::model()->updateByPk($id, array($filed => $status))) {
             $this->jsonOutPut(1, '已设置');
-        }else{
+        } else {
             $this->jsonOutPut(0, '操作失败，请重试');
         }
     }

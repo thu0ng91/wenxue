@@ -72,20 +72,26 @@ $form=$this->beginWidget('CActiveForm', array(
 <?php }?>
 <table class="table table-striped">
     <tr>
-        <?php foreach($selectArr as $_field){$field= zmf::formatField($_field);if($field=='id')continue;?>
+        <?php foreach($selectArr as $_field){$field= zmf::formatField($_field);if(in_array($field, array('id','status')))continue;?>
         <th><?php echo $model->getAttributeLabel($field);?></th>
         <?php }?>
-        <th>操作</th>
+        <th style="width: 200px">操作</th>
     </tr>
     <?php foreach($posts as $post){?>
-    <tr>
-        <?php foreach($selectArr as $_field){$field= zmf::formatField($_field);if($field=='id')continue;?>
+    <tr <?php if($post['status']!=Posts::STATUS_PASSED){?>class="danger"<?php }?>>
+        <?php foreach($selectArr as $_field){$field= zmf::formatField($_field);if(in_array($field, array('id','status')))continue;?>
         <?php if($field=='uid'){?>
         <td><?php echo $post[$field]>0 ? CHtml::link(Users::getUsername($post[$field]),array('users/view','id'=>$post['uid'])) : '匿名者 ';?></td>
+        <?php }elseif($field=='aid'){?>
+        <td><?php echo CHtml::link($post->authorInfo->authorName,array('authors/view','id'=>$post->aid));?></td>
+        <?php }elseif($field=='bid'){?>
+        <td><?php echo CHtml::link($post->bookInfo->title,array('books/view','id'=>$post->bid));?></td>
         <?php }elseif($field=='ip'){?>
         <td><?php echo long2ip($post[$field]);?></td>
         <?php }elseif($field=='classify' && $from=='link'){?>
         <td><span class="label label-info"><?php echo Link::exTypes($post[$field]);?></span></td>
+        <?php }elseif($field=='classify' && $from=='posts'){?>
+        <td><span class="label label-info"><?php echo Posts::exClassify($post[$field]);?></span></td>        
         <?php }elseif($field=='url'){?>
         <td><?php echo CHtml::link(zmf::subStr($post[$field],10),$post[$field]);?></td>
         <?php }elseif(in_array($field,array('hot','new'))){?>
@@ -101,17 +107,22 @@ $form=$this->beginWidget('CActiveForm', array(
         <?php }?>
         <?php }?>
         <td>
-            <?php if($from=='reports'){?>
-            <?php echo CHtml::link('详情',array('view','id'=>$post['id']));?>
-            <?php }else{?>
-            <?php echo CHtml::link('编辑',array('update','id'=>$post['id']));?>
+            <?php if($post['status']!=Posts::STATUS_PASSED && in_array($from, array('posts','chapters'))){?>
+                <?php echo CHtml::link('查看敏感词',array('stayCheck','id'=>$post['id']));?>
+                <?php echo CHtml::link('编辑',array('update','id'=>$post['id']));?>
+            <?php }else{?>            
+                <?php if($from=='reports'){?>
+                <?php echo CHtml::link('详情',array('view','id'=>$post['id']));?>
+                <?php }else{?>
+                <?php echo CHtml::link('编辑',array('update','id'=>$post['id']));?>
+                <?php }?>
+                <?php if($from=='books'){?>
+                <?php echo CHtml::link('章节',array('chapters','id'=>$post['id']));?>
+                <?php }elseif($from=='showcases'){?>
+                <?php echo CHtml::link('文章',array('showcaseLink/index','sid'=>$post['id']));?>
+                <?php }?>
+                <?php echo CHtml::link('删除',array('delete','id'=>$post['id']));?>
             <?php }?>
-            <?php if($from=='books'){?>
-            <?php echo CHtml::link('章节',array('chapters','id'=>$post['id']));?>
-            <?php }elseif($from=='showcases'){?>
-            <?php echo CHtml::link('文章',array('showcaseLink/index','sid'=>$post['id']));?>
-            <?php }?>
-            <?php echo CHtml::link('删除',array('delete','id'=>$post['id']));?>
         </td>
     </tr>
     <?php }?>

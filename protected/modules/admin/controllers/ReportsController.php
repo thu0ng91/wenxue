@@ -36,7 +36,7 @@ class ReportsController extends Admin {
      * Lists all models.
      */
     public function actionIndex() {
-        $select = "id,uid,contact,logid,classify,ip,`desc`,url,cTime";
+        $select = "id,uid,contact,logid,classify,ip,`desc`,url,cTime,status";
         $model = new Reports();
         $criteria = new CDbCriteria();
         $criteria->select = $select;

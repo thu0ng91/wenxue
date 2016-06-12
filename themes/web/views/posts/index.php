@@ -51,7 +51,7 @@
                 <?php echo $label;?>                
                 <?php 
                 if($type=='author'){
-                    if($this->userInfo['authorId']>0){
+                    if($this->userInfo['authorId']>0 || $this->userInfo['isAdmin']){
                         echo CHtml::link('<i class="fa fa-plus"></i> 发布文章',array('posts/create','type'=>$type),array('class'=>'pull-right'));
                     }
                 }else{

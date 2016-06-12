@@ -25,8 +25,12 @@ $_uname=$data['loginUsername'];
             <?php if($this->uid){?>
             <span class="pull-right">
                 <?php 
-                if($this->uid!=$data['uid'] && $postInfo['open']==Posts::STATUS_OPEN){
-                    echo CHtml::link('回复','javascript:;',array('onclick'=>"replyOne('".$data['id']."','".$data['logid']."','".$_uname."')"));
+                if($this->uid!=$data['uid']){
+                    if($from=='tip'){
+                        echo CHtml::link('回复','javascript:;',array('onclick'=>"replyOne('".$data['id']."','".$data['logid']."','".$_uname."')"));
+                    }elseif($postInfo['open']==Posts::STATUS_OPEN){
+                        echo CHtml::link('回复','javascript:;',array('onclick'=>"replyOne('".$data['id']."','".$data['logid']."','".$_uname."')"));
+                    }
                 }elseif($this->uid==$data['uid']){
                     echo CHtml::link('删除','javascript:;',array('action'=>'delContent','data-type'=>'comment','data-id'=>  $data['id'],'data-confirm'=>1,'data-target'=>'comment-'.$data['id']));  
                 }?>                

@@ -115,7 +115,7 @@ class PostsController extends Q {
                 throw new CHttpException(404, '你所选择的版块不存在');
             }
             $model = new Posts;
-            if ($type == 'author' && !$this->userInfo['authorId']) {
+            if ($type == 'author' && !$this->userInfo['authorId'] && !$this->userInfo['isAdmin']) {
                 throw new CHttpException(404, '你不能在该版块发帖');
             } elseif ($type == 'author' && $this->userInfo['authorId']) {
                 $model->aid = $this->userInfo['authorId'];

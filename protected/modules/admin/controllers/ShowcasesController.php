@@ -100,7 +100,7 @@ class ShowcasesController extends Admin {
      * Lists all models.
      */
     public function actionIndex() {
-        $select = "id,title,position,display";
+        $select = "id,title,position,display,status";
         $model = new Showcases();
         $criteria = new CDbCriteria();
         $criteria->select = $select;

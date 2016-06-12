@@ -44,7 +44,9 @@ class UsersController extends Admin {
             $isNew = true;
         }
         if (isset($_POST['Users'])) {
-            if ($isNew || md5($_POST['Users']['password']) != $model->password) {
+            if ($isNew) {
+                $_POST['Users']['password'] = md5($_POST['Users']['password']);
+            }elseif($_POST['Users']['password'] != $model->password){
                 $_POST['Users']['password'] = md5($_POST['Users']['password']);
             }
             $model->attributes = $_POST['Users'];

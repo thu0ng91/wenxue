@@ -20,10 +20,78 @@ $(document).keydown(function (b) {
     }
 });
 function rebind() {
-    $("img.lazy").lazyload();
-    $("a[action=get-contents]").unbind('click').click(function () {
+    $("img.lazy").lazyload({
+        threshold:600
+    });
+    /**
+    * 获取内容
+    * @param {type} dom
+    * @param {type} t 类型
+    * @param {type} k keyid
+    * @param {type} p 页码
+    * @returns {Boolean}
+    */
+    $("a[action=getContents]").unbind('click').click(function () {
         var dom = $(this);
-        getContents(dom);
+        var acdata = dom.attr("data-id");
+        var t = dom.attr("data-type");
+        var p = dom.attr("data-page");
+        var targetBox = dom.attr('data-target');
+        if (!checkAjax()) {
+            return false;
+        }
+        if (!targetBox) {
+            return false;
+        }
+        if (!p) {
+            p = 1;
+        }
+        var loading = '<div class="loading-holder"><a class="btn btn-default btn-sm disabled" href="javascript:;">拼命加载中...</a></div>';
+        $('#' + targetBox).children('.loading-holder').each(function () {
+            $(this).remove();
+        });
+        $('#' + targetBox).append(loading);
+        $('#' + targetBox+'-box').show();
+        $.post(zmf.ajaxUrl, {action:'getContents',type: t, page: p, data: acdata, YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
+            ajaxReturn = true;
+            dom.attr('loaded', '1');
+            result = $.parseJSON(result);
+            if (result.status === 1) {
+                var data = result.msg;
+                var pageHtml = '', dataHtml = '';
+                if (data.html !== '') {
+                    dataHtml += data.html;
+                }
+                if (data.loadMore === 1) {
+                    var _p = parseInt(p) + 1;
+                    pageHtml += '<div class="loading-holder"><a class="btn btn-default btn-sm"  href="javascript:;" action="getContents" data-type="' + t + '" data-id="' + acdata + '" data-page="' + _p + '" data-target="' + targetBox + '">加载更多</a></div>';
+                } else {
+                    if(data.html==='' && p===1){
+                        pageHtml += '';
+                    }else{
+                        pageHtml += '<div class="loading-holder"><a class="btn btn-default btn-sm disabled" href="javascript:;">已全部加载</a></div>';
+                    }
+                }                
+                $('#' + targetBox + ' .loading-holder').each(function () {
+                    $(this).remove();
+                });                
+                if (p > 1) {
+                    $('#' + targetBox).append(dataHtml);
+                } else {
+                    if(data.html === ''){
+                        dataHtml='<div class="help-block text-center">暂无内容</div>';
+                    }
+                    $('#' + targetBox).html(dataHtml);
+                }
+                $('#' + targetBox).append(pageHtml);
+                if(p===1){
+                    $('#' + targetBox + '-form').html(data.formHtml);
+                }
+                rebind();
+            } else {
+                dialog({msg: result.msg});
+            }
+        });
     });
     $("a[action=delContent]").on('click',function () {
         var dom = $(this);
@@ -142,17 +210,17 @@ function rebind() {
         var dom = $(this);
         var id=parseInt(dom.attr('data-id'));
         if(!id){
-            alert('缺少参数1');
+            alert('缺少参数');
             return false;
         }
         var type=dom.attr('data-type');
         if(!type){
-            alert('缺少参数2');
+            alert('缺少参数');
             return false;
         }
         var action=dom.attr('data-action');
         if(!action){
-            alert('缺少参数3');
+            alert('缺少参数');
             return false;
         }
         if(confirm('确定该操作？')){
@@ -475,77 +543,7 @@ function searchType(type,title){
     $('#searchTypeBtn').html(title+' <span class="caret"></span>');
     $('#search-type').val(type);
 }
-/**
- * 获取内容
- * @param {type} dom
- * @param {type} t 类型
- * @param {type} k keyid
- * @param {type} p 页码
- * @returns {Boolean}
- */
-function getContents(dom) {
-    var acdata = dom.attr("action-data");
-    var t = dom.attr("action-type");
-    var p = dom.attr("action-page");
-    var targetBox = dom.attr('action-target');
-    if (!checkAjax()) {
-        return false;
-    }
-    if (!targetBox) {
-        return false;
-    }
-    if (!p) {
-        p = 1;
-    }
-    var loading = '<div class="loading-holder"><a class="btn btn-default btn-block disabled" href="javascript:;">拼命加载中...</a></div>';
-    $('#' + targetBox + '-box').children('.loading-holder').each(function () {
-        $(this).remove();
-    });
-    $('#' + targetBox + '-box').append(loading);
-    $.post(zmf.contentsUrl, {type: t, page: p, data: acdata, YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
-        ajaxReturn = true;
-        dom.attr('loaded', '1');
-        result = $.parseJSON(result);
-        if (result.status === 1) {
-            var data = result.msg;
 
-            var pageHtml = '', dataHtml = '';
-
-            if (data.html !== '') {
-                dataHtml += data.html;
-            }
-
-            if (data.loadMore === 1) {
-                var _p = parseInt(p) + 1;
-                pageHtml += '<div class="loading-holder"><a class="btn btn-default btn-block"  href="javascript:;" action="get-contents" action-type="' + t + '" action-data="' + acdata + '" action-page="' + _p + '" action-target="' + targetBox + '">加载更多</a></div>';
-            } else {
-                pageHtml += '<div class="loading-holder"><a class="btn btn-default btn-block disabled" href="javascript:;">已全部加载</a></div>';
-            }
-
-            if (p === 1) {
-                $('#' + targetBox + '-box').append(data.formHtml);
-                $('#' + targetBox + '-box .loading-holder').each(function () {
-                    $(this).remove();
-                });
-            } else {
-                $('#' + targetBox + '-box .loading-holder').each(function () {
-                    $(this).remove();
-                });
-            }
-            if (p > 1) {
-                $('#' + targetBox).append(dataHtml);
-            } else {
-                $('#' + targetBox).html(dataHtml);
-            }
-            $('#' + targetBox + '-box').append(pageHtml);
-
-            rebind();
-        } else {
-            dialog({msg: result.msg});
-        }
-    });
-
-}
 function selectThisImg(dom,holder,field){
     var _origin=dom.attr('data-original');
     if(!_origin){
@@ -642,12 +640,21 @@ function addComment(dom) {
     if (!checkAjax()) {
         return false;
     }
+    var targetBox="comments-" + t + "-" + k;
     $.post(zmf.addCommentUrl, {k: k, t: t, c: c, to: to, YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
         ajaxReturn = true;
         result = eval('(' + result + ')');
         if (result['status'] == '1') {
-            $('#content-' + t + '-' + k).val('');
-            $("#comments-" + t + "-" + k).append(result['msg']);
+            $('#content-' + t + '-' + k).val('');  
+            var loadingDom=$('#' + targetBox + ' .loading-holder');
+            var loadingHtml=loadingDom.html();
+            if(!loadingHtml){
+                loadingHtml='';
+            }else{
+                loadingHtml='<p class="loading-holder">'+loadingHtml+'</p>';
+            }
+            loadingDom.remove();
+            $("#comments-" + t + "-" + k).append(result['msg']+loadingHtml);
             cancelReplyOne(k);
             rebind();
         } else {
@@ -711,7 +718,7 @@ var flashTitle = {
     }  
 };  
 function getNotice(){
-    window.setInterval("doGetNotice()",3000);
+    //window.setInterval("doGetNotice()",5000);
 }
 function doGetNotice(){
     if(!checkLogin()){

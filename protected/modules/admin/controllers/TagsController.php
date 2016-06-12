@@ -16,9 +16,9 @@ class TagsController extends Admin {
     }
 
     public function actionIndex() {
-        $select = "id,title,classify";
+        $select = "id,title,classify,status";
         $model = new Tags();
-        $criteria = new CDbCriteria();
+        $criteria = new CDbCriteria();        
         $criteria->select = $select;
         $count = $model->count($criteria);
         $pager = new CPagination($count);

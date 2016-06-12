@@ -70,7 +70,7 @@ class ColumnController extends Admin {
     }
 
     public function actionIndex() {
-        $select = "id,title";
+        $select = "id,title,status";
         $model = new Column();
         $criteria = new CDbCriteria();
         $criteria->select = $select;

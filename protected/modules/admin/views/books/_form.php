@@ -50,6 +50,11 @@
         <?php echo $form->error($model,'content'); ?>
     </div>
     <div class="form-group">
+        <?php echo $form->labelEx($model,'status'); ?>
+        <?php echo $form->dropDownlist($model,'status',  Chapters::exStatus('admin'),array('class'=>'form-control')); ?>
+        <?php echo $form->error($model,'status'); ?>
+    </div>
+    <div class="form-group">
         <?php echo CHtml::submitButton($model->isNewRecord ? '新增' : '更新',array('class'=>'btn btn-primary')); ?>
     </div>
 <?php $this->endWidget(); ?>

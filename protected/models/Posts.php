@@ -73,6 +73,8 @@ class Posts extends CActiveRecord {
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
+            'userInfo' => array(self::BELONGS_TO, 'Users', 'uid'),
+            'authorInfo' => array(self::BELONGS_TO, 'Authors', 'aid'),
         );
     }
 
@@ -94,7 +96,7 @@ class Posts extends CActiveRecord {
             'top' => '是否置顶',
             'hits' => '阅读数',
             'tagids' => '标签组',
-            'status' => 'Status',
+            'status' => '状态',
             'cTime' => '创建世界',
             'updateTime' => '最近更新时间',
             'styleStatus' => '显示状态',

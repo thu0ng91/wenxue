@@ -35,6 +35,15 @@ public function init() {
             'posts' => $items,
         ));
     }
+    
+    public function actionStayCheck($id){
+        $info=  $this->loadModel($id);
+        $info['content']=  Words::highLight($info['content']);
+        $data=array(
+            'info'=>$info
+        );
+        $this->render('stayCheck',$data);
+    }
 
     public function loadModel($id) {
         $model = Comments::model()->findByPk($id);

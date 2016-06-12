@@ -155,6 +155,13 @@ class Authors extends CActiveRecord {
     public static function findByUid($uid) {
         return Authors::model()->find('uid=:uid', array(':uid' => $uid));
     }
+    
+    public static function findByName($truename){
+        $info= Authors::model()->find('authorName=:authorName', array(
+            ':authorName'=>$truename
+        ));
+        return $info;
+    }
 
     public static function checkLogin($userInfo, $authorId) {
         if (!$userInfo) {

@@ -81,9 +81,15 @@ class ChaptersController extends Admin {
 
     
     public function actionIndex() {
-        $select = "id,title";
+        $select = "id,title,status";
         $model = new Chapters();
         $criteria = new CDbCriteria();
+        $type = zmf::val('type', 1);
+        if($type=='stayCheck'){
+            $criteria->addCondition('status='.Posts::STATUS_STAYCHECK);
+        }else{
+            $criteria->addCondition('status!='.Posts::STATUS_DELED);
+        }
         $criteria->select = $select;
         $count = $model->count($criteria);
         $pager = new CPagination($count);
@@ -94,9 +100,18 @@ class ChaptersController extends Admin {
             'model' => $model,
             'pages' => $pager,
             'posts' => $posts,
-            'from' => 'packageDate',
+            'from' => 'chapters',
             'selectArr' => explode(',', $select),
         ));
+    }
+    
+    public function actionStayCheck($id){
+        $info=  $this->loadModel($id);
+        $info['content']=  Words::highLight($info['content']);
+        $data=array(
+            'info'=>$info
+        );
+        $this->render('stayCheck',$data);
     }
 
     /**

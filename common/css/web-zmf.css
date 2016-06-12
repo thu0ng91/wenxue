@@ -300,6 +300,37 @@ button, input, select, textarea,.form-control,.btn{
 .toggle-area{
     display: none
 }
+/*小说点评*/
+.icon-spike {
+    position: absolute;
+    top: -8px;
+    left: 23px;
+    width: 13px;
+    height: 8px;
+    background:url(../images/tri_up.png) no-repeat center;
+    vertical-align: middle;
+}
+/*下拉评论列表*/
+.comments-list{
+    margin: 10px 0 35px;
+    background: #fff;
+    position: relative;
+    border: 1px solid #ddd;
+    box-shadow: 0 1px 1px rgba(0,0,0,.05);
+    padding: 8px;
+    display: none;
+}
+.comments-list .media{
+    border-bottom: 1px dashed #F2f2f2 
+}
+.comments-list .media:last-child{
+    border-bottom: none
+}
+.comments-list .loading-holder{
+    margin-bottom: 15px;
+    margin-top: 15px;
+    text-align: center
+}
 /*用户页面*/
 .gallery-body .thumbnail,.fileSuccess .thumbnail{
     width: 95px;

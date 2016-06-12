@@ -18,19 +18,23 @@
             </span>
         </p>
         <p><?php echo nl2br(CHtml::encode($data['content'])); ?></p>
-        <p class="help-block">
+        <p class="color-grey">
             <?php echo zmf::formatTime($data['cTime']); ?>
-            <span class="color-grey"><?php echo CHtml::link('举报','javascript:;',array('action'=>'report','action-type'=>'tip','action-id'=>$data['id'],'action-title'=>  zmf::subStr($data['content'],20)));?></span>
-            <?php if($this->uid){?>
+            <?php echo CHtml::link($data['comments'].'评论','javascript:;',array('action'=>'getContents','data-id'=>$data['id'],'data-type'=>'tipComments','data-target'=>'comments-tipComments-'.$data['id']));?>
             <span class="pull-right">
-                <?php 
-                if($this->uid==$data['uid']){
+                <?php if($this->uid==$data['uid']){
                     echo CHtml::link('编辑',array('book/editTip','tid'=>$data['id'])).'&nbsp;';
                     echo CHtml::link('删除','javascript:;',array('action'=>'del-content','action-type'=>'tip','action-data'=>  $data['id'],'action-confirm'=>1,'action-target'=>'tip-'.$data['id']));
-                }?>                
+                 }else{
+                     echo CHtml::link('举报','javascript:;',array('action'=>'report','action-type'=>'tip','action-id'=>$data['id'],'action-title'=>  zmf::subStr($data['content'],20)));
+                 }?>
             </span>
-            <?php }?>
         </p>
+        <div class="comments-list" id="comments-tipComments-<?php echo $data['id'];?>-box">
+            <i class="icon-spike" style="display: inline;left:80px"></i>
+            <div id="comments-tipComments-<?php echo $data['id'];?>"></div>
+            <div id="comments-tipComments-<?php echo $data['id'];?>-form"></div>
+        </div>
     </div>
 </div>
 <?php }else{?>

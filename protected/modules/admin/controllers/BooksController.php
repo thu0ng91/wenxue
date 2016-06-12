@@ -70,9 +70,15 @@ class BooksController extends Admin {
     }
 
     public function actionIndex() {
-        $select = "id,aid,title";
+        $select = "id,aid,title,status";
         $model = new Books();
         $criteria = new CDbCriteria();
+        $type = zmf::val('type', 1);    
+        if($type=='stayCheck'){
+            $criteria->addCondition('status='.Posts::STATUS_STAYCHECK);
+        }else{
+            $criteria->addCondition('status!='.Posts::STATUS_DELED);
+        }
         $criteria->select = $select;
         $criteria->order = 'cTime DESC';
         $count = $model->count($criteria);
@@ -91,11 +97,17 @@ class BooksController extends Admin {
     
     public function actionChapters() {
         $id=  zmf::val('id',1);
-        $select = "id,aid,title";
+        $select = "id,aid,title,status";
         $model = new Chapters();
         $criteria = new CDbCriteria();
         if($id){
             $criteria->addCondition("bid='$id'");
+        }
+        $type = zmf::val('type', 1);
+        if($type=='stayCheck'){
+            $criteria->addCondition('status='.Posts::STATUS_STAYCHECK);
+        }else{
+            $criteria->addCondition('status!='.Posts::STATUS_DELED);
         }
         $criteria->select = $select;
         $criteria->order = 'cTime DESC';
@@ -112,6 +124,17 @@ class BooksController extends Admin {
             'from' => 'chapters',
             'selectArr' => explode(',', $select),
         ));
+    }
+    
+    public function actionStayCheck($id){
+        $info=  $this->loadModel($id);
+        $info['title']=  Words::highLight($info['title']);
+        $info['desc']=  Words::highLight($info['desc']);
+        $info['content']=  Words::highLight($info['content']);
+        $data=array(
+            'info'=>$info
+        );
+        $this->render('stayCheck',$data);
     }
 
     /**

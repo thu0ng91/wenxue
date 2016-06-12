@@ -27,10 +27,16 @@ class IndexController extends Admin {
         $arr['maxExcuteMemory'] = ini_get('memory_limit');
         $arr['excuteUseMemory'] = function_exists('memory_get_usage') ? zmf::formatBytes(memory_get_usage()) : '未知';
 
+        //获取待审核
+        $arr['posts'] = Posts::model()->count('status=:status', array(':status' => Posts::STATUS_STAYCHECK));
+        $arr['comments'] = Comments::model()->count('status=:status', array(':status' => Posts::STATUS_STAYCHECK));
+        $arr['books'] = Books::model()->count('status=:status', array(':status' => Posts::STATUS_STAYCHECK));
+        $arr['chapters'] = Chapters::model()->count('status=:status', array(':status' => Posts::STATUS_STAYCHECK));
+        $arr['tips'] = Tips::model()->count('status=:status', array(':status' => Posts::STATUS_STAYCHECK));
         $this->render('index', array('siteinfo' => $arr));
     }
 
-    public function actionStat() {        
+    public function actionStat() {
         $posts = Posts::model()->count();
         $commentsNum = Comments::model()->count();
         $attachsNum = Attachments::model()->count();
@@ -43,5 +49,5 @@ class IndexController extends Admin {
         );
         $this->render('stat', $arr);
     }
-    
+
 }

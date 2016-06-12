@@ -22,8 +22,8 @@ class UserController extends Q {
         } else {
             Posts::updateCount($id, 'Users', 1, 'hits');
         }
-        if($this->uid){
-            $this->favorited = Favorites::checkFavored($this->toUserInfo['id'], 'user');   
+        if ($this->uid) {
+            $this->favorited = Favorites::checkFavored($this->toUserInfo['id'], 'user');
         }
     }
 
@@ -38,16 +38,16 @@ class UserController extends Q {
     }
 
     public function actionIndex() {
-        $sql="SELECT classify,`data`,cTime FROM {{user_action}} WHERE uid='{$this->toUserInfo['id']}' ORDER BY cTime DESC";
+        $sql = "SELECT classify,`data`,cTime FROM {{user_action}} WHERE uid='{$this->toUserInfo['id']}' ORDER BY cTime DESC";
         Posts::getAll(array('sql' => $sql), $pages, $posts);
-        if(!empty($posts)){
-            foreach ($posts as $k=>$val){
-                $posts[$k]['data']=  CJSON::decode($val['data']);
-                $posts[$k]['action']= UserAction::exClassify($val['classify']);
+        if (!empty($posts)) {
+            foreach ($posts as $k => $val) {
+                $posts[$k]['data'] = CJSON::decode($val['data']);
+                $posts[$k]['action'] = UserAction::exClassify($val['classify']);
             }
         }
         $this->selectNav = 'index';
-        $this->pageTitle=$this->toUserInfo['truename'].' - '.zmf::config('sitename');
+        $this->pageTitle = $this->toUserInfo['truename'] . ' - ' . zmf::config('sitename');
         $this->render('index', array(
             'posts' => $posts,
             'pages' => $pages,
@@ -60,23 +60,23 @@ class UserController extends Q {
             $sql = "SELECT u.id,u.truename,u.avatar FROM {{users}} u,{{favorites}} f WHERE f.logid='{$this->toUserInfo['id']}' AND f.classify='user' AND f.uid=u.id ORDER BY f.cTime DESC";
             $label = '关注者';
             $render = 'fans';
-            $this->pageTitle = $this->toUserInfo['truename'].'的关注者 - ' . zmf::config('sitename');
+            $this->pageTitle = $this->toUserInfo['truename'] . '的关注者 - ' . zmf::config('sitename');
         } elseif ($type == 'authors') {
             $sql = "SELECT a.id,a.authorName,a.avatar FROM {{authors}} a,{{favorites}} f WHERE f.uid='{$this->toUserInfo['id']}' AND f.classify='author' AND f.logid=a.id ORDER BY f.cTime DESC";
             $label = '关注作者';
             $render = 'authors';
-            $this->pageTitle = $this->toUserInfo['truename'].'关注的作者 - ' . zmf::config('sitename');
+            $this->pageTitle = $this->toUserInfo['truename'] . '关注的作者 - ' . zmf::config('sitename');
         } else {
             $sql = "SELECT u.id,u.truename,u.avatar FROM {{users}} u,{{favorites}} f WHERE f.uid='{$this->toUserInfo['id']}' AND f.classify='user' AND f.logid=u.id ORDER BY f.cTime DESC";
             $label = '关注了';
             $render = 'fans';
-            $this->pageTitle = $this->toUserInfo['truename'].'的关注 - ' . zmf::config('sitename');
+            $this->pageTitle = $this->toUserInfo['truename'] . '的关注 - ' . zmf::config('sitename');
         }
         Posts::getAll(array('sql' => $sql), $pages, $posts);
-        foreach ($posts as $k=>$val){
-            $posts[$k]['avatar']=  zmf::getThumbnailUrl($val['avatar'], 'a120', 'avatar');
+        foreach ($posts as $k => $val) {
+            $posts[$k]['avatar'] = zmf::getThumbnailUrl($val['avatar'], 'a120', 'avatar');
         }
-        $this->selectNav = 'favorite';        
+        $this->selectNav = 'favorite';
         $data = array(
             'label' => $label,
             'posts' => $posts,
@@ -96,16 +96,31 @@ class UserController extends Q {
         $model = new Authors;
         $model->uid = $this->uid;
         if (isset($_POST['Authors'])) {
-            if ($_POST['Authors']['password']) {
-                $_POST['Authors']['hashCode'] = zmf::randMykeys(6);
-                $_POST['Authors']['password'] = md5($_POST['Authors']['password'] . $_POST['Authors']['hashCode']);
+            $password = $_POST['Authors']['password'];
+            $authorName = $_POST['Authors']['authorName'];
+            if (!$authorName) {
+                $field = 'authorName';
+                $msg = '作者名不能为空';
+            } elseif (!$password || strlen($password) < 6) {
+                $field = 'password';
+                $msg = '密码不短于6位';
+            } elseif (Authors::findByName($authorName)) {
+                $field = 'authorName';
+                $msg = '该作者名已被占用';
             }
-            $model->attributes = $_POST['Authors'];
-            if ($model->save()) {
-                Users::model()->updateByPk($this->uid, array('authorId' => $model->id));
-                $code = 'authorAuth-' . $this->uid;
-                Yii::app()->session[$code]=1;
-                $this->redirect(array('author/view', 'id' => $model->id));
+            if (!$field && !$msg) {
+                $_POST['Authors']['hashCode'] = zmf::randMykeys(6);
+                $_POST['Authors']['password'] = md5($password . $_POST['Authors']['hashCode']);
+                $model->attributes = $_POST['Authors'];
+                if ($model->save()) {
+                    Users::model()->updateByPk($this->uid, array('authorId' => $model->id));
+                    $code = 'authorAuth-' . $this->uid;
+                    Yii::app()->session[$code] = 1;
+                    $this->redirect(array('author/view', 'id' => $model->id));
+                }
+            } else {
+                $model->attributes = $_POST['Authors'];
+                $model->addError($field, $msg);
             }
         }
         $this->pageTitle = '成为作者 - ' . zmf::config('sitename');
@@ -138,8 +153,8 @@ class UserController extends Q {
             'model' => $model,
         ));
     }
-    
-    public function actionForgotAuthorPass(){
+
+    public function actionForgotAuthorPass() {
         $this->pageTitle = '找回密码';
         $this->render('forgot', $data);
     }
@@ -156,7 +171,7 @@ class UserController extends Q {
                     )
         ));
         $this->selectNav = 'comment';
-        $this->pageTitle=$this->toUserInfo['truename'].'的点评 - '.zmf::config('sitename');
+        $this->pageTitle = $this->toUserInfo['truename'] . '的点评 - ' . zmf::config('sitename');
         $this->render('comment', array(
             'tips' => $tips,
         ));
@@ -165,11 +180,11 @@ class UserController extends Q {
     public function actionFavorite() {
         $sql = "SELECT b.id,b.aid,b.title,b.faceImg,b.desc,b.words,b.cTime,b.score,b.scorer,b.bookStatus FROM {{favorites}} f,{{books}} b WHERE f.uid='{$this->uid}' AND f.classify='book' AND f.logid=b.id AND b.status=" . Posts::STATUS_PASSED . " ORDER BY f.cTime DESC";
         Posts::getAll(array('sql' => $sql), $pages, $posts);
-        foreach ($posts as $k=>$val){
-            $posts[$k]['faceImg']=  zmf::getThumbnailUrl($val['faceImg'], 'w120', 'avatar');
+        foreach ($posts as $k => $val) {
+            $posts[$k]['faceImg'] = zmf::getThumbnailUrl($val['faceImg'], 'w120', 'avatar');
         }
         $this->selectNav = 'favorite';
-        $this->pageTitle=$this->toUserInfo['truename'].'的收藏 - '.zmf::config('sitename');
+        $this->pageTitle = $this->toUserInfo['truename'] . '的收藏 - ' . zmf::config('sitename');
         $this->render('favorite', array(
             'posts' => $posts,
             'pages' => $pages,
@@ -207,7 +222,7 @@ class UserController extends Q {
             $this->jsonOutPut(1, $data);
         }
         $this->selectNav = 'gallery';
-        $this->pageTitle='相册 - '.zmf::config('sitename');
+        $this->pageTitle = '相册 - ' . zmf::config('sitename');
         $this->render('gallery', array(
             'posts' => $posts,
             'from' => $from,
@@ -223,11 +238,11 @@ class UserController extends Q {
     }
 
     public function actionSetting() {
-        $action=  zmf::val('action',1);
-        if (!in_array($action, array('baseInfo', 'passwd', 'skin','checkPhone'))) {
-            $action='baseInfo';
+        $action = zmf::val('action', 1);
+        if (!in_array($action, array('baseInfo', 'passwd', 'skin', 'checkPhone'))) {
+            $action = 'baseInfo';
         }
-        if($action=='checkPhone' && $this->userInfo['phoneChecked']){
+        if ($action == 'checkPhone' && $this->userInfo['phoneChecked']) {
             $this->message(0, '你的号码已验证，不需要重复验证');
         }
         $model = Users::model()->findByPk($this->uid);
@@ -240,11 +255,17 @@ class UserController extends Q {
                     $field = 'truename';
                     $msg = '用户名不能为空哦~';
                 } else {
-                    $attr = array(
-                        'truename' => $truename,
-                        'content' => $content,
-                        'sex' => $sex,
-                    );
+                    $_uinfo = Users::findByName($truename);
+                    if ($_uinfo['id'] != $this->uid) {
+                        $field = 'truename';
+                        $msg = '用户名已被占用';
+                    } else {
+                        $attr = array(
+                            'truename' => $truename,
+                            'content' => $content,
+                            'sex' => $sex,
+                        );
+                    }
                 }
             } elseif ($action == 'passwd') {
                 $old = zmf::filterInput($_POST['Users']['password'], 1);
@@ -267,7 +288,7 @@ class UserController extends Q {
                     );
                 }
             } elseif ($action == 'skin') {
-                $avatar = zmf::filterInput($_POST['Users']['avatar'], 1);                
+                $avatar = zmf::filterInput($_POST['Users']['avatar'], 1);
                 $attr = array(
                     'avatar' => $avatar,
                 );
@@ -311,6 +332,6 @@ class UserController extends Q {
         );
         $this->pageTitle = $this->userInfo['truename'] . '的文章 - ' . zmf::config('sitename');
         $this->render('posts', $data);
-    }    
+    }
 
 }

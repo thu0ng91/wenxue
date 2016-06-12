@@ -68,6 +68,8 @@ class Books extends CActiveRecord {
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
+            'authorInfo' => array(self::BELONGS_TO, 'Authors', 'aid'),
+            'columnInfo' => array(self::BELONGS_TO, 'Column', 'colid'),
         );
     }
 

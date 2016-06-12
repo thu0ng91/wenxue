@@ -21,13 +21,116 @@ $(document).keydown(function (b) {
 });
 function rebind() {
     $("img.lazy").lazyload();
-    $("a[action=get-contents]").unbind('click').click(function () {
+    /**
+    * 获取内容
+    * @param {type} dom
+    * @param {type} t 类型
+    * @param {type} k keyid
+    * @param {type} p 页码
+    * @returns {Boolean}
+    */
+    $("a[action=getContents]").unbind('click').click(function () {
         var dom = $(this);
-        getContents(dom);
+        var acdata = dom.attr("data-id");
+        var t = dom.attr("data-type");
+        var p = dom.attr("data-page");
+        var targetBox = dom.attr('data-target');
+        if (!checkAjax()) {
+            return false;
+        }
+        if (!targetBox) {
+            return false;
+        }
+        if (!p) {
+            p = 1;
+        }
+        var loading = '<div class="loading-holder"><a class="btn btn-default btn-sm disabled" href="javascript:;">拼命加载中...</a></div>';
+        $('#' + targetBox).children('.loading-holder').each(function () {
+            $(this).remove();
+        });
+        $('#' + targetBox).append(loading);
+        $('#' + targetBox+'-box').show();
+        $.post(zmf.ajaxUrl, {action:'getContents',type: t, page: p, data: acdata, YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
+            ajaxReturn = true;
+            dom.attr('loaded', '1');
+            result = $.parseJSON(result);
+            if (result.status === 1) {
+                var data = result.msg;
+                var pageHtml = '', dataHtml = '';
+                if (data.html !== '') {
+                    dataHtml += data.html;
+                }
+                if (data.loadMore === 1) {
+                    var _p = parseInt(p) + 1;
+                    pageHtml += '<div class="loading-holder"><a class="btn btn-default btn-sm"  href="javascript:;" action="getContents" data-type="' + t + '" data-id="' + acdata + '" data-page="' + _p + '" data-target="' + targetBox + '">加载更多</a></div>';
+                } else {
+                    if(data.html==='' && p===1){
+                        pageHtml += '';
+                    }else{
+                        pageHtml += '<div class="loading-holder"><a class="btn btn-default btn-sm disabled" href="javascript:;">已全部加载</a></div>';
+                    }
+                }                
+                $('#' + targetBox + ' .loading-holder').each(function () {
+                    $(this).remove();
+                });                
+                if (p > 1) {
+                    $('#' + targetBox).append(dataHtml);
+                } else {
+                    if(data.html === ''){
+                        dataHtml='<div class="help-block text-center">暂无内容</div>';
+                    }
+                    $('#' + targetBox).html(dataHtml);
+                }
+                $('#' + targetBox).append(pageHtml);
+                if(p===1){
+                    $('#' + targetBox + '-form').html(data.formHtml);
+                }
+                rebind();
+            } else {
+                dialog({msg: result.msg});
+            }
+        });
     });
-    $("a[action=del-content]").unbind('click').click(function () {
+    $("a[action=delContent]").on('click',function () {
         var dom = $(this);
-        delContent(dom);
+        var acdata = dom.attr("data-id");
+        var t = dom.attr("data-type");
+        var cf = dom.attr('data-confirm');
+        var rurl = dom.attr('data-redirect');
+        var targetBox = dom.attr('data-target');
+        if (!acdata || !t) {
+            return false;
+        }
+        var todo = true;
+        if (parseInt(cf) === 1) {
+            if (confirm('确定删除此内容？')) {
+                todo = true;
+            } else {
+                todo = false;
+            }
+        }
+        if (!todo) {
+            return false;
+        }
+        if (!checkAjax()) {
+            return false;
+        }
+        $.post(zmf.ajaxUrl, {action:'delContent',type: t, data: acdata, YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
+            ajaxReturn = true;
+            result = $.parseJSON(result);
+            if (result.status === 1) {
+                if (rurl) {
+                    window.location.href = rurl;
+                } else if (targetBox) {
+                    $('#' + targetBox).fadeOut(500).remove();
+                } else {
+                    alert(result.msg);
+                }
+            } else {
+                dialog({msg: result.msg});
+            }
+            return false;
+        });
     });
     $("a[action=favorite]").unbind('click').click(function () {
         var dom = $(this);
@@ -101,6 +204,36 @@ function rebind() {
         var dom = $(this);
         share(dom);
     });
+    $("a[action=setStatus]").on('click',function () {
+        var dom = $(this);
+        var id=parseInt(dom.attr('data-id'));
+        if(!id){
+            alert('缺少参数1');
+            return false;
+        }
+        var type=dom.attr('data-type');
+        if(!type){
+            alert('缺少参数2');
+            return false;
+        }
+        var action=dom.attr('data-action');
+        if(!action){
+            alert('缺少参数3');
+            return false;
+        }
+        if(confirm('确定该操作？')){
+            $.post(zmf.ajaxUrl, {action:'setStatus',type:type,id:id,actype:action,YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {                
+                result = eval('(' + result + ')');
+                if (result['status'] == '1') {
+                    window.location.reload();                    
+                } else {
+                    dialog({msg:result['msg']});
+                    return false;
+                }
+            });
+        }
+    });
+    
     $("a[action=publishBook]").on('click',function () {
         var dom = $(this);
         var id=parseInt(dom.attr('data-id'));
@@ -193,7 +326,72 @@ function rebind() {
         $("button[action=feedback]").unbind('click').click(function () {
             feedback();
         });
-    });    
+    });
+    //举报
+    $("a[action=report]").on('click',function () {
+        var dom=$(this);
+        var type=dom.attr('action-type');
+        var id=dom.attr('action-id');
+        var title=dom.attr('action-title');
+        if(!type){
+            alert('缺少参数');
+            return false;
+        }
+        var html='<div class="form-group"><label>举报对象</label><p class="help-block ui-nowarp">'+title+'</p><input type="hidden" name="report-id" id="report-id" value="'+id+'"/></div>';
+        if(type==='book' || type==='chapter'){
+            html+= '<div class="form-group"><label for="feedback-reason">举报原因</label><select name="report-reason" id="report-reason" class="form-control"><option value="色情低俗">色情低俗</option><option value="暴力血腥">暴力血腥</option><option value="涉政违规">涉政违规</option><option value="欺诈广告">欺诈广告</option><option value="抄袭侵权">抄袭侵权</option><option value="">其他原因</option></select></div>';
+        }else if(type==='tip' || type==='book' || type==='comment' || type==='post' || type==='user' || type==='author'){
+            html+= '<div class="form-group"><label for="feedback-reason">举报原因</label><select name="report-reason" id="report-reason" class="form-control"><option value="恶意攻击">恶意攻击</option><option value="色情低俗">色情低俗</option><option value="暴力血腥">暴力血腥</option><option value="涉政违规">涉政违规</option><option value="欺诈广告">欺诈广告</option><option value="抄袭侵权">抄袭侵权</option><option value="">其他原因</option></select></div>';
+        }else{
+            alert('暂不支持该分类');
+            return false;
+        }
+        html+='<div class="form-group displayNone" id="report-content-holder"><label for="report-content">其他原因</label><textarea id="report-content" class="form-control" max-lenght="255" placeholder="请描述你的举报原因"></textarea></div>';
+        if(!checkLogin()){
+            html+='<div class="form-group"><label for="report-contact">联系方式</label><input type="text" id="report-contact" class="form-control" placeholder="常用联系方式(邮箱、QQ、微信等)，便于告知处理进度(可选)"/></div>';
+        }
+        dialog({msg: html, title: '举报', action: 'doReport'});
+        $('#report-reason').on('change',function(){
+            var reason=$(this).val();
+            if(!reason){
+                $('#report-content-holder').show();
+            }else{
+                $('#report-content-holder').hide();
+            }
+        });
+        $("button[action=doReport]").on('click',function () {
+            var logid=$('#report-id').val();            
+            var reason=$('#report-reason').val();
+            var content=$('#report-content').val();
+            var contact=$('#report-contact').val();
+            if(!logid){
+              alert('缺少参数');
+              return false;
+            }
+            if(!reason && !content){
+                simpleDialog({content:'请填写举报原因'});
+                return false;
+            }else{
+                if(!reason){
+                    reason=content;
+                }
+            }
+            if(!contact){
+                contact='';
+            }
+            $.post(zmf.ajaxUrl, {action:'report',logid:logid,type:type,reason:reason,contact:contact,url:window.location.href,YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {                
+                result = eval('(' + result + ')');
+                if (result['status'] == '1') {
+                    simpleDialog({content:result['msg']});
+                    closeDialog();
+                    return false;
+                } else {
+                    simpleDialog({content:result['msg']});
+                    return false;
+                }
+            });
+        });
+    });
     $('.openGallery').on('click',function(){
         var dom=$(this);
         var holder=dom.attr('data-holder');
@@ -213,6 +411,120 @@ function rebind() {
             }
         });
     });
+    $('.sendSms-btn').on('click',function () {
+        var dom = $(this);
+        var _target = dom.attr('data-target');
+        if (!_target) {
+            dialog({msg: '请输入手机号'});
+            return false;
+        }
+        var phone = $('#' + _target).val();
+        if (!phone) {
+            dialog({msg: '请输入手机号'});
+            return false;
+        }
+        var type = dom.attr('data-type');
+        if (!type) {
+            dialog({msg: '缺少类型参数'});
+            return false;
+        }
+        $.post(zmf.ajaxUrl, {action: 'sendSms', type: type, phone: phone, YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
+            result = eval('(' + result + ')');
+            if (result['status'] === 1) {
+                var totalTime=60,times=0;
+                dom.text('重新发送 '+totalTime+'s').attr('disabled','disabled');                
+                var interval = setInterval(function(){
+                    times+=1;
+                    var time = totalTime-times;
+                    dom.text('重新发送 '+time+'s');
+                    if(time <= 0) {
+                        clearInterval(interval);
+                        dom.removeAttr('disabled').text('重新发送');
+                    }
+                }, 1000);
+            } else {
+                dialog({msg: result['msg']});
+            }
+        });
+    });
+    $('.nextStep-btn').on('click',function () {
+        var dom = $(this);
+        var hasError = false;
+        $('#send-sms-form .bitian').each(function () {
+            var _dom = $(this);
+            if (!_dom.val()) {
+                hasError = true;
+                dialog({msg: _dom.attr('placeholder') + '不能为空'});
+                return false;
+            }
+        });
+        var type = dom.attr('data-type');
+        if (!type) {
+            dialog({msg: '缺少类型参数'});
+            return false;
+        }
+        var _target = dom.attr('data-target');
+        if (!_target) {
+            dialog({msg: '请输入手机号'});
+            return false;
+        }
+        var phone = $('#' + _target).val();
+        if (!phone) {
+            dialog({msg: '请输入手机号'});
+            return false;
+        }
+        var vcode = $('#verifycode').val();
+        if (hasError) {
+            return false;
+        }
+        var passData={
+            action:'checkSms',
+            type: type, 
+            phone: phone, 
+            code: vcode, 
+            YII_CSRF_TOKEN: zmf.csrfToken
+        };
+        var passwd='';
+        if(type==='forget' || type==='authorPass'){
+            if(phone.length!==11){
+                dialog({msg: '请输入有效的11位手机号码'});
+                return false;
+            }            
+            passwd=$('#password').val();
+            if(!passwd || passwd.length<6){
+                dialog({msg: '请输入长度不小于6位的有效密码'});
+                return false;
+            }
+            passData.password=passwd;
+        }
+        $.post(zmf.ajaxUrl, passData, function (result) {
+            result = eval('(' + result + ')');
+            if (result.status === 1) {
+                if(type==='exphone'){
+                    dialog({msg: '手机号修改成功'});
+                    window.location.href = result.msg;
+                }else if(type==='checkPhone'){
+                    dialog({msg: '手机号已验证'});
+                    window.location.href = result.msg;   
+                }else if(type==='forget'){
+                    dialog({msg: result.msg});
+                    setTimeout(function(){
+                        location.href=zmf.loginUrl;
+                    },1000);
+                }else if(type==='authorPass'){
+                    dialog({msg: '密码修改成功，正在跳转至登录页面'});
+                    setTimeout(function(){
+                        location.href=result.msg;
+                    },1000);    
+                }else{
+                    $('#hashCode').val(result.msg);
+                    $('#send-sms-form').submit();
+                }
+            } else {
+                dialog({msg: result.msg});
+            }
+        });
+    });
     //调用复制
     var clipboard = new Clipboard('.btn-copy');
     clipboard.on('success', function (e) {
@@ -222,77 +534,14 @@ function rebind() {
         dialog({msg: '复制失败，请手动复制浏览器链接'});
     });
 }
-/**
- * 获取内容
- * @param {type} dom
- * @param {type} t 类型
- * @param {type} k keyid
- * @param {type} p 页码
- * @returns {Boolean}
- */
-function getContents(dom) {
-    var acdata = dom.attr("action-data");
-    var t = dom.attr("action-type");
-    var p = dom.attr("action-page");
-    var targetBox = dom.attr('action-target');
-    if (!checkAjax()) {
+function searchType(type,title){
+    if(!type || !title){
         return false;
     }
-    if (!targetBox) {
-        return false;
-    }
-    if (!p) {
-        p = 1;
-    }
-    var loading = '<div class="loading-holder"><a class="btn btn-default btn-block disabled" href="javascript:;">拼命加载中...</a></div>';
-    $('#' + targetBox + '-box').children('.loading-holder').each(function () {
-        $(this).remove();
-    });
-    $('#' + targetBox + '-box').append(loading);
-    $.post(zmf.contentsUrl, {type: t, page: p, data: acdata, YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
-        ajaxReturn = true;
-        dom.attr('loaded', '1');
-        result = $.parseJSON(result);
-        if (result.status === 1) {
-            var data = result.msg;
-
-            var pageHtml = '', dataHtml = '';
-
-            if (data.html !== '') {
-                dataHtml += data.html;
-            }
-
-            if (data.loadMore === 1) {
-                var _p = parseInt(p) + 1;
-                pageHtml += '<div class="loading-holder"><a class="btn btn-default btn-block"  href="javascript:;" action="get-contents" action-type="' + t + '" action-data="' + acdata + '" action-page="' + _p + '" action-target="' + targetBox + '">加载更多</a></div>';
-            } else {
-                pageHtml += '<div class="loading-holder"><a class="btn btn-default btn-block disabled" href="javascript:;">已全部加载</a></div>';
-            }
-
-            if (p === 1) {
-                $('#' + targetBox + '-box').append(data.formHtml);
-                $('#' + targetBox + '-box .loading-holder').each(function () {
-                    $(this).remove();
-                });
-            } else {
-                $('#' + targetBox + '-box .loading-holder').each(function () {
-                    $(this).remove();
-                });
-            }
-            if (p > 1) {
-                $('#' + targetBox).append(dataHtml);
-            } else {
-                $('#' + targetBox).html(dataHtml);
-            }
-            $('#' + targetBox + '-box').append(pageHtml);
-
-            rebind();
-        } else {
-            dialog({msg: result.msg});
-        }
-    });
-
+    $('#searchTypeBtn').html(title+' <span class="caret"></span>');
+    $('#search-type').val(type);
 }
+
 function selectThisImg(dom,holder,field){
     var _origin=dom.attr('data-original');
     if(!_origin){
@@ -305,46 +554,6 @@ function selectThisImg(dom,holder,field){
     if(field){
         $('#'+field).val(_origin);
     }
-}
-function delContent(dom) {
-    var acdata = dom.attr("action-data");
-    var t = dom.attr("action-type");
-    var cf = dom.attr('action-confirm');
-    var rurl = dom.attr('action-redirect');
-    var targetBox = dom.attr('action-target');
-    if (!acdata || !t) {
-        return false;
-    }
-    var todo = true;
-    if (parseInt(cf) === 1) {
-        if (confirm('确定删除此内容？')) {
-            todo = true;
-        } else {
-            todo = false;
-        }
-    }
-    if (!todo) {
-        return false;
-    }
-    if (!checkAjax()) {
-        return false;
-    }
-    $.post(zmf.delContentUrl, {type: t, data: acdata, YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
-        ajaxReturn = true;
-        result = $.parseJSON(result);
-        if (result.status === 1) {
-            if (rurl) {
-                window.location.href = rurl;
-            } else if (targetBox) {
-                $('#' + targetBox).fadeOut(500).remove();
-            } else {
-                alert(result.msg);
-            }
-        } else {
-            dialog({msg: result.msg});
-        }
-        return false;
-    });
 }
 function favorite(dom) {
     var acdata = dom.attr("action-data");
@@ -380,6 +589,18 @@ function favorite(dom) {
             dom.removeClass('btn-default').addClass('btn-danger').html('<i class="fa fa-heart-o"></i> 收藏');
         }else{
             dom.removeClass('btn-danger').addClass('btn-default').html('<i class="fa fa-heart"></i> 已收藏');
+        }
+    }else if(t==='post'){
+        if(dom.hasClass('btn-default')){
+            dom.removeClass('btn-default').addClass('btn-danger').html('<i class="fa fa-thumbs-o-up"></i> 赞');
+        }else{
+            dom.removeClass('btn-danger').addClass('btn-default').html('<i class="fa fa-thumbs-up"></i> 已赞');
+        }
+    }else if(t==='user'){
+        if(dom.hasClass('btn-default')){
+            dom.removeClass('btn-default').addClass('btn-danger').html('<i class="fa fa-star-o"></i> 赞');
+        }else{
+            dom.removeClass('btn-danger').addClass('btn-default').html('<i class="fa fa-star"></i> 已赞');
         }
     }
     $.post(zmf.favoriteUrl, {type: t, data: acdata, YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
@@ -417,12 +638,21 @@ function addComment(dom) {
     if (!checkAjax()) {
         return false;
     }
+    var targetBox="comments-" + t + "-" + k;
     $.post(zmf.addCommentUrl, {k: k, t: t, c: c, to: to, YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
         ajaxReturn = true;
         result = eval('(' + result + ')');
         if (result['status'] == '1') {
-            $('#content-' + t + '-' + k).val('');
-            $("#comments-" + t + "-" + k).append(result['msg']);
+            $('#content-' + t + '-' + k).val('');  
+            var loadingDom=$('#' + targetBox + ' .loading-holder');
+            var loadingHtml=loadingDom.html();
+            if(!loadingHtml){
+                loadingHtml='';
+            }else{
+                loadingHtml='<p class="loading-holder">'+loadingHtml+'</p>';
+            }
+            loadingDom.remove();
+            $("#comments-" + t + "-" + k).append(result['msg']+loadingHtml);
             cancelReplyOne(k);
             rebind();
         } else {
@@ -458,6 +688,63 @@ function setStatus(a, b, c) {
             dialog({msg: result['msg']});
         }
     });
+}
+// 使用message对象封装消息  
+var flashTitle = {  
+    time: 0,  
+    title: document.title,  
+    timer: null,  
+    // 显示新消息提示  
+    show: function () {  
+        var title = flashTitle.title.replace("【　　　】", "").replace("【新消息】", "");  
+        // 定时器，设置消息切换频率闪烁效果就此产生  
+        flashTitle.timer = setTimeout(function () {  
+            flashTitle.time++;  
+            flashTitle.show();  
+            if (flashTitle.time % 2 == 0) {  
+                document.title = "【新消息】" + title  
+            } else {  
+                document.title = "【　　　】" + title  
+            };  
+        }, 600);  
+        return [flashTitle.timer, flashTitle.title];  
+    },  
+    // 取消新消息提示  
+    clear: function () {  
+        clearTimeout(flashTitle.timer);  
+        document.title = flashTitle.title;  
+    }  
+};  
+function getNotice(){
+    //window.setInterval("doGetNotice()",5000);
+}
+function doGetNotice(){
+    if(!checkLogin()){
+        return false;
+    }
+    if (!checkAjax()) {
+        return false;
+    }
+    $.post(zmf.ajaxUrl, {action:'getNotice',YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
+        ajaxReturn = true;
+        result = $.parseJSON(result);
+        if (result.status === 1) {
+            var _num=parseInt(result.msg);
+            if(_num>0){
+                $('#top-nav-count').html(_num).css('display','inline-block');
+                if(flashTitle.timer===null){
+                    flashTitle.show();
+                    console.log('heheh');
+                }
+                
+            }else{
+                $('#top-nav-count').hide();
+                flashTitle.clear();
+            }
+        }else{
+            
+        }
+    })
 }
 /**
  * 意见反馈
@@ -1315,3 +1602,4 @@ function uuid(len, radix) {
             }, {"./clipboard-action": 8, "good-listener": 5, "tiny-emitter": 7}]}, {}, [9])(9)
 });
 rebind();
+getNotice();
