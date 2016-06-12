@@ -166,7 +166,7 @@ class Words extends CActiveRecord {
             return $str;
         }
         foreach ($words as $word) {
-            $str = preg_replace("/($word)/i", "<span style='color:red'>{$word}</span>", $str);
+            $str = str_replace($word, "<span style='color:red'>{$word}</span>", $str);
         }
         return $str;
     }
