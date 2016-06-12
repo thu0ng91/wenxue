@@ -62,15 +62,14 @@ class BooksController extends Admin {
      * @param integer $id the ID of the model to be deleted
      */
     public function actionDelete($id) {
-        $this->loadModel($id)->delete();
-
+        $this->loadModel($id)->updateByPk($id, array('status'=>  Posts::STATUS_DELED));
         // if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
         if (!isset($_GET['ajax']))
             $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('index'));
     }
 
     public function actionIndex() {
-        $select = "id,aid,title,status";
+        $select = "id,aid,title,bookStatus,status";
         $model = new Books();
         $criteria = new CDbCriteria();
         $type = zmf::val('type', 1);    

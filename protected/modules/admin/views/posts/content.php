@@ -88,6 +88,8 @@ $form=$this->beginWidget('CActiveForm', array(
         <td><?php echo CHtml::link($post->bookInfo->title,array('books/view','id'=>$post->bid));?></td>
         <?php }elseif($field=='ip'){?>
         <td><?php echo long2ip($post[$field]);?></td>
+        <?php }elseif($field=='bookStatus'){?>
+        <td><span class="label label-<?php echo $post['bookStatus']==Books::STATUS_PUBLISHED ? "success" : "info";?>"><?php echo Books::exStatus($post['bookStatus']);?></span></td>
         <?php }elseif($field=='classify' && $from=='link'){?>
         <td><span class="label label-info"><?php echo Link::exTypes($post[$field]);?></span></td>
         <?php }elseif($field=='classify' && $from=='posts'){?>
@@ -110,14 +112,20 @@ $form=$this->beginWidget('CActiveForm', array(
             <?php if($post['status']!=Posts::STATUS_PASSED && in_array($from, array('posts','chapters'))){?>
                 <?php echo CHtml::link('查看敏感词',array('stayCheck','id'=>$post['id']));?>
                 <?php echo CHtml::link('编辑',array('update','id'=>$post['id']));?>
-            <?php }else{?>            
+                <?php echo CHtml::link('删除',array('delete','id'=>$post['id']));?>
+            <?php }else{?>  
+            <?php if($from=='books'){?>
+                <?php echo CHtml::link('预览',array('/book/view','id'=>$post['id']),array('target'=>'_blank'));?>
+            <?php }elseif($from=='chapters'){?>
+                <?php echo CHtml::link('预览',array('/book/chapter','cid'=>$post['id']),array('target'=>'_blank'));?>
+            <?php }?>
                 <?php if($from=='reports'){?>
                 <?php echo CHtml::link('详情',array('view','id'=>$post['id']));?>
                 <?php }else{?>
                 <?php echo CHtml::link('编辑',array('update','id'=>$post['id']));?>
                 <?php }?>
                 <?php if($from=='books'){?>
-                <?php echo CHtml::link('章节',array('chapters/index','bid'=>$post['id']));?>
+                <?php echo CHtml::link('章节',array('chapters/index','bid'=>$post['id']));?>                
                 <?php }elseif($from=='showcases'){?>
                 <?php echo CHtml::link('文章',array('showcaseLink/index','sid'=>$post['id']));?>
                 <?php }?>
