@@ -37,10 +37,13 @@ function rebind() {
         var t = dom.attr("data-type");
         var p = dom.attr("data-page");
         var targetBox = dom.attr('data-target');
-        if (!checkAjax()) {
+        if (!targetBox) {
             return false;
         }
-        if (!targetBox) {
+        if(dom.attr('data-loaded')==='1'){
+            $('#' + targetBox+'-box').hide();
+            dom.attr('data-loaded',0);
+            console.log(dom.attr('data-loaded'));
             return false;
         }
         if (!p) {
@@ -54,7 +57,7 @@ function rebind() {
         $('#' + targetBox+'-box').show();
         $.post(zmf.ajaxUrl, {action:'getContents',type: t, page: p, data: acdata, YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
             ajaxReturn = true;
-            dom.attr('loaded', '1');
+            dom.attr('data-loaded', 1);
             result = $.parseJSON(result);
             if (result.status === 1) {
                 var data = result.msg;
@@ -93,7 +96,7 @@ function rebind() {
             }
         });
     });
-    $("a[action=delContent]").on('click',function () {
+    $("a[action=delContent]").unbind('click').click(function () {
         var dom = $(this);
         var acdata = dom.attr("data-id");
         var t = dom.attr("data-type");
@@ -138,7 +141,7 @@ function rebind() {
         var dom = $(this);
         favorite(dom);
     });
-    $(".tag-item").on('click',function () {
+    $(".tag-item").unbind('click').click(function () {
         var dom = $(this);
         if(dom.hasClass('active')){
             dom.removeClass('active');
@@ -206,7 +209,7 @@ function rebind() {
         var dom = $(this);
         share(dom);
     });
-    $("a[action=setStatus]").on('click',function () {
+    $("a[action=setStatus]").unbind('click').click(function () {
         var dom = $(this);
         var id=parseInt(dom.attr('data-id'));
         if(!id){
@@ -236,7 +239,7 @@ function rebind() {
         }
     });
     
-    $("a[action=publishBook]").on('click',function () {
+    $("a[action=publishBook]").unbind('click').click(function () {
         var dom = $(this);
         var id=parseInt(dom.attr('data-id'));
         if(!id){
@@ -255,7 +258,7 @@ function rebind() {
             });
         }
     });
-    $("a[action=publishChapter]").on('click',function () {
+    $("a[action=publishChapter]").unbind('click').click(function () {
         var dom = $(this);
         var id=parseInt(dom.attr('data-id'));
         if(!id){
@@ -282,7 +285,7 @@ function rebind() {
         container: 'body'
     });
     
-    $("a[action=showChapters]").on('click',function () {
+    $("a[action=showChapters]").unbind('click').click(function () {
         var dom=$(this);
         if(dom.hasClass('active')){
             dom.removeClass('active');
@@ -330,7 +333,7 @@ function rebind() {
         });
     });
     //举报
-    $("a[action=report]").on('click',function () {
+    $("a[action=report]").unbind('click').click(function () {
         var dom=$(this);
         var type=dom.attr('action-type');
         var id=dom.attr('action-id');
@@ -361,7 +364,7 @@ function rebind() {
                 $('#report-content-holder').hide();
             }
         });
-        $("button[action=doReport]").on('click',function () {
+        $("button[action=doReport]").unbind('click').click(function () {
             var logid=$('#report-id').val();            
             var reason=$('#report-reason').val();
             var content=$('#report-content').val();
@@ -394,7 +397,7 @@ function rebind() {
             });
         });
     });
-    $('.openGallery').on('click',function(){
+    $('.openGallery').unbind('click').click(function(){
         var dom=$(this);
         var holder=dom.attr('data-holder');
         var field=dom.attr('data-field');
@@ -403,7 +406,7 @@ function rebind() {
             result = eval('(' + result + ')');
             if (result['status'] == '1') {
                 $("#gallery-select-modal").html(result['msg']['html']);   
-                $('.select-gallery-img').on('click',function(){
+                $('.select-gallery-img').unbind('click').click(function(){
                     var _dom=$(this);
                     selectThisImg(_dom,holder,field);
                 });
@@ -413,7 +416,7 @@ function rebind() {
             }
         });
     });
-    $('.sendSms-btn').on('click',function () {
+    $('.sendSms-btn').unbind('click').click(function () {
         var dom = $(this);
         var _target = dom.attr('data-target');
         if (!_target) {
@@ -449,7 +452,7 @@ function rebind() {
             }
         });
     });
-    $('.nextStep-btn').on('click',function () {
+    $('.nextStep-btn').unbind('click').click(function () {
         var dom = $(this);
         var hasError = false;
         $('#send-sms-form .bitian').each(function () {
@@ -718,7 +721,8 @@ var flashTitle = {
     }  
 };  
 function getNotice(){
-    //window.setInterval("doGetNotice()",5000);
+    doGetNotice();
+    window.setInterval("doGetNotice()",5000);
 }
 function doGetNotice(){
     if(!checkLogin()){

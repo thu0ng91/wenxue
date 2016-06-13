@@ -20,7 +20,7 @@
         <p><?php echo nl2br(CHtml::encode($data['content'])); ?></p>
         <p class="color-grey">
             <?php echo zmf::formatTime($data['cTime']); ?>
-            <?php echo CHtml::link($data['comments'].'评论','javascript:;',array('action'=>'getContents','data-id'=>$data['id'],'data-type'=>'tipComments','data-target'=>'comments-tipComments-'.$data['id']));?>
+            <?php echo CHtml::link($data['comments'].'评论','javascript:;',array('action'=>'getContents','data-id'=>$data['id'],'data-type'=>'tipComments','data-target'=>'comments-tipComments-'.$data['id'],'data-loaded'=>0));?>
             <span class="pull-right">
                 <?php if($this->uid==$data['uid']){
                     echo CHtml::link('编辑',array('book/editTip','tid'=>$data['id'])).'&nbsp;';
