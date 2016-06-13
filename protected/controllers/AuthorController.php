@@ -87,7 +87,7 @@ class AuthorController extends Q {
         $this->checkAuthorLogin();
         $this->checkUserStatus();
         if ($bid) {
-            $model = Books::getOne($bid,'');
+            $model = Books::getOne($bid, '');
             if (!$model || $model['status'] != Posts::STATUS_PASSED) {
                 throw new CHttpException(404, '你所编辑的小说不存在，请核实');
             } elseif ($model['uid'] != $this->uid || $model['aid'] != $this->userInfo['authorId']) {
@@ -189,7 +189,8 @@ class AuthorController extends Q {
             $filterContent = Posts::handleContent($_POST['Chapters']['content']);
             $filterPostscript = Posts::handleContent($_POST['Chapters']['postscript'], FALSE);
             $psPosition = zmf::filterInput($_POST['Chapters']['psPosition'], 2);
-            $status = Posts::STATUS_NOTPASSED;
+            $chapterNum = zmf::filterInput($_POST['Chapters']['chapterNum'], 2);
+            $status = $cid > 0 ? $model->status : Posts::STATUS_NOTPASSED;
             if ($filterTitle['status'] != Posts::STATUS_PASSED || $filterPostscript['status'] != Posts::STATUS_PASSED || $filterContent['status'] != Posts::STATUS_PASSED) {
                 $status = Posts::STATUS_STAYCHECK;
             }
@@ -198,7 +199,8 @@ class AuthorController extends Q {
                 'content' => $filterContent['content'],
                 'postscript' => $filterPostscript['content'],
                 'psPosition' => ($psPosition < 0 || $psPosition > 1) ? 0 : $psPosition,
-                'status' => $status
+                'status' => $status,
+                'chapterNum' => $chapterNum,
             );
             $model->attributes = $attr;
             if ($model->save()) {

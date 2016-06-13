@@ -186,5 +186,22 @@ class Authors extends CActiveRecord {
         ));
         return $items;
     }
+    
+    public static function updateStatInfo($authorInfo){
+        if(!$authorInfo || !$authorInfo['id']){
+            return false;
+        }
+        $books=  Books::model()->findAll(array(
+            'condition'=>'aid=:aid AND status='.Posts::STATUS_PASSED.' AND bookStatus='.Books::STATUS_PUBLISHED,
+            'params'=>array(':aid'=>$authorInfo['id']),
+            'select'=>'id,hits'
+        ));
+        $hits=$authorInfo['hits']+array_sum(CHtml::listData($books, 'id', 'hits'));
+        $attr=array(
+            'posts'=>count($books),
+            'score'=>$hits,
+        );
+        return Authors::model()->updateByPk($authorInfo['id'], $attr);
+    }
 
 }

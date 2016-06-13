@@ -118,6 +118,12 @@
             <?php echo $form->error($model,'title'); ?>
         </div>
         <div class="form-group">
+            <?php echo $form->labelEx($model,'chapterNum'); ?>
+            <?php echo $form->numberField($model,'chapterNum',array('size'=>60,'maxlength'=>6,'class'=>'form-control bitian','placeholder'=>'请输入章节号')); ?>
+            <p class="help-block">此章节号用于小说的章节排序，从小到大，越小越靠前</p>
+            <?php echo $form->error($model,'chapterNum'); ?>
+        </div>
+        <div class="form-group">
             <?php echo $form->labelEx($model,'content'); ?>
             <?php $this->renderPartial('//common/editor_addChapter', array('model' => $model,'content' => $model->content!='' ? Chapters::text($model->content) : '','editorWidth'=>620,'editorHeight'=>360,'hashUuid'=>$hashUuid,'bookId'=>$model->bid)); ?>
             <?php echo $form->error($model,'content'); ?>

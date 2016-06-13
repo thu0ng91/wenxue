@@ -78,7 +78,7 @@
                             <?php if($_post['styleStatus']){?>
                             <span style="color:red" title="加精"><i class="fa fa-flag"></i></span>
                             <?php }?>
-                            <?php if($_post['classify']==Posts::CLASSIFY_AUTHOR){?>
+                            <?php if($_post['classify']==Posts::CLASSIFY_AUTHOR && $_post['aid']){?>
                             <span><?php echo CHtml::link($_post['username'],array('author/view','id'=>$_post['aid']));?></span>  
                             <?php }else{?>
                             <span><?php echo CHtml::link($_post['username'],array('user/index','id'=>$_post['uid']));?></span>  

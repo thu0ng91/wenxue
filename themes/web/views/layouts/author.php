@@ -216,11 +216,11 @@ $this->beginContent('/layouts/common');
                     <strong><?php echo $this->authorInfo['favors'];?></strong>
                     <label> 人</label>
                 </a>
-                <a class="item" href="#">
+                <a class="item" href="<?php echo Yii::app()->createUrl('author/view',array('id'=>$this->authorInfo['id']));?>">
                     <span>作品数</span><br>
                     <strong><?php echo $this->authorInfo['posts'];?></strong>
                 </a>
-                <a class="item" href="#">
+                <a class="item" href="javascript:;">
                     <span>热度</span><br>
                     <strong><?php echo $this->authorInfo['score'];?></strong>
                 </a>

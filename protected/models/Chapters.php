@@ -45,6 +45,7 @@ class Chapters extends CActiveRecord {
             array('status, vip,psPosition', 'numerical', 'integerOnly' => true),
             array('uid, aid, bid, words, comments, hits, cTime, updateTime, postTime', 'length', 'max' => 10),
             array('title', 'length', 'max' => 255),
+            array('chapterNum', 'length', 'max' => 6),
             array('postscript', 'length', 'max' => 1024),
             array('content', 'safe'),
             // The following rule is used by search().
@@ -91,6 +92,7 @@ class Chapters extends CActiveRecord {
             'postTime' => '发布时间',
             'postscript' => '还有话说',
             'psPosition' => '展示位置',
+            'chapterNum' => '章节号',
         );
     }
 
@@ -182,10 +184,11 @@ class Chapters extends CActiveRecord {
         }
         $items=  Chapters::model()->findAll(array(
             'condition'=>'bid=:bid'.(!$adminLogin ? ' AND status='.Posts::STATUS_PASSED : ''),
+            'order'=>'chapterNum ASC',
             'params'=>array(
                 ':bid'=>$id
             ),
-            'select'=>'id,title,status'
+            'select'=>'id,title,status,chapterNum'
         ));
         return $items;
     }

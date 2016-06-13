@@ -42,29 +42,39 @@ $cs->registerScriptFile(Yii::app()->baseUrl.'/umeditor/lang/zh-cn/zh-cn.js', CCl
            textarea: editorId
         });
         myeditor.addListener("keyup", function () {
-            var inputstr = myeditor.getContentTxt();
-            if (inputstr != '') {
-                $(window).bind('beforeunload', function () {
-                    return '你输入的内容可能未保存，确定离开此页面吗？';
-                });
-                $('#add-post-btn').removeAttr('disabled');
-                $('#preview-btn').removeAttr('disabled');
-                //开始重复
-                if(!internal){
-                    internal=window.setInterval("saveDrafts()",60000);
-                }
-            } else {
-                $('#add-post-btn').attr('disabled', 'disabled');
-                $('#preview-btn').attr('disabled', 'disabled');
-                window.clearInterval(internal); 
-                internal=false;
-            }
+            checkBtnStatus();
         });
         $('#add-post-btn').click(function () {
             submitChapterForm();
-        })
+        });
+        $('#add-chapter-form input,#add-chapter-form textarea').on('change',function () {
+            checkBtnStatus();
+        });
         }
     );
+    function checkBtnStatus(){
+        var inputAll=true;
+        $('#add-chapter-form .bitian').each(function () {
+            var _dom = $(this);
+            var _val = _dom.val();
+            if (!_val) {
+                inputAll=false;
+            }
+        });
+        var inputstr = myeditor.getContentTxt();
+        if (inputstr != '') {
+            $(window).bind('beforeunload', function () {
+                return '你输入的内容可能未保存，确定离开此页面吗？';
+            });
+            if(inputAll){
+                $('#add-post-btn').removeAttr('disabled');
+                $('#preview-btn').removeAttr('disabled');
+            }
+        } else {
+            $('#add-post-btn').attr('disabled', 'disabled');
+            $('#preview-btn').attr('disabled', 'disabled');
+        }
+    }
     function checkChapterContent() {
         $('#add-chapter-form .bitian').each(function () {
             var _dom = $(this);

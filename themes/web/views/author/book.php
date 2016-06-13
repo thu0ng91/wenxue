@@ -18,6 +18,7 @@
             <?php }else{?>
             <p><?php echo CHtml::link('预览',array('book/view','id'=>$info['id']),array('class'=>'btn btn-success btn-xs btn-block','target'=>'_blank'));?></p>
             <p><?php echo CHtml::link('分享','javascript:;',array('class'=>'btn btn-default btn-xs btn-block'));?></p>
+            <p><?php echo CHtml::link('编辑',array('author/updateBook','bid'=>$info['id']),array('class'=>'btn btn-default btn-xs btn-block'));?></p>            
             <?php }?>
         </div>
         <div class="media-body">
@@ -31,6 +32,7 @@
         <table class="table table-hover table-striped">
             <?php foreach ($chapters as $chapter){?>
             <tr>
+                <td style="width: 40px" title="章节号"><?php echo $chapter['chapterNum'];?></td>
                 <td>
                     <?php echo CHtml::link($chapter['title'],array('book/chapter','cid'=>$chapter['id']));?>
                     <?php echo $chapter['status']==Books::STATUS_PUBLISHED ? '':'<span class="color-warning">'.($chapter['status']==Books::STATUS_STAYCHECK ? '待审核' : '草稿').'</span>';?>

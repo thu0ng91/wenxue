@@ -210,13 +210,20 @@ class AjaxController extends Q {
         if (!Authors::checkLogin($this->userInfo, $bookInfo['aid'])) {
             $this->jsonOutPut(0, '你无权本操作');
         }
+        $authorInfo=  Authors::getOne($this->userInfo['authorId']);
+        if(!$authorInfo || $authorInfo['status']!=Posts::STATUS_PASSED){
+            $this->jsonOutPut(0, '你无权本操作');
+        }
         //统计已发表的章节
         $chapters = Chapters::model()->count('uid=:uid AND aid=:aid AND bid=:bid AND status=' . Books::STATUS_PUBLISHED, array(':uid' => $this->uid, ':aid' => $this->userInfo['authorId'], ':bid' => $id));
         if ($chapters < 1) {
             $this->jsonOutPut(0, '小说暂无已发表章节，请先发表章节');
         }
         if (Books::model()->updateByPk($id, array('bookStatus' => Books::STATUS_PUBLISHED))) {
+            //更新小说信息
             Books::updateBookStatInfo($id);
+            //更新作者信息
+            Authors::updateStatInfo($authorInfo);
             $this->jsonOutPut(1, '已发表');
         } else {
             $this->jsonOutPut(1, '已发表');
@@ -242,6 +249,10 @@ class AjaxController extends Q {
         } elseif (!$bookInfo['iAgree']) {
             $this->jsonOutPut(0, '请先同意本站协议');
         }
+        $authorInfo=  Authors::getOne($this->userInfo['authorId']);
+        if(!$authorInfo || $authorInfo['status']!=Posts::STATUS_PASSED){
+            $this->jsonOutPut(0, '你无权本操作');
+        }
         if (!$chapterInfo) {
             $this->jsonOutPut(0, '操作对象不存在，请核实');
         } elseif ($chapterInfo['uid'] != $this->uid || $chapterInfo['aid'] != $this->userInfo['authorId']) {
@@ -256,6 +267,7 @@ class AjaxController extends Q {
         }
         if (Chapters::model()->updateByPk($id, array('status' => Books::STATUS_PUBLISHED))) {
             Books::updateBookStatInfo($chapterInfo['bid']);
+            Authors::updateStatInfo($authorInfo);
             $this->jsonOutPut(1, '已发表');
         } else {
             $this->jsonOutPut(1, '已发表');

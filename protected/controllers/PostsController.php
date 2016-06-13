@@ -13,13 +13,35 @@ class PostsController extends Q {
         if ($type == 'author') {
             $classify = Posts::CLASSIFY_AUTHOR;
             $label = '作者专区';
-            $sql = "SELECT p.id,p.title,p.aid,a.authorName AS username,p.cTime,p.comments,p.favorite,p.classify,p.top,p.styleStatus FROM {{posts}} p,{{authors}} a WHERE p.classify='{$classify}' AND p.status=" . Posts::STATUS_PASSED . " AND p.aid=a.id AND a.status=" . Posts::STATUS_PASSED . " ORDER BY p.top DESC,p.cTime DESC";
+            $sql = "SELECT p.id,p.title,p.uid,u.truename AS username,p.cTime,p.comments,p.favorite,p.classify,p.top,p.styleStatus,p.aid FROM {{posts}} p,{{users}} u WHERE p.classify='{$classify}' AND p.status=" . Posts::STATUS_PASSED . " AND p.uid=u.id AND u.status=" . Posts::STATUS_PASSED . " ORDER BY p.top DESC,p.cTime DESC";
         } elseif ($type == 'reader') {
             $classify = Posts::CLASSIFY_READER;
             $label = '读者专区';
             $sql = "SELECT p.id,p.title,p.uid,u.truename AS username,p.cTime,p.comments,p.favorite,p.classify,p.top,p.styleStatus FROM {{posts}} p,{{users}} u WHERE p.classify='{$classify}' AND p.status=" . Posts::STATUS_PASSED . " AND p.uid=u.id AND u.status=" . Posts::STATUS_PASSED . " ORDER BY p.top DESC,p.cTime DESC";
         }
         Posts::getAll(array('sql' => $sql, 'pageSize' => $this->pageSize), $pages, $posts);
+        if ($type == 'author' && !empty($posts)) {
+            $aids = join(',', array_unique(array_filter(array_keys(CHtml::listData($posts, 'aid', '')))));
+            $authors = array();
+            if ($aids != '') {
+                $authors = Authors::model()->findAll(array(
+                    'condition' => "id IN({$aids}) AND status=" . Posts::STATUS_PASSED,
+                    'select' => 'id,authorName'
+                ));
+            }
+            if(!empty($authors)){
+                foreach ($posts as $k => $val) {
+                    if (!$val['aid']) {
+                        continue;
+                    }
+                    foreach ($authors as $author) {
+                        if ($author['id'] == $val['aid']) {
+                            $posts[$k]['username'] = $author['authorName'];
+                        }
+                    }
+                }
+            }
+        }
         //获取展示
         $showcases = Showcases::getPagePosts('authorQzone', NUll, false, 'c360');
         $this->selectNav = $type . 'Forum';
@@ -39,15 +61,11 @@ class PostsController extends Q {
         if (!$id) {
             throw new CHttpException(404, 'The requested page does not exist.');
         }
-        $info = $this->loadModel($id);
-        $pageSize = 30;
-        $comments = Comments::getCommentsByPage($id, 'posts', 1, $this->pageSize);
-        $tags = Tags::getByIds($info['tagids']);
-        $relatePosts = Posts::getRelations($id, 5);
+        $info = $this->loadModel($id);        
         //作者信息
         $authorInfo = array();
-        $type='';
-        if ($info['classify'] == Posts::CLASSIFY_AUTHOR) {
+        $type = '';
+        if ($info['classify'] == Posts::CLASSIFY_AUTHOR && $info['aid']) {
             $author = Authors::getOne($info['aid']);
             if (!$author) {
                 throw new CHttpException(404, '所属作者不存在');
@@ -57,7 +75,18 @@ class PostsController extends Q {
                 'url' => array('author/view', 'id' => $info['aid']),
             );
             $this->selectNav = 'authorForum';
-            $type='author';
+            $type = 'author';
+        }elseif ($info['classify'] == Posts::CLASSIFY_AUTHOR && !$info['aid']) {
+            $user = Users::getOne($info['uid']);
+            if (!$user) {
+                throw new CHttpException(404, '所属用户不存在');
+            }
+            $authorInfo = array(
+                'title' => $user['truename'],
+                'url' => array('user/index', 'id' => $info['uid']),
+            );
+            $this->selectNav = 'authorForum';
+            $type = 'author';
         } else {
             $user = Users::getOne($info['uid']);
             if (!$user) {
@@ -68,7 +97,7 @@ class PostsController extends Q {
                 'url' => array('user/index', 'id' => $info['uid']),
             );
             $this->selectNav = 'readerForum';
-            $type='reader';
+            $type = 'reader';
         }
         if (!zmf::actionLimit('visit-Posts', $id, 5, 60)) {
             Posts::updateCount($id, 'Posts', 1, 'hits');
@@ -78,6 +107,9 @@ class PostsController extends Q {
             $size = 'w640';
         }
         $info['content'] = zmf::text(array(), $info['content'], true, $size);
+        $comments = Comments::getCommentsByPage($id, 'posts', 1, $this->pageSize);
+        $tags = Tags::getByIds($info['tagids']);
+        $relatePosts = Posts::getRelations($id, 5);
         $data = array(
             'info' => $info,
             'authorInfo' => $authorInfo,
@@ -85,7 +117,7 @@ class PostsController extends Q {
             'tags' => $tags,
             'relatePosts' => $relatePosts,
             'type' => $type,
-            'loadMore' => count($comments) == $pageSize ? 1 : 0,
+            'loadMore' => count($comments) == $this->pageSize ? 1 : 0,
         );
         $this->favorited = Favorites::checkFavored($id, 'post');
         $this->pageTitle = $info['title'];
@@ -121,7 +153,7 @@ class PostsController extends Q {
                 $model->aid = $this->userInfo['authorId'];
             }
             $model->classify = Posts::exType($type);
-            $model->open=  Posts::STATUS_OPEN;//是否允许评论
+            $model->open = Posts::STATUS_OPEN; //是否允许评论
             $isNew = true;
         }
         if (isset($_POST['ajax']) && $_POST['ajax'] === 'posts-form') {
@@ -147,7 +179,7 @@ class PostsController extends Q {
             $tagids = array_unique(array_filter($_POST['tags']));
             //如果标题包含敏感词则直接标记为未通过
             $attr['status'] = $filterTitle['status'] == Posts::STATUS_PASSED ? $filterContent['status'] : $filterTitle['status'];
-            $attr['open']= ($_POST['Posts']['open']==  Posts::STATUS_OPEN) ? 1 : 0;
+            $attr['open'] = ($_POST['Posts']['open'] == Posts::STATUS_OPEN) ? 1 : 0;
             $model->attributes = $attr;
             if ($model->save()) {
                 //将上传的图片置为通过
