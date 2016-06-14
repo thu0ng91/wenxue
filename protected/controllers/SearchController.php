@@ -70,10 +70,10 @@ class SearchController extends Q {
                 }
             }
         }
+        $this->searchType=$type;
+        $this->searchKeyword=$_keyword;        
         $this->pageTitle='搜索 - '.zmf::config('sitename');
         $data=array(
-            'type'=>$type,
-            'keyword'=>$_keyword,
             'posts'=>$posts,
         );
         $this->render('/site/search',$data);

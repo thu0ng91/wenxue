@@ -9,41 +9,6 @@
  * @datetime 2016-5-19  17:02:32 
  */
 ?>
-<style>
-    .forum-page .main-part .module-body{
-        padding-bottom: 0;
-    }
-    .forum-page .aside-part .module-body{
-        padding-bottom: 20px;
-    }
-    .forum-page .post-item{
-        border-bottom: 1px dashed #eee
-    }
-    .forum-page .last-toped{
-        border-bottom: 2px solid #eee
-    }
-    .forum-page .post-item .bold,.forum-page .post-item .bold a{
-        font-weight: 700
-    }
-    .forum-page .post-item .red,.forum-page .post-item .red a{
-        color: red
-    }
-    .forum-page .post-item .tips span{
-        margin-right: 5px
-    }
-    .forum-page .post-item .media-object{
-        width: 78px;
-        height: 104px;
-    }
-    .forum-page .posts-side-show img{
-        width: 300px;
-        height: 225px;
-    }
-    .yiiPager{
-        clear: both;
-        display: block
-    }
-</style>
 <div class="container forum-page">
     <div class="main-part">
         <div class="module">

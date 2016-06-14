@@ -9,38 +9,6 @@
  * @datetime 2015-12-18  16:36:08 
  */
 ?>
-<style>
-    .add-post-page{
-        background: #fff;
-        float: left;
-        width: 960px
-    }
-    .add-post-page .main-part{
-        padding: 10px
-    }
-    .tags-body{
-        min-height: 330px;
-    }
-    .tags-body .tag-item{
-        border:1px solid #93ba5f;
-        border-radius: 5px;
-        padding: 5px 10px;
-        display: inline-block;
-        margin-bottom: 5px
-    }
-    .tags-body .tag-item:hover,.tags-body .active{
-        background: #93ba5f;
-        color: #fff;
-        cursor: pointer
-    }
-    .tags-body .tag-item input{
-        display: none
-    }
-    .add-post-page .power-body{
-        padding-top: 0;
-        padding-bottom: 0;
-    }
-</style>
 <?php $uploadurl=Yii::app()->createUrl('attachments/upload',array('type'=>'posts','imgsize'=>600));?>
 <div class="container">
     <?php $form=$this->beginWidget('CActiveForm', array(

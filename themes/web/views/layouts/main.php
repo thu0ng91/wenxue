@@ -16,17 +16,17 @@ $this->beginContent('/layouts/common');
     <div class="header-search">
         <?php $types=  SiteInfo::searchTypes('admin');?>
         <form action="<?php echo Yii::app()->createUrl('search/do');?>" method="GET">
-            <input type="hidden" name="type" id="search-type" value="<?php $_types=array_keys($types);echo $_types[0];?>"/>
+            <input type="hidden" name="type" id="search-type" value="<?php if(!$this->searchType){$_types=array_keys($types);$_type=$_types[0];}else{$_type=$this->searchType;}echo $_type;?>"/>
             <div class="input-group">
                 <div class="input-group-btn">
-                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="searchTypeBtn">作者 <span class="caret"></span></button>
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="searchTypeBtn"><?php echo $types[$_type];?> <span class="caret"></span></button>
                     <ul class="dropdown-menu">
                         <?php foreach($types as $_type=>$_title){?>
                         <li><a href="javascript:;" onclick="searchType('<?php echo $_type;?>','<?php echo $_title;?>')"><?php echo $_title;?></a></li>
                         <?php }?>
                     </ul>
                 </div><!-- /btn-group -->
-                <input type="text" class="form-control" placeholder="请输入关键词" id="keyword" name="keyword">
+                <input type="text" class="form-control" placeholder="请输入关键词" id="keyword" name="keyword" value="<?php echo $this->searchKeyword;?>">
                 <span class="input-group-btn">
                     <button class="btn btn-default" type="submit" onclick="topSearchBtn()">
                         <i class="fa fa-search"></i>

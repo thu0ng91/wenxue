@@ -237,7 +237,7 @@ class AuthorController extends Q {
         $this->checkAuthorLogin();
         $this->checkUserStatus();
         $type = zmf::val('type', 1);
-        if (!in_array($type, array('info', 'skin', 'passwd'))) {
+        if (!in_array($type, array('info', 'skin', 'passwd','avatar'))) {
             throw new CHttpException(403, '不允许的分类');
         }
         $model = Authors::model()->findByPk($this->userInfo['authorId']);
@@ -268,18 +268,23 @@ class AuthorController extends Q {
                     );
                 }
             } elseif ($type == 'skin') {
-                $avatar = zmf::filterInput($_POST['Authors']['avatar'], 1);
                 $skinUrl = zmf::filterInput($_POST['Authors']['skinUrl'], 1);
-                if (!Attachments::checkUrlDomain($avatar)) {
-                    $field = 'avatar';
-                    $msg = '请使用站内图片';
-                } elseif (!Attachments::checkUrlDomain($skinUrl)) {
+                if (!Attachments::checkUrlDomain($skinUrl)) {
                     $field = 'skinUrl';
                     $msg = '请使用站内图片';
                 } else {
                     $attr = array(
-                        'avatar' => $avatar,
                         'skinUrl' => $skinUrl,
+                    );
+                }
+            } elseif ($type == 'avatar') {
+                $avatar = zmf::filterInput($_POST['Authors']['avatar'], 1);
+                if (!Attachments::checkUrlDomain($avatar)) {
+                    $field = 'avatar';
+                    $msg = '请使用站内图片';
+                } else {
+                    $attr = array(
+                        'avatar' => $avatar,
                     );
                 }
             }

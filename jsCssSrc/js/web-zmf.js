@@ -20,7 +20,9 @@ $(document).keydown(function (b) {
     }
 });
 function rebind() {
-    $("img.lazy").lazyload();
+    $("img.lazy").lazyload({
+        threshold:600
+    });
     /**
     * 获取内容
     * @param {type} dom
@@ -35,10 +37,12 @@ function rebind() {
         var t = dom.attr("data-type");
         var p = dom.attr("data-page");
         var targetBox = dom.attr('data-target');
-        if (!checkAjax()) {
+        if (!targetBox) {
             return false;
         }
-        if (!targetBox) {
+        if(dom.attr('data-loaded')==='1'){
+            $('#' + targetBox+'-box').hide();
+            dom.attr('data-loaded',0);
             return false;
         }
         if (!p) {
@@ -52,7 +56,7 @@ function rebind() {
         $('#' + targetBox+'-box').show();
         $.post(zmf.ajaxUrl, {action:'getContents',type: t, page: p, data: acdata, YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
             ajaxReturn = true;
-            dom.attr('loaded', '1');
+            dom.attr('data-loaded', 1);
             result = $.parseJSON(result);
             if (result.status === 1) {
                 var data = result.msg;
@@ -91,7 +95,7 @@ function rebind() {
             }
         });
     });
-    $("a[action=delContent]").on('click',function () {
+    $("a[action=delContent]").unbind('click').click(function () {
         var dom = $(this);
         var acdata = dom.attr("data-id");
         var t = dom.attr("data-type");
@@ -136,7 +140,7 @@ function rebind() {
         var dom = $(this);
         favorite(dom);
     });
-    $(".tag-item").on('click',function () {
+    $(".tag-item").unbind('click').click(function () {
         var dom = $(this);
         if(dom.hasClass('active')){
             dom.removeClass('active');
@@ -204,21 +208,21 @@ function rebind() {
         var dom = $(this);
         share(dom);
     });
-    $("a[action=setStatus]").on('click',function () {
+    $("a[action=setStatus]").unbind('click').click(function () {
         var dom = $(this);
         var id=parseInt(dom.attr('data-id'));
         if(!id){
-            alert('缺少参数1');
+            alert('缺少参数');
             return false;
         }
         var type=dom.attr('data-type');
         if(!type){
-            alert('缺少参数2');
+            alert('缺少参数');
             return false;
         }
         var action=dom.attr('data-action');
         if(!action){
-            alert('缺少参数3');
+            alert('缺少参数');
             return false;
         }
         if(confirm('确定该操作？')){
@@ -234,7 +238,7 @@ function rebind() {
         }
     });
     
-    $("a[action=publishBook]").on('click',function () {
+    $("a[action=publishBook]").unbind('click').click(function () {
         var dom = $(this);
         var id=parseInt(dom.attr('data-id'));
         if(!id){
@@ -253,7 +257,7 @@ function rebind() {
             });
         }
     });
-    $("a[action=publishChapter]").on('click',function () {
+    $("a[action=publishChapter]").unbind('click').click(function () {
         var dom = $(this);
         var id=parseInt(dom.attr('data-id'));
         if(!id){
@@ -280,7 +284,7 @@ function rebind() {
         container: 'body'
     });
     
-    $("a[action=showChapters]").on('click',function () {
+    $("a[action=showChapters]").unbind('click').click(function () {
         var dom=$(this);
         if(dom.hasClass('active')){
             dom.removeClass('active');
@@ -328,7 +332,7 @@ function rebind() {
         });
     });
     //举报
-    $("a[action=report]").on('click',function () {
+    $("a[action=report]").unbind('click').click(function () {
         var dom=$(this);
         var type=dom.attr('action-type');
         var id=dom.attr('action-id');
@@ -359,7 +363,7 @@ function rebind() {
                 $('#report-content-holder').hide();
             }
         });
-        $("button[action=doReport]").on('click',function () {
+        $("button[action=doReport]").unbind('click').click(function () {
             var logid=$('#report-id').val();            
             var reason=$('#report-reason').val();
             var content=$('#report-content').val();
@@ -392,7 +396,7 @@ function rebind() {
             });
         });
     });
-    $('.openGallery').on('click',function(){
+    $('.openGallery').unbind('click').click(function(){
         var dom=$(this);
         var holder=dom.attr('data-holder');
         var field=dom.attr('data-field');
@@ -401,7 +405,7 @@ function rebind() {
             result = eval('(' + result + ')');
             if (result['status'] == '1') {
                 $("#gallery-select-modal").html(result['msg']['html']);   
-                $('.select-gallery-img').on('click',function(){
+                $('.select-gallery-img').unbind('click').click(function(){
                     var _dom=$(this);
                     selectThisImg(_dom,holder,field);
                 });
@@ -411,7 +415,7 @@ function rebind() {
             }
         });
     });
-    $('.sendSms-btn').on('click',function () {
+    $('.sendSms-btn').unbind('click').click(function () {
         var dom = $(this);
         var _target = dom.attr('data-target');
         if (!_target) {
@@ -447,7 +451,7 @@ function rebind() {
             }
         });
     });
-    $('.nextStep-btn').on('click',function () {
+    $('.nextStep-btn').unbind('click').click(function () {
         var dom = $(this);
         var hasError = false;
         $('#send-sms-form .bitian').each(function () {
@@ -716,7 +720,8 @@ var flashTitle = {
     }  
 };  
 function getNotice(){
-    //window.setInterval("doGetNotice()",5000);
+    doGetNotice();
+    window.setInterval("doGetNotice()",5000);
 }
 function doGetNotice(){
     if(!checkLogin()){
@@ -734,9 +739,7 @@ function doGetNotice(){
                 $('#top-nav-count').html(_num).css('display','inline-block');
                 if(flashTitle.timer===null){
                     flashTitle.show();
-                    console.log('heheh');
-                }
-                
+                }                
             }else{
                 $('#top-nav-count').hide();
                 flashTitle.clear();
@@ -838,6 +841,59 @@ function myUploadify() {
                 dialog({msg: data.msg});
             }
             tipsImgOrder++;
+        }
+    });
+}
+function uploadByLimit(params) {
+    if (typeof params !== "object") {
+        return false;
+    }
+    var multi = true;
+    if (typeof params.multi === 'undefined') {
+        multi = true;
+    } else {
+        multi = params.multi;
+    }
+    $("#"+params.placeHolder).uploadify({
+        height: params.height ? params.height : 100,
+        width: params.width ? params.width : 300,
+        swf: zmf.baseUrl + '/common/uploadify/uploadify.swf',
+        queueID: params.queueID ? params.queueID : 'singleFileQueue',
+        auto: true,
+        multi: multi,
+        queueSizeLimit: zmf.perAddImgNum,
+        fileObjName: params.filedata ? params.filedata : 'filedata',
+        fileTypeExts: zmf.allowImgTypes,
+        fileSizeLimit: zmf.allowImgPerSize,
+        fileTypeDesc: 'Image Files',
+        uploader: params.uploadUrl,
+        buttonText: params.buttonText ? params.buttonText : (params.buttonText === null ? '' : '添加图片'),
+        buttonClass: params.buttonClass ? params.buttonClass : 'btn btn-default',
+        debug: false,
+        formData: {'PHPSESSID': zmf.currentSessionId, 'YII_CSRF_TOKEN': zmf.csrfToken},
+        onSelect: function(fileObj){
+//            console.log(fileObj);
+//            alert(
+//                  "文件名：" + fileObj.name + "\r\n" +
+//                  "文件大小：" + fileObj.size + "\r\n" +
+//                  "创建时间：" + fileObj.creationDate + "\r\n" +
+//                  "最后修改时间：" + fileObj.modificationDate + "\r\n" +
+//                  "文件类型：" + fileObj.type
+//            );
+//            $("#"+params.placeHolder).uploadify('cancel');
+        },        
+        onUploadSuccess: function (file, data, response) {
+            data = $.parseJSON(data);
+            if (data['status'] == 1) {
+                if (params.inputId) {
+                    $('#' + params.inputId).val(data.imgsrc);
+                }
+                if (params.targetHolder) {
+                    $('#' + params.targetHolder).attr('src',data.thumbnail);
+                }
+            } else {
+                dialog({msg: data.msg});
+            }
         }
     });
 }

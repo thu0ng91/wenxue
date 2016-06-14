@@ -48,7 +48,8 @@ if($accessKey && $secretKey && $bucket){
                     filedata:'file',
                     height:36,
                     width:134,
-                    buttonClass:'btn btn-success'
+                    buttonClass:'btn btn-success',
+                    multi:false
                 });
             });   
 </script>

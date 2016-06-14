@@ -18,6 +18,8 @@ class Q extends Controller {
     public $page = 1;
     public $pageSize = 30;
     public $isAjax = false;
+    public $searchType='';
+    public $searchKeyword='';
 
     function init() {
         parent::init();

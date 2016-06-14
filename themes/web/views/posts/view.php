@@ -2,32 +2,6 @@
 $url=zmf::config('domain').Yii::app()->createUrl('posts/view',array('id'=>$info['id']));
 $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
 ?>
-<style>
-    .post-page .aside-part{
-        width: 300px;
-    }
-    .post-page .module{
-        padding: 0
-    }
-    .post-page h1{
-        font-size: 24px;
-        padding: 0;
-        margin-bottom: 10px;
-        margin-top: 0
-    }
-    .post-page .tips{
-        margin-bottom: 20px
-    }
-    .post-page .tips span{
-        margin-right: 5px;
-    }
-    .post-comments .media{
-        border-bottom: 1px dashed #f2f2f2
-    }
-    .post-comments .media:last-child{
-        border: none
-    }
-</style>
 <div class="container post-page">    
     <ol class="breadcrumb">
         <li><?php echo CHtml::link(zmf::config('sitename').'首页',  zmf::config('baseurl'));?></li>

@@ -9,49 +9,6 @@
  * @datetime 2016-5-18  16:16:38 
  */
 ?>
-<style>
-    .column-page .module{
-        padding: 0;
-        float: left;
-        margin-bottom: 40px;
-    }
-    .column-min{
-        width: 230px;     
-        height:360px;
-        overflow: hidden
-    }
-    .column-medium{
-        width: 480px;
-        margin:0 10px;
-        height:360px;
-        border: none;
-        overflow: hidden
-    }
-    .column-medium .carousel .item img{
-        width: 480px;
-        height: 360px;
-    }
-    .column-medium .media-object{
-        width: 64px;
-        height: 85px;
-    }
-    .column-medium .title{
-        
-    }
-    .column-min .module-body{
-        padding-top:5px; 
-    }
-    .column-min .module-body .item{
-        padding: 5px 0 6px;
-        border-bottom: 1px solid #f2f2f2
-    }
-    .column-min .module-body .item:last-child{
-        border-bottom: none
-    }
-    .column-min .module-body .item .dot{
-        margin-right: 5px
-    }
-</style>
 <div class="container column-page">
     <?php $this->renderPartial('/showcase/columnModule',array('moduleInfo'=>$posts['column11']));?>
     <div class="module column-medium">

@@ -31,30 +31,36 @@
     <div class="form-group">
         <?php echo CHtml::submitButton($model->isNewRecord ? '新增' : '更新',array('class'=>'btn btn-primary')); ?>
     </div>
-    <?php }elseif ($type=='skin') {?>
-    <?php echo $form->hiddenField($model,'avatar'); ?>
+    <?php }elseif ($type=='skin') {?>    
     <?php echo $form->hiddenField($model,'skinUrl'); ?>
     <div class="form-group change-avatar-holder">
         <div class="media">
             <div class="media-left">
-                <img src="<?php echo $model->avatar;?>" alt="修改头像" id="author-avatar">
+                <img src="<?php echo zmf::getThumbnailUrl($model->skinUrl, 'c120', 'avatar');?>" alt="修改背景图" id="author-skin">
             </div>
             <div class="media-body">
-                <p><a href="javascript:;" class="btn btn-default openGallery" role="button" data-holder="author-avatar" data-field="<?php echo CHtml::activeId($model, 'avatar');?>">选择头像</a></p>
+                <p><a href="javascript:;" class="btn btn-default openGallery" role="button" data-holder="author-skin" data-field="<?php echo CHtml::activeId($model, 'skinUrl');?>">从相册选</a></p>
+                <?php $this->renderPartial('//common/_singleUpload',array('model'=>$model,'fieldName'=>'skinUrl','type'=>'author','fileholder'=>'filedata','targetHolder'=>'author-skin','imgsize'=>'c120','width'=>82));?>                
+                <p class="help-block">修改作者主页的背景大图，建议尺寸960*300px，其他尺寸将被裁剪</p>
+                <p class="help-block">更换图片后请点击更新按钮保存设置</p>
+                <?php echo $form->error($model,'skinUrl'); ?>
+                <p><?php echo CHtml::submitButton($model->isNewRecord ? '新增' : '更新',array('class'=>'btn btn-primary')); ?></p>
+            </div>
+        </div>
+    </div>
+    <?php }elseif($type=='avatar'){?> 
+    <?php echo $form->hiddenField($model,'avatar'); ?>
+    <div class="form-group change-avatar-holder">
+        <div class="media">
+            <div class="media-left">
+                <img src="<?php echo zmf::getThumbnailUrl($model->avatar, 'c120', 'avatar');?>" alt="修改头像" id="author-avatar">
+            </div>
+            <div class="media-body">
+                <p><a href="javascript:;" class="btn btn-default openGallery" role="button" data-holder="author-avatar" data-field="<?php echo CHtml::activeId($model, 'avatar');?>">从相册选</a></p>
+                <?php $this->renderPartial('//common/_singleUpload',array('model'=>$model,'fieldName'=>'avatar','type'=>'author','fileholder'=>'filedata','targetHolder'=>'author-avatar','imgsize'=>'c120','width'=>82));?>
                 <p class="help-block">修改作者的头像</p>
                 <p class="help-block">图片必须是站内图片，<?php echo CHtml::link('点此管理素材',array('user/gallery'));?></p>
                 <?php echo $form->error($model,'avatar'); ?>
-            </div>
-        </div>
-        <div class="media">
-            <div class="media-left">
-                <img src="<?php echo $model->skinUrl;?>" alt="修改背景图" id="author-skin">
-            </div>
-            <div class="media-body">
-                <p><a href="javascript:;" class="btn btn-default openGallery" role="button" data-holder="author-skin" data-field="<?php echo CHtml::activeId($model, 'skinUrl');?>">更换背景</a></p>
-                <p class="help-block">修改作者主页的背景大图</p>
-                <p class="help-block">更换图片后请点击更新按钮保存设置</p>
-                <?php echo $form->error($model,'skinUrl'); ?>
                 <p><?php echo CHtml::submitButton($model->isNewRecord ? '新增' : '更新',array('class'=>'btn btn-primary')); ?></p>
             </div>
         </div>

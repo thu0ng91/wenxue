@@ -9,22 +9,6 @@
  * @datetime 2016-5-13  16:27:16 
  */
 ?>
-<style>
-    .user-log-item{
-        border-bottom: 1px dashed #f2f2f2;
-        padding-bottom: 10px;
-    }
-    .user-log-item:last-child{
-        border-bottom: none
-    }
-    .user-log-item .media{
-        margin-top: 0
-    }
-    .user-log-item .media .media-object{
-        width: 78px;
-        height: 104px;
-    }
-</style>
 <div class="module">
     <div class="module-header">他的动态</div>
     <div class="module-body">

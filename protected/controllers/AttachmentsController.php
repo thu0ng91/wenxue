@@ -11,7 +11,7 @@ class AttachmentsController extends Q {
         $logid = zmf::filterInput($_GET['id']); //所属对象
         $reImgsize = zmf::filterInput($_GET['imgsize']); //返回图片的尺寸
         $fileholder = zmf::filterInput($_GET['fileholder'], 't', 1); //上传控件的ID
-        if (!isset($uptype) OR ! in_array($uptype, array('posts','siteinfo'))) {
+        if (!isset($uptype) OR ! in_array($uptype, array('posts','siteinfo','book','author'))) {
             $this->jsonOutPut(0, '请设置上传所属类型' . $uptype);
         }
         if (Yii::app()->request->getParam('PHPSESSID')) {
@@ -49,7 +49,7 @@ class AttachmentsController extends Q {
         $origin = $dir;
         if (move_uploaded_file($_FILES[$fileholder]["tmp_name"], $origin . $fileName)) {
             $data = array();
-            $status = Posts::STATUS_NOTPASSED;
+            $status = Posts::STATUS_PASSED;
             $data['uid'] = zmf::uid();
             $data['logid'] = $logid;
             $data['filePath'] = $fileName;
@@ -84,16 +84,17 @@ class AttachmentsController extends Q {
                         Attachments::model()->updateByPk($attachid, array('remote'=>$returnimg));
                     }
                 }
-                $returnimg = zmf::getThumbnailUrl($returnimg, 'w650', $uptype);
+                $thumbnail = zmf::getThumbnailUrl($returnimg, $reImgsize, $uptype);
                 $_attr = array(
                     'id' => $attachid,
-                    'imgUrl' => $returnimg,
+                    'imgUrl' => $thumbnail,
                 );
                 $html=  $this->renderPartial('/posts/_addImg',array('data'=>$_attr),true);                
                 $outPutData = array(
                     'status' => 1,
                     'attachid' => $attachid,
                     'imgsrc' => $returnimg,
+                    'thumbnail' => $thumbnail,
                     'html' => $html,
                 );
                 $json = CJSON::encode($outPutData);

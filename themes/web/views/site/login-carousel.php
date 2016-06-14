@@ -11,33 +11,6 @@
 $showcases=  Showcases::getPagePosts('reg', NUll, true,'c640360');
 $posts=$showcases['reg']['post'];
 ?>
-<style>
-    .login-reg-module .carousel{
-        width: 640px;
-        height: 360px;
-        background: #fff
-    }
-    .login-reg-module .carousel .item img{
-        width: 640px;
-        height: 360px;
-    }
-    .login-reg-module .aside-part .module{
-        height: 320px;
-        margin-bottom: 0;
-        border-top: none;
-        box-shadow: none;
-        overflow: hidden;
-        border-left: 1px solid #ccc;
-        border-bottom: 1px solid #ccc;
-        border-right: 1px solid #ccc;
-    }
-    .login-reg-module .checkbox{
-        margin-top: 0
-    }
-    .login-reg-module input[type=checkbox]{
-        margin-top: 2px
-    }
-</style>
 <?php if(!empty($posts)){?>
 <div id="carousel-example-generic" class="carousel slide" data-ride="carousel" style="">
     <ol class="carousel-indicators">
