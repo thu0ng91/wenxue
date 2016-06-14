@@ -721,17 +721,13 @@ var flashTitle = {
 };  
 function getNotice(){
     doGetNotice();
-    window.setInterval("doGetNotice()",5000);
+    window.setInterval("doGetNotice()",10000);
 }
 function doGetNotice(){
     if(!checkLogin()){
         return false;
     }
-    if (!checkAjax()) {
-        return false;
-    }
     $.post(zmf.ajaxUrl, {action:'getNotice',YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
-        ajaxReturn = true;
         result = $.parseJSON(result);
         if (result.status === 1) {
             var _num=parseInt(result.msg);
