@@ -322,7 +322,7 @@ function rebind() {
         $(this).remove();
     });
     //输入框自动变大
-    textareaAutoResize();
+    //textareaAutoResize();
     //意见反馈
     $("a[action=feedback]").unbind('click').click(function () {
         var html = '<div class="form-group"><label for="feedback-contact">联系方式</label><input type="text" id="feedback-contact" class="form-control" placeholder="常用联系方式(邮箱、QQ、微信等)，便于告知反馈处理进度(可选)"/></div><div class="form-group"><label for="feedback-content">反馈内容</label><textarea id="feedback-content" class="form-control" max-lenght="255" placeholder="您的意见或建议"></textarea></div>';
