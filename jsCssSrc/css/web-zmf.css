@@ -712,10 +712,10 @@ button, input, select, textarea,.form-control,.btn{
     margin-left: 360px;
     width: 80px;
 }
-.edui-container .edui-toolbar{
+.create-chapter-form .edui-container .edui-toolbar{
     display: none
 }
-.edui-container{
+.create-chapter-form .edui-container{
     border: 1px solid #fff !important;
     background: transparent !important;
     box-shadow: none !important
