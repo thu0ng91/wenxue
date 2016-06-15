@@ -18,7 +18,7 @@ class Comments extends CActiveRecord {
         return array(
             array('uid, logid,content,classify, status, cTime', 'required'),
             array('status', 'numerical', 'integerOnly' => true),
-            array('uid,logid,tocommentid, cTime', 'length', 'max' => 11),
+            array('uid,aid,logid,tocommentid, cTime', 'length', 'max' => 10),
             array('content,username,email,ipInfo', 'length', 'max' => 255),
             array('platform, classify,ip', 'length', 'max' => 16),
         );
@@ -54,6 +54,7 @@ class Comments extends CActiveRecord {
             'email' => '邮箱地址',
             'ip' => 'IP',
             'ipInfo' => 'IP信息',
+            'aid' => '作者ID',
         );
     }
 
@@ -95,34 +96,50 @@ class Comments extends CActiveRecord {
         return $info;
     }
 
-    public static function getCommentsByPage($id, $classify, $page = 1, $pageSize = 30, $field = "id,uid,username,logid,tocommentid,content,cTime,status") {
+    public static function getCommentsByPage($id, $classify, $page = 1, $pageSize = 30, $field = "c.id,c.uid,u.truename,c.aid,c.logid,c.tocommentid,c.content,c.cTime,c.status") {
         if (!$id || !$classify) {
             return array();
         }
         $page = $page <= 1 ? 1 : $page;
         $pageSize = !$pageSize ? 30 : $pageSize;
         $limitStart = ($page - 1) * $pageSize;
-        $sql = "SELECT {$field} FROM {{comments}} WHERE logid='{$id}' AND classify='{$classify}' AND status=" . Posts::STATUS_PASSED . " ORDER BY cTime DESC LIMIT {$limitStart},{$pageSize}";
+        $sql = "SELECT {$field} FROM {{comments}} c,{{users}} u WHERE c.logid='{$id}' AND c.classify='{$classify}' AND c.status=" . Posts::STATUS_PASSED . " AND c.uid=u.id AND u.status=" . Posts::STATUS_PASSED . " ORDER BY c.cTime ASC LIMIT {$limitStart},{$pageSize}";
         $items = Yii::app()->db->createCommand($sql)->queryAll();
         if (!empty($items)) {
-            $uids = array_filter(array_keys(CHtml::listData($items, 'uid', '')));
+            $uids = array_filter(array_keys(CHtml::listData($items, 'aid', '')));
             $uidsStr = join(',', $uids);
+            $usernames = array();
             if ($uidsStr != '') {
-                $usernames = Yii::app()->db->createCommand("SELECT id,truename FROM {{users}} WHERE id IN($uidsStr)")->queryAll();
+                $usernames = Yii::app()->db->createCommand("SELECT id,authorName FROM {{authors}} WHERE id IN($uidsStr)")->queryAll();
+            }
+            foreach ($items as $k => $val) {
+                $find = false;
                 if (!empty($usernames)) {
-                    foreach ($items as $k => $val) {
-                        foreach ($usernames as $val2) {
-                            if ($val['uid'] > 0 && $val['uid'] == $val2['id']) {
-                                $items[$k]['loginUsername'] = $val2['truename'];
-                            }
+                    foreach ($usernames as $val2) {
+                        if ($val['aid'] > 0 && $val['aid'] == $val2['id']) {
+                            $items[$k]['userInfo']['username'] = $val2['authorName'];
+                            $items[$k]['userInfo']['linkArr'] = array('author/view', 'id' => $val2['id']);
+                            $find = true;
+                            break;
                         }
                     }
                 }
+                if (!$find) {
+                    $items[$k]['userInfo']['username'] = $val['truename'];
+                    $items[$k]['userInfo']['linkArr'] = array('user/index', 'id' => $val['uid']);
+                }
+                unset($items[$k]['truename']);
             }
-            $tocommentIdstr = join(',', array_filter(array_unique(array_keys(CHtml::listData($items, 'tocommentid', '')))));
+            $tocommentIdstr = join(',', array_filter(array_unique(array_values(CHtml::listData($items, 'id', 'tocommentid')))));
             if ($tocommentIdstr != '') {
-                $_sql = "SELECT t.id,t.uid,u.truename FROM {{comments}} t,{{users}} u WHERE t.id IN({$tocommentIdstr}) AND t.classify='{$classify}' AND t.status=" . Posts::STATUS_PASSED . " AND t.uid=u.id AND u.status=" . Posts::STATUS_PASSED;
+                $_sql = "SELECT t.id,t.uid,t.aid,u.truename FROM {{comments}} t,{{users}} u WHERE t.id IN({$tocommentIdstr}) AND t.classify='{$classify}' AND t.status=" . Posts::STATUS_PASSED . " AND t.uid=u.id AND u.status=" . Posts::STATUS_PASSED;
                 $_userInfoArr = Yii::app()->db->createCommand($_sql)->queryAll();
+                $toaids = array_filter(array_keys(CHtml::listData($_userInfoArr, 'aid', '')));
+                $toaidsStr = join(',', $toaids);
+                $toAuthors = array();
+                if ($toaidsStr != '') {
+                    $toAuthors = Yii::app()->db->createCommand("SELECT id,authorName FROM {{authors}} WHERE id IN($toaidsStr)")->queryAll();
+                }  
                 foreach ($items as $k => $tip) {
                     $items[$k]['replyInfo'] = array();
                     if (!$tip['tocommentid']) {
@@ -130,7 +147,18 @@ class Comments extends CActiveRecord {
                     }
                     foreach ($_userInfoArr as $_val) {
                         if ($tip['tocommentid'] == $_val['id']) {
-                            $items[$k]['replyInfo'] = $_val;
+                            if($_val['aid']>0){
+                                foreach ($toAuthors as $_val2){
+                                    if($_val2['id']==$_val['aid']){
+                                        $items[$k]['replyInfo']['username'] = $_val2['authorName'];
+                                        $items[$k]['replyInfo']['linkArr'] = array('author/view', 'id' => $_val2['id']);
+                                        break;
+                                    }
+                                }
+                            }else{
+                                $items[$k]['replyInfo']['username'] = $_val['truename'];
+                                $items[$k]['replyInfo']['linkArr'] = array('user/index', 'id' => $_val['uid']);
+                            }
                             continue;
                         }
                     }

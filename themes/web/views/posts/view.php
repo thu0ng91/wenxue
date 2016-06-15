@@ -72,7 +72,7 @@ $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
                 </div>
                 <?php if($info['open']==Posts::STATUS_OPEN){?>
                 <div id="add-comments">
-                    <?php $this->renderPartial('/posts/_addComment', array('keyid' => $info['id'], 'type' => 'posts')); ?>
+                    <?php $this->renderPartial('/posts/_addComment', array('keyid' => $info['id'], 'type' => 'posts','authorPanel'=>($info['classify']==Posts::CLASSIFY_AUTHOR && $this->userInfo['authorId']>0),'authorLogin'=>  Authors::checkLogin($this->userInfo, $this->userInfo['authorId']))); ?>
                 </div>
                 <?php }?>
             </div>

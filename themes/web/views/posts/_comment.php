@@ -7,21 +7,25 @@
  * @copyright Copyright©2015 阿年飞少 
  * @datetime 2016-1-4  17:16:29 
  */
-$_uname=$data['loginUsername'];
+
+$_uname=$data['userInfo']['username'];
+
 ?>
 <?php if($data['status']==Posts::STATUS_PASSED){?>
 <div class="media" id="comment-<?php echo $data['id']; ?>">
     <div class="media-body">
         <p>
-            <b><?php echo CHtml::link($_uname,array('user/index','id'=>$data['uid']));?></b>
+            <b><?php echo CHtml::link($_uname,$data['userInfo']['linkArr']);?></b>
             <?php if(!empty($data['replyInfo'])){?>
-            回复 <b><?php echo CHtml::link($data['replyInfo']['truename'],array('user/index','id'=>$data['replyInfo']['uid']));?></b>        
+            回复 <b><?php echo CHtml::link($data['replyInfo']['username'],$data['replyInfo']['linkArr']);?></b>        
             <?php }?>
         </p>
         <p><?php echo nl2br(CHtml::encode($data['content'])); ?></p>
         <p class="help-block">
             <?php echo zmf::formatTime($data['cTime']); ?>
+            <?php if($this->uid!=$data['uid']){?>
             <span class="color-grey"><?php echo CHtml::link('举报','javascript:;',array('action'=>'report','action-type'=>'comment','action-id'=>$data['id'],'action-title'=>  zmf::subStr($data['content'])));?></span>
+            <?php }?>
             <?php if($this->uid){?>
             <span class="pull-right">
                 <?php 

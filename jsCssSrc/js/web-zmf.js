@@ -631,6 +631,7 @@ function addComment(dom) {
     var k = dom.attr("action-data");
     var t = dom.attr("action-type");
     var to = parseInt($('#replyoneHolder-' + k).attr('tocommentid'));
+    var isAuthor = parseInt($('#isAuthor-' + t + "-" + k+':checked').val());
     var c = $('#content-' + t + '-' + k).val();
     if (!k || !t || !c) {
         dialog({msg: '请填写内容'});
@@ -639,11 +640,14 @@ function addComment(dom) {
     if (!to) {
         to = 0;
     }
+    if(!isAuthor){
+        isAuthor=0;
+    }
     if (!checkAjax()) {
         return false;
     }
     var targetBox="comments-" + t + "-" + k;
-    $.post(zmf.addCommentUrl, {k: k, t: t, c: c, to: to, YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
+    $.post(zmf.addCommentUrl, {k: k, t: t, c: c, to: to,isAuthor:isAuthor, YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
         ajaxReturn = true;
         result = eval('(' + result + ')');
         if (result['status'] == '1') {
