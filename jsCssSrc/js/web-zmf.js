@@ -171,6 +171,10 @@ function rebind() {
             dialog({msg: '请填写内容'});
             return false;
         }
+        if(c.length<20){
+            dialog({msg: '点评内容不小于20字'});
+            return false;
+        }
         if (!score) {
             score = 0;
         }

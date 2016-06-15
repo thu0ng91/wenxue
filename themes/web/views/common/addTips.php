@@ -1,5 +1,5 @@
 <div class="form-group">
-    <?php echo CHtml::textArea('content-'.$type.'-'.$keyid,'',array('class'=>'form-control comment-textarea','action'=>'comment','rows'=>2,'maxLength'=>255,'placeholder'=>'撰写评论'));?>
+    <?php echo CHtml::textArea('content-'.$type.'-'.$keyid,'',array('class'=>'form-control comment-textarea','action'=>'comment','rows'=>2,'maxLength'=>255,'placeholder'=>'撰写评论（内容不短于20字）'));?>
 </div>
 <div class="form-group">
     <div class="clearfix">
