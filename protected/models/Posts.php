@@ -232,6 +232,7 @@ class Posts extends CActiveRecord {
             $replace = array(
                 "/style=\"[^\"]*?\"/i",
                 "/<p><br\/><\/p>/i",
+                "/<p><span>\&nbsp\;<\/span><\/p>/i",
                 "/<p><\/p>/i",
             );
             $to = array(
