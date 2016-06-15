@@ -149,6 +149,7 @@ class UserController extends Q {
                 $this->redirect(array('author/view', 'id' => $authorInfo['id']));
             }
         }
+        $this->pageTitle = '登录作者中心 - ' . zmf::config('sitename');
         $this->render('authorAuth', array(
             'model' => $model,
         ));
