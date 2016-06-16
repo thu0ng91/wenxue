@@ -83,7 +83,7 @@ class AjaxController extends Q {
                 if ($type == 'chapter') {
                     Posts::updateCount($keyid, 'Chapters', 1, 'comments');
                     $_url = CHtml::link('查看详情', array('book/chapter', 'cid' => $keyid, '#' => 'pid-' . $model->id));
-                    $_content = '你的小说章节【' . $postInfo['title'] . '】有了新的点评,' . $_url;
+                    $_content = '点评了你的小说章节【' . $postInfo['title'] . '】,' . $_url;
                     $intoData['truename'] = $this->userInfo['truename'];
                     $intoData['cTime'] = zmf::now();
                     $intoData['favors'] = 0;
@@ -728,16 +728,16 @@ class AjaxController extends Q {
                     if ($status == Posts::STATUS_PASSED) {
                         Posts::updateCommentsNum($keyid);
                     }
-                    $_content = '你的文章【' . $postInfo['title'] . '】有了新的评论,' . $_url;
+                    $_content = '评论了你的帖子【' . zmf::subStr($postInfo['title']) . '】,' . $_url;
                 }elseif($type=='tip'){
                     $_url = CHtml::link('查看详情', array('book/chapter', 'cid' => $postInfo['logid']));
                     if ($status == Posts::STATUS_PASSED) {
                         Posts::updateCount($keyid,'Tips',1,'comments');
                     }
-                    $_content = '你的点评有了新的评论,' . $_url;
+                    $_content = '评论了你的点评【'.zmf::subStr($postInfo['content']).'】,' . $_url;
                 }
                 if ($to && $_url) {
-                    $_content = '你的评论有了新的回复,' . $_url;
+                    $_content = '回复了你的评论【'.zmf::subStr($comInfo['content']).'】,' . $_url;
                 }
                 if ($toNotice) {
                     $_noticedata = array(

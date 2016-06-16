@@ -4,7 +4,9 @@
             <h1><?php echo $info['title']; ?></h1>
             <div class="media">
                 <div class="media-left">
-                    <img class="media-object lazy" src="<?php echo zmf::lazyImg(); ?>" data-original="<?php echo $info['faceImg']; ?>" alt="<?php echo $info['title']; ?>">                    
+                    <a href="<?php echo Yii::app()->createUrl('book/view',array('id'=>$info['id']));?>">
+                        <img class="media-object lazy w78" src="<?php echo zmf::lazyImg(); ?>" data-original="<?php echo $info['faceImg']; ?>" alt="<?php echo $info['title']; ?>"> 
+                    </a>
                 </div>
                 <div class="media-body book-detail">
                     <p>作者：<?php echo CHtml::link($authorInfo['authorName'], array('author/view', 'id' => $info['aid'])); ?></p>
@@ -78,7 +80,9 @@
             <div class="module-body">
                 <div class="media">
                     <div class="media-left">
-                        <img class="media-object lazy" style="width: 120px;height: 160px" src="<?php echo zmf::lazyImg(); ?>" data-original="<?php echo $authorInfo['avatar']; ?>" alt="<?php echo $authorInfo['authorName']; ?>">
+                        <a href="<?php echo Yii::app()->createUrl('author/view',array('id'=>$authorInfo['id']));?>">
+                            <img class="media-object lazy w78" src="<?php echo zmf::lazyImg(); ?>" data-original="<?php echo $authorInfo['avatar']; ?>" alt="<?php echo $authorInfo['authorName']; ?>">
+                        </a>                        
                     </div>
                     <div class="media-body">
                         <p class="title ui-nowrap"><?php echo CHtml::link($authorInfo['authorName'], array('author/view', 'id' => $authorInfo['id'])); ?></p>

@@ -326,7 +326,7 @@ class Posts extends CActiveRecord {
         }
         if ($type == 'book') {
             $postInfo = Books::getOne($id);
-            $content = "你的小说【{$postInfo['title']}】有了新的收藏者";
+            $content = "收藏了你的小说【{$postInfo['title']}】";
             $noticeUid = $postInfo['uid'];
             //记录用户操作
             $jsonData = CJSON::encode(array(
@@ -337,7 +337,7 @@ class Posts extends CActiveRecord {
             ));
         } elseif ($type == 'author') {
             $postInfo = Authors::getOne($id);
-            $content = "你的作者主页【{$postInfo['authorName']}】有了新的追随者";
+            $content = "关注了你的作者主页【{$postInfo['authorName']}】";
             $noticeUid = $postInfo['uid'];
             //记录用户操作
             $jsonData = CJSON::encode(array(
@@ -355,18 +355,18 @@ class Posts extends CActiveRecord {
             if (!$chapterInfo || $chapterInfo['status'] != Posts::STATUS_PASSED) {
                 return array('status' => 0, 'msg' => '你所操作的内容不存在');
             }
-            $content = "你点评【{$chapterInfo['title']}】有了新的赞同";
+            $content = "赞了你对【{$chapterInfo['title']}】的点评";
             $noticeUid = $postInfo['uid'];
         } elseif ($type == 'user') {
             $postInfo = Users::getOne($id);
-            $content = "你有了新的粉丝";
+            $content = "关注了你";
             $noticeUid = $id;
         } elseif ($type == 'post') {
             $postInfo = Posts::getOne($id);
             if (!$postInfo || $postInfo['status'] != Posts::STATUS_PASSED) {
                 return array('status' => 0, 'msg' => '你所操作的内容不存在');
             }
-            $content = "你的文章【{$postInfo['title']}】有了新的赞";
+            $content = "赞了你的文章【{$postInfo['title']}】，".CHtml::link('查看详情',array('posts/view','id'=>$id));
             $noticeUid = $postInfo['uid'];
         }
         if (!$postInfo || $postInfo['status'] != Posts::STATUS_PASSED) {
