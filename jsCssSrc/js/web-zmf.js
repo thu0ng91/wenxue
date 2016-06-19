@@ -839,7 +839,7 @@ function myUploadify() {
         onUploadSuccess: function (file, data, response) {
             data = eval("(" + data + ")");
             if (data['status'] == 1) {
-                var img = "<p><img src='" + data['imgsrc'] + "' data='" + data['attachid'] + "' class='img-responsive'/></p>";
+                var img = "<p><img src='" + data['thumbnail'] + "' data='" + data['attachid'] + "' class='img-responsive'/></p>";
                 myeditor.execCommand("inserthtml", img);
             } else {
                 dialog({msg: data.msg});

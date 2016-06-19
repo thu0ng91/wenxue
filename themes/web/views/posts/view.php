@@ -19,10 +19,10 @@ $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
                 <p class="color-grey tips">
                     <span><?php echo zmf::time($info['cTime'],'Y-m-d H:i');?></span>
                     <span><?php echo CHtml::link($authorInfo['title'],$authorInfo['url']);?></span>
-                    <span><?php echo CHtml::link($info['comments'].' 评论','javascript:;',array('action'=>'scroll','action-target'=>'comments-posts-'.$info['id'].'-box'));?></span>
-                    <span><?php echo $info['favorite'].' 赞';?></span>
+                    <span><?php echo CHtml::link($info['comments'].'评论','javascript:;',array('action'=>'scroll','action-target'=>'comments-posts-'.$info['id'].'-box'));?></span>
+                    <span><?php echo $info['favorite'].'赞';?></span>
                     <span>|</span>
-                    <?php if($info['uid']==$this->uid && $this->uid){?>
+                    <?php if($info['uid']==$this->uid && $this->uid && !$this->userInfo['isAdmin']){?>
                     <span><?php echo CHtml::link('编辑',array('posts/create','id'=>$info['id']));?></span>
                     <span><?php echo CHtml::link('删除','javascript:;',array('action'=>'delContent','data-type'=>'post','data-id'=>$info['id'],'data-confirm'=>1,'data-redirect'=>Yii::app()->createUrl('posts/index',array('type'=>$type))));?></span>
                     <?php }elseif($this->uid){?>
