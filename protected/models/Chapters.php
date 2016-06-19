@@ -41,7 +41,7 @@ class Chapters extends CActiveRecord {
         return array(
             array('uid', 'default', 'setOnEmpty' => true, 'value' => zmf::uid()),
             array('cTime,updateTime,postTime', 'default', 'setOnEmpty' => true, 'value' => zmf::now()),
-            array('uid, aid, bid, title, content', 'required'),
+            array('uid, aid, bid, title, content,chapterNum', 'required'),
             array('status, vip,psPosition', 'numerical', 'integerOnly' => true),
             array('uid, aid, bid, words, comments, hits, cTime, updateTime, postTime', 'length', 'max' => 10),
             array('title', 'length', 'max' => 255),

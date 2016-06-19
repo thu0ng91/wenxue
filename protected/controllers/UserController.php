@@ -149,6 +149,7 @@ class UserController extends Q {
                 $this->redirect(array('author/view', 'id' => $authorInfo['id']));
             }
         }
+        $this->pageTitle = '登录作者中心 - ' . zmf::config('sitename');
         $this->render('authorAuth', array(
             'model' => $model,
         ));
@@ -312,11 +313,27 @@ class UserController extends Q {
     public function actionNotice() {
         $this->checkLogin();
         $this->selectNav = 'notice';
-        $sql = "SELECT * FROM {{notification}} WHERE uid='{$this->uid}' ORDER BY cTime DESC";
-        Posts::getAll(array('sql' => $sql), $pages, $comLists);
+        $sql = "SELECT id,type,new,authorid,content,cTime,'' AS truename,'' AS avatar FROM {{notification}} WHERE uid='{$this->uid}' ORDER BY cTime DESC";
+        Posts::getAll(array('sql' => $sql), $pages, $posts);
+        $uids = join(',', array_unique(array_filter(array_keys(CHtml::listData($posts, 'authorid', '')))));
+        $authors = array();
+        if ($uids != '') {
+            $authors = Users::model()->findAll(array(
+                'condition' => "id IN({$uids}) AND status=" . Posts::STATUS_PASSED,
+                'select' => 'id,truename,avatar'
+            ));
+            foreach ($posts as $k=>$val){
+                foreach ($authors as $val2){
+                    if($val['authorid']==$val2['id']){
+                        $posts[$k]['truename']=$val2['truename'];
+                        $posts[$k]['avatar']=  zmf::getThumbnailUrl($val2['avatar'], 'a120', 'avatar');
+                    }
+                }
+            }
+        }        
         Notification::model()->updateAll(array('new' => 0), 'uid=:uid', array(':uid' => $this->uid));
         $data = array(
-            'posts' => $comLists,
+            'posts' => $posts,
             'pages' => $pages,
         );
         $this->pageTitle = '提醒 - ' . zmf::config('sitename');

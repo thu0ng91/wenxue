@@ -85,7 +85,12 @@ class BookController extends Q {
         $otherTops = Authors::otherTops($info['aid'], $id, 10);
         //获取分类
         $colInfo = Column::getSimpleInfo($info['colid']);
-
+        //更新小说数据,10分钟更新一次
+        $upBookInfo= zmf::getFCache('stat-Books-'.$id);
+        if(!$upBookInfo){
+            Books::updateBookStatInfo($id);
+            zmf::setFCache('stat-Books-'.$id, 1, 600);
+        }
         $this->favorited = Favorites::checkFavored($id, 'book');
         //标题
         $this->pageTitle = '【' . $authorInfo['authorName'] . '作品】' . $info['title'] . ' - ' . zmf::config('sitename');
@@ -131,7 +136,15 @@ class BookController extends Q {
         $sql = "SELECT t.id,t.uid,u.truename,t.content,t.cTime,t.logid,t.tocommentid,t.favors,t.score,t.status,t.comments FROM {{tips}} t,{{users}} u WHERE t.logid=:logid AND t.classify='chapter' AND t.status=" . Posts::STATUS_PASSED . " AND t.uid=u.id AND u.status=" . Posts::STATUS_PASSED;
         $tips = Posts::getByPage(array('sql' => $sql, 'pageSize' => 30, 'page' => 1, 'bindValues' => array(':logid' => $cid)));
         //更新统计
-        Posts::updateCount($cid, 'Chapters', 1, 'hits');
+        if (!zmf::actionLimit('visit-Chapters', $cid, 5, 60)) {
+            Posts::updateCount($cid, 'Chapters', 1, 'hits');
+        }
+        //更新小说数据,10分钟更新一次
+        $upBookInfo= zmf::getFCache('stat-Books-'.$bookInfo['id']);
+        if(!$upBookInfo){
+            Books::updateBookStatInfo($bookInfo['id']);
+            zmf::setFCache('stat-Books-'.$bookInfo['id'], 1, 600);
+        }
         //获取分类
         $colInfo = Column::getSimpleInfo($bookInfo['colid']);
         //获取章节

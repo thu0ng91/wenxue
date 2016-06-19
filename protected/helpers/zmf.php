@@ -227,6 +227,9 @@ class zmf {
     }
 
     public static function getThumbnailUrl($url, $size = '', $type = '') {
+        if(!$url){
+            return '';
+        }
         //c132|c120|c180|c105|c360
         $appStatus = self::config('appStatus');
         $visitUrl = self::config('imgVisitUrl');

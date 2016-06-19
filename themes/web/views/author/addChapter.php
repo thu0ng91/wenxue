@@ -47,7 +47,8 @@
         <div class="form-group">
             <?php echo $form->labelEx($model,'chapterNum'); ?>
             <?php echo $form->numberField($model,'chapterNum',array('size'=>60,'maxlength'=>6,'class'=>'form-control bitian','placeholder'=>'请输入章节号')); ?>
-            <p class="help-block">此章节号用于小说的章节排序，从小到大，越小越靠前</p>
+            <p class="help-block">此章节号用于小说的章节排序，从小到大，越小越靠前；必须为大于0的整数</p>
+            <p class="help-block">例如“第一章、XXX”，就输入“1”；“第一百零八章、XXX”，就输入“108”</p>
             <?php echo $form->error($model,'chapterNum'); ?>
         </div>
         <div class="form-group">

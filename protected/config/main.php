@@ -4,7 +4,7 @@ $rewrite = require('rewrite.php');
 
 return array(
     'basePath' => dirname(__FILE__) . DIRECTORY_SEPARATOR . '..',
-    'name' => 'Momo',
+    'name' => '初心创文',
     'theme' => 'web',
     'language' => 'zh_cn',
     'preload' => array('log'),

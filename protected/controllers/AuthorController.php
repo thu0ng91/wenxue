@@ -49,7 +49,15 @@ class AuthorController extends Q {
         foreach ($posts as $k => $val) {
             $posts[$k]['faceImg'] = zmf::getThumbnailUrl($val['faceImg'], 'w120', 'book');
         }
-        Posts::updateCount($this->userInfo['authorId'], 'Authors', 1, 'hits');
+        if (!zmf::actionLimit('visit-Author', $this->authorInfo['id'], 5, 60)) {
+            Posts::updateCount($this->authorInfo['id'], 'Authors', 1, 'hits');
+        }
+        //更新作者数据,10分钟更新一次
+        $upAuthorInfo= zmf::getFCache('stat-Authors-'.$this->authorInfo['id']);
+        if(!$upAuthorInfo){
+            Authors::updateStatInfo($this->authorInfo);
+            zmf::setFCache('stat-Authors-'.$this->authorInfo['id'], 1, 600);
+        }
         $this->selectNav = 'index';
         $this->pageTitle = $this->authorInfo['authorName'] . ' - ' . zmf::config('sitename');
         $data = array(

@@ -83,7 +83,7 @@ class AjaxController extends Q {
                 if ($type == 'chapter') {
                     Posts::updateCount($keyid, 'Chapters', 1, 'comments');
                     $_url = CHtml::link('查看详情', array('book/chapter', 'cid' => $keyid, '#' => 'pid-' . $model->id));
-                    $_content = '你的小说章节【' . $postInfo['title'] . '】有了新的点评,' . $_url;
+                    $_content = '点评了你的小说章节【' . $postInfo['title'] . '】,' . $_url;
                     $intoData['truename'] = $this->userInfo['truename'];
                     $intoData['cTime'] = zmf::now();
                     $intoData['favors'] = 0;
@@ -629,6 +629,7 @@ class AjaxController extends Q {
         $keyid = zmf::val('k', 2);
         $to = zmf::val('to', 2);
         $type = zmf::val('t', 1);
+        $isAuthor = zmf::val('isAuthor', 2);
         $content = zmf::val('c', 1);
         if (!isset($type) OR ! in_array($type, array('posts','tipComments'))) {
             $this->jsonOutPut(0, Yii::t('default', 'forbiddenaction'));
@@ -654,25 +655,56 @@ class AjaxController extends Q {
             }
             $type='tip';
         }
+        //处理使用作者身份回复
+        $authorId=0;
+        $authorInfo=array();
+        if($isAuthor){
+            if(!$this->userInfo['authorId'] || !Authors::checkLogin($this->userInfo, $this->userInfo['authorId'])){
+                $this->jsonOutPut(0, '登录作者中心后才能以作者身份评论或回复');
+            }
+            $authorInfo=  Authors::getOne($this->userInfo['authorId']);
+            if(!$authorInfo || $authorInfo['status']!=Posts::STATUS_PASSED){
+                $this->jsonOutPut(0, '作者信息不存在');
+            }
+            $authorId=$this->userInfo['authorId'];
+        }
         //处理文本，不是富文本
         $filter = Posts::handleContent($content, FALSE);
         $content = $filter['content'];
         $status = $filter['status'];
         $model = new Comments();
         $toNotice = true;
-        $toUserInfo = array();
+        $replyInfo = array();
         $touid = $postInfo['uid'];
+        
         if ($to) {
             $comInfo = Comments::model()->findByPk($to);
             if (!$comInfo || $comInfo['status'] != Posts::STATUS_PASSED || !$comInfo['uid']) {
                 $to = '';
             } elseif ($comInfo['uid'] == $uid) {
                 $toNotice = false;
+                $to = '';
             } else {
                 $toUserInfo = Users::getOne($comInfo['uid']);
                 if ($toUserInfo['status'] == Posts::STATUS_PASSED) {
                     $touid = $comInfo['uid'];
                     $toNotice = true;
+                    $replyInfo=array(
+                        'username'=>$toUserInfo['truename'],
+                        'linkArr'=>array('user/index', 'id' => $toUserInfo['id']),
+                    );
+                }else{
+                    $this->jsonOutPut(0, '对方账户信息不存在');
+                }
+                if($comInfo['aid']){
+                    $authorInfo=  Authors::getOne($comInfo['aid']);
+                    if(!$authorInfo || $authorInfo['status']!=Posts::STATUS_PASSED){
+                        $this->jsonOutPut(0, '对方账户信息不存在');
+                    }
+                    $replyInfo=array(
+                        'username'=>$authorInfo['authorName'],
+                        'linkArr'=>array('author/view', 'id' => $authorInfo['id']),
+                    );
                 }
             }
         }
@@ -685,6 +717,7 @@ class AjaxController extends Q {
             'platform' => '', //$this->platform
             'tocommentid' => $to,
             'status' => $status,
+            'aid' => $authorId,
         );
         unset(Yii::app()->session['checkHasBadword']);
         $model->attributes = $intoData;
@@ -695,16 +728,16 @@ class AjaxController extends Q {
                     if ($status == Posts::STATUS_PASSED) {
                         Posts::updateCommentsNum($keyid);
                     }
-                    $_content = '你的文章【' . $postInfo['title'] . '】有了新的评论,' . $_url;
+                    $_content = '评论了你的帖子【' . zmf::subStr($postInfo['title']) . '】,' . $_url;
                 }elseif($type=='tip'){
                     $_url = CHtml::link('查看详情', array('book/chapter', 'cid' => $postInfo['logid']));
                     if ($status == Posts::STATUS_PASSED) {
                         Posts::updateCount($keyid,'Tips',1,'comments');
                     }
-                    $_content = '你的点评有了新的评论,' . $_url;
+                    $_content = '评论了你的点评【'.zmf::subStr($postInfo['content']).'】,' . $_url;
                 }
                 if ($to && $_url) {
-                    $_content = '你的评论有了新的回复,' . $_url;
+                    $_content = '回复了你的评论【'.zmf::subStr($comInfo['content']).'】,' . $_url;
                 }
                 if ($toNotice) {
                     $_noticedata = array(
@@ -719,10 +752,9 @@ class AjaxController extends Q {
                     );
                     Notification::add($_noticedata);
                 }
-                if ($uid) {
-                    $intoData['loginUsername'] = $this->userInfo['truename'];
-                    $intoData['toUserInfo'] = $toUserInfo;
-                }
+                $intoData['userInfo']['username'] = !empty($authorInfo) ? $authorInfo['authorName'] : $this->userInfo['truename'];
+                $intoData['userInfo']['linkArr'] = !empty($authorInfo) ? array('author/view','id'=>  $this->userInfo['authorId']) : array('user/index','id'=>  $this->uid);
+                $intoData['replyInfo'] = $replyInfo;
                 $html = $this->renderPartial('/posts/_comment', array('data' => $intoData, 'postInfo' => $postInfo), true);
                 $this->jsonOutPut(1, $html);
             } else {
@@ -753,6 +785,10 @@ class AjaxController extends Q {
                 if (!$postInfo || $postInfo['status'] != Posts::STATUS_PASSED) {
                     $this->jsonOutPut(0, '你所评论的内容不存在');
                 }
+                $bookInfo=  Books::getOne($postInfo['bid']);
+                if(!$bookInfo || $bookInfo['status']!=Posts::STATUS_PASSED){
+                    $this->jsonOutPut(0, '你所评论的小说不存在');
+                }
                 $limit = 30;
                 $posts = Comments::getCommentsByPage($id, 'tip', $page, $limit);
                 $view = '/posts/_comment';
@@ -769,7 +805,7 @@ class AjaxController extends Q {
         $data = array(
             'html' => $longHtml,
             'loadMore' => (count($posts) == $limit) ? 1 : 0,
-            'formHtml' => $this->renderPartial('/posts/_addComment', array('type' => $type, 'keyid' => $id), true)
+            'formHtml' => $this->renderPartial('/posts/_addComment', array('type' => $type, 'keyid' => $id,'authorPanel'=>($this->userInfo['authorId']>0 && $bookInfo['aid']==$this->userInfo['authorId']),'authorLogin'=>  Authors::checkLogin($this->userInfo, $this->userInfo['authorId'])), true)
         );
         $this->jsonOutPut(1, $data);
     }
@@ -919,7 +955,7 @@ class AjaxController extends Q {
             $filed = 'styleStatus';
         }elseif($action == 'lock') {
             $filed = 'open';
-            $status=0;
+            $status=$postInfo['open'] > 0 ? 0 : 1;
         }
         if (Posts::model()->updateByPk($id, array($filed => $status))) {
             $this->jsonOutPut(1, '已设置');
