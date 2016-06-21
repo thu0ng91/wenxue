@@ -7,10 +7,10 @@ use Qiniu\Storage\UploadManager;
 class AttachmentsController extends Q {
 
     public function actionUpload() {
-        $uptype = zmf::filterInput($_GET['type'], 't', 1);
-        $logid = zmf::filterInput($_GET['id']); //所属对象
-        $reImgsize = zmf::filterInput($_GET['imgsize']); //返回图片的尺寸
-        $fileholder = zmf::filterInput($_GET['fileholder'], 't', 1); //上传控件的ID
+        $uptype = zmf::val('type', 1);
+        $logid = zmf::val('id',2); //所属对象
+        $reImgsize = zmf::val('imgsize',1); //返回图片的尺寸
+        $fileholder = zmf::val('fileholder',1); //上传控件的ID
         if (!isset($uptype) OR ! in_array($uptype, array('posts','siteinfo','book','author'))) {
             $this->jsonOutPut(0, '请设置上传所属类型' . $uptype);
         }
@@ -83,6 +83,9 @@ class AttachmentsController extends Q {
                         //上传成功则直接将地址写入数据库
                         Attachments::model()->updateByPk($attachid, array('remote'=>$returnimg));
                     }
+                }
+                if(!$reImgsize){
+                    $reImgsize='c640';
                 }
                 $thumbnail = zmf::getThumbnailUrl($returnimg, $reImgsize, $uptype);
                 $_attr = array(

@@ -7,8 +7,6 @@
 <meta name="description" content="<?php if (!empty($this->pageDescription)){echo $this->pageDescription;}else{ echo zmf::config('siteDesc');}?>" />        
 <meta name="MSSmartTagsPreventParsing" content="True" />
 <meta http-equiv="MSThemeCompatible" content="Yes" />
-<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
-<meta name="viewport" content="initial-scale=1.0,user-scalable=no,maximum-scale=1">
 <meta http-equiv="mobile-agent" content="format=html5;url=<?php echo zmf::config('domain').Yii::app()->request->url;?>">
 <base href="<?php echo zmf::config('baseurl');?>" />
 <meta name="application-name" content="<?php echo zmf::config('sitename');?>" />

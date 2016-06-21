@@ -9,7 +9,7 @@
  * @datetime 2015-12-18  16:36:08 
  */
 ?>
-<?php $uploadurl=Yii::app()->createUrl('attachments/upload',array('type'=>'posts','imgsize'=>600));?>
+<?php $uploadurl=Yii::app()->createUrl('attachments/upload',array('type'=>'posts','imgsize'=>'c640'));?>
 <div class="container">
     <?php $form=$this->beginWidget('CActiveForm', array(
         'id'=>'posts-form',
