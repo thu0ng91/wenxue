@@ -54,10 +54,10 @@ class assets {
 
     public function loadCssJs($type = 'web', $action = '') {
         if (YII_DEBUG) {
-            $staticUrl = Yii::app()->baseUrl . '/';
+            $staticUrl = Yii::app()->baseUrl . '/common';
         } else {
             $_staticUrl = zmf::config('cssJsStaticUrl');
-            $staticUrl = $_staticUrl ? $_staticUrl : zmf::config('baseurl');
+            $staticUrl = $_staticUrl ? $_staticUrl : zmf::config('baseurl').'common';
         }
         $cs = Yii::app()->clientScript;
         $c = Yii::app()->getController()->id;
@@ -133,14 +133,14 @@ class assets {
         foreach ($coreCssDirArr as $coreFileName) {
             foreach ($coreCssArr as $coreCssfile=>$fileParams) {
                 if (strpos($coreFileName,$coreCssfile) !== false) {
-                    $cs->registerCssFile($staticUrl . 'common/coreCss/' . $coreFileName);
+                    $cs->registerCssFile($staticUrl . '/coreCss/' . $coreFileName);
                 }
             }
         }
         foreach ($cssArr as $cssFileName) {
             foreach ($cssDirArr as $cssfile) {
                 if (strpos($cssfile, $cssFileName) !== false) {
-                    $cs->registerCssFile($staticUrl . 'common/css/' . $cssfile);
+                    $cs->registerCssFile($staticUrl . '/css/' . $cssfile);
                 }
             }
         }
@@ -156,7 +156,7 @@ class assets {
                     } else {
                         $pos = CClientScript::POS_END;
                     }
-                    $cs->registerScriptFile($staticUrl . 'common/coreJs/' . $jsFileName, $pos);
+                    $cs->registerScriptFile($staticUrl . '/coreJs/' . $jsFileName, $pos);
                 }
             }
         }
@@ -168,7 +168,7 @@ class assets {
                     } else {
                         $pos = CClientScript::POS_END;
                     }
-                    $cs->registerScriptFile($staticUrl . 'common/js/' . $jsfile, $pos);
+                    $cs->registerScriptFile($staticUrl . '/js/' . $jsfile, $pos);
                 }
             }
         }
