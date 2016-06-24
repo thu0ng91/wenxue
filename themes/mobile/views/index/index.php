@@ -1,11 +1,13 @@
-<div class="ui-container">        
-    <?php if(!empty($posts)){?>
-    <ul class="ui-list ui-list-link ui-border-tb">
-    <?php foreach($posts as $post){?>
-    <?php $this->renderPartial('/posts/_item',array('data'=>$post));?>    
-    <?php }?>
-    </ul>
+<div class="ui-container">
+    <?php $this->renderPartial('/index/carousel',array('moduleInfo'=>$posts['indexLeft1']));?>
+    <?php $this->renderPartial('/index/sideModule',array('sideInfo'=>$posts['indexRight1']));?>
+    <?php $this->renderPartial('/index/showCase',array('caseInfo'=>$posts['indexAd1']));?>
     
+    <?php $this->renderPartial('/index/carousel',array('moduleInfo'=>$posts['indexLeft2']));?>
+    <?php $this->renderPartial('/index/sideModule',array('sideInfo'=>$posts['indexRight2']));?>
+    <?php $this->renderPartial('/index/showCase',array('caseInfo'=>$posts['indexAd2']));?>
     
-    <?php }?>
+    <?php $this->renderPartial('/index/carousel',array('moduleInfo'=>$posts['indexLeft3']));?>
+    <?php $this->renderPartial('/index/sideModule',array('sideInfo'=>$posts['indexRight3']));?>
+    <?php $this->renderPartial('/index/showCase',array('caseInfo'=>$posts['indexAd3']));?>
 </div>

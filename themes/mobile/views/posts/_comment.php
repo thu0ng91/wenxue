@@ -7,27 +7,44 @@
  * @copyright Copyright©2015 阿年飞少 
  * @datetime 2016-1-4  17:16:29 
  */
-$_uname='';
-if($data['uid']){
-    $_uname=$data['loginUsername'];
-}else{
-    $_uname=$data['username'];
-}
-if(!$_uname){
-    $_uname='匿名网友';
-}
+
+$_uname=$data['userInfo']['username'];
+
 ?>
-<li class="ui-border-t">
-    <div class="ui-list-info">
-        <p class="comment-author"><?php echo CHtml::encode($_uname);?></p>
-        <p><?php echo CHtml::encode($data['content']); ?></p>
+<?php if($data['status']==Posts::STATUS_PASSED){?>
+<div class="media" id="comment-<?php echo $data['id']; ?>">
+    <div class="media-body">
         <p>
+            <b><?php echo CHtml::link($_uname,$data['userInfo']['linkArr']);?></b>
+            <?php if(!empty($data['replyInfo'])){?>
+            回复 <b><?php echo CHtml::link($data['replyInfo']['username'],$data['replyInfo']['linkArr']);?></b>        
+            <?php }?>
+        </p>
+        <p><?php echo nl2br(CHtml::encode($data['content'])); ?></p>
+        <p class="help-block">
             <?php echo zmf::formatTime($data['cTime']); ?>
+            <?php if($this->uid!=$data['uid']){?>
+            <span class="color-grey"><?php echo CHtml::link('举报','javascript:;',array('action'=>'report','action-type'=>'comment','action-id'=>$data['id'],'action-title'=>  zmf::subStr($data['content'])));?></span>
+            <?php }?>
             <?php if($this->uid){?>
-            <span class="comment-actions">
-            <?php echo $this->uid!=$postInfo['uid'] ? CHtml::link('回复','javascript:;',array('onclick'=>"replyOne('".$data['id']."','".$data['logid']."','".$_uname."')")) : '';?>
+            <span class="pull-right">
+                <?php 
+                if($this->uid!=$data['uid']){
+                    if($from=='tip'){
+                        echo CHtml::link('回复','javascript:;',array('onclick'=>"replyOne('".$data['id']."','".$data['logid']."','".$_uname."')"));
+                    }elseif($postInfo['open']==Posts::STATUS_OPEN){
+                        echo CHtml::link('回复','javascript:;',array('onclick'=>"replyOne('".$data['id']."','".$data['logid']."','".$_uname."')"));
+                    }
+                }elseif($this->uid==$data['uid']){
+                    echo CHtml::link('删除','javascript:;',array('action'=>'delContent','data-type'=>'comment','data-id'=>  $data['id'],'data-confirm'=>1,'data-target'=>'comment-'.$data['id']));  
+                }?>                
             </span>
             <?php }?>
         </p>
     </div>
-</li>
+</div>
+<?php }else{?>
+<div class="alert alert-danger">
+    你的评论包含敏感词，暂不能显示。
+</div>
+<?php } 

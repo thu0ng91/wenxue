@@ -24,12 +24,12 @@ class Q extends Controller {
     function init() {
         parent::init();
         Yii::app()->theme = 'web';
-//        if (zmf::config('mobile')) {
-//            if (zmf::checkmobile($this->platform)) {
-//                Yii::app()->theme = 'mobile';
-//                $this->isMobile = true;
-//            }
-//        }        
+        if (zmf::config('mobile')) {
+            if (zmf::checkmobile($this->platform)) {
+                Yii::app()->theme = 'mobile';
+                $this->isMobile = true;
+            }
+        }        
         if (Yii::app()->request->isAjaxRequest && Yii::app()->request->isPostRequest) {
             $this->isAjax = true;
         }

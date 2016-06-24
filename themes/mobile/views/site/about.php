@@ -9,17 +9,15 @@
  * @datetime 2016-1-5  15:04:55 
  */
 ?>
-<div class="ui-container">
+<div class="main-part">
     <div class="module">
         <?php echo zmf::text(array(), $info['content']); ?>
     </div>
     <?php if(!empty($allInfos)){?>
-    <ul class="ui-list ui-list-text ui-list-link">
-    <?php foreach($allInfos as $_post){?>
-        <li data-href="<?php echo Yii::app()->createUrl('site/info',array('code'=>$_post['code']));?>" class="ui-border-b">
-            <p><?php echo $_post['title'];?></p>
-        </li>
-    <?php }?>
-    </ul>
+    <div class="module">
+        <?php foreach ($allInfos as $val){?>
+        <p><?php echo CHtml::link($val['title'],array('site/info','code'=>$val['code']));?></p>
+        <?php }?>
+    </div>
     <?php }?>
 </div>
