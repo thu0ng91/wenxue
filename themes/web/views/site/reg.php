@@ -14,21 +14,20 @@
                         'enableAjaxValidation'=>false,
                 )); ?>
                 <div class="form-group">
-                <?php echo $form->labelEx($model,'truename'); ?>
-                <?php echo $form->textField($model,'truename',array('class'=>'form-control')); ?>
-                <?php echo $form->error($model,'truename'); ?>
+                    <?php echo $form->labelEx($model,'truename'); ?>
+                    <?php echo $form->textField($model,'truename',array('class'=>'form-control')); ?>
+                    <?php echo $form->error($model,'truename'); ?>
                 </div>
                 <div class="form-group">
-                <?php echo $form->labelEx($model,'phone'); ?>
-                <?php echo $form->textField($model,'phone',array('class'=>'form-control','maxLength'=>11)); ?>
-                <?php echo $form->error($model,'phone'); ?>
+                    <?php echo $form->labelEx($model,'email'); ?>
+                    <?php echo $form->emailField($model,'email',array('class'=>'form-control','maxLength'=>255)); ?>
+                    <?php echo $form->error($model,'email'); ?>
                 </div>
                 <div class="form-group">
-                <?php echo $form->labelEx($model,'password'); ?>
-                <?php echo $form->passwordField($model,'password',array('class'=>'form-control')); ?>
-                <?php echo $form->error($model,'password'); ?>
-                </div> 
-                        
+                    <?php echo $form->labelEx($model,'password'); ?>
+                    <?php echo $form->passwordField($model,'password',array('class'=>'form-control')); ?>
+                    <?php echo $form->error($model,'password'); ?>
+                </div>
                 <div class="form-group text-center">
                     <div class="btn-group" role="group">                        
                         <?php echo CHtml::submitButton('注册',array('class'=>'btn btn-success')); ?>

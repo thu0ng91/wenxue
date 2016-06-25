@@ -3,6 +3,7 @@
 class FrontLogin extends CFormModel {
 
     public $phone;
+    public $email;
     public $password;
     public $rememberMe;
     public $verifyCode;
@@ -12,6 +13,7 @@ class FrontLogin extends CFormModel {
         $rules = array(
             array('phone, password', 'required'),
             array('rememberMe', 'boolean'),
+            array('email,phone', 'safe'),
             array('password', 'authenticate'),
         );
         $cookieInfo = zmf::getCookie('checkWithCaptcha');
@@ -26,7 +28,8 @@ class FrontLogin extends CFormModel {
      */
     public function attributeLabels() {
         return array(
-            'phone' => '手机号',
+            'phone' => '手机号/邮箱',
+            'email' => '邮箱',
             'password' => '密码',
             'rememberMe' => '记住我',
             'verifyCode' => '验证码',

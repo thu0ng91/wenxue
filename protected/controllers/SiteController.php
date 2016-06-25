@@ -56,8 +56,11 @@ class SiteController extends Q {
             $model = new FrontLogin;
             if (isset($_POST['FrontLogin'])) {
                 $model->attributes = $_POST['FrontLogin'];
-                if(!zmf::checkPhoneNumber($_POST['FrontLogin']['phone'])){
+                $validator = new CEmailValidator;
+                if(is_numeric($_POST['FrontLogin']['phone']) && !zmf::checkPhoneNumber($_POST['FrontLogin']['phone'])){
                     $model->addError('phone', '请输入正确的手机号');
+                }elseif(!is_numeric($_POST['FrontLogin']['phone']) && !$validator->validateValue($_POST['FrontLogin']['phone'])){
+                    $model->addError('phone', '请输入正确的邮箱地址');
                 }elseif ($model->validate() && $model->login()) {
                     $arr = array(
                         'latestLoginTime' => zmf::now(),
@@ -72,7 +75,7 @@ class SiteController extends Q {
                         $this->redirect(zmf::config('baseurl'));
                     }
                 } else {
-                    zmf::updateFCacheCounter($cacheKey, 1, 3600);
+                    //zmf::updateFCacheCounter($cacheKey, 1, 3600);
                     zmf::setCookie('checkWithCaptcha', 1, 86400);
                 }
             }
@@ -89,10 +92,7 @@ class SiteController extends Q {
             $this->message(0, '你尚未登录');
         }
         Yii::app()->user->logout();
-        if ($this->referer == '') {
-            $this->referer = Yii::app()->request->urlReferrer;
-        }
-        $this->redirect($this->referer);
+        $this->redirect(zmf::config('baseurl'));
     }
 
     public function actionReg() {
@@ -106,32 +106,33 @@ class SiteController extends Q {
         $modelUser = new Users();
         if (isset($_POST['Users'])) {
             $truename = zmf::filterInput($_POST['Users']['truename'], 1);
-            $phone = zmf::filterInput($_POST['Users']['phone'], 2);
+            $email = zmf::filterInput($_POST['Users']['email'], 1);
             $password = $_POST['Users']['password'];
             $modelUser->attributes=$_POST['Users'];
+            $validator = new CEmailValidator;
             if (!$truename) {
                 $modelUser->addError('truename', '用户昵称不能为空');                
-            }elseif (!$phone) {
-                $modelUser->addError('phone', '请输入手机号');                
-            }elseif(!zmf::checkPhoneNumber($phone)){
-                $modelUser->addError('phone', '请输入正确的手机号');
+            }elseif (!$email) {
+                $modelUser->addError('email', '请输入常用邮箱地址');                
+            }elseif(!$validator->validateValue($email)){
+                $modelUser->addError('email', '请输入正确的邮箱地址');
             } elseif (!$password || strlen($password) < 6) {
                 $modelUser->addError('password', '密码不能为空且不能小于6位');                
             }elseif(Users::findByName($truename)){
                 $modelUser->addError('truename', '该用户昵称已被注册');                
-            }elseif(Users::findByPhone($phone)){
-                $modelUser->addError('truename', '该手机号已被注册');                 
+            }elseif(Users::findByEmail($email)){
+                $modelUser->addError('email', '该邮箱已被注册');                 
             } else {
                 $inputData = array(
                     'truename' => $truename,
                     'password' => md5($password),
-                    'phone' => $phone,
+                    'email' => $email,
                 );
                 $modelUser->attributes = $inputData;
                 if ($modelUser->save()) {
                     zmf::actionLimit('reg', $ip, 5, 86400, true);
                     $_model = new FrontLogin;
-                    $_model->phone = $phone;
+                    $_model->phone = $email;
                     $_model->password = $password;
                     $_model->login();                    
                     $this->redirect(array('user/index'));

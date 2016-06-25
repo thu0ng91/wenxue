@@ -210,3 +210,5 @@ alter table pre_tips add comments int(10) unsigned not null COMMENT '评论数';
 alter table pre_words add status tinyint(1) unsigned not null COMMENT '状态';
 alter table pre_chapters add chapterNum smallint(6) unsigned not null COMMENT '章节号';
 alter table pre_comments add aid int(10) unsigned not null COMMENT '作者ID';
+
+alter table pre_users add email varchar(255) not null COMMENT '邮箱';

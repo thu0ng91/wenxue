@@ -58,6 +58,7 @@ class Q extends Controller {
             '/weibo/',
             '/qq/',
             '/weixin/',
+            '/user/index/',
         );
         $set = true;
         if ($set) {

@@ -21,7 +21,12 @@ class U extends CUserIdentity {
      * @return boolean whether authentication succeeds.
      */
     public function authenticate() {        
-        $user = Users::model()->find('phone=:phone', array(':phone'=>  $this->phone)); 
+        $validator = new CEmailValidator;
+        if($validator->validateValue($this->phone)){
+            $user = Users::model()->find('email=:email', array(':email'=>  $this->phone));
+        }else{
+            $user = Users::model()->find('phone=:phone', array(':phone'=>  $this->phone));
+        }
         if ($user === null)
             $this->errorCode = self::ERROR_USERNAME_INVALID;
         else if($user['status']!=Posts::STATUS_PASSED)

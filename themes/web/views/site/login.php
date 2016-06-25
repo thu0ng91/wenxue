@@ -17,7 +17,7 @@
                 <?php CHtml::$afterRequiredLabel = '';?>
                 <div class="form-group">
                     <?php echo $form->labelEx($model,'phone'); ?>
-                    <?php echo $form->textField($model,'phone', array('class'=>'form-control','placeholder'=>'请输入手机号')); ?>
+                    <?php echo $form->textField($model,'phone', array('class'=>'form-control','placeholder'=>'请输入手机号/邮箱')); ?>
                     <?php echo $form->error($model,'phone'); ?>
                 </div>
                 <div class="form-group">

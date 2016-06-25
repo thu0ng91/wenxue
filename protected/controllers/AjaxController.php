@@ -376,7 +376,15 @@ class AjaxController extends Q {
             $this->jsonOutPut(0, '不被允许的类型:' . $type);
         } elseif ($type == 'checkPhone') {
             $this->checkLogin();
-            $phone = $this->userInfo['phone'];
+            if($this->userInfo['phone']>0){
+                $phone = $this->userInfo['phone'];
+            }else{
+                $_ckinfo=  Users::findByPhone($phone);
+                if($_ckinfo){
+                    $this->jsonOutPut(0, '该手机号已被使用');
+                }
+                $this->userInfo['phone'] = $phone;
+            }
             if (!$phone) {
                 $this->jsonOutPut(0, '参数错误，缺少手机号');
             }
@@ -492,7 +500,15 @@ class AjaxController extends Q {
             $this->jsonOutPut(0, '请输入手机号');
         } elseif ($type == 'checkPhone') {
             $this->checkLogin();
-            $phone = $this->userInfo['phone'];
+            if($this->userInfo['phone']>0){
+                $phone = $this->userInfo['phone'];
+            }else{
+                $_ckinfo=  Users::findByPhone($phone);
+                if($_ckinfo){
+                    $this->jsonOutPut(0, '该手机号已被使用');
+                }
+                $this->userInfo['phone'] = $phone;
+            }
             if (!$phone) {
                 $this->jsonOutPut(0, '参数错误，缺少手机号');
             }
@@ -568,7 +584,7 @@ class AjaxController extends Q {
         }
         Msg::model()->updateByPk($info['id'], array('status' => 1));
         if ($type == 'checkPhone') {
-            Users::model()->updateByPk($this->uid, array('phoneChecked' => 1));
+            Users::model()->updateByPk($this->uid, array('phoneChecked' => 1,'phone'=>$phone));
             $returnCode = Yii::app()->createUrl('user/index');
         } elseif ($type == 'forget') {
             if (Users::updateInfo($uinfo['id'], 'password', md5($password))) {
