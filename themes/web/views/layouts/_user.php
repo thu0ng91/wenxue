@@ -15,7 +15,7 @@
             <li><?php echo CHtml::link('个人中心', array('user/index'), array('role' => 'menuitem')); ?></li>
             <?php if($this->userInfo['authorId']>0){?>
             <li role="separator" class="divider"></li>
-            <li><?php echo CHtml::link('作者中心', array('author/view','id'=>$this->userInfo['authorId']), array('role' => 'menuitem')); ?></li>
+            <li><?php if(Authors::checkLogin($this->userInfo, $this->userInfo['authorId'])){echo CHtml::link('作者中心', array('author/view','id'=>$this->userInfo['authorId']), array('role' => 'menuitem'));}else{echo CHtml::link('作者中心', array('user/authorAuth'), array('role' => 'menuitem'));}?></li>
             <?php }?>
             <?php if ($this->userInfo['isAdmin']) { ?>
             <li role="separator" class="divider"></li>

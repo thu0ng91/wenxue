@@ -202,7 +202,7 @@ class Posts extends CActiveRecord {
      * @param type $content
      * @return type
      */
-    public static function handleContent($content, $fullText = TRUE) {
+    public static function handleContent($content, $fullText = TRUE,$allowTags='<b><strong><em><span><a><p><u><i><img><br><br/><div><blockquote><h1><h2><h3><h4><h5><h6><ol><ul><li><hr>') {
         if ($fullText) {
             $pattern = '/<img[\s\S]+?(data|mapinfo|video)=("|\')([^\2]+?)\2[^>]+?>/i';
             preg_match_all($pattern, $content, $matches);
@@ -228,11 +228,12 @@ class Posts extends CActiveRecord {
                     }
                 }
             }
-            $content = strip_tags($content, '<b><strong><em><span><a><p><u><i><img><br><br/><div><blockquote><h1><h2><h3><h4><h5><h6><ol><ul><li><hr>');
+            $content = strip_tags($content, $allowTags);
             $replace = array(
                 "/style=\"[^\"]*?\"/i",
                 "/<p><br\/><\/p>/i",
                 "/<p><span>\&nbsp\;<\/span><\/p>/i",
+                "/<p>\&nbsp\;<\/p>/i",
                 "/<p><\/p>/i",
             );
             $to = array(

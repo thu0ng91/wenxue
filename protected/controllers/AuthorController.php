@@ -194,7 +194,7 @@ class AuthorController extends Q {
         $model->aid = $bookInfo['aid'];
         if (isset($_POST['Chapters'])) {
             $filterTitle = Posts::handleContent($_POST['Chapters']['title'], FALSE);
-            $filterContent = Posts::handleContent($_POST['Chapters']['content']);
+            $filterContent = Posts::handleContent($_POST['Chapters']['content'],true,'<p>');
             $filterPostscript = Posts::handleContent($_POST['Chapters']['postscript'], FALSE);
             $psPosition = zmf::filterInput($_POST['Chapters']['psPosition'], 2);
             $chapterNum = zmf::filterInput($_POST['Chapters']['chapterNum'], 2);
