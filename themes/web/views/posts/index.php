@@ -82,16 +82,15 @@
             <div class="module-body">
                 <div class="row">
                     <div class="col-xs-6">
-                        <img src="<?php echo zmf::lazyImg();?>" data-original="<?php echo zmf::config('baseurl').'common/images/qrcode.png';?>" class="img-responsive lazy"/>
+                        <img src="<?php echo zmf::lazyImg();?>" data-original="<?php echo zmf::config('baseurl').'common/images/weibo.png';?>" class="img-responsive lazy"/>
                         <p class="text-center">官方微博</p>
                     </div>
                     <div class="col-xs-6">
-                        <img src="<?php echo zmf::lazyImg();?>" data-original="<?php echo zmf::config('baseurl').'common/images/qrcode.png';?>" class="img-responsive lazy"/>
+                        <img src="<?php echo zmf::lazyImg();?>" data-original="<?php echo zmf::config('baseurl').'common/images/weixin.jpg';?>" class="img-responsive lazy"/>
                         <p class="text-center">官方微信</p>
                     </div>
                 </div>                
             </div>
         </div>
-        <?php $this->renderPartial('/common/copyright');?>
     </div>
 </div>

@@ -12,6 +12,7 @@
         <option value="1" <?php if($c['mobile']=='1'){?>selected="selected"<?php }?>>开启</option>
     </select>
 </p>
+<p><label>静态地址加速：</label><input class="form-control" type="text" name="cssJsStaticUrl" id="cssJsStaticUrl" value="<?php echo $c['cssJsStaticUrl'];?>"/></p>
 <p><label>微信AK：</label><input class="form-control" type="text" name="weixin_app_id" id="weixin_app_id" value="<?php echo $c['weixin_app_id'];?>"/></p>
 <p><label>微信SK：</label><input class="form-control" type="text" name="weixin_app_key" id="weixin_app_key" value="<?php echo $c['weixin_app_key'];?>"/></p>
 <p><label>微信回调地址：</label><input class="form-control" type="text" name="weixin_app_callback" id="weixin_app_callback" value="<?php echo $c['weixin_app_callback'];?>"/></p>

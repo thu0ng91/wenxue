@@ -88,9 +88,7 @@ $this->beginContent('/layouts/common');
                 </div>
             </div>
         </div>
-        <?php echo $content; ?>
-        <p class="text-center color-grey">本站全部作品（包括小说、书评和帖子）版权为原创作者所有 本网站仅为网友写作提供上传空间储存平台。本站所收录作品、互动话题、书库评论及本站所做之广告均属其个人行为
-与本站立场无关。网站页面版权为初心创文所有，任何单位，个人未经授权不得转载、复制、分发，以及用作商业用途。</p>
+        <?php echo $content; ?>        
     </div>
     <div class="aside-part">
         <div class="module">
@@ -114,8 +112,9 @@ $this->beginContent('/layouts/common');
                 <span class="color-grey"><?php echo CHtml::link('<i class="fa fa-exclamation-triangle"></i> 举报','javascript:;',array('action'=>'report','action-type'=>'user','action-id'=>$this->toUserInfo['id'],'action-title'=>  $this->toUserInfo['truename']));?></span>
             </div>
         </div>        
-        <?php $this->renderPartial('/common/copyright');?>
     </div>
+    <div class="clearfix"></div>
+    <?php $this->renderPartial('/common/copyright');?>
 </div>
 <div class="footer-bg" id="footer-bg"></div>
 <?php $this->endContent(); ?>
