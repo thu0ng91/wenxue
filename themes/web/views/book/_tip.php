@@ -1,5 +1,8 @@
 <?php if($data['status']==Posts::STATUS_PASSED){?>
-<div class="media" id="tip-<?php echo $data['id']; ?>">
+<div class="media ui-border-b" id="tip-<?php echo $data['id']; ?>">
+    <div class="media-left">
+        <?php echo CHtml::link(CHtml::image(zmf::lazyImg(), $data['truename'], array('data-original'=>$data['avatar'],'class'=>'lazy img-circle a64 media-object')),array('user/index','id'=>$data['uid']));?>
+    </div>
     <div class="media-body">
         <p>
             <b><?php echo CHtml::link(CHtml::encode($data['truename']),array('user/index','id'=>$data['uid']));?></b>

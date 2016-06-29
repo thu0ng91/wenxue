@@ -47,7 +47,7 @@ class BookController extends Q {
             throw new CHttpException(404, 'The requested page does not exist.');
         }
         //获取点评列表
-        $sql = "SELECT t.id,t.uid,u.truename,c.title AS chapterTitle,t.logid,t.content,t.score,t.favors,t.cTime,0 AS favorited,1 AS status,t.comments FROM ({{tips}} AS t RIGHT JOIN {{chapters}} AS c ON t.logid=c.id) LEFT JOIN {{users}} AS u ON t.uid=u.id WHERE t.bid=:bid AND t.classify='chapter' AND t.status=".Posts::STATUS_PASSED." AND t.logid=c.id ORDER BY t.cTime ASC";
+        $sql = "SELECT t.id,t.uid,u.truename,u.avatar,c.title AS chapterTitle,t.logid,t.content,t.score,t.favors,t.cTime,0 AS favorited,1 AS status,t.comments FROM ({{tips}} AS t RIGHT JOIN {{chapters}} AS c ON t.logid=c.id) LEFT JOIN {{users}} AS u ON t.uid=u.id WHERE t.bid=:bid AND t.classify='chapter' AND t.status=".Posts::STATUS_PASSED." AND t.logid=c.id ORDER BY t.cTime ASC";
         $tips = Posts::getByPage(array(
                     'sql' => $sql,
                     'page' => $this->page,
@@ -56,6 +56,9 @@ class BookController extends Q {
                         ':bid' => $id
                     )
         ));
+        foreach ($tips as $k=>$tip){
+            $tips[$k]['avatar']=  zmf::getThumbnailUrl($tip['avatar'], 'd120', 'user');
+        }
         //取得已收藏过的点评
         if (!empty($tips) && $this->uid) {
             $favoriteTipsArr = array();
@@ -133,8 +136,11 @@ class BookController extends Q {
             throw new CHttpException(404, 'The requested page does not exist.');
         }
         //获取点评数
-        $sql = "SELECT t.id,t.uid,u.truename,t.content,t.cTime,t.logid,t.tocommentid,t.favors,t.score,t.status,t.comments FROM {{tips}} t,{{users}} u WHERE t.logid=:logid AND t.classify='chapter' AND t.status=" . Posts::STATUS_PASSED . " AND t.uid=u.id AND u.status=" . Posts::STATUS_PASSED;
+        $sql = "SELECT t.id,t.uid,u.truename,u.avatar,t.content,t.cTime,t.logid,t.tocommentid,t.favors,t.score,t.status,t.comments FROM {{tips}} t,{{users}} u WHERE t.logid=:logid AND t.classify='chapter' AND t.status=" . Posts::STATUS_PASSED . " AND t.uid=u.id AND u.status=" . Posts::STATUS_PASSED;
         $tips = Posts::getByPage(array('sql' => $sql, 'pageSize' => 30, 'page' => 1, 'bindValues' => array(':logid' => $cid)));
+        foreach ($tips as $k=>$tip){
+            $tips[$k]['avatar']=  zmf::getThumbnailUrl($tip['avatar'], 'd120', 'user');
+        }
         //更新统计
         if (!zmf::actionLimit('visit-Chapters', $cid, 5, 60)) {
             Posts::updateCount($cid, 'Chapters', 1, 'hits');

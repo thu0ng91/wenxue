@@ -66,13 +66,14 @@ class PostsController extends Q {
         $authorInfo = array();
         $type = '';
         if ($info['classify'] == Posts::CLASSIFY_AUTHOR && $info['aid']) {
-            $author = Authors::getOne($info['aid']);
+            $author = Authors::getOne($info['aid'],'d120');
             if (!$author) {
                 throw new CHttpException(404, '所属作者不存在');
             }
             $authorInfo = array(
                 'title' => $author['authorName'],
                 'url' => array('author/view', 'id' => $info['aid']),
+                'avatar' => $author['avatar'],
             );
             $this->selectNav = 'authorForum';
             $type = 'author';
@@ -84,6 +85,7 @@ class PostsController extends Q {
             $authorInfo = array(
                 'title' => $user['truename'],
                 'url' => array('user/index', 'id' => $info['uid']),
+                'avatar' => zmf::getThumbnailUrl($user['avatar'], 'd120', 'user'),
             );
             $this->selectNav = 'authorForum';
             $type = 'author';
@@ -95,6 +97,7 @@ class PostsController extends Q {
             $authorInfo = array(
                 'title' => $user['truename'],
                 'url' => array('user/index', 'id' => $info['uid']),
+                'avatar' => zmf::getThumbnailUrl($user['avatar'], 'd120', 'user'),
             );
             $this->selectNav = 'readerForum';
             $type = 'reader';
@@ -141,6 +144,7 @@ class PostsController extends Q {
             if ($model->classify == Posts::CLASSIFY_AUTHOR && $this->userInfo['authorId'] && !$model->aid) {
                 $model->aid = $this->userInfo['authorId'];
             }
+            $model->content=zmf::text(array('action'=>'edit','encode'=>'yes'),$model->content,false,640);
         } else {
             $type = zmf::val('type', 1);
             if (!in_array($type, array('author', 'reader'))) {
@@ -166,10 +170,11 @@ class PostsController extends Q {
             $filterContent = Posts::handleContent($_POST['Posts']['content']);
             $attr = array(
                 'title' => $filterTitle['content'],
-                'content' => $filterContent['content'],
+                'content' => strip_tags($filterContent['content'],'<p><strong><em><u>'),
             );
-            if (!empty($filter['attachids'])) {
-                $attkeys = array_filter(array_unique($filter['attachids']));
+            $attkeys=array();
+            if (!empty($filterContent['attachids'])) {
+                $attkeys = array_filter(array_unique($filterContent['attachids']));
                 if (!empty($attkeys)) {
                     $attr['faceimg'] = $attkeys[0]; //默认将文章中的第一张图作为封面图
                 }

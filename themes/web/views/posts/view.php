@@ -15,39 +15,61 @@ $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
     <div class="main-part">
         <div class="module">
             <div class="module-body">
-                <h1><?php echo $info['title'];?></h1>
-                <p class="color-grey tips">
-                    <span><?php echo zmf::time($info['cTime'],'Y-m-d H:i');?></span>
-                    <span><?php echo CHtml::link($authorInfo['title'],$authorInfo['url']);?></span>
-                    <span><?php echo CHtml::link($info['comments'].'评论','javascript:;',array('action'=>'scroll','action-target'=>'comments-posts-'.$info['id'].'-box'));?></span>
-                    <span><?php echo $info['favorite'].'赞';?></span>
-                    <span>|</span>
-                    <?php if($info['uid']==$this->uid && $this->uid && !$this->userInfo['isAdmin']){?>
-                    <span><?php echo CHtml::link('编辑',array('posts/create','id'=>$info['id']));?></span>
-                    <span><?php echo CHtml::link('删除','javascript:;',array('action'=>'delContent','data-type'=>'post','data-id'=>$info['id'],'data-confirm'=>1,'data-redirect'=>Yii::app()->createUrl('posts/index',array('type'=>$type))));?></span>
-                    <?php }elseif($this->uid){?>
-                    <?php if($this->userInfo['isAdmin']){?>
-                    <span><?php echo CHtml::link($info['top'] ? '已置顶' : '置顶','javascript:;',array('action'=>'setStatus','data-type'=>'post','data-action'=>'top','data-id'=>$info['id']));?></span>
-                    <span><?php echo CHtml::link($info['styleStatus']==Posts::STATUS_BOLD ? '已加粗' : '加粗','javascript:;',array('action'=>'setStatus','data-type'=>'post','data-action'=>'bold','data-id'=>$info['id']));?></span>
-                    <span><?php echo CHtml::link($info['styleStatus']==Posts::STATUS_RED ? '已标红' : '标红','javascript:;',array('action'=>'setStatus','data-type'=>'post','data-action'=>'red','data-id'=>$info['id']));?></span>
-                    <span><?php echo CHtml::link($info['styleStatus']==Posts::STATUS_BOLDRED ? '已加粗标红' : '加粗标红','javascript:;',array('action'=>'setStatus','data-type'=>'post','data-action'=>'boldAndRed','data-id'=>$info['id']));?></span>
-                    <span>|</span>
-                    <span><?php echo CHtml::link($info['open']==Posts::STATUS_OPEN ? '锁定' : '已锁定','javascript:;',array('action'=>'setStatus','data-type'=>'post','data-action'=>'lock','data-id'=>$info['id']));?></span>
-                    <span><?php echo CHtml::link('编辑',array('posts/create','id'=>$info['id']));?></span>
-                    <span><?php echo CHtml::link('删除','javascript:;',array('action'=>'delContent','data-type'=>'post','data-id'=>$info['id'],'data-confirm'=>1,'data-redirect'=>Yii::app()->createUrl('posts/index',array('type'=>$type))));?></span>
-                    <?php }else{?>
-                    <span><?php echo CHtml::link('举报','javascript:;',array('action'=>'report','action-type'=>'post','action-id'=>$info['id'],'action-title'=>$info['title']));?></span>
-                    <?php }?>
-                    <?php }?>
-                </p>
+                <div class="media">
+                    <div class="media-left">
+                        <?php echo CHtml::link(CHtml::image(zmf::lazyImg(), $authorInfo['title'], array('data-original'=>$authorInfo['avatar'],'class'=>'lazy img-circle a64 media-object')),$authorInfo['url']);?>
+                    </div>
+                    <div class="media-body">
+                        <h1><?php echo $info['title'];?></h1>
+                        <p class="color-grey tips">
+                            <?php if($info['top']){?>
+                            <span style="color:red" title="置顶"><i class="fa fa-bookmark"></i></span>
+                            <?php }?>
+                            <?php if($info['styleStatus']){?>
+                            <span style="color:red" title="加精"><i class="fa fa-flag"></i></span>
+                            <?php }?>
+                            <span><?php echo CHtml::link($authorInfo['title'],$authorInfo['url']);?></span>
+                            <span><?php echo zmf::time($info['cTime'],'Y-m-d H:i');?></span>
+                            <?php if($this->uid){?>
+                            <span>|</span>
+                            <?php }?>
+                            <?php if($info['uid']==$this->uid && $this->uid){?>
+                            <span><?php echo CHtml::link('编辑',array('posts/create','id'=>$info['id']));?></span>
+                            <span><?php echo CHtml::link('删除','javascript:;',array('action'=>'delContent','data-type'=>'post','data-id'=>$info['id'],'data-confirm'=>1,'data-redirect'=>Yii::app()->createUrl('posts/index',array('type'=>$type))));?></span>
+                            <?php }else{?>
+                            <span><?php echo CHtml::link('举报','javascript:;',array('action'=>'report','action-type'=>'post','action-id'=>$info['id'],'action-title'=>$info['title']));?></span>
+                            <?php }?>
+                            <span class="pull-right">
+                                <span title="点击"><i class="fa fa-eye"></i> <?php echo $info['hits'];?></span>
+                                <span title="评论"><?php echo CHtml::link('<i class="fa fa-comments"></i> '.$info['comments'],'javascript:;',array('action'=>'scroll','action-target'=>'comments-posts-'.$info['id'].'-box'));?></span>
+                                <span title="点赞"><i class="fa fa-thumbs-up"></i> <?php echo $info['favorite'];?></span>
+                            </span>
+                        </p>
+                        <?php if($this->uid && $this->userInfo['isAdmin']){?>
+                        <p class="color-grey tips">
+                            <span>更多操作：</span>                            
+                            <span><?php echo CHtml::link($info['top'] ? '已置顶' : '置顶','javascript:;',array('action'=>'setStatus','data-type'=>'post','data-action'=>'top','data-id'=>$info['id']));?></span>
+                            <span><?php echo CHtml::link($info['styleStatus']==Posts::STATUS_BOLD ? '已加粗' : '加粗','javascript:;',array('action'=>'setStatus','data-type'=>'post','data-action'=>'bold','data-id'=>$info['id']));?></span>
+                            <span><?php echo CHtml::link($info['styleStatus']==Posts::STATUS_RED ? '已标红' : '标红','javascript:;',array('action'=>'setStatus','data-type'=>'post','data-action'=>'red','data-id'=>$info['id']));?></span>
+                            <span><?php echo CHtml::link($info['styleStatus']==Posts::STATUS_BOLDRED ? '已加粗标红' : '加粗标红','javascript:;',array('action'=>'setStatus','data-type'=>'post','data-action'=>'boldAndRed','data-id'=>$info['id']));?></span>
+                            <span>|</span>
+                            <span><?php echo CHtml::link($info['open']==Posts::STATUS_OPEN ? '锁定' : '已锁定','javascript:;',array('action'=>'setStatus','data-type'=>'post','data-action'=>'lock','data-id'=>$info['id']));?></span>
+                            <?php if($info['uid']!=$this->uid){?>
+                            <span><?php echo CHtml::link('编辑',array('posts/create','id'=>$info['id']));?></span>
+                            <span><?php echo CHtml::link('删除','javascript:;',array('action'=>'delContent','data-type'=>'post','data-id'=>$info['id'],'data-confirm'=>1,'data-redirect'=>Yii::app()->createUrl('posts/index',array('type'=>$type))));?></span>
+                            <?php }?>
+                        </p>
+                        <?php }?>
+                    </div>
+                </div>
                 <div class="post-content">
                     <?php echo $info['content'];?>
                 </div>
                 <?php if($info['open']==Posts::STATUS_OPEN){?>
                     <?php if($this->favorited){?>
-                    <p class="text-center"><?php echo CHtml::link('<i class="fa fa-thumbs-up"></i> 已赞','javascript:;',array('class'=>'btn btn-default btn-small','action'=>'favorite','action-data'=>$info['id'],'action-type'=>'post'));?></p>
+                    <p class="text-center"><?php echo CHtml::link('<i class="fa fa-thumbs-up"></i> 已赞','javascript:;',array('class'=>'btn btn-default btn-sm','action'=>'favorite','action-data'=>$info['id'],'action-type'=>'post'));?></p>
                     <?php }else{?>
-                    <p class="text-center"><?php echo CHtml::link('<i class="fa fa-thumbs-o-up"></i> 赞','javascript:;',array('class'=>'btn btn-danger btn-small','action'=>'favorite','action-data'=>$info['id'],'action-type'=>'post'));?></p>
+                    <p class="text-center"><?php echo CHtml::link('<i class="fa fa-thumbs-o-up"></i> 赞','javascript:;',array('class'=>'btn btn-danger btn-sm','action'=>'favorite','action-data'=>$info['id'],'action-type'=>'post'));?></p>
                     <?php }?>
                 <?php }?>
             </div>

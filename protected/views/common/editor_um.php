@@ -13,7 +13,7 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl.'/umeditor/lang
 Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl.'/common/uploadify/jquery.uploadify.min.js', CClientScript::POS_END);
 ?>
 <textarea id="<?php echo CHtml::activeId($model,$attri);?>" name="<?php echo CHtml::activeName($model,$attri);?>" style="width:600px;height:200px;">
-<?php echo zmf::text(array('action'=>'edit','encode'=>'yes'),$content);?>
+<?php echo $content;?>
 </textarea>
 <input id="textareaid" type="hidden" value="<?php echo CHtml::activeId($model,$attri);?>"/>
 <script>
