@@ -110,23 +110,29 @@ class Comments extends CActiveRecord {
             $uidsStr = join(',', $uids);
             $usernames = array();
             if ($uidsStr != '') {
-                $usernames = Yii::app()->db->createCommand("SELECT id,authorName FROM {{authors}} WHERE id IN($uidsStr)")->queryAll();
+                $usernames = Yii::app()->db->createCommand("SELECT id,authorName,avatar FROM {{authors}} WHERE id IN($uidsStr)")->queryAll();
             }
             foreach ($items as $k => $val) {
                 $find = false;
                 if (!empty($usernames)) {
                     foreach ($usernames as $val2) {
                         if ($val['aid'] > 0 && $val['aid'] == $val2['id']) {
+                            $items[$k]['userInfo']['type'] = 'author';
+                            $items[$k]['userInfo']['id'] = $val2['id'];
                             $items[$k]['userInfo']['username'] = $val2['authorName'];
                             $items[$k]['userInfo']['linkArr'] = array('author/view', 'id' => $val2['id']);
+                            $items[$k]['userInfo']['avatar'] =  zmf::getThumbnailUrl($val2['avatar'],'d120','author');
                             $find = true;
                             break;
                         }
                     }
                 }
                 if (!$find) {
+                    $items[$k]['userInfo']['type'] = 'user';
+                    $items[$k]['userInfo']['id'] = $val['uid'];
                     $items[$k]['userInfo']['username'] = $val['truename'];
                     $items[$k]['userInfo']['linkArr'] = array('user/index', 'id' => $val['uid']);
+                    $items[$k]['userInfo']['avatar'] =  zmf::getThumbnailUrl($val['avatar'],'d120','user');
                 }
                 unset($items[$k]['truename']);
             }

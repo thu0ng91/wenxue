@@ -82,15 +82,16 @@ $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
                     <div id="comments-posts-<?php echo $info['id'];?>">
                         <?php if(!empty($comments)){?>
                         <?php foreach($comments as $comment){?>
-                        <?php $this->renderPartial('/posts/_comment',array('data'=>$comment,'postInfo'=>$info));?>
+                        <?php $this->renderPartial('/posts/_comment',array('data'=>$comment,'postInfo'=>$info,'showAvatar'=>true));?>
                         <?php }?>
                         <?php }else{?>
                         <p class="help-block text-center">暂无评论！</p>
                         <?php }?>
+                        <?php if($loadMore){?>
+                        <div class="loading-holder"><a class="btn btn-default btn-sm text-center" action="getContents" data-id="<?php echo $info['id'];?>" data-type="postComments" data-target="comments-posts-<?php echo $info['id'];?>" href="javascript:;" data-page="2">加载更多</a></div>
+                        <?php }?>
                     </div>
-                    <?php if($loadMore){?>
-                    <div class="loading-holder"><a class="btn btn-default btn-block" action="get-contents" action-data="<?php echo $info['id'];?>" action-type="comments" action-target="comments-posts-<?php echo $info['id'];?>" href="javascript:;" action-page="2">加载更多</a></div>
-                    <?php }?>
+                    
                 </div>
                 <?php if($info['open']==Posts::STATUS_OPEN){?>
                 <div id="add-comments">
@@ -118,6 +119,16 @@ $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
             <div class="module-body">
                 <?php foreach ($relatePosts as $relatePost){?>
                 <p class="ui-nowrap"><?php echo CHtml::link($relatePost['title'],array('posts/view','id'=>$relatePost['id']));?></p>
+                <?php }?>
+            </div>
+        </div>
+        <?php }?>
+        <?php if(!empty($topsPosts)){?>
+        <div class="module">
+            <div class="module-header">热门文章</div>
+            <div class="module-body">
+                <?php foreach ($topsPosts as $topsPost){?>
+                <p class="ui-nowrap"><?php echo CHtml::link($topsPost['title'],array('posts/view','id'=>$topsPost['id']));?></p>
                 <?php }?>
             </div>
         </div>

@@ -13,9 +13,30 @@ $_uname=$data['userInfo']['username'];
 ?>
 <?php if($data['status']==Posts::STATUS_PASSED){?>
 <div class="media" id="comment-<?php echo $data['id']; ?>">
+    <?php if($data['userInfo']['avatar'] && $showAvatar){?>
+    <div class="media-left">
+        <?php echo CHtml::link(CHtml::image(zmf::lazyImg(), $data['userInfo']['username'], array('data-original'=>$data['userInfo']['avatar'],'class'=>'lazy img-circle a48 media-object')),$data['userInfo']['linkArr']);?>
+    </div>
+    <?php }?>
     <div class="media-body">
         <p>
-            <b><?php echo CHtml::link($_uname,$data['userInfo']['linkArr']);?></b>
+            <b>
+                <?php echo CHtml::link($_uname,$data['userInfo']['linkArr']);?>
+                <?php 
+                if($from=='tip'){                    
+                    if($data['userInfo']['type']=='author'){
+                        if($data['userInfo']['id']==$bookInfo['aid']){
+                            echo '（作者）';
+                        }
+                    }
+                }elseif($postInfo['aid']>0){       
+                    if($postInfo['aid']==$data['userInfo']['id']){
+                        echo '（作者）';
+                    }
+                }elseif($postInfo['uid']==$data['uid']){
+                    echo '（作者）';
+                } ?>
+            </b>
             <?php if(!empty($data['replyInfo'])){?>
             回复 <b><?php echo CHtml::link($data['replyInfo']['username'],$data['replyInfo']['linkArr']);?></b>        
             <?php }?>

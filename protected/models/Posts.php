@@ -299,6 +299,12 @@ class Posts extends CActiveRecord {
         $items = Yii::app()->db->createCommand($sql)->queryAll();
         return $items;
     }
+    
+    public static function getTops($notId,$classify=  Posts::CLASSIFY_POST,$limit = 5) {
+        $sql = "SELECT id,title FROM {{posts}} WHERE classify='{$classify}' AND id!='{$notId}' AND status=" . Posts::STATUS_PASSED . " ORDER BY hits DESC LIMIT {$limit}";
+        $items = Yii::app()->db->createCommand($sql)->queryAll();
+        return $items;
+    }
 
     public static function favorite($code, $type, $from = 'web', $uid = '') {
         if (!$code || !$type) {

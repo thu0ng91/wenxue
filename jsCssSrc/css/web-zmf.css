@@ -1108,11 +1108,18 @@ span.required,.errorMessage{
     font-size: 14px;
     line-height: 1.75
 }
+.post-comments{
+    margin-bottom: 15px;
+}
 .post-comments .media{
     border-bottom: 1px dashed #f2f2f2
 }
 .post-comments .media:last-child{
     border: none
+}
+.post-comments .loading-holder{   
+    margin-top: 15px;
+    text-align: center;
 }
 /*帖子列表*/
 .forum-page .main-part .module-body{

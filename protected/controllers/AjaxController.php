@@ -788,13 +788,15 @@ class AjaxController extends Q {
         if (!$id || !$type) {
             $this->jsonOutPut(0, '数据不全，请核实');
         }
-        if (!in_array($type, array('tipComments'))) {
+        if (!in_array($type, array('tipComments','postComments'))) {
             $this->jsonOutPut(0, '暂不允许的分类');
         }
         if ($page < 1 || !is_numeric($page)) {
             $page = 1;
         }
-        $longHtml = '';
+        $longHtml = $from='';
+        $showFormHtml=$showAvatar=false;
+        $bookInfo=$postInfo=array();
         switch ($type) {
             case 'tipComments':
                 $postInfo = Tips::model()->findByPk($id);
@@ -804,24 +806,35 @@ class AjaxController extends Q {
                 $bookInfo=  Books::getOne($postInfo['bid']);
                 if(!$bookInfo || $bookInfo['status']!=Posts::STATUS_PASSED){
                     $this->jsonOutPut(0, '你所评论的小说不存在');
-                }
-                $limit = 30;
-                $posts = Comments::getCommentsByPage($id, 'tip', $page, $limit);
+                };
+                $posts = Comments::getCommentsByPage($id, 'tip', $page, $this->pageSize);
                 $view = '/posts/_comment';
+                $from='tip';
+                $showFormHtml=true;
                 break;
+            case 'postComments':
+                $postInfo = Posts::model()->findByPk($id);
+                if (!$postInfo || $postInfo['status'] != Posts::STATUS_PASSED) {
+                    $this->jsonOutPut(0, '你所评论的内容不存在');
+                }
+                $posts = Comments::getCommentsByPage($id, 'posts', $page, $this->pageSize,"c.id,c.uid,u.truename,u.avatar,c.aid,c.logid,c.tocommentid,c.content,c.cTime,c.status");
+                $view = '/posts/_comment';
+                $from='post';
+                $showAvatar=true;
+                break;    
             default:
                 $posts = array();
                 break;
         }
         if (!empty($posts)) {
             foreach ($posts as $k => $row) {
-                $longHtml.=$this->renderPartial($view, array('data' => $row, 'k' => $k, 'postInfo' => $postInfo,'from'=>'tip'), true);
+                $longHtml.=$this->renderPartial($view, array('data' => $row, 'k' => $k, 'postInfo' => $postInfo,'bookInfo'=>$bookInfo,'from'=>$from,'showAvatar'=>$showAvatar), true);
             }
         }
         $data = array(
             'html' => $longHtml,
-            'loadMore' => (count($posts) == $limit) ? 1 : 0,
-            'formHtml' => $this->renderPartial('/posts/_addComment', array('type' => $type, 'keyid' => $id,'authorPanel'=>($this->userInfo['authorId']>0 && $bookInfo['aid']==$this->userInfo['authorId']),'authorLogin'=>  Authors::checkLogin($this->userInfo, $this->userInfo['authorId'])), true)
+            'loadMore' => (count($posts) == $this->pageSize) ? 1 : 0,
+            'formHtml' => $showFormHtml ? $this->renderPartial('/posts/_addComment', array('type' => $type, 'keyid' => $id,'authorPanel'=>($this->userInfo['authorId']>0 && $bookInfo['aid']==$this->userInfo['authorId']),'authorLogin'=>  Authors::checkLogin($this->userInfo, $this->userInfo['authorId'])), true) : ''
         );
         $this->jsonOutPut(1, $data);
     }

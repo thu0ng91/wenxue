@@ -110,15 +110,17 @@ class PostsController extends Q {
             $size = 'w640';
         }
         $info['content'] = zmf::text(array(), $info['content'], true, $size);
-        $comments = Comments::getCommentsByPage($id, 'posts', 1, $this->pageSize);
+        $comments = Comments::getCommentsByPage($id, 'posts', 1, $this->pageSize,"c.id,c.uid,u.truename,u.avatar,c.aid,c.logid,c.tocommentid,c.content,c.cTime,c.status");
         $tags = Tags::getByIds($info['tagids']);
-        $relatePosts = Posts::getRelations($id, 5);
+        $relatePosts = Posts::getRelations($id, 5);        
+        $topsPosts=  Posts::getTops($info['id'], $info['classify'], 10);
         $data = array(
             'info' => $info,
             'authorInfo' => $authorInfo,
             'comments' => $comments,
             'tags' => $tags,
             'relatePosts' => $relatePosts,
+            'topsPosts' => $topsPosts,
             'type' => $type,
             'loadMore' => count($comments) == $this->pageSize ? 1 : 0,
         );
