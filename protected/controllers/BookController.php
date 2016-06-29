@@ -97,6 +97,8 @@ class BookController extends Q {
         $this->favorited = Favorites::checkFavored($id, 'book');
         //标题
         $this->pageTitle = '【' . $authorInfo['authorName'] . '作品】' . $info['title'] . ' - ' . zmf::config('sitename');
+        $this->keywords=$info['title'].'、'.$info['title'].'小说阅读、'.$info['title'].'最新章节';        
+        $this->pageDescription=  "{$info['title']},{$info['title']}小说阅读。{$colInfo['title']}{$info['title']}由作家{$authorInfo['authorName']}创作,".zmf::config('sitename')."提供{$info['title']}最新章节及章节列表,{$info['title']}最新更新尽在".zmf::config('sitename')."。";        
         //二维码
         $url=  zmf::config('domain').  Yii::app()->createUrl('book/view',array('id'=>$id));
         $qrcode=  zmf::qrcode($url, 'book', $id);
@@ -184,6 +186,9 @@ class BookController extends Q {
         $this->tipInfo = Chapters::checkTip($cid, $this->uid);
         //标题
         $this->pageTitle = '【' . $bookInfo['title'] . '】' . $chapterInfo['title'] . ' - ' . $authorInfo['authorName'] . '作品 - ' . zmf::config('sitename');
+        
+        $this->keywords=$bookInfo['title'].'、'.$bookInfo['title'].'小说阅读、'.$bookInfo['title'].'最新章节';        
+        $this->pageDescription=  "{$bookInfo['title']}：{$chapterInfo['title']}。{$colInfo['title']}{$bookInfo['title']}由作家{$authorInfo['authorName']}创作,".zmf::config('sitename')."提供{$bookInfo['title']}最新章节及章节列表,{$bookInfo['title']}最新更新尽在".zmf::config('sitename')."。";
         $this->selectNav = 'column' . $bookInfo['colid'];
         $data = array(
             'bookInfo' => $bookInfo,

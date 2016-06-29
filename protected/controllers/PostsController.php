@@ -123,7 +123,7 @@ class PostsController extends Q {
             'loadMore' => count($comments) == $this->pageSize ? 1 : 0,
         );
         $this->favorited = Favorites::checkFavored($id, 'post');
-        $this->pageTitle = $info['title'];
+        $this->pageTitle = $info['title'].' - '.zmf::config('sitename').($info['classify']==Posts::CLASSIFY_AUTHOR ? '作者专区' : '读者专区');
         $this->render('view', $data);
     }
 

@@ -26,6 +26,8 @@ class AuthorController extends Q {
             $this->favorited = Favorites::checkFavored($id, 'author');
         }
         $this->pageTitle = $this->authorInfo['authorName'] . ' - ' . zmf::config('sitename');
+        $this->keywords="{$this->authorInfo['authorName']},{$this->authorInfo['authorName']}小说,{$this->authorInfo['authorName']}全部小说,{$this->authorInfo['authorName']}作品,{$this->authorInfo['authorName']}最新作品,{$this->authorInfo['authorName']}新书,{$this->authorInfo['authorName']}资料及介绍";
+        $this->pageDescription=  "{$this->authorInfo['authorName']}是".zmf::config('sitename')."网作家。这里你可以阅读{$this->authorInfo['authorName']}全部小说及{$this->authorInfo['authorName']}最新作品集，还可以和{$this->authorInfo['authorName']}互动，更多{$this->authorInfo['authorName']}新书及动态请关注".zmf::config('sitename')."网。";
     }
 
     private function checkAuthorLogin() {
@@ -59,7 +61,7 @@ class AuthorController extends Q {
             zmf::setFCache('stat-Authors-'.$this->authorInfo['id'], 1, 600);
         }
         $this->selectNav = 'index';
-        $this->pageTitle = $this->authorInfo['authorName'] . ' - ' . zmf::config('sitename');
+        $this->pageTitle = $this->authorInfo['authorName'] . ' - ' . zmf::config('sitename');        
         $data = array(
             'posts' => $posts
         );
@@ -73,6 +75,7 @@ class AuthorController extends Q {
             $posts[$k]['avatar'] = zmf::getThumbnailUrl($val['avatar'], 'a120', 'avatar');
         }
         $this->selectNav = 'fans';
+        $this->pageTitle = $this->authorInfo['authorName'] . '的粉丝 - ' . zmf::config('sitename');
         $data = array(
             'posts' => $posts
         );
@@ -135,6 +138,7 @@ class AuthorController extends Q {
             }
         }
         $this->selectNav = 'createBook';
+        $this->pageTitle =  '发布作品 - ' . zmf::config('sitename');
         $this->render('createBook', array(
             'model' => $model,
         ));
@@ -153,7 +157,7 @@ class AuthorController extends Q {
             throw new CHttpException(404, 'The requested page does not exist.');
         }
         $chapters = Chapters::getByBook($bid, $this->adminLogin);
-
+        $this->pageTitle = $info['title'] . '的章节 - ' . zmf::config('sitename');
         $data = array(
             'info' => $info,
             'chapters' => $chapters,
@@ -234,7 +238,7 @@ class AuthorController extends Q {
         } else {
             $hashUuid = zmf::randMykeys(8);
         }
-        $this->pageTitle = '写文章';
+        $this->pageTitle = '写文章 - ' . zmf::config('sitename');
         $this->render('addChapter', array(
             'model' => $model,
             'hashUuid' => $hashUuid,
