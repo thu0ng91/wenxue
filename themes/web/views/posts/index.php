@@ -26,7 +26,7 @@
             </div>
             <div class="module-body">
                 <?php foreach ($posts as $k=>$_post){?>
-                <?php $this->renderPartial('/posts/_item',array('data'=>$_post,'posts'=>$posts));?>
+                <?php $this->renderPartial('/posts/_item',array('data'=>$_post,'posts'=>$posts,'k'=>$k));?>
                 <?php }?>
                 <?php $this->renderPartial('/common/pager',array('pages'=>$pages));?>
             </div>
