@@ -1,34 +1,28 @@
-<?php 
-$url=zmf::config('domain').Yii::app()->createUrl('posts/view',array('id'=>$data['id']));
-$qrcode=  zmf::qrcode($url, 'posts', $data['id']);
-?>
-<div class="post-item" id="post-<?php echo $data['id'];?>">
+<div class="media post-item <?php echo $data['top'] && !$posts[$k+1]['top'] ? 'last-toped' : '';?>">
     <?php if($data['faceimg']){?>
-    <a href="<?php echo $url;?>" title="<?php echo $data['title'];?>"><img src="<?php echo $data['faceimg'];?>" class="img-responsive"/></a>
+    <div class="media-left">
+        <a href="<?php echo Yii::app()->createUrl('posts/view',array('id'=>$data['id']));?>">
+            <img class="media-object lazy w70" src="<?php echo zmf::lazyImg();?>" data-original="<?php echo $data['faceimg'];?>" alt="<?php echo $data['title'];?>">
+        </a>
+    </div>
     <?php }?>
-    <div class="module">
-        <h4><?php echo CHtml::link($data['title'], array('posts/view', 'id' => $data['id'])); ?></h4>
-        <p><?php echo zmf::subStr($data['content'],140);?></p>
-        <?php if(!empty($data['tagids'])){?>
-        <p class="post-list-tags"><i class="fa fa-tags"></i><?php foreach($data['tagids'] as $_tag){echo CHtml::link($_tag['title'],array('index/index','tagid'=>$_tag['id']));}?></p>
-        <?php }?>
-        <div class="post-item-footer">
-            <div class="left-actions">
-                <span class="favor-num"><i class="fa fa-heart-o"></i> <?php echo $data['favorite'];?></span>
-                <span class="comment-num"><i class="fa fa-comment-o"></i> <?php echo $data['comments'];?></span>
-            </div>
-            <div class="dropdown right-actions">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"><i class="fa fa-ellipsis-h"></i></a>  
-                <ul class="dropdown-menu">
-                  <li><?php echo CHtml::link('分享','javascript:;',array('action'=>'share','action-qrcode'=>$qrcode,'action-url'=>$url,'action-img'=>$qrcode,'action-title'=>$data['title']));?></li>
-                  <li><?php echo CHtml::link('评论',array('posts/view','id'=>$data['id'],'#'=>'add-comments'));?></li>
-                  <?php if(($this->uid && $this->uid==$data['uid']) || $this->userInfo['isAdmin']){?>
-                  <li role="separator" class="divider"></li>
-                  <li><?php echo CHtml::link('编辑',array('admin/posts/update','id'=>$data['id']),array('target'=>'_blank'));?></li>
-                  <li><?php echo CHtml::link('删除','javascript:;',array('action'=>'del-content','action-type'=>'post','action-data'=>$data['id'],'action-confirm'=>1,'action-target'=>'post-'.$data['id']));?></li>
-                  <?php }?>
-                </ul>
-              </div>
-        </div>
+    <div class="media-body">
+        <p class="no-wrap <?php echo Posts::exTopClass($data['styleStatus']);?>"><?php echo CHtml::link($data['title'],array('posts/view','id'=>$data['id']));?></p>
+        <p class="color-grey tips">
+            <?php if($data['top']){?>
+            <span style="color:red" title="置顶"><i class="fa fa-bookmark"></i></span>
+            <?php }?>
+            <?php if($data['styleStatus']){?>
+            <span style="color:red" title="加精"><i class="fa fa-flag"></i></span>
+            <?php }?>
+            <?php if($data['classify']==Posts::CLASSIFY_AUTHOR && $data['aid']){?>
+            <span><?php echo CHtml::link($data['username'],array('author/view','id'=>$data['aid']));?></span>  
+            <?php }else{?>
+            <span><?php echo CHtml::link($data['username'],array('user/index','id'=>$data['uid']));?></span>  
+            <?php }?>
+            <span><?php echo zmf::formatTime($data['cTime']);?></span>                            
+            <span><?php echo $data['comments'];?>评论</span>                            
+            <span><?php echo $data['favorite'];?>赞</span>                            
+        </p>
     </div>
 </div>

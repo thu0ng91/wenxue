@@ -13,13 +13,16 @@ class PostsController extends Q {
         if ($type == 'author') {
             $classify = Posts::CLASSIFY_AUTHOR;
             $label = '作者专区';
-            $sql = "SELECT p.id,p.title,p.uid,u.truename AS username,p.cTime,p.comments,p.favorite,p.classify,p.top,p.styleStatus,p.aid FROM {{posts}} p,{{users}} u WHERE p.classify='{$classify}' AND p.status=" . Posts::STATUS_PASSED . " AND p.uid=u.id AND u.status=" . Posts::STATUS_PASSED . " ORDER BY p.top DESC,p.cTime DESC";
+            $sql = "SELECT p.id,p.title,p.faceimg,p.uid,u.truename AS username,p.cTime,p.comments,p.favorite,p.classify,p.top,p.styleStatus,p.aid FROM {{posts}} p,{{users}} u WHERE p.classify='{$classify}' AND p.status=" . Posts::STATUS_PASSED . " AND p.uid=u.id AND u.status=" . Posts::STATUS_PASSED . " ORDER BY p.top DESC,p.cTime DESC";
         } elseif ($type == 'reader') {
             $classify = Posts::CLASSIFY_READER;
             $label = '读者专区';
-            $sql = "SELECT p.id,p.title,p.uid,u.truename AS username,p.cTime,p.comments,p.favorite,p.classify,p.top,p.styleStatus FROM {{posts}} p,{{users}} u WHERE p.classify='{$classify}' AND p.status=" . Posts::STATUS_PASSED . " AND p.uid=u.id AND u.status=" . Posts::STATUS_PASSED . " ORDER BY p.top DESC,p.cTime DESC";
+            $sql = "SELECT p.id,p.title,p.faceimg,p.uid,u.truename AS username,p.cTime,p.comments,p.favorite,p.classify,p.top,p.styleStatus FROM {{posts}} p,{{users}} u WHERE p.classify='{$classify}' AND p.status=" . Posts::STATUS_PASSED . " AND p.uid=u.id AND u.status=" . Posts::STATUS_PASSED . " ORDER BY p.top DESC,p.cTime DESC";
         }
         Posts::getAll(array('sql' => $sql, 'pageSize' => $this->pageSize), $pages, $posts);
+        foreach ($posts as $k=>$val){
+            $posts[$k]['faceimg']=  Attachments::faceImg($val, 'c120', 'posts');
+        }
         if ($type == 'author' && !empty($posts)) {
             $aids = join(',', array_unique(array_filter(array_keys(CHtml::listData($posts, 'aid', '')))));
             $authors = array();

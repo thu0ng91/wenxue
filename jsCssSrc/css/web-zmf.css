@@ -47,6 +47,10 @@ p{
     width: 78px;
     height: 104px
 }
+.w70{
+    width: 70px;
+    height: 50px
+}
 .a74{
     width: 74px;
     height: 74px;
@@ -976,9 +980,6 @@ button, input, select, textarea,.form-control,.btn{
 .main-part .post-item{
     background: #fff;
 }
-.main-part .post-item img{
-    max-width: 100%;
-}
 .fixed-side-part{
     position: fixed;
     top: 60px;
@@ -1142,10 +1143,6 @@ span.required,.errorMessage{
 }
 .forum-page .post-item .tips span{
     margin-right: 5px
-}
-.forum-page .post-item .media-object{
-    width: 78px;
-    height: 104px;
 }
 .forum-page .posts-side-show img{
     width: 300px;

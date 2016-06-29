@@ -26,34 +26,7 @@
             </div>
             <div class="module-body">
                 <?php foreach ($posts as $k=>$_post){?>
-                <div class="media post-item <?php echo $_post['top'] && !$posts[$k+1]['top'] ? 'last-toped' : '';?>">
-                    <?php if($_post['faceimg']){?>
-                    <div class="media-left">
-                        <a href="<?php echo Yii::app()->createUrl('posts/view',array('id'=>$_post['id']));?>">
-                            <img class="media-object lazy" src="<?php echo zmf::lazyImg();?>" data-original="<?php echo $_post['faceimg'];?>" alt="<?php echo $_post['title'];?>">
-                        </a>
-                    </div>
-                    <?php }?>
-                    <div class="media-body">
-                        <p class="no-wrap <?php echo Posts::exTopClass($_post['styleStatus']);?>"><?php echo CHtml::link($_post['title'],array('posts/view','id'=>$_post['id']));?></p>
-                        <p class="color-grey tips">
-                            <?php if($_post['top']){?>
-                            <span style="color:red" title="置顶"><i class="fa fa-bookmark"></i></span>
-                            <?php }?>
-                            <?php if($_post['styleStatus']){?>
-                            <span style="color:red" title="加精"><i class="fa fa-flag"></i></span>
-                            <?php }?>
-                            <?php if($_post['classify']==Posts::CLASSIFY_AUTHOR && $_post['aid']){?>
-                            <span><?php echo CHtml::link($_post['username'],array('author/view','id'=>$_post['aid']));?></span>  
-                            <?php }else{?>
-                            <span><?php echo CHtml::link($_post['username'],array('user/index','id'=>$_post['uid']));?></span>  
-                            <?php }?>
-                            <span><?php echo zmf::formatTime($_post['cTime']);?></span>                            
-                            <span><?php echo $_post['comments'];?>评论</span>                            
-                            <span><?php echo $_post['favorite'];?>赞</span>                            
-                        </p>
-                    </div>
-                </div>
+                <?php $this->renderPartial('/posts/_item',array('data'=>$_post,'posts'=>$posts));?>
                 <?php }?>
                 <?php $this->renderPartial('/common/pager',array('pages'=>$pages));?>
             </div>
