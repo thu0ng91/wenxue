@@ -13,18 +13,20 @@
     <div class="media">
         <div class="media-left">
             <img class="media-object lazy" src="<?php echo zmf::lazyImg();?>" data-original="<?php echo $info['faceImg'];?>" alt="<?php echo $info['title'];?>">  
-            <?php if($info['bookStatus']!=Books::STATUS_PUBLISHED){?>
+            <?php if($info['bookStatus']==Books::STATUS_NOTPUBLISHED){?>
             <p><?php echo CHtml::link('立即发布','javascript:;',array('class'=>'btn btn-danger btn-xs btn-block','action'=>'publishBook','data-id'=>$info['id']));?></p>
             <?php }else{?>
             <p><?php echo CHtml::link('预览',array('book/view','id'=>$info['id']),array('class'=>'btn btn-success btn-xs btn-block','target'=>'_blank'));?></p>
             <p><?php echo CHtml::link('分享','javascript:;',array('class'=>'btn btn-default btn-xs btn-block'));?></p>
-            <p><?php echo CHtml::link('编辑',array('author/updateBook','bid'=>$info['id']),array('class'=>'btn btn-default btn-xs btn-block'));?></p>            
+            <p><?php echo CHtml::link('编辑',array('author/updateBook','bid'=>$info['id']),array('class'=>'btn btn-default btn-xs btn-block'));?></p>
+            <p><?php echo $info['bookStatus']==Books::STATUS_FINISHED ? CHtml::link('已完结','javascript:;',array('class'=>'btn btn-default btn-xs btn-block')) : CHtml::link('完结','javascript:;',array('action'=>'finishBook','data-id'=>$info['id'],'class'=>'btn btn-info btn-xs btn-block','title'=>'标记为已完结？'));?></p>
             <?php }?>
         </div>
         <div class="media-body">
             <h4><?php echo $info['title'];?></h4>
-            <p class="help-block"><?php echo $info['desc'];?></p>
-            <p class="help-block"><?php echo $info['content'];?></p>
+            <p><b>简介：</b><span class="color-grey"><?php echo $info['desc'];?></span></p>
+            <p><b>介绍：</b><span class="color-grey"><?php echo $info['content'];?></span></p>
+            <p class="color-grey"><?php echo CHtml::link('<i class="fa fa-exclamation-triangle"></i> 删除本书','javascript:;',array('action'=>'delBook','data-id'=>$info['id'],'data-redirect'=>  Yii::app()->createUrl('author/view',array('id'=>$info['aid']))));?></p>
         </div>
     </div>
     <div class="module-header">目录</div>
@@ -35,16 +37,16 @@
                 <td style="width: 40px" title="章节号"><?php echo $chapter['chapterNum'];?></td>
                 <td>
                     <?php echo CHtml::link($chapter['title'],array('book/chapter','cid'=>$chapter['id']));?>
-                    <?php echo $chapter['status']==Books::STATUS_PUBLISHED ? '':'<span class="color-warning">'.($chapter['status']==Books::STATUS_STAYCHECK ? '待审核' : '草稿').'</span>';?>
+                    <?php echo $chapter['chapterStatus']==Books::STATUS_PUBLISHED ? '':'<span class="color-warning">'.($chapter['chapterStatus']==Books::STATUS_STAYCHECK ? '待审核' : '草稿').'</span>';?>
                 </td>
                 <td style="width: 120px">
                     <?php echo CHtml::link('编辑',array('author/addChapter','cid'=>$chapter['id']));?>
-                    <?php echo $chapter['status']==Books::STATUS_PUBLISHED ? '' : CHtml::link('发表','javascript:;',array('action'=>'publishChapter','data-id'=>$chapter['id']));?>
-                    <?php echo CHtml::link('删除',array('author/addChapter','cid'=>$chapter['id']));?>
+                    <?php echo $chapter['chapterStatus']==Books::STATUS_PUBLISHED ? '' : CHtml::link('发表','javascript:;',array('action'=>'publishChapter','data-id'=>$chapter['id']));?>
+                    <?php echo CHtml::link('删除','javascript:;',array('action'=>'delChapter','data-id'=>$chapter['id']));?>
                 </td>
-            </tr>        
+            </tr>
             <?php }?>            
         </table>
-        <?php echo CHtml::link('<i class="fa fa-plus"></i> 新章节',array('author/addChapter','bid'=>$info['id']),array('class'=>'btn btn-primary btn-block'));?>
+        <?php echo $info['bookStatus']!=Books::STATUS_FINISHED ? CHtml::link('<i class="fa fa-plus"></i> 新章节',array('author/addChapter','bid'=>$info['id']),array('class'=>'btn btn-primary btn-block')):'';?>
     </div>
 </div>

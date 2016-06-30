@@ -141,13 +141,15 @@ class PostsController extends Q {
         if ($id) {
             $id = zmf::myint($id);
             $model = $this->loadModel($id);
-            if ($model['uid'] != $this->uid) {
+            if ($model['uid'] != $this->uid && !$this->userInfo['isAdmin']) {
                 throw new CHttpException(403, '你无权本操作');
             }
             $isNew = false;
             $type = Posts::exType($model->classify);
-            if ($model->classify == Posts::CLASSIFY_AUTHOR && $this->userInfo['authorId'] && !$model->aid) {
-                $model->aid = $this->userInfo['authorId'];
+            if($model['uid'] == $this->uid){
+                if ($model->classify == Posts::CLASSIFY_AUTHOR && $this->userInfo['authorId'] && !$model->aid) {
+                    $model->aid = $this->userInfo['authorId'];
+                }
             }
             $model->content=zmf::text(array('action'=>'edit','encode'=>'yes'),$model->content,false,640);
         } else {

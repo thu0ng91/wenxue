@@ -41,8 +41,12 @@ class AuthorController extends Q {
     }
 
     public function actionView() {
+        $arr=array(
+            Books::STATUS_PUBLISHED,
+            Books::STATUS_FINISHED
+        );
         $posts = Books::model()->findAll(array(
-            'condition' => 'aid=:aid' . (!$this->adminLogin ? " AND bookStatus='" . Books::STATUS_PUBLISHED . "'" : ""),
+            'condition' => 'aid=:aid AND status='.Posts::STATUS_PASSED . (!$this->adminLogin ? " AND bookStatus IN(" . join(',',$arr) . ")" : ""),
             'select' => 'id,colid,title,faceImg,`desc`,words,cTime,score,scorer,bookStatus',
             'params' => array(
                 ':aid' => $this->authorInfo['id']
@@ -153,7 +157,7 @@ class AuthorController extends Q {
         $this->checkAuthorLogin();
         $bid = zmf::val('bid', 2);
         $info = Books::getOne($bid);
-        if (!$info) {
+        if (!$info || $info['status']!=Posts::STATUS_PASSED) {
             throw new CHttpException(404, 'The requested page does not exist.');
         }
         $chapters = Chapters::getByBook($bid, $this->adminLogin);
@@ -186,12 +190,14 @@ class AuthorController extends Q {
             $model = new Chapters;
         }
         $bookInfo = Books::getOne($bid);
-        if (!$bookInfo) {
+        if (!$bookInfo || $bookInfo['status']!=Posts::STATUS_PASSED) {
             throw new CHttpException(404, '你所操作的小说不存在');
         } elseif ($bookInfo['uid'] != $this->uid || $bookInfo['aid'] != $this->userInfo['authorId']) {
             throw new CHttpException(403, '你无权本操作');
         } elseif (!$bookInfo['iAgree']) {
             $this->message(0, '请先同意本站协议', Yii::app()->createUrl('author/updateBook', array('bid' => $bid)));
+        } elseif ($bookInfo['bookStatus']==Books::STATUS_FINISHED && !$cid) {
+            $this->message(0, '该小说已完结，不能再添加新章节', Yii::app()->createUrl('author/view', array('id' => $bookInfo['aid'])));
         }
         $model->bid = $bid;
         $model->uid = $bookInfo['uid'];
@@ -211,7 +217,7 @@ class AuthorController extends Q {
                 'content' => $filterContent['content'],
                 'postscript' => $filterPostscript['content'],
                 'psPosition' => ($psPosition < 0 || $psPosition > 1) ? 0 : $psPosition,
-                'status' => $status,
+                'chapterStatus' => $status,
                 'chapterNum' => $chapterNum,
             );
             $model->attributes = $attr;

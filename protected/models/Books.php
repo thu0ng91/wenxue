@@ -29,6 +29,7 @@ class Books extends CActiveRecord {
     const STATUS_NOTPUBLISHED = 0;
     const STATUS_PUBLISHED = 1;
     const STATUS_STAYCHECK=2;//待审核
+    const STATUS_FINISHED=3;//已完结
 
     /**
      * @return string the associated database table name
@@ -195,6 +196,7 @@ class Books extends CActiveRecord {
         $arr = array(
             self::STATUS_NOTPUBLISHED => '未发表',
             self::STATUS_PUBLISHED => '连载中',
+            self::STATUS_FINISHED => '已完结',
         );
         if($type=='admin'){
             return $arr;
@@ -228,7 +230,7 @@ class Books extends CActiveRecord {
     
     public static function updateBookStatInfo($bid){
         $items=  Chapters::model()->findAll(array(
-            'condition'=>'bid=:bid AND status='.Posts::STATUS_PASSED,
+            'condition'=>'bid=:bid AND status='.Posts::STATUS_PASSED.' AND chapterStatus='.Books::STATUS_PUBLISHED,
             'select'=>'words,comments,hits',
             'params'=>array(
                 ':bid'=>$bid

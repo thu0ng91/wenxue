@@ -17,7 +17,7 @@ class AjaxController extends Q {
 
     public function actionDo() {
         $action = zmf::val('action', 1);
-        if (!in_array($action, array('addTip', 'saveUploadImg', 'publishBook', 'publishChapter', 'saveDraft', 'report', 'sendSms', 'checkSms', 'setStatus', 'delContent', 'getNotice', 'getContents'))) {
+        if (!in_array($action, array('addTip', 'saveUploadImg', 'publishBook', 'publishChapter', 'saveDraft', 'report', 'sendSms', 'checkSms', 'setStatus', 'delContent', 'getNotice', 'getContents', 'delBook', 'delChapter','finishBook'))) {
             $this->jsonOutPut(0, Yii::t('default', 'forbiddenaction'));
         }
         $this->$action();
@@ -215,10 +215,10 @@ class AjaxController extends Q {
             $this->jsonOutPut(0, '你无权本操作');
         }
         //统计已发表的章节
-        $chapters = Chapters::model()->count('uid=:uid AND aid=:aid AND bid=:bid AND status=' . Books::STATUS_PUBLISHED, array(':uid' => $this->uid, ':aid' => $this->userInfo['authorId'], ':bid' => $id));
+        $chapters = Chapters::model()->count('uid=:uid AND aid=:aid AND bid=:bid AND status=' . Posts::STATUS_PASSED .' AND chapterStatus='.Books::STATUS_PUBLISHED, array(':uid' => $this->uid, ':aid' => $this->userInfo['authorId'], ':bid' => $id));
         if ($chapters < 1) {
             $this->jsonOutPut(0, '小说暂无已发表章节，请先发表章节');
-        }
+        }        
         if (Books::model()->updateByPk($id, array('bookStatus' => Books::STATUS_PUBLISHED))) {
             //更新小说信息
             Books::updateBookStatInfo($id);
@@ -227,6 +227,97 @@ class AjaxController extends Q {
             $this->jsonOutPut(1, '已发表');
         } else {
             $this->jsonOutPut(1, '已发表');
+        }
+    }
+    private function finishBook() {
+        $this->checkLogin();
+        $this->checkUserStatus();
+        $id = zmf::val('bid', 2);
+        if (!$id) {
+            $this->jsonOutPut(0, '缺少参数哦~');
+        }
+        $bookInfo = Books::getOne($id);
+        if (!$bookInfo || $bookInfo['status'] != Posts::STATUS_PASSED) {
+            if ($bookInfo && $bookInfo['status'] == Books::STATUS_STAYCHECK) {
+                $this->jsonOutPut(0, '该小说已被锁定');
+            }
+            $this->jsonOutPut(0, '小说不存在或已删除');
+        } elseif ($bookInfo['uid'] != $this->uid || $bookInfo['aid'] != $this->userInfo['authorId']) {
+            $this->jsonOutPut(0, '你无权本操作');
+        } elseif (!$bookInfo['iAgree']) {
+            $this->jsonOutPut(0, '请先同意本站协议');
+        } elseif ($bookInfo['bookStatus'] != Books::STATUS_PUBLISHED) {
+            $this->jsonOutPut(0, '小说尚未发表');
+        } elseif ($bookInfo['bookStatus'] == Books::STATUS_FINISHED) {
+            $this->jsonOutPut(1, '已完结');
+        }
+        if (!Authors::checkLogin($this->userInfo, $bookInfo['aid'])) {
+            $this->jsonOutPut(0, '你无权本操作');
+        }
+        $authorInfo=  Authors::getOne($this->userInfo['authorId']);
+        if(!$authorInfo || $authorInfo['status']!=Posts::STATUS_PASSED){
+            $this->jsonOutPut(0, '你无权本操作');
+        }
+        //统计已发表的章节
+        $chapters = Chapters::model()->count('uid=:uid AND aid=:aid AND bid=:bid AND status=' . Posts::STATUS_PASSED .' AND chapterStatus='.Books::STATUS_PUBLISHED, array(':uid' => $this->uid, ':aid' => $this->userInfo['authorId'], ':bid' => $id));
+        if ($chapters < 1) {
+            $this->jsonOutPut(0, '小说暂无已发表章节，请先发表章节');
+        }
+        //统计未发表的章节
+        $unChapters = Chapters::model()->count('uid=:uid AND aid=:aid AND bid=:bid AND status=' . Posts::STATUS_PASSED .' AND chapterStatus!='.Books::STATUS_PUBLISHED, array(':uid' => $this->uid, ':aid' => $this->userInfo['authorId'], ':bid' => $id));
+        if ($unChapters >0) {
+            $this->jsonOutPut(0, '小说尚有未发表章节，请妥善处理未发表章节后重试');
+        }
+        if (Books::model()->updateByPk($id, array('bookStatus' => Books::STATUS_FINISHED))) {
+            //更新小说信息
+            Books::updateBookStatInfo($id);
+            //更新作者信息
+            Authors::updateStatInfo($authorInfo);
+            $this->jsonOutPut(1, '已标记为完结');
+        } else {
+            $this->jsonOutPut(1, '标记失败');
+        }
+    }
+    
+    private function delBook() {
+        $this->checkLogin();
+        $this->checkUserStatus();
+        $id = zmf::val('bid', 2);
+        $passwd=  zmf::val('passwd',1);
+        if (!$id) {
+            $this->jsonOutPut(0, '缺少参数哦~');
+        }
+        if (!$passwd) {
+            $this->jsonOutPut(0, '请输入密码');
+        }
+        $bookInfo = Books::getOne($id);
+        if (!$bookInfo || $bookInfo['status'] != Posts::STATUS_PASSED) {
+            if ($bookInfo && $bookInfo['status'] == Books::STATUS_STAYCHECK) {
+                $this->jsonOutPut(0, '该小说已被锁定');
+            }
+            $this->jsonOutPut(0, '小说不存在或已删除');
+        } elseif ($bookInfo['uid'] != $this->uid || $bookInfo['aid'] != $this->userInfo['authorId']) {
+            $this->jsonOutPut(0, '你无权本操作');
+        }elseif($bookInfo['status']==Posts::STATUS_DELED){
+            $this->jsonOutPut(1, '已删除');
+        }
+        if (!Authors::checkLogin($this->userInfo, $bookInfo['aid'])) {
+            $this->jsonOutPut(0, '你无权本操作');
+        }
+        $authorInfo=  Authors::getOne($this->userInfo['authorId']);
+        if(!$authorInfo || $authorInfo['status']!=Posts::STATUS_PASSED){
+            $this->jsonOutPut(0, '你无权本操作');
+        }elseif(md5($passwd.$authorInfo['hashCode'])!=$authorInfo['password']){
+            $this->jsonOutPut(0, '密码错误，请重试');
+        }
+        if (Books::model()->updateByPk($id, array('status' => Posts::STATUS_DELED))) {
+            //更新小说信息
+            Books::updateBookStatInfo($id);
+            //更新作者信息
+            Authors::updateStatInfo($authorInfo);
+            $this->jsonOutPut(1, '已删除');
+        } else {
+            $this->jsonOutPut(1, '删除失败');
         }
     }
 
@@ -253,24 +344,61 @@ class AjaxController extends Q {
         if(!$authorInfo || $authorInfo['status']!=Posts::STATUS_PASSED){
             $this->jsonOutPut(0, '你无权本操作');
         }
-        if (!$chapterInfo) {
+        if (!$chapterInfo || $chapterInfo['status']!=Posts::STATUS_PASSED) {
             $this->jsonOutPut(0, '操作对象不存在，请核实');
         } elseif ($chapterInfo['uid'] != $this->uid || $chapterInfo['aid'] != $this->userInfo['authorId']) {
             $this->jsonOutPut(0, '你无权本操作');
-        } elseif ($chapterInfo['status'] == Books::STATUS_PUBLISHED) {
+        } elseif ($chapterInfo['chapterStatus'] == Books::STATUS_PUBLISHED) {
             $this->jsonOutPut(1, '已发表');
-        } elseif ($chapterInfo['status'] == Books::STATUS_STAYCHECK) {
+        } elseif ($chapterInfo['chapterStatus'] == Books::STATUS_STAYCHECK) {
             $this->jsonOutPut(0, '该章节待审核，请审核通过后再发表！');
         }
         if (!Authors::checkLogin($this->userInfo, $chapterInfo['aid'])) {
             $this->jsonOutPut(0, '你无权本操作');
         }
-        if (Chapters::model()->updateByPk($id, array('status' => Books::STATUS_PUBLISHED))) {
+        if (Chapters::model()->updateByPk($id, array('chapterStatus' => Books::STATUS_PUBLISHED))) {
             Books::updateBookStatInfo($chapterInfo['bid']);
             Authors::updateStatInfo($authorInfo);
             $this->jsonOutPut(1, '已发表');
         } else {
             $this->jsonOutPut(1, '已发表');
+        }
+    }
+    
+    private function delChapter() {
+        $this->checkLogin();
+        $this->checkUserStatus();
+        $id = zmf::val('cid', 2);
+        $passwd=  zmf::val('passwd',1);
+        if (!$id) {
+            $this->jsonOutPut(0, '缺少参数哦~');
+        }
+        if (!$passwd) {
+            $this->jsonOutPut(0, '请输入密码');
+        }
+        $chapterInfo = Chapters::getOne($id);
+        if (!$chapterInfo) {
+            $this->jsonOutPut(0, '操作对象不存在，请核实');
+        } elseif ($chapterInfo['uid'] != $this->uid || $chapterInfo['aid'] != $this->userInfo['authorId']) {
+            $this->jsonOutPut(0, '你无权本操作');
+        } elseif ($chapterInfo['status'] == Posts::STATUS_DELED) {
+            $this->jsonOutPut(1, '已删除');
+        }        
+        $authorInfo=  Authors::getOne($this->userInfo['authorId']);
+        if(!$authorInfo || $authorInfo['status']!=Posts::STATUS_PASSED){
+            $this->jsonOutPut(0, '你无权本操作');
+        }
+        if (!Authors::checkLogin($this->userInfo, $chapterInfo['aid'])) {
+            $this->jsonOutPut(0, '你无权本操作');
+        }elseif(md5($passwd.$authorInfo['hashCode'])!=$authorInfo['password']){
+            $this->jsonOutPut(0, '密码错误，请重试');
+        }
+        if (Chapters::model()->updateByPk($id, array('status' => Posts::STATUS_DELED))) {
+            Books::updateBookStatInfo($chapterInfo['bid']);
+            Authors::updateStatInfo($authorInfo);
+            $this->jsonOutPut(1, '已删除');
+        } else {
+            $this->jsonOutPut(0, '删除失败');
         }
     }
 

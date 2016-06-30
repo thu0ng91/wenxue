@@ -14,7 +14,11 @@ class BookController extends Q {
         if (!$colInfo) {
             throw new CHttpException(404, '请选择正确的分类');
         }
-        $sql = "SELECT id,colid,title,faceImg,`desc`,words,cTime,score,scorer,bookStatus FROM {{books}} WHERE colid='{$colid}' AND bookStatus=" . Books::STATUS_PUBLISHED . " ORDER BY score DESC";
+        $arr=array(
+            Books::STATUS_PUBLISHED,
+            Books::STATUS_FINISHED
+        );
+        $sql = "SELECT id,colid,title,faceImg,`desc`,words,cTime,score,scorer,bookStatus FROM {{books}} WHERE colid='{$colid}' AND status=" . Posts::STATUS_PASSED . " AND bookStatus IN(" . join(',',$arr) . ") ORDER BY score DESC";
         Posts::getAll(array('sql' => $sql), $pages, $posts);
         foreach ($posts as $k => $val) {
             $posts[$k]['faceImg'] = zmf::getThumbnailUrl($val['faceImg'], 'w120', 'book');
@@ -38,7 +42,11 @@ class BookController extends Q {
         if (!$info || $info['status'] != Posts::STATUS_PASSED) {
             throw new CHttpException(404, '你所查看的小说不存在。');
         } else {
-            if ($info['bookStatus'] != Books::STATUS_PUBLISHED && $this->uid != $info['uid']) {
+            $arr=array(
+                Books::STATUS_PUBLISHED,
+                Books::STATUS_FINISHED
+            );
+            if (!in_array($info['bookStatus'],$arr) && $this->uid != $info['uid']) {
                 throw new CHttpException(404, '你所查看的小说不存在。');
             }
         }
@@ -47,7 +55,7 @@ class BookController extends Q {
             throw new CHttpException(404, 'The requested page does not exist.');
         }
         //获取点评列表
-        $sql = "SELECT t.id,t.uid,u.truename,u.avatar,c.title AS chapterTitle,t.logid,t.content,t.score,t.favors,t.cTime,0 AS favorited,1 AS status,t.comments FROM ({{tips}} AS t RIGHT JOIN {{chapters}} AS c ON t.logid=c.id) LEFT JOIN {{users}} AS u ON t.uid=u.id WHERE t.bid=:bid AND t.classify='chapter' AND t.status=".Posts::STATUS_PASSED." AND t.logid=c.id ORDER BY t.cTime ASC";
+        $sql = "SELECT t.id,t.uid,u.truename,u.avatar,c.title AS chapterTitle,t.logid,t.content,t.score,t.favors,t.cTime,0 AS favorited,1 AS status,t.comments FROM ({{tips}} AS t RIGHT JOIN {{chapters}} AS c ON t.logid=c.id) LEFT JOIN {{users}} AS u ON t.uid=u.id WHERE t.bid=:bid AND t.classify='chapter' AND t.status=" . Posts::STATUS_PASSED . " AND t.logid=c.id ORDER BY t.cTime ASC";
         $tips = Posts::getByPage(array(
                     'sql' => $sql,
                     'page' => $this->page,
@@ -56,8 +64,8 @@ class BookController extends Q {
                         ':bid' => $id
                     )
         ));
-        foreach ($tips as $k=>$tip){
-            $tips[$k]['avatar']=  zmf::getThumbnailUrl($tip['avatar'], 'd120', 'user');
+        foreach ($tips as $k => $tip) {
+            $tips[$k]['avatar'] = zmf::getThumbnailUrl($tip['avatar'], 'd120', 'user');
         }
         //取得已收藏过的点评
         if (!empty($tips) && $this->uid) {
@@ -89,19 +97,19 @@ class BookController extends Q {
         //获取分类
         $colInfo = Column::getSimpleInfo($info['colid']);
         //更新小说数据,10分钟更新一次
-        $upBookInfo= zmf::getFCache('stat-Books-'.$id);
-        if(!$upBookInfo){
+        $upBookInfo = zmf::getFCache('stat-Books-' . $id);
+        if (!$upBookInfo) {
             Books::updateBookStatInfo($id);
-            zmf::setFCache('stat-Books-'.$id, 1, 600);
+            zmf::setFCache('stat-Books-' . $id, 1, 600);
         }
         $this->favorited = Favorites::checkFavored($id, 'book');
         //标题
         $this->pageTitle = '【' . $authorInfo['authorName'] . '作品】' . $info['title'] . ' - ' . zmf::config('sitename');
-        $this->keywords=$info['title'].'、'.$info['title'].'小说阅读、'.$info['title'].'最新章节';        
-        $this->pageDescription=  "{$info['title']},{$info['title']}小说阅读。{$colInfo['title']}{$info['title']}由作家{$authorInfo['authorName']}创作,".zmf::config('sitename')."提供{$info['title']}最新章节及章节列表,{$info['title']}最新更新尽在".zmf::config('sitename')."。";        
+        $this->keywords = $info['title'] . '、' . $info['title'] . '小说阅读、' . $info['title'] . '最新章节';
+        $this->pageDescription = "{$info['title']},{$info['title']}小说阅读。{$colInfo['title']}{$info['title']}由作家{$authorInfo['authorName']}创作," . zmf::config('sitename') . "提供{$info['title']}最新章节及章节列表,{$info['title']}最新更新尽在" . zmf::config('sitename') . "。";
         //二维码
-        $url=  zmf::config('domain').  Yii::app()->createUrl('book/view',array('id'=>$id));
-        $qrcode=  zmf::qrcode($url, 'book', $id);
+        $url = zmf::config('domain') . Yii::app()->createUrl('book/view', array('id' => $id));
+        $qrcode = zmf::qrcode($url, 'book', $id);
         $data = array(
             'info' => $info,
             'authorInfo' => $authorInfo,
@@ -118,10 +126,10 @@ class BookController extends Q {
     public function actionChapter() {
         $cid = zmf::val('cid', 2);
         $chapterInfo = Chapters::model()->findByPk($cid);
-        if (!$chapterInfo) {
+        if (!$chapterInfo || $chapterInfo['status'] != Posts::STATUS_PASSED) {
             throw new CHttpException(404, '你所查看的章节不存在。');
         } else {
-            if ($chapterInfo['status'] != Posts::STATUS_PASSED && $this->uid != $chapterInfo['uid']) {
+            if ($chapterInfo['chapterStatus'] != Posts::STATUS_PASSED && $this->uid != $chapterInfo['uid']) {
                 throw new CHttpException(404, '你所查看的章节不存在。');
             }
         }
@@ -139,19 +147,26 @@ class BookController extends Q {
         }
         //获取点评数
         $sql = "SELECT t.id,t.uid,u.truename,u.avatar,t.content,t.cTime,t.logid,t.tocommentid,t.favors,t.score,t.status,t.comments FROM {{tips}} t,{{users}} u WHERE t.logid=:logid AND t.classify='chapter' AND t.status=" . Posts::STATUS_PASSED . " AND t.uid=u.id AND u.status=" . Posts::STATUS_PASSED;
-        $tips = Posts::getByPage(array('sql' => $sql, 'pageSize' => 30, 'page' => 1, 'bindValues' => array(':logid' => $cid)));
-        foreach ($tips as $k=>$tip){
-            $tips[$k]['avatar']=  zmf::getThumbnailUrl($tip['avatar'], 'd120', 'user');
+        $tips = Posts::getByPage(array(
+                    'sql' => $sql,
+                    'pageSize' => 30,
+                    'page' => 1,
+                    'bindValues' => array(
+                        ':logid' => $cid
+                    )
+        ));
+        foreach ($tips as $k => $tip) {
+            $tips[$k]['avatar'] = zmf::getThumbnailUrl($tip['avatar'], 'd120', 'user');
         }
         //更新统计
         if (!zmf::actionLimit('visit-Chapters', $cid, 5, 60)) {
             Posts::updateCount($cid, 'Chapters', 1, 'hits');
         }
         //更新小说数据,10分钟更新一次
-        $upBookInfo= zmf::getFCache('stat-Books-'.$bookInfo['id']);
-        if(!$upBookInfo){
+        $upBookInfo = zmf::getFCache('stat-Books-' . $bookInfo['id']);
+        if (!$upBookInfo) {
             Books::updateBookStatInfo($bookInfo['id']);
-            zmf::setFCache('stat-Books-'.$bookInfo['id'], 1, 600);
+            zmf::setFCache('stat-Books-' . $bookInfo['id'], 1, 600);
         }
         //获取分类
         $colInfo = Column::getSimpleInfo($bookInfo['colid']);
@@ -186,9 +201,9 @@ class BookController extends Q {
         $this->tipInfo = Chapters::checkTip($cid, $this->uid);
         //标题
         $this->pageTitle = '【' . $bookInfo['title'] . '】' . $chapterInfo['title'] . ' - ' . $authorInfo['authorName'] . '作品 - ' . zmf::config('sitename');
-        
-        $this->keywords=$bookInfo['title'].'、'.$bookInfo['title'].'小说阅读、'.$bookInfo['title'].'最新章节';        
-        $this->pageDescription=  "{$bookInfo['title']}：{$chapterInfo['title']}。{$colInfo['title']}{$bookInfo['title']}由作家{$authorInfo['authorName']}创作,".zmf::config('sitename')."提供{$bookInfo['title']}最新章节及章节列表,{$bookInfo['title']}最新更新尽在".zmf::config('sitename')."。";
+
+        $this->keywords = $bookInfo['title'] . '、' . $bookInfo['title'] . '小说阅读、' . $bookInfo['title'] . '最新章节';
+        $this->pageDescription = "{$bookInfo['title']}：{$chapterInfo['title']}。{$colInfo['title']}{$bookInfo['title']}由作家{$authorInfo['authorName']}创作," . zmf::config('sitename') . "提供{$bookInfo['title']}最新章节及章节列表,{$bookInfo['title']}最新更新尽在" . zmf::config('sitename') . "。";
         $this->selectNav = 'column' . $bookInfo['colid'];
         $data = array(
             'bookInfo' => $bookInfo,
@@ -215,15 +230,15 @@ class BookController extends Q {
         } elseif ($model->uid != $this->uid) {
             throw new CHttpException(403, '你无权此操作.');
         }
-        $postInfo = Chapters::getOne($model->logid);        
+        $postInfo = Chapters::getOne($model->logid);
         if (!$postInfo || $postInfo['status'] != Posts::STATUS_PASSED) {
             throw new CHttpException(404, '你所评论的内容不存在.');
         }
         //小说信息
-        $bookInfo=  Books::getOne($postInfo['bid']);
-        if(!$bookInfo || $bookInfo['status']!=Posts::STATUS_PASSED){
+        $bookInfo = Books::getOne($postInfo['bid']);
+        if (!$bookInfo || $bookInfo['status'] != Posts::STATUS_PASSED) {
             throw new CHttpException(404, '你所评论的内容不存在.');
-        }elseif ($bookInfo['bookStatus']!=Books::STATUS_PUBLISHED) {
+        } elseif ($bookInfo['bookStatus'] != Books::STATUS_PUBLISHED) {
             throw new CHttpException(403, '你所评论的小说暂未发表.');
         }
         if (isset($_POST['Tips'])) {
@@ -239,19 +254,19 @@ class BookController extends Q {
             if ($model->save()) {
                 Books::updateScore($model->bid);
                 //记录用户操作
-                $jsonData=  CJSON::encode(array(
-                    'cid'=>$postInfo['id'],
-                    'cTitle'=>$postInfo['title'],
-                    'bid'=>$bookInfo['id'],
-                    'bTitle'=>$bookInfo['title'],
-                    'bDesc'=>$bookInfo['desc'],
-                    'bFaceImg'=>$bookInfo['faceImg'],
+                $jsonData = CJSON::encode(array(
+                            'cid' => $postInfo['id'],
+                            'cTitle' => $postInfo['title'],
+                            'bid' => $bookInfo['id'],
+                            'bTitle' => $bookInfo['title'],
+                            'bDesc' => $bookInfo['desc'],
+                            'bFaceImg' => $bookInfo['faceImg'],
                 ));
                 UserAction::recordAction($tid, 'chapterTip', $jsonData);
                 $this->redirect(array('book/chapter', 'cid' => $model->logid));
             }
         }
-        $this->pageTitle='编辑点评 - '.zmf::config('sitename');
+        $this->pageTitle = '编辑点评 - ' . zmf::config('sitename');
         $data = array(
             'model' => $model,
         );

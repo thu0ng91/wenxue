@@ -136,6 +136,91 @@ function rebind() {
             return false;
         });
     });
+    $("a[action=delBook]").unbind('click').click(function () {
+        var bid = $(this).attr("data-id");
+        var rurl = $(this).attr('data-redirect');
+        if(!bid){
+            dialog({msg: '请选择小说'});
+            return false;
+        }
+        var html = '<div class="form-group"><label for="author-passwd">请输入密码</label><input type="password" id="author-passwd" class="form-control" placeholder="请输入登录作者中心的密码"/><p class="help-block">该操作不可逆，请谨慎考虑</p></div>';
+        dialog({msg: html, title: '确定删除小说？', action: 'confirmDelBook'});
+        $("button[action=confirmDelBook]").unbind('click').click(function () {
+            var passwd = $('#author-passwd').val();
+            if(!passwd){
+                alert('请输入密码');
+                return false;
+            }            
+            $.post(zmf.ajaxUrl, {action:'delBook',bid: bid,passwd:passwd,YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {                
+                result = $.parseJSON(result);
+                if (result.status === 1) {
+                    alert(result.msg);
+                    window.location.href = rurl;
+                    return false;              
+                } else {
+                    alert(result.msg);
+                    return false;    
+                }
+                return false;
+            });
+        });
+    });
+    $("a[action=delChapter]").unbind('click').click(function () {
+        var cid = $(this).attr("data-id");
+        if(!cid){
+            dialog({msg: '请选择小说章节'});
+            return false;
+        }
+        var html = '<div class="form-group"><label for="author-passwd">请输入密码</label><input type="password" id="author-passwd" class="form-control" placeholder="请输入登录作者中心的密码"/><p class="help-block">该操作不可逆，请谨慎考虑</p></div>';
+        dialog({msg: html, title: '确定删除本章节？', action: 'confirmDelChapter'});
+        $("button[action=confirmDelChapter]").unbind('click').click(function () {
+            var passwd = $('#author-passwd').val();
+            if(!passwd){
+                alert('请输入密码');
+                return false;
+            }            
+            $.post(zmf.ajaxUrl, {action:'delChapter',cid: cid,passwd:passwd,YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {                
+                result = $.parseJSON(result);
+                if (result.status === 1) {
+                    alert(result.msg);
+                    window.location.reload();
+                    return false;              
+                } else {
+                    alert(result.msg);
+                    return false;    
+                }
+                return false;
+            });
+        });
+    });
+    $("a[action=finishBook]").unbind('click').click(function () {
+        var bid = $(this).attr("data-id");
+        if(!bid){
+            dialog({msg: '请选择小说'});
+            return false;
+        }
+        var html = '<div class="form-group"><label for="author-passwd">请输入密码</label><input type="password" id="author-passwd" class="form-control" placeholder="请输入登录作者中心的密码"/><p class="help-block">完结小说后将不能再续写章节</p></div>';
+        dialog({msg: html, title: '确定完结本小说？', action: 'confirmFinishBook'});
+        $("button[action=confirmFinishBook]").unbind('click').click(function () {
+            var passwd = $('#author-passwd').val();
+            if(!passwd){
+                alert('请输入密码');
+                return false;
+            }
+            $.post(zmf.ajaxUrl, {action:'finishBook',bid: bid,passwd:passwd,YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {                
+                result = $.parseJSON(result);
+                if (result.status === 1) {
+                    alert(result.msg);
+                    window.location.reload();
+                    return false;              
+                } else {
+                    alert(result.msg);
+                    return false;    
+                }
+                return false;
+            });
+        });
+    });
     $("a[action=favorite]").unbind('click').click(function () {
         var dom = $(this);
         favorite(dom);
@@ -245,12 +330,22 @@ function rebind() {
     $("a[action=publishBook]").unbind('click').click(function () {
         var dom = $(this);
         var id=parseInt(dom.attr('data-id'));
+        var type=parseInt(dom.attr('data-action'));
         if(!id){
             alert('缺少参数');
             return false;
         }
-        if(confirm('确定立即发表作品么？')){
-            $.post(zmf.ajaxUrl, {action:'publishBook',id:id,YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {                
+        if(!type){
+            type='publish';
+        }
+        var msg='';
+        if(type==='publish'){
+            msg='确定立即发表作品么？';
+        }else if(type==='finish'){
+            msg='确定标记为已完结么，标记后将不能再续写新章节？';
+        }
+        if(confirm(msg)){
+            $.post(zmf.ajaxUrl, {action:'publishBook',id:id,type:type,YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {                
                 result = eval('(' + result + ')');
                 if (result['status'] == '1') {
                     window.location.reload();

@@ -30,7 +30,7 @@ $url=  Yii::app()->createUrl('book/view',array('id'=>$data['id']));
                 <?php echo CHtml::link('章节',array('author/book','bid'=>$data['id']));?>
                 <?php echo $data['bookStatus']==Books::STATUS_NOTPUBLISHED ? CHtml::link('发表','javascript:;',array('action'=>'publishBook','data-id'=>$data['id'])) : '';?>   
                 <?php echo CHtml::link('编辑',array('author/updateBook','bid'=>$data['id']));?>                
-                <?php echo CHtml::link('续写',array('author/addChapter','bid'=>$data['id']));?>
+                <?php echo $data['bookStatus']!=Books::STATUS_FINISHED ? CHtml::link('续写',array('author/addChapter','bid'=>$data['id'])):'';?>
             </span>
             <?php }?>
         </p>

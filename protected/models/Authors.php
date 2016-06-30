@@ -176,8 +176,12 @@ class Authors extends CActiveRecord {
     }
 
     public static function otherTops($aid, $notInclude = 0, $limit = 10) {
+        $arr=array(
+            Books::STATUS_PUBLISHED,
+            Books::STATUS_FINISHED
+        );
         $items = Books::model()->findAll(array(
-            'condition' => 'aid=:aid AND bookStatus=' . Books::STATUS_PUBLISHED,
+            'condition' => 'aid=:aid AND status='.Posts::STATUS_PASSED.' AND bookStatus IN('.join(',',$arr).')',
             'order' => 'hits DESC',
             'limit' => $limit,
             'params' => array(
@@ -191,8 +195,12 @@ class Authors extends CActiveRecord {
         if(!$authorInfo || !$authorInfo['id']){
             return false;
         }
+        $arr=array(
+            Books::STATUS_PUBLISHED,
+            Books::STATUS_FINISHED
+        );
         $books=  Books::model()->findAll(array(
-            'condition'=>'aid=:aid AND status='.Posts::STATUS_PASSED.' AND bookStatus='.Books::STATUS_PUBLISHED,
+            'condition'=>'aid=:aid AND status='.Posts::STATUS_PASSED.' AND bookStatus IN('.join(',',$arr).')',
             'params'=>array(':aid'=>$authorInfo['id']),
             'select'=>'id,hits'
         ));

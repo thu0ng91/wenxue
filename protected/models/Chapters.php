@@ -41,8 +41,9 @@ class Chapters extends CActiveRecord {
         return array(
             array('uid', 'default', 'setOnEmpty' => true, 'value' => zmf::uid()),
             array('cTime,updateTime,postTime', 'default', 'setOnEmpty' => true, 'value' => zmf::now()),
+            array('status', 'default', 'setOnEmpty' => true, 'value' => Posts::STATUS_PASSED),
             array('uid, aid, bid, title, content,chapterNum', 'required'),
-            array('status, vip,psPosition', 'numerical', 'integerOnly' => true),
+            array('status, vip,psPosition,chapterStatus', 'numerical', 'integerOnly' => true),
             array('uid, aid, bid, words, comments, hits, cTime, updateTime, postTime', 'length', 'max' => 10),
             array('title', 'length', 'max' => 255),
             array('chapterNum', 'length', 'max' => 6),
@@ -93,6 +94,7 @@ class Chapters extends CActiveRecord {
             'postscript' => '还有话说',
             'psPosition' => '展示位置',
             'chapterNum' => '章节号',
+            'chapterStatus' => '章节状态',
         );
     }
 
@@ -183,12 +185,12 @@ class Chapters extends CActiveRecord {
             return array();
         }
         $items=  Chapters::model()->findAll(array(
-            'condition'=>'bid=:bid'.(!$adminLogin ? ' AND status='.Posts::STATUS_PASSED : ''),
+            'condition'=>'bid=:bid AND status='.Posts::STATUS_PASSED.(!$adminLogin ? ' AND chapterStatus='.Books::STATUS_PUBLISHED : ''),
             'order'=>'chapterNum ASC',
             'params'=>array(
                 ':bid'=>$id
             ),
-            'select'=>'id,title,status,chapterNum'
+            'select'=>'id,title,chapterStatus,chapterNum'
         ));
         return $items;
     }
