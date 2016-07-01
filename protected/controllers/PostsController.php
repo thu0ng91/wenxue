@@ -171,13 +171,13 @@ class PostsController extends Q {
             echo CActiveForm::validate($model);
             Yii::app()->end();
         }
-        if (isset($_POST['Posts'])) {
+        if (isset($_POST['Posts'])) {            
             //处理文本
             $filterTitle = Posts::handleContent($_POST['Posts']['title'], FALSE);
             $filterContent = Posts::handleContent($_POST['Posts']['content']);
             $attr = array(
                 'title' => $filterTitle['content'],
-                'content' => strip_tags($filterContent['content'],'<p><strong><em><u>'),
+                'content' => strip_tags($filterContent['content'],'<p><br><strong><em><u>'),
             );
             $attkeys=array();
             if (!empty($filterContent['attachids'])) {

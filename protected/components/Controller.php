@@ -48,7 +48,7 @@ class Controller extends CController {
      * @return boolean
      */
     public function checkPower($type, $fuid = '', $return = false, $json = false) {
-        $uid = $fuid ? $fuid : Yii::app()->user->id;
+        $uid = $fuid ? $fuid : zmf::uid();
         if (!$uid) {
             if ($return) {
                 return false;
@@ -58,9 +58,20 @@ class Controller extends CController {
                 $this->jsonOutPut(0, '请先登录');
             }
         }
+        $powers=  zmf::getFCache('adminPowers'.$uid);
+        if(!$powers){
+            $items=  Admins::model()->findAll(array(
+                'condition'=>'uid=:uid',
+                'select'=>'id,powers',
+                'params'=>array(
+                    ':uid'=>$uid
+                )
+            ));
+            $powers= CHtml::listData($items, 'id', 'powers');
+            zmf::setFCache('adminPowers'.$uid, $powers, 86400);
+        }
         if ($type == 'login') {
-            $pinfo = Admins::model()->find('uid=:uid', array(':uid' => $uid));
-            if (!$pinfo) {
+            if (empty($powers)) {
                 if ($return) {
                     return false;
                 } elseif (!$json AND ! Yii::app()->request->isAjaxRequest) {
@@ -71,8 +82,7 @@ class Controller extends CController {
             }
             return true;
         }
-        $power = Admins::model()->find('powers=:p AND uid=:uid', array(':p' => $type, ':uid' => $uid));
-        if (!$power) {
+        if (!in_array($type,$powers)) {
             if ($return) {
                 return false;
             } elseif (!$json AND ! Yii::app()->request->isAjaxRequest) {

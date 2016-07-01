@@ -110,7 +110,7 @@ class ShowcasesController extends Admin {
         $pager->pageSize = 30;
         $pager->applyLimit($criteria);
         $posts = $model->findAll($criteria);
-        $this->render('/posts/content', array(
+        $this->render('content', array(
             'model' => $model,
             'pages' => $pager,
             'posts' => $posts,

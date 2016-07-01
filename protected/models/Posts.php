@@ -230,8 +230,7 @@ class Posts extends CActiveRecord {
             }
             $content = strip_tags($content, $allowTags);
             $replace = array(
-                "/style=\"[^\"]*?\"/i",
-                "/<p><br\/><\/p>/i",
+                "/style=\"[^\"]*?\"/i",                
                 "/<p><span>\&nbsp\;<\/span><\/p>/i",
                 "/<p>\&nbsp\;<\/p>/i",
                 "/<p><\/p>/i",

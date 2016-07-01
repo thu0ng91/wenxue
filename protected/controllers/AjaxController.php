@@ -53,10 +53,14 @@ class AjaxController extends Q {
             $this->jsonOutPut(0, '你所评论的内容不存在');
         }
         //小说信息
+        $arr=array(
+            Books::STATUS_PUBLISHED,
+            Books::STATUS_FINISHED
+        );
         $bookInfo = Books::getOne($postInfo['bid']);
         if (!$bookInfo || $bookInfo['status'] != Posts::STATUS_PASSED) {
             $this->jsonOutPut(0, '你所评论的小说不存在');
-        } elseif ($bookInfo['bookStatus'] != Books::STATUS_PUBLISHED) {
+        } elseif (!in_array($bookInfo['bookStatus'],$arr)) {
             $this->jsonOutPut(0, '你所评论的小说暂未发表');
         }
         //处理文本，不是富文本

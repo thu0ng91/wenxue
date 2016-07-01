@@ -31,7 +31,7 @@ class IndexController extends Admin {
         $arr['posts'] = Posts::model()->count('status=:status', array(':status' => Posts::STATUS_STAYCHECK));
         $arr['comments'] = Comments::model()->count('status=:status', array(':status' => Posts::STATUS_STAYCHECK));
         $arr['books'] = Books::model()->count('status=:status', array(':status' => Posts::STATUS_STAYCHECK));
-        $arr['chapters'] = Chapters::model()->count('status=:status', array(':status' => Posts::STATUS_STAYCHECK));
+        $arr['chapters'] = Chapters::model()->count('chapterStatus=:status', array(':status' => Posts::STATUS_STAYCHECK));
         $arr['tips'] = Tips::model()->count('status=:status', array(':status' => Posts::STATUS_STAYCHECK));
         $this->render('index', array('siteinfo' => $arr));
     }
