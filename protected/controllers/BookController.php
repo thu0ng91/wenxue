@@ -137,7 +137,11 @@ class BookController extends Q {
         if (!$bookInfo || $bookInfo['status'] != Posts::STATUS_PASSED) {
             throw new CHttpException(404, '你所查看的小说不存在。');
         } else {
-            if ($bookInfo['bookStatus'] != Books::STATUS_PUBLISHED && $this->uid != $bookInfo['uid']) {
+            $arr=array(
+                Books::STATUS_PUBLISHED,
+                Books::STATUS_FINISHED
+            );
+            if (!in_array($bookInfo['bookStatus'],$arr) && $this->uid != $bookInfo['uid']) {
                 throw new CHttpException(404, '你所查看的小说不存在。');
             }
         }
