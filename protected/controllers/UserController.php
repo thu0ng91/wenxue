@@ -156,6 +156,7 @@ class UserController extends Q {
     }
 
     public function actionForgotAuthorPass() {
+        $this->checkLogin();
         $this->pageTitle = '找回密码';
         $this->render('forgot', $data);
     }
@@ -182,7 +183,11 @@ class UserController extends Q {
     }
 
     public function actionFavorite() {
-        $sql = "SELECT b.id,b.aid,b.title,b.faceImg,b.desc,b.words,b.cTime,b.score,b.scorer,b.bookStatus FROM {{favorites}} f,{{books}} b WHERE f.uid='{$this->uid}' AND f.classify='book' AND f.logid=b.id AND b.status=" . Posts::STATUS_PASSED . " ORDER BY f.cTime DESC";
+        $arr=array(
+            Books::STATUS_PUBLISHED,
+            Books::STATUS_FINISHED
+        );
+        $sql = "SELECT b.id,b.aid,b.title,b.faceImg,b.desc,b.words,b.cTime,b.score,b.scorer,b.bookStatus FROM {{favorites}} f,{{books}} b WHERE f.uid='{$this->toUserInfo['id']}' AND f.classify='book' AND f.logid=b.id AND b.status=" . Posts::STATUS_PASSED . " AND b.bookStatus IN(" . join(',',$arr) . ") ORDER BY f.cTime DESC";
         Posts::getAll(array('sql' => $sql), $pages, $posts);
         foreach ($posts as $k => $val) {
             $posts[$k]['faceImg'] = zmf::getThumbnailUrl($val['faceImg'], 'w120', 'avatar');
@@ -196,6 +201,7 @@ class UserController extends Q {
     }
 
     public function actionGallery() {
+        $this->checkLogin();
         $from = zmf::val('from', 1);
         if ($from != 'selectImg') {
             $from = '';
@@ -234,6 +240,7 @@ class UserController extends Q {
     }
 
     public function actionUpload() {
+        $this->checkLogin();
         $this->selectNav = 'gallery';
         $this->pageTitle = '上传素材 - ' . zmf::config('sitename');
         $this->render('upload', array(
@@ -242,6 +249,7 @@ class UserController extends Q {
     }
 
     public function actionSetting() {
+        $this->checkLogin();
         $action = zmf::val('action', 1);
         if (!in_array($action, array('baseInfo', 'passwd', 'skin', 'checkPhone'))) {
             $action = 'baseInfo';
@@ -344,6 +352,7 @@ class UserController extends Q {
     }
 
     public function actionPosts() {
+        $this->checkLogin();
         $sql = "SELECT id,title,status FROM {{posts}} WHERE uid='{$this->uid}' ORDER BY cTime DESC";
         Posts::getAll(array('sql' => $sql), $pages, $posts);
         $data = array(
