@@ -30,7 +30,11 @@ class SearchController extends Q {
                     $posts[$k]['avatar']=  zmf::getThumbnailUrl($val['avatar'], 'w120', 'author');
                 }
             }elseif ($type=='book') {
-                $sql="SELECT id,title,faceImg,`desc`,words,cTime,score,scorer,bookStatus FROM {{books}} WHERE title LIKE :keyword AND status=".Posts::STATUS_PASSED." AND bookStatus=".Books::STATUS_PUBLISHED;
+                $arr=array(
+                    Books::STATUS_PUBLISHED,
+                    Books::STATUS_FINISHED
+                );
+                $sql="SELECT id,title,faceImg,`desc`,words,cTime,score,scorer,bookStatus FROM {{books}} WHERE title LIKE :keyword AND status=".Posts::STATUS_PASSED." AND bookStatus IN(" . join(',',$arr) . ") ORDER BY hits DESC";
                 $posts=  Posts::getByPage(array(
                     'sql'=>$sql,
                     'page'=>  $this->page,
