@@ -171,6 +171,9 @@ class UserController extends Q {
                         ':uid' => $this->toUserInfo['id']
                     )
         ));
+        foreach ($tips as $k => $tip) {
+            $tips[$k]['avatar'] = zmf::getThumbnailUrl($this->toUserInfo['avatar'], 'd120', 'user');
+        }
         $this->selectNav = 'comment';
         $this->pageTitle = $this->toUserInfo['truename'] . '的点评 - ' . zmf::config('sitename');
         $this->render('comment', array(
