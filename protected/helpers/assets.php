@@ -53,19 +53,27 @@ class assets {
     }
 
     public function loadCssJs($type = 'web', $action = '') {
+        $status=  zmf::config('appStatus');
         if (YII_DEBUG) {
-            $staticUrl = Yii::app()->baseUrl . '/common';
+            $staticUrl = Yii::app()->baseUrl . ($status!=3 ? '/jsCssSrc/' : '/common/');
         } else {
             $_staticUrl = zmf::config('cssJsStaticUrl');
-            $staticUrl = $_staticUrl ? $_staticUrl : zmf::config('baseurl').'common';
+            $staticUrl = $_staticUrl ? $_staticUrl : zmf::config('baseurl'). ($status!=3 ? '/jsCssSrc/' : '/common/');
         }
         $cs = Yii::app()->clientScript;
         $c = Yii::app()->getController()->id;
         $a = Yii::app()->getController()->getAction()->id;
-        $cssDir = Yii::app()->basePath . '/../common/css';
-        $jsDir = Yii::app()->basePath . '/../common/js';
-        $coreCssDir = Yii::app()->basePath . '/../common/coreCss';
-        $coreJsDir = Yii::app()->basePath . '/../common/coreJs';
+        if ($status!=3) {
+            $cssDir = Yii::app()->basePath . '/../jsCssSrc/css';
+            $jsDir = Yii::app()->basePath . '/../jsCssSrc/js';
+            $coreCssDir = Yii::app()->basePath . '/../jsCssSrc/coreCss';
+            $coreJsDir = Yii::app()->basePath . '/../jsCssSrc/coreJs';
+        }else{
+            $cssDir = Yii::app()->basePath . '/../common/css';
+            $jsDir = Yii::app()->basePath . '/../common/js';
+            $coreCssDir = Yii::app()->basePath . '/../common/coreCss';
+            $coreJsDir = Yii::app()->basePath . '/../common/coreJs';
+        }
         $cssArr = $jsArr = $coreCssArr = $coreJsArr =array();
         if ($type == 'web') {
             $coreCssArr=array(
@@ -116,14 +124,14 @@ class assets {
         foreach ($coreCssDirArr as $coreFileName) {
             foreach ($coreCssArr as $coreCssfile=>$fileParams) {
                 if (strpos($coreFileName,$coreCssfile) !== false) {
-                    $cs->registerCssFile($staticUrl . '/coreCss/' . $coreFileName);
+                    $cs->registerCssFile($staticUrl . 'coreCss/' . $coreFileName);
                 }
             }
         }
         foreach ($cssArr as $cssFileName) {
             foreach ($cssDirArr as $cssfile) {
                 if (strpos($cssfile, $cssFileName) !== false) {
-                    $cs->registerCssFile($staticUrl . '/css/' . $cssfile);
+                    $cs->registerCssFile($staticUrl . 'css/' . $cssfile);
                 }
             }
         }
@@ -139,7 +147,7 @@ class assets {
                     } else {
                         $pos = CClientScript::POS_END;
                     }
-                    $cs->registerScriptFile($staticUrl . '/coreJs/' . $jsFileName, $pos);
+                    $cs->registerScriptFile($staticUrl . 'coreJs/' . $jsFileName, $pos);
                 }
             }
         }
@@ -151,7 +159,7 @@ class assets {
                     } else {
                         $pos = CClientScript::POS_END;
                     }
-                    $cs->registerScriptFile($staticUrl . '/js/' . $jsfile, $pos);
+                    $cs->registerScriptFile($staticUrl . 'js/' . $jsfile, $pos);
                 }
             }
         }

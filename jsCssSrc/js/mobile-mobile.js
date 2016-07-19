@@ -47,7 +47,7 @@ function rebind() {
     bindLink();    
 }
 function bindLink(){
-    $('.ui-grid-full li,.ui-list li,.ui-row li,.ui-avatar,.ui-col').unbind('click').click(function () {
+    $('.ui-grid-full li,.ui-list li,.ui-row li,.ui-avatar,.ui-col,.ui-tiled li').unbind('click').click(function () {
         if ($(this).attr('data-href')) {
             location.href = $(this).attr('data-href');
         }

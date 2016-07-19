@@ -9,29 +9,33 @@
  * @datetime 2016-5-19  16:03:15 
  */
 $_sidePosts=$sideInfo['posts'];
+if(!empty($_sidePosts)){
 ?>
 <div class="module">
     <div class="module-header">
         <?php echo $sideInfo['title'];?>
     </div>
     <div class="module-body">
-        <?php if(!empty($_sidePosts)){?>
+        <ul class="ui-list ui-list-link ui-border-tb">
         <?php foreach ($_sidePosts as $k=>$_post){?>
         <?php if( ($sideInfo['display']=='thumbFirst' && $k==0) || ($sideInfo['display']=='thumbThird' && $k<3) ){?>
-        <div class="media top-item">
-            <div class="media-left">
-                <a href="<?php echo Yii::app()->createUrl('book/view',array('id'=>$_post['id']));?>">
-                    <img class="media-object lazy" src="<?php echo zmf::lazyImg();?>" data-original="<?php echo $_post['faceImg'];?>" alt="<?php echo $_post['title'];?>">
-                </a>
-            </div>
-            <div class="media-body">
-                <p class="ui-nowrap title"><?php echo CHtml::link(($_post['colTitle']!='' ? '['.$_post['colTitle'].']' : '').$_post['title'],array('book/view','id'=>$_post['id']));?></p>
-                <p class="color-grey"><?php echo zmf::subStr($_post['desc'],40);?></p>
-            </div>
-        </div>
+            <li class="ui-border-t" data-href="<?php echo Yii::app()->createUrl('book/view',array('id'=>$_post['id']));?>">
+                <div class="ui-list-img">
+                    <span style="background-image:url(<?php echo $_post['faceImg'];?>)"></span>
+                </div>
+                <div class="ui-list-info">
+                    <h4 class="ui-nowrap"><?php echo ($_post['colTitle']!='' ? '['.$_post['colTitle'].']' : '').$_post['title'];?></h4>
+                    <p class="ui-nowrap-multi"><?php echo zmf::subStr($_post['desc'],80);?></p>
+                </div>
+            </li>
         <?php continue;}?>
-        <p class="ui-nowrap item"><span class="dot"><?php echo ($k+1);?></span><?php echo CHtml::link(($_post['colTitle']!='' ? '['.$_post['colTitle'].']' : '').$_post['title'],array('book/view','id'=>$_post['id']));?></p>
+            <li class="ui-border-t" data-href="<?php echo Yii::app()->createUrl('book/view',array('id'=>$_post['id']));?>">
+                <div class="ui-list-info">
+                    <p class="ui-nowrap"><span class="dot"><?php echo ($k+1);?></span><?php echo ($_post['colTitle']!='' ? '['.$_post['colTitle'].']' : '').$_post['title'];?></p>
+                </div>
+            </li>
         <?php }?>
-        <?php }?>        
+        </ul>
     </div>
 </div>
+<?php }?>   
