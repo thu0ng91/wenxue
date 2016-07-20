@@ -69,6 +69,96 @@ body{
     margin-top: 45px;
     margin-bottom: 45px;
 }
+/*登录注册*/
+.login-reg-module{
+    position: fixed;
+    width: 100%;        
+    height:100%;
+    left: 0;
+    top: 0;
+    background: #faefc2
+}
+.login-reg-module .login-reg-form{
+    width: 280px;
+    position: absolute;
+    top: 40px;
+    left: 50%;
+    margin-left: -140px;
+}
+.login-reg-module .login-reg-form h1{
+    font-size: 18px;
+    margin: 0;
+    padding: 0;
+    text-align: center ;
+    margin-bottom: 40px
+}
+.login-reg-module .login-reg-form h1 a{
+    color: #93ba5f;
+}
+.login-reg-form .form-group{
+    position: relative;
+    margin-bottom: 15px;
+}
+.login-reg-form .form-group .fixed-label{
+    position: absolute;
+    left: 0;
+    top: 0; 
+    width: 40px;
+    text-align: center;
+    font-size: 18px;
+    line-height: 36px;
+    color: #ccc
+}
+.login-reg-form .form-group input{
+    height: 36px;
+    width: 100%;
+    line-height: 35px;
+    padding-left: 40px;
+    box-sizing: border-box;
+    border: none;
+    border-radius: 5px;
+    color: #ccc;
+    background: #fff
+}
+.login-reg-form .form-group .verify-code{
+    width: 50%
+}
+.login-reg-form .verify-code-holder img{
+    height: 36px;
+    margin-top: -5px;
+    line-height: 36px;        
+    border-radius: 5px;
+    margin-right: 5px
+}
+.login-reg-form .form-group .btn{
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    text-align: center;
+    padding-left: 0;
+    width: 100%;
+    display: block;
+    height: 36px;
+    line-height: 36px;
+    border-radius: 5px;        
+}
+.login-reg-form .form-group .btn-success{
+    background: #93ba5f;
+    color: #fff
+}
+.login-reg-form .form-group .btn-default{
+    background: #fff;
+    color: #999
+}
+.login-reg-form .forgot-pass-link{
+    position: fixed;
+    bottom: 15px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    color: #999
+}
+/*脚部*/
 .footer{
     position: fixed;
     bottom: 0;
@@ -85,4 +175,16 @@ body{
 }
 .footer .fa{
     display: block
+}
+.footer-bg{
+    width: 100%;
+    height: 180px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    background: url(../images/footer-bg.png) no-repeat left bottom;
+    background-size: contain;
+    transition: opacity 200ms ease-in-out;
+    z-index: -1;
+    opacity: 0.5;
 }

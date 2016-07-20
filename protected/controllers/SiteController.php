@@ -45,6 +45,9 @@ class SiteController extends Q {
         if (!Yii::app()->user->isGuest) {
             $this->message(0, '你已登录，请勿重复操作');
         }
+        if($this->isMobile){
+            $this->layout='common';
+        }
         $canLogin = true;
         $ip = Yii::app()->request->getUserHostAddress();
         $cacheKey = 'loginErrors-' . $ip;
@@ -99,6 +102,9 @@ class SiteController extends Q {
     public function actionReg() {
         if (!Yii::app()->user->isGuest) {
             $this->redirect($this->referer);
+        }
+        if($this->isMobile){
+            $this->layout='common';
         }
         $ip=ip2long(Yii::app()->request->userHostAddress);
         if(zmf::actionLimit('reg', $ip, 5, 86400, true,true)){
