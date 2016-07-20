@@ -3,15 +3,6 @@ $url=zmf::config('domain').Yii::app()->createUrl('posts/view',array('id'=>$info[
 $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
 ?>
 <div class="container post-page">    
-    <ol class="breadcrumb">
-        <li><?php echo CHtml::link(zmf::config('sitename').'首页',  zmf::config('baseurl'));?></li>
-        <?php if($info['classify']==Posts::CLASSIFY_AUTHOR){?>
-        <li><?php echo CHtml::link('作者专区',array('posts/index','type'=>'author'));?></li>
-        <?php }elseif($info['classify']==Posts::CLASSIFY_READER){?>
-        <li><?php echo CHtml::link('读者专区',array('posts/index','type'=>'reader'));?></li>
-        <?php }?>
-        <li class="active"><?php echo $info['title']; ?></li>
-    </ol>
     <div class="main-part">
         <div class="module">
             <div class="module-body">

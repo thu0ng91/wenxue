@@ -14,12 +14,15 @@ class Q extends Controller {
     public $platform;
     public $isMobile = false;
     public $keywords;
+    public $mobileTitle;
     public $pageDescription;
     public $page = 1;
     public $pageSize = 30;
     public $isAjax = false;
     public $searchType='';
     public $searchKeyword='';
+    public $rightBtns=array();//手机版导航条右侧按钮
+    public $returnUrl='';//左侧返回按钮的返回链接
 
     function init() {
         parent::init();

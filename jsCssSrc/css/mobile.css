@@ -29,3 +29,60 @@ body{
     width: 78px;
     height: 104px;
 }
+.top-header{
+    width: 100%;
+    height: 45px;
+    background: #93ba5f;
+    position: fixed;
+    top: 0;
+    left: 0;
+    line-height: 45px;
+    color: #fff;
+    z-index: 99
+}
+.top-header a{
+    color: #fff;
+}
+.top-header .header-left{
+    position: absolute;
+    top: 0;
+    left: 15px;
+    width: 14%;
+}
+.top-header .header-center{
+    text-align: center;
+    width: 68%;
+    margin: 0 auto;
+}
+.top-header .header-right{
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 14%;
+    padding-right: 10px;
+    box-sizing: border-box
+}
+.top-header .fa{
+    font-size: 18px;
+}
+.ui-container{
+    margin-top: 45px;
+    margin-bottom: 45px;
+}
+.footer{
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 45px;
+    background: #fff;
+    border-top: 1px solid #f2f2f2;        
+    text-align: center;
+    z-index: 99;
+}
+.footer .ui-tiled{
+    margin-top: 5px;
+}
+.footer .fa{
+    display: block
+}

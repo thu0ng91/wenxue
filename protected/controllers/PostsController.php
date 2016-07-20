@@ -49,6 +49,7 @@ class PostsController extends Q {
         $showcases = Showcases::getPagePosts('authorQzone', NUll, false, 'c360');
         $this->selectNav = $type . 'Forum';
         $this->pageTitle = $label . ' - ' . zmf::config('sitename');
+        $this->mobileTitle=$label;
         $data = array(
             'posts' => $posts,
             'pages' => $pages,
@@ -129,6 +130,7 @@ class PostsController extends Q {
         );
         $this->favorited = Favorites::checkFavored($id, 'post');
         $this->pageTitle = $info['title'].' - '.zmf::config('sitename').($info['classify']==Posts::CLASSIFY_AUTHOR ? '作者专区' : '读者专区');
+        $this->mobileTitle='帖子详情';
         $this->render('view', $data);
     }
 

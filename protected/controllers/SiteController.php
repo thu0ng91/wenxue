@@ -81,6 +81,7 @@ class SiteController extends Q {
             }
         }
         $this->pageTitle = '欢迎回来 - '.zmf::config('sitename');
+        $this->mobileTitle='登录';
         $this->render('login', array(
             'model' => $model,
             'canLogin' => $canLogin,
@@ -140,6 +141,7 @@ class SiteController extends Q {
             }
         }
         $this->pageTitle='欢迎注册 - '.zmf::config('sitename');
+        $this->mobileTitle='注册';
         $this->render('reg', array(
             'model' => $modelUser
         ));

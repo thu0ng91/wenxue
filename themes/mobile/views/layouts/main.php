@@ -1,66 +1,20 @@
 <?php 
 $this->beginContent('/layouts/common'); 
 ?>
-<style>
-    .top-header{
-        width: 100%;
-        height: 45px;
-        background: #93ba5f;
-        position: fixed;
-        top: 0;
-        left: 0;
-        line-height: 45px;
-        color: #fff;
-        z-index: 99
-    }
-    .top-header .header-left{
-        position: absolute;
-        top: 0;
-        left: 15px
-    }
-    .top-header .header-center{
-        text-align: center
-    }
-    .top-header .header-right{
-        position: absolute;
-        top: 0;
-        right: 15px
-    }
-    .top-header .fa{
-        font-size: 18px;
-    }
-    .ui-container{
-        margin-top: 45px;
-        margin-bottom: 45px;
-    }
-    .footer{
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        height: 45px;
-        background: #fff;
-        border-top: 1px solid #f2f2f2;        
-        text-align: center;
-        z-index: 99;
-    }
-    .footer .ui-tiled{
-        margin-top: 5px;
-    }
-    .footer .fa{
-        display: block
-    }
-</style>
 <header class="top-header">
     <div class="header-left">
         <i class="fa fa-angle-double-left" onclick="history.back()"></i>
     </div>
     <div class="header-center">
-        <h1>列表 list</h1>
+        <h1><?php echo $this->mobileTitle;?></h1>
     </div>
     <div class="header-right">
-        <i class="fa fa-search"></i>
-        <i class="fa fa-bell-o"></i>
+        <?php echo CHtml::link('<i class="fa fa-search"></i>',array('search/do'));?>
+        <?php if (!$this->uid) { ?>
+        <?php echo CHtml::link('<i class="fa fa-bell-o"></i>',array('site/login'));?>
+        <?php } else {?>
+        <?php echo CHtml::link('<i class="fa fa-bell-o"></i>',array('user/notice'));?>
+        <?php } ?>
     </div>
 </header>
 <section class="ui-container">

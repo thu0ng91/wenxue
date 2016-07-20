@@ -1,12 +1,5 @@
 <div class="container login-reg-module">
-    <div class="main-part">
-        <?php $this->renderPartial('/site/login-carousel');?>
-    </div>
     <div class="aside-part">
-        <ul class="nav nav-tabs">
-            <li role="presentation"><?php echo CHtml::link('登录',array('site/login'));?></li>            
-            <li role="presentation" class="active"><?php echo CHtml::link('注册',array('site/reg'));?></li>            
-        </ul>
         <div class="module">
             <div class="module-body">
                 <?php $form=$this->beginWidget('CActiveForm', array(

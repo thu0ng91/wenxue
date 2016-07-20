@@ -11,6 +11,9 @@
 class SearchController extends Q {
 
     public function actionDo() {
+        if($this->isMobile){
+            $this->layout='search';
+        }
         $type=  zmf::val('type',1);
         $_keyword=  zmf::val('keyword',1);
         $keyword=  zmf::subStr($_keyword,8,0,'');
@@ -77,6 +80,7 @@ class SearchController extends Q {
         $this->searchType=$type;
         $this->searchKeyword=$_keyword;        
         $this->pageTitle='搜索 - '.zmf::config('sitename');
+        $this->mobileTitle='搜索';
         $data=array(
             'posts'=>$posts,
         );
