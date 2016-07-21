@@ -538,6 +538,7 @@ function rebind() {
                         dom.removeAttr('disabled').text('重新发送');
                     }
                 }, 1000);
+                $('#forgot-hidden').show();
             } else {
                 dialog({msg: result['msg']});
             }
@@ -634,6 +635,20 @@ function bindLink(){
 function cancelBindLink(){
     $('.ui-grid-full li,.ui-list li,.ui-row li,.ui-avatar,.ui-col').unbind('click');
 }
+function showUserSide(){    
+    var dom = $(this);
+    var _dom = $('#user-side-holder');        
+    if (_dom.css('display') == 'none') {            
+        //_dom.show().animate({top: 0}, 800);
+        _dom.show();
+        $('body').addClass('menu-on');
+    } else {
+        //_dom.hide().animate({top: -800}, 300);
+        _dom.hide();
+        $('body').removeClass('menu-on');            
+    }   
+}
+
 /**
  * 获取内容
  * @param {type} dom
@@ -712,67 +727,26 @@ function getContents(dom) {
     });
 
 }
-/*
- * a:对话框id
- * t:提示
- * c:对话框内容
- * ac:下一步的操作名
- * time:自动关闭
- */
 function dialog(diaObj) {
     if (typeof diaObj !== "object") {
         return false;
     }
+    closeSimpleDialog();
     var c = diaObj.msg;
-    var a = diaObj.id;
-    var t = diaObj.title;
-    var ac = diaObj.action;
-    var acn = diaObj.actionName;
-    var time = diaObj.time;
-    var size = diaObj.modalSize;
-    $('#' + beforeModal).modal('hide');
-    if (typeof t === 'undefined' || t === '') {
-        t = '提示';
-    }
-    if (typeof a === 'undefined' || a === '') {
-        a = 'myDialog';
-    }
-    if (typeof ac === 'undefined') {
-        ac = '';
-    }
-    if (typeof size === 'undefined') {
-        size = '';
-    }
-    $('#' + a).remove();
-    var longstr = '<div class="modal fade mymodal" id="' + a + '" tabindex="-1" role="dialog" aria-labelledby="' + a + 'Label" aria-hidden="true"><div class="modal-dialog ' + size + '"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="' + a + 'Label">' + t + '</h4></div><div class="modal-body">' + c + '</div><div class="modal-footer">';
-    longstr += '<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>';
-    if (ac !== '' && typeof ac !== 'undefined') {
-        var _t;
-        if (acn !== '' && typeof acn !== 'undefined') {
-            _t = acn;
-        } else {
-            _t = '确定';
-        }
-        longstr += '<button type="button" class="btn btn-primary" action="' + ac + '" data-loading-text="Loading...">' + _t + '</button>';
-    }
-    longstr += '</div></div></div></div>';
+    var longstr = '<div class="simpleDialog" id="simpleDialog">' + c + '</div>';
     $("body").append(longstr);
-    $('#' + a).modal({
-        backdrop: false,
-        keyboard: false
+    var dom = $('#simpleDialog');
+    var w = dom.width();
+    var h = dom.height();
+    dom.css({
+        'margin-left': -w / 2,
+        'margin-top': -h / 2
     });
-    beforeModal = a;
-    if (time > 0 && typeof time !== 'undefined') {
-        setTimeout("closeDialog('" + a + "')", time * 1000);
-    }
+    dom.fadeIn(300);
+    setTimeout("closeSimpleDialog()", 2700);
 }
-function closeDialog(a) {
-    if (!a) {
-        a = 'myDialog';
-    }
-    $('#' + a).modal('hide');
-    $('#' + a).remove();
-    $("body").eq(0).removeClass('modal-open');
+function closeSimpleDialog() {
+    $('#simpleDialog').fadeOut(100).remove();
 }
 function scollToComment(){
     $('.toggle-area').each(function(){

@@ -1,6 +1,7 @@
 <?php 
 $this->beginContent('/layouts/common'); 
 ?>
+<?php if($showTopbar){?>
 <header class="top-header">
     <div class="header-left">
         <i class="fa fa-angle-double-left" onclick="history.back()"></i>
@@ -17,6 +18,7 @@ $this->beginContent('/layouts/common');
         <?php } ?>
     </div>
 </header>
+<?php }?>
 <section class="ui-container">
 <?php echo $content; ?>
 </section>

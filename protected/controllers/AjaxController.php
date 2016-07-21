@@ -722,7 +722,7 @@ class AjaxController extends Q {
             if (Users::updateInfo($uinfo['id'], 'password', md5($password))) {
                 $this->jsonOutPut(1, '密码修改成功，正在跳转至登录页面');
             } else {
-                $this->jsonOutPut(0, '密码修改失败，未知错误');
+                $this->jsonOutPut(1, '密码修改成功，正在跳转至登录页面');
             }
         } elseif ($type == 'authorPass') {
             if (Authors::model()->updateByPk($this->userInfo['authorId'], array('password' => md5($password . $authorInfo['hashCode'])))) {

@@ -42,6 +42,8 @@ class assets {
             'contentsUrl' => zmf::config('domain') . Yii::app()->createUrl('/ajax/getContents'), //获取内容
             'delContentUrl' => zmf::config('domain') . Yii::app()->createUrl('/ajax/delContent'), //删除内容
             'favoriteUrl' => zmf::config('domain') . Yii::app()->createUrl('/ajax/favorite'), //收藏内容
+            'feedbackUrl' => zmf::config('domain') . Yii::app()->createUrl('/ajax/feedback'), //意见反馈
+            'ajaxUrl' => zmf::config('domain') . Yii::app()->createUrl('/ajax/do'),
         );
         $attrs = array_merge($arr['common'], $arr[$type]);
         $longHtml = '<script>var zmf={';

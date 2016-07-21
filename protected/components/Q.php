@@ -23,6 +23,7 @@ class Q extends Controller {
     public $searchKeyword='';
     public $rightBtns=array();//手机版导航条右侧按钮
     public $returnUrl='';//左侧返回按钮的返回链接
+    public $showTopbar=true;
 
     function init() {
         parent::init();

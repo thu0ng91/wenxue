@@ -136,6 +136,10 @@ class UserController extends Q {
         if (!$authorInfo) {
             throw new CHttpException(403, '你尚未成为作者');
         }
+        if($this->isMobile){
+            $this->layout='common';
+            $this->referer=Yii::app()->createUrl('user/index');
+        }
         $model = new Authors;
         if (isset($_POST['Authors'])) {
             $password = $_POST['Authors']['password'];

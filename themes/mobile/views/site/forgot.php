@@ -20,7 +20,7 @@
         <div class="form-group">
             <button class="btn btn-default sendSms-btn" type="button"  data-target="user-phone" data-type="forget">发送验证码</button>
         </div>
-        <div class="hidden">
+        <div class="hidden" id="forgot-hidden">
             <div class="form-group">
                 <span class="fixed-label"><i class="fa fa-exclamation-circle"></i></span>
                 <input type="number" class="form-control bitian" placeholder="请输入验证码" id="verifycode">                    
