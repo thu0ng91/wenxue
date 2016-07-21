@@ -1,4 +1,5 @@
 <div class="login-reg-module">
+    <?php echo CHtml::link('<i class="fa fa-remove"></i>',$this->referer ? $this->referer : 'javascript:history.back()',array('class'=>'fixed-return-url'));?>
     <div class="login-reg-form">
         <h1><?php echo CHtml::link(zmf::config('sitename'),  zmf::config('baseurl'));?></h1>
         <?php if($canLogin){$form=$this->beginWidget('CActiveForm', array(

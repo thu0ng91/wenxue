@@ -154,6 +154,10 @@ class SiteController extends Q {
     }
     
     public function actionForgot(){
+        if($this->isMobile){
+            $this->layout='common';
+        }
+        $this->referer=  Yii::app()->createUrl('site/login');
         $this->pageTitle = '找回密码';
         $this->render('forgot', $data);
     }

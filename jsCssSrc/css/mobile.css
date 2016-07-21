@@ -9,6 +9,13 @@ body{
     font-family: "Helvetica Neue",Helvetica,"Hiragino Sans GB","Microsoft YaHei",Arial,sans-serif;
     word-wrap: break-word;
 }
+.w78{
+    width: 78px;
+    height: 104px;
+}
+.hidden{
+    display: none
+}
 .module-header{
     padding: 5px 5px;
     font-size: 16px;
@@ -24,10 +31,6 @@ body{
 }
 .showcase img{
     width: 100%;
-}
-.w78{
-    width: 78px;
-    height: 104px;
 }
 .top-header{
     width: 100%;
@@ -77,6 +80,18 @@ body{
     left: 0;
     top: 0;
     background: #faefc2
+}
+.login-reg-module .fixed-return-url{
+    position: fixed;
+    width: 24px;        
+    height:24px;
+    right: 10px;
+    top: 10px;
+    background: #93ba5f;
+    border-radius: 100px;
+    text-align: center;
+    line-height: 24px;
+    color: #fff
 }
 .login-reg-module .login-reg-form{
     width: 280px;

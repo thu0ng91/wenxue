@@ -1,4 +1,5 @@
 <div class="login-reg-module">    
+    <?php echo CHtml::link('<i class="fa fa-remove"></i>',$this->referer ? $this->referer : 'javascript:history.back()',array('class'=>'fixed-return-url'));?>
     <div class="login-reg-form">
         <h1><?php echo CHtml::link(zmf::config('sitename'),  zmf::config('baseurl'));?></h1>
         <?php $form=$this->beginWidget('CActiveForm', array(
@@ -26,4 +27,5 @@
         <?php echo CHtml::link('已有账号？点此登录',array('site/login'),array('class'=>'forgot-pass-link'));?>       
         <?php $this->endWidget(); ?>
     </div>
+    <div class="footer-bg" id="footer-bg"></div>
 </div>
