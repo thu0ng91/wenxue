@@ -1,18 +1,9 @@
 <?php if($data['status']==Posts::STATUS_PASSED){?>
 <div class="media" id="tip-<?php echo $data['id']; ?>">
-    <div class="media-body">
+    <div class="media-body">        
         <p>
-            <b><?php echo CHtml::link(CHtml::encode($data['truename']),array('user/index','id'=>$data['uid']));?></b>
-            <?php if($data['chapterTitle']!=''){?>
-            点评
-            <b>
-                <?php if($data['bookTitle']!=''){?>
-                <?php echo CHtml::link(CHtml::encode($data['bookTitle']),array('book/view','id'=>$data['bid']));?>
-                <?php }?>
-                <?php echo CHtml::link(CHtml::encode($data['chapterTitle']),array('book/chapter','cid'=>$data['logid']));?>
-            </b>
-            <?php }?>
-            <?php echo Books::starCss($data['score']*2);?>            
+            <?php echo CHtml::link(CHtml::encode($data['truename']),array('user/index','id'=>$data['uid']));?>            
+            <span class="star-color"><?php echo Books::starCss($data['score']*2);?></span>            
             <span class="pull-right">
                 <?php echo CHtml::link('<i class="fa '.($data['favorited'] ? 'fa-thumbs-up' : 'fa-thumbs-o-up').'"></i> '.$data['favors'],'javascript:;',array('action'=>'favorite','action-data'=>$data['id'],'action-type'=>'tip'));?>
             </span>
@@ -41,4 +32,4 @@
 <div class="alert alert-danger">
     你的点评包含敏感词，暂不能显示。
 </div>
-<?php } 
+<?php }

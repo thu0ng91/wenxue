@@ -1,36 +1,4 @@
 <?php $this->beginContent('/layouts/common'); ?>
-<style>
-    .user-header{
-        background: #fff;
-        text-align: center;
-        padding-top: 30px;
-        margin-bottom: 15px;        
-    }
-    .user-header img{
-        width: 64px;        
-        height: 64px;
-        border-radius: 200px;
-    }
-    .user-header .ui-row-flex{
-        height: 36px;
-        line-height: 36px;
-        margin-top: 10px;
-        color: #ccc
-    }
-    .user-header .ui-row-flex .active{
-        color: #93ba5f
-    }
-    .user-side-holder{
-        background: #fff;
-        display: none;
-        width: 60%;
-        height: 100%;
-        position: fixed;
-        right: 0;
-        top: 0;
-        border-left: 1px solid #ccc
-    }
-</style>
 <section class="ui-container header-hack">
     <div class="user-header">
         <div class="user-avatar-holder">

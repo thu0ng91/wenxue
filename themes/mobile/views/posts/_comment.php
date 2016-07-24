@@ -12,10 +12,15 @@ $_uname=$data['userInfo']['username'];
 
 ?>
 <?php if($data['status']==Posts::STATUS_PASSED){?>
-<div class="media" id="comment-<?php echo $data['id']; ?>">
-    <div class="media-body">
+<li class="ui-border-t" id="comment-<?php echo $data['id']; ?>">
+    <?php if($data['userInfo']['avatar'] && $showAvatar){?>
+    <div class="ui-avatar">
+        <span style="background-image:url(<?php echo $data['userInfo']['avatar'];?>)"></span>
+    </div>
+    <?php }?>
+    <div class="ui-list-info">
         <p>
-            <b><?php echo CHtml::link($_uname,$data['userInfo']['linkArr']);?></b>
+            <b><?php echo CHtml::link($_uname,$data['userInfo']['linkArr']);?><?php if($from=='tip'){if($data['userInfo']['type']=='author'){if($data['userInfo']['id']==$bookInfo['aid']){echo '（楼主）';}}}elseif($postInfo['aid']>0){if($postInfo['aid']==$data['userInfo']['id']){echo '（楼主）';}}elseif($postInfo['uid']==$data['uid']){echo '（楼主）';} ?></b>
             <?php if(!empty($data['replyInfo'])){?>
             回复 <b><?php echo CHtml::link($data['replyInfo']['username'],$data['replyInfo']['linkArr']);?></b>        
             <?php }?>
@@ -42,9 +47,13 @@ $_uname=$data['userInfo']['username'];
             <?php }?>
         </p>
     </div>
-</div>
+</li>
 <?php }else{?>
-<div class="alert alert-danger">
-    你的评论包含敏感词，暂不能显示。
-</div>
+<li class="ui-border-t">
+    <div class="ui-list-info">        
+        <p class="ui-nowrap">
+            你的评论包含敏感词，暂不能显示。
+        </p>
+    </div>
+</li>
 <?php } 

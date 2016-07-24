@@ -2,8 +2,7 @@
 
 class UserController extends Q {
 
-    public $toUserInfo;
-    public $authorLogin = false;
+    public $toUserInfo;    
     public $favorited = false;
 
     public function init() {
@@ -18,7 +17,7 @@ class UserController extends Q {
             $this->toUserInfo = Users::getOne($id);
         }
         if ($this->toUserInfo['id'] == $this->uid) {
-            $this->authorLogin = Authors::checkLogin($this->userInfo, $this->userInfo['authorId']);
+            $this->adminLogin = Authors::checkLogin($this->userInfo, $this->userInfo['authorId']);
         } else {
             Posts::updateCount($id, 'Users', 1, 'hits');
         }
@@ -260,6 +259,10 @@ class UserController extends Q {
         }
         if ($action == 'checkPhone' && $this->userInfo['phoneChecked']) {
             $this->message(0, '你的号码已验证，不需要重复验证');
+        }
+        if($action=='passwd' && $this->isMobile){
+            $this->layout='common';
+            $this->referer=Yii::app()->createUrl('user/index',array('id'=>$this->uid));
         }
         $model = Users::model()->findByPk($this->uid);
         if (isset($_POST['Users'])) {

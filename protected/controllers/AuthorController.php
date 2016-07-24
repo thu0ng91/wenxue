@@ -2,8 +2,7 @@
 
 class AuthorController extends Q {
 
-    public $authorInfo = array();
-    public $adminLogin = false;
+    public $authorInfo = array();    
     public $favorited = false;
 
     public function init() {
@@ -258,6 +257,10 @@ class AuthorController extends Q {
         if (!in_array($type, array('info', 'skin', 'passwd','avatar'))) {
             throw new CHttpException(403, '不允许的分类');
         }
+        if($type=='passwd' && $this->isMobile){
+            $this->layout='common';
+            $this->referer=Yii::app()->createUrl('author/view',array('id'=>$this->userInfo['authorId']));
+        }
         $model = Authors::model()->findByPk($this->userInfo['authorId']);
         if (isset($_POST['Authors'])) {
             if ($type == 'info') {
@@ -317,7 +320,7 @@ class AuthorController extends Q {
         unset($model->password);
         unset($model->hashCode);
         $this->pageTitle = '编辑资料';
-        $this->selectNav = 'update' . $type;
+        $this->selectNav = 'update' . $type;        
         $this->render('setting', array(
             'model' => $model,
             'type' => $type,

@@ -9,8 +9,7 @@
  * @datetime 2016-5-24  10:39:41 
  */
 ?>
-<div class="module-header">修改资料</div>
-<div class="module-body">
+
     <?php $form=$this->beginWidget('CActiveForm', array(
         'id'=>'authors-form',
         'enableAjaxValidation'=>false,
@@ -18,6 +17,8 @@
     <?php echo CHtml::hiddenField('type',$type);?>
     <?php if(Yii::app()->user->hasFlash('updateAuthorInfoSuccess')){echo '<div class="alert alert-danger">'.Yii::app()->user->getFlash('updateAuthorInfoSuccess').'</div>';}?>
     <?php if($type=='info'){?>
+<div class="module-header">修改资料</div>
+<div class="module-body">
     <div class="form-group">
         <?php echo $form->labelEx($model,'authorName'); ?>
         <?php echo $form->textField($model,'authorName',array('class'=>'form-control','disabled'=>'disabled')); ?>
@@ -31,7 +32,10 @@
     <div class="form-group">
         <?php echo CHtml::submitButton($model->isNewRecord ? '新增' : '更新',array('class'=>'btn btn-primary')); ?>
     </div>
+    </div>
     <?php }elseif ($type=='skin') {?>    
+<div class="module-header">修改资料</div>
+<div class="module-body">
     <?php echo $form->hiddenField($model,'skinUrl'); ?>
     <div class="form-group change-avatar-holder">
         <div class="media">
@@ -48,7 +52,10 @@
             </div>
         </div>
     </div>
+    </div>
     <?php }elseif($type=='avatar'){?> 
+<div class="module-header">修改资料</div>
+<div class="module-body">
     <?php echo $form->hiddenField($model,'avatar'); ?>
     <div class="form-group change-avatar-holder">
         <div class="media">
@@ -65,21 +72,27 @@
             </div>
         </div>
     </div>
+    </div>
     <?php }elseif($type=='passwd'){?> 
-    <div class="form-group">
-        <label>原始密码</label>
-        <?php echo $form->passwordField($model,'password',array('class'=>'form-control')); ?>
-        <?php echo $form->error($model,'password'); ?>
+<div class="login-reg-module">    
+    <?php echo CHtml::link('<i class="fa fa-remove"></i>',$this->referer ? $this->referer : 'javascript:history.back()',array('class'=>'fixed-return-url'));?>  
+    <div class="login-reg-form">
+        <h1><?php echo CHtml::link(zmf::config('sitename'),  zmf::config('baseurl'));?></h1>
+        <div class="form-group">
+            <span class="fixed-label"><i class="fa fa-lock"></i></span>
+            <?php echo $form->passwordField($model,'password',array('class'=>'form-control','placeholder'=>'原始密码')); ?>
+            <?php echo $form->error($model,'password'); ?>
+        </div>
+        <div class="form-group">
+            <span class="fixed-label"><i class="fa fa-lock"></i></span>
+            <?php echo $form->passwordField($model,'newPassword',array('class'=>'form-control','placeholder'=>'新密码（长度不小于6位）')); ?>
+            <p class="help-block"></p>
+            <?php echo $form->error($model,'newPassword'); ?>
+        </div>
+        <div class="form-group">
+            <?php echo CHtml::submitButton($model->isNewRecord ? '新增' : '更新',array('class'=>'btn btn-success')); ?>
+        </div>
     </div>
-    <div class="form-group">
-        <?php echo $form->labelEx($model,'newPassword'); ?>
-        <?php echo $form->passwordField($model,'newPassword',array('class'=>'form-control')); ?>
-        <p class="help-block">长度不小于6位，且不能和账号密码相同</p>
-        <?php echo $form->error($model,'newPassword'); ?>
-    </div>
-    <div class="form-group">
-        <?php echo CHtml::submitButton($model->isNewRecord ? '新增' : '更新',array('class'=>'btn btn-primary')); ?>
-    </div>
+</div>    
     <?php }?>
     <?php $this->endWidget(); ?>
-</div>

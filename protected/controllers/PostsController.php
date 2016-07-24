@@ -111,7 +111,8 @@ class PostsController extends Q {
         }
         $size = 'w600';
         if ($this->isMobile) {
-            $size = 'w640';
+            $size = 'w650';
+            $this->layout='post';
         }
         $info['content'] = zmf::text(array(), $info['content'], true, $size);
         $comments = Comments::getCommentsByPage($id, 'posts', 1, $this->pageSize,"c.id,c.uid,u.truename,u.avatar,c.aid,c.logid,c.tocommentid,c.content,c.cTime,c.status");

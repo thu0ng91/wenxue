@@ -1,17 +1,39 @@
 body{
     -webkit-user-select:initial;
     user-select:initial;
-    background-color: #fff;   
     font-size: 14px;
-    line-height: 1.7;
-    color: #222;
-    background: #f2f2f2;
+    line-height: 1.75;
+    color: #333;
+    background: #faefc2;
     font-family: "Helvetica Neue",Helvetica,"Hiragino Sans GB","Microsoft YaHei",Arial,sans-serif;
     word-wrap: break-word;
+}
+a{
+    color: #93ba5f
+}
+.clearfix:before{
+    display: table;
+    content: " ";
+}
+.clearfix:after{
+    clear: both
+}
+.help-block,.color-grey{
+    color: #ccc !important
+}
+.star-color{
+    color: #FFAC2D
+}
+.text-center{
+    text-align: center
 }
 .w78{
     width: 78px;
     height: 104px;
+}
+.w100{
+    width: 100px;
+    height: 133px;
 }
 .hidden{
     display: none
@@ -22,15 +44,18 @@ body{
 .ui-list-info p{
     color: #333
 }
+.module{
+    background: #fff;
+    padding: 5px 0;
+    margin-bottom: 15px;
+}
 .module-header{
-    padding: 5px 5px;
+    padding: 5px 10px;
     font-size: 16px;
     color: #9F9F9F
 }
-.module{
-    background: #fff;
-    padding: 5px;
-    margin-bottom: 15px;
+.module .padding-body{
+    padding: 0 10px
 }
 .module .post-title{
     font-weight: 700;    
@@ -77,6 +102,106 @@ body{
 .ui-container{
     margin-top: 45px;
     margin-bottom: 45px;
+}
+/*首页*/
+.index-list .dot{
+    background: #93ba5f;
+    display: inline-block;
+    padding: 1px 6px;
+    color: #fff;
+    margin-right: 10px;
+    border-radius: 2px;
+    line-height: 18px
+}
+.ui-list-img{
+    width: 80px;
+    height: 100px
+}
+/*作品*/
+.book-page{
+    background: #fff
+}
+.book-page h1{
+    font-size: 24px;
+    font-weight: 700;
+    padding: 10px 10px 0
+}
+.book-star-detail{
+    font-size: 12px;
+    line-height: 16px;
+    display: block
+}
+.book-star-detail-item{
+    display: block;
+    clear: both
+}
+.book-star-detail .star-title{
+    float: left;
+    margin-right: 5px;
+}
+.book-star-detail .star-width{
+    float: left;
+    height: 8px;
+    background: #ffd596;
+    margin-top: 4px;
+}
+.book-star-detail .star-percent{
+    float: left;
+    margin-left: 5px;
+}  
+.book-star-info{
+    margin-bottom: 10px
+}
+.book-star-info .book-star-num{
+    float: left;
+    width: 60px;
+    text-align: left;
+    font-size: 36px;
+    height: 40px;
+    line-height: 40px;
+}
+.book-star-info .book-star{
+    padding-left: 60px;
+}
+.book-tips .media{
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed #F2f2f2
+}
+.book-tips .media:last-child{
+    margin-bottom: 0;
+    border: none
+}
+/*用户右侧*/
+.user-header{
+    background: #fff;
+    text-align: center;
+    padding-top: 30px;
+    margin-bottom: 15px;        
+}
+.user-header img{
+    width: 64px;        
+    height: 64px;
+    border-radius: 200px;
+}
+.user-header .ui-row-flex{
+    height: 48px;
+    line-height: 48px;
+    margin-top: 10px;
+    color: #ccc
+}
+.user-header .ui-row-flex .active{
+    color: #93ba5f
+}
+.user-side-holder{
+    background: #fff;
+    display: none;
+    width: 60%;
+    height: 100%;
+    position: fixed;
+    right: 0;
+    top: 0;
+    border-left: 1px solid #ccc;        
 }
 /*登录注册*/
 .login-reg-module{

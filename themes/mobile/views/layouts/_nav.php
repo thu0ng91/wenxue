@@ -34,7 +34,7 @@
     </ul>
     <ul class="ui-list ui-list-text ui-border-tb">
         <?php if($this->userInfo['authorId']>0){?>
-            <?php if($this->authorLogin){?>
+            <?php if($this->adminLogin){?>
             <li class="ui-border-t" data-href="<?php echo Yii::app()->createUrl('author/createBook');?>">
                 <div class="ui-list-info"><p class="ui-nowrap">新增作品</p></div>
             </li>

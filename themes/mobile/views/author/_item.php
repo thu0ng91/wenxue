@@ -17,6 +17,6 @@
     </div>
     <div class="media-body">
         <h4><?php echo CHtml::link($data['authorName'],array('author/view','id'=>$data['id']));?></h4>        
-        <p class="help-block"><?php echo zmf::subStr($data['content'],140);?></p>
+        <p class="help-block ui-nowrap-multi"><?php echo zmf::subStr($data['content'],140);?></p>
     </div>
 </div>

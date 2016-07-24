@@ -40,29 +40,31 @@
     </div>
     <?php }?>
     <?php if($action=='passwd'){?>
-    <div class="module-header">修改密码</div>
-    <div class="module-body">
+<div class="login-reg-module">    
+    <?php echo CHtml::link('<i class="fa fa-remove"></i>',$this->referer ? $this->referer : 'javascript:history.back()',array('class'=>'fixed-return-url'));?>
+    <div class="login-reg-form">
+        <h1><?php echo CHtml::link(zmf::config('sitename'),  zmf::config('baseurl'));?></h1>
         <?php $form=$this->beginWidget('CActiveForm', array(
                 'id'=>'users-create-form',
                 'enableAjaxValidation'=>false,
         )); ?>
         <?php echo CHtml::hiddenField('action','passwd');?>
         <div class="form-group">
-            <label>请输入原始密码</label>
-            <?php echo $form->passwordField($model,'password',array('class'=>'form-control')); ?>
+            <span class="fixed-label"><i class="fa fa-lock"></i></span>
+            <?php echo $form->passwordField($model,'password',array('class'=>'form-control','placeholder'=>'请输入原始密码')); ?>
             <?php echo $form->error($model,'password'); ?>
         </div>
         <div class="form-group">
-            <label>请输入新密码</label>
-            <?php echo $form->passwordField($model,'newPassword',array('class'=>'form-control')); ?>
-            <p class="help-block">密码不能短于6位</p>
+            <span class="fixed-label"><i class="fa fa-lock"></i></span>
+            <?php echo $form->passwordField($model,'newPassword',array('class'=>'form-control','placeholder'=>'请输入新密码（密码不能短于6位）')); ?>
             <?php echo $form->error($model,'newPassword'); ?>
         </div>
-        <div class="form-group text-right">
-            <?php echo CHtml::submitButton($model->isNewRecord ? '提交' : '更新',array('class'=>'btn btn-primary')); ?>
+        <div class="form-group">
+            <?php echo CHtml::submitButton($model->isNewRecord ? '提交' : '更新',array('class'=>'btn btn-success')); ?>
         </div>
         <?php $this->endWidget(); ?>
     </div>
+</div>    
     <?php }?>
     <?php if($action=='skin'){?>
     <div class="module-header">更换头像</div>

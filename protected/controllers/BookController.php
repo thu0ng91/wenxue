@@ -38,7 +38,7 @@ class BookController extends Q {
         if (!$id) {
             throw new CHttpException(404, 'The requested page does not exist.');
         }
-        $info = Books::getOne($id);
+        $info = Books::getOne($id,  $this->isMobile ? 'w240' : 'w120');
         if (!$info || $info['status'] != Posts::STATUS_PASSED) {
             throw new CHttpException(404, '你所查看的小说不存在。');
         } else {
@@ -105,6 +105,7 @@ class BookController extends Q {
         $this->favorited = Favorites::checkFavored($id, 'book');
         //标题
         $this->pageTitle = '【' . $authorInfo['authorName'] . '作品】' . $info['title'] . ' - ' . zmf::config('sitename');
+        $this->mobileTitle='作品详情';
         $this->keywords = $info['title'] . '、' . $info['title'] . '小说阅读、' . $info['title'] . '最新章节';
         $this->pageDescription = "{$info['title']},{$info['title']}小说阅读。{$colInfo['title']}{$info['title']}由作家{$authorInfo['authorName']}创作," . zmf::config('sitename') . "提供{$info['title']}最新章节及章节列表,{$info['title']}最新更新尽在" . zmf::config('sitename') . "。";
         //二维码
@@ -209,6 +210,9 @@ class BookController extends Q {
         $this->keywords = $bookInfo['title'] . '、' . $bookInfo['title'] . '小说阅读、' . $bookInfo['title'] . '最新章节';
         $this->pageDescription = "{$bookInfo['title']}：{$chapterInfo['title']}。{$colInfo['title']}{$bookInfo['title']}由作家{$authorInfo['authorName']}创作," . zmf::config('sitename') . "提供{$bookInfo['title']}最新章节及章节列表,{$bookInfo['title']}最新更新尽在" . zmf::config('sitename') . "。";
         $this->selectNav = 'column' . $bookInfo['colid'];
+        if($this->isMobile){
+            $this->layout='common';
+        }
         $data = array(
             'bookInfo' => $bookInfo,
             'chapterInfo' => $chapterInfo,

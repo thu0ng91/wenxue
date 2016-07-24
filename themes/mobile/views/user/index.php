@@ -40,28 +40,15 @@
                 </div>
             </li>
         <?php }elseif($post['classify']=='chapterTip'){?>
-            <li class="ui-border-t" data-href="<?php echo Yii::app()->createUrl('posts/view',array('id'=>$post['data']['id']));?>">
+            <li class="ui-border-t">
                 <div class="ui-list-img">
-                    <span style="background-image:url(http://placeholder.qiniudn.com/200x136)"></span>
+                    <span style="background-image:url(<?php echo $post['data']['bFaceImg'];?>)"></span>
                 </div>
                 <div class="ui-list-info">
-                    <h4 class="ui-nowrap">这是标题，加ui-nowrap可以超出长度截断</h4>
-                    <p class="ui-nowrap">这是内容，加ui-nowrap可以超出长度截断</p>
-                </div>
-            </li>
-        <div class="user-log-item">
-            <p class="help-block"><?php echo $post['action'];?>【<?php echo CHtml::link($post['data']['bTitle'],array('book/view','id'=>$post['data']['bid']));?>】的<?php echo CHtml::link($post['data']['cTitle'],array('book/chapter','cid'=>$post['data']['cid']));?></p>
-            <div class="media">
-                <div class="media-left">
-                    <img class="media-object lazy" src="<?php echo zmf::lazyImg();?>" data-original="<?php echo $post['data']['bFaceImg'];?>" alt="<?php echo $post['data']['bTitle'];?>">                    
-                </div>
-                <div class="media-body">
-                    <p class="title"><?php echo CHtml::link($post['data']['bTitle'],array('book/view','id'=>$post['data']['bid']));?></p>
-                    <p class="help-block"><?php echo $post['data']['bDesc'];?></p>
+                    <p class="ui-nowrap-multi"><?php echo $post['action'];?>【<?php echo CHtml::link($post['data']['bTitle'],array('book/view','id'=>$post['data']['bid']));?>】的<?php echo CHtml::link($post['data']['cTitle'],array('book/chapter','cid'=>$post['data']['cid']));?></p>
                     <p class="help-block"><?php echo zmf::formatTime($post['cTime']);?></p>
                 </div>
-            </div>
-        </div>
+            </li>
         <?php }elseif($post['classify']=='post'){?>
             <li class="ui-border-t" data-href="<?php echo Yii::app()->createUrl('posts/view',array('id'=>$post['data']['id']));?>">
                 <div class="ui-list-info">

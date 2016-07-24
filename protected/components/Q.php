@@ -24,6 +24,7 @@ class Q extends Controller {
     public $rightBtns=array();//手机版导航条右侧按钮
     public $returnUrl='';//左侧返回按钮的返回链接
     public $showTopbar=true;
+    public $adminLogin = false;
 
     function init() {
         parent::init();

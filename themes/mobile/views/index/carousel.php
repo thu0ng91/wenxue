@@ -17,15 +17,17 @@ $_posts1=$moduleInfo['posts'];$_len1=count($_posts1);
         <?php echo $moduleInfo['title'];?>
     </div>
     <div class="module-body carousel-body">
-        <ul class="ui-list ui-list-link ui-border-tb">
+        <ul class="ui-list ui-list-link ui-border-t">
             <?php foreach ($_posts1 as $_post){?>
             <li class="ui-border-t" data-href="<?php echo Yii::app()->createUrl('book/view',array('id'=>$_post['id']));?>">
                 <div class="ui-list-img">
-                    <span style="background-image:url(<?php echo $_post['faceImg'];?>)"></span>
+                    <img class="lazy w78" src="<?php echo zmf::lazyImg(); ?>" data-original="<?php echo $_post['faceImg']; ?>" alt="<?php echo $_post['title']; ?>">  
                 </div>
                 <div class="ui-list-info">
                     <h4 class="ui-nowrap"><?php echo $_post['title'];?></h4>
-                    <p class="ui-nowrap"><?php echo $_post['authorName'];?></p>
+                    <p class="ui-nowrap color-grey">作者：<?php echo $_post['authorName'];?></p>
+                    <p class="ui-nowrap color-grey">分类：<?php echo $_post['colTitle'];?></p>
+                    <p class="ui-nowrap color-grey">简介：<?php echo $_post['desc'];?></p>
                 </div>
             </li>
             <?php }?>
