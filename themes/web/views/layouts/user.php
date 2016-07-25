@@ -39,7 +39,7 @@ $this->beginContent('/layouts/common');
                                 <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu">
-                                <?php if($this->authorLogin){?>
+                                <?php if($this->adminLogin){?>
                                 <li><?php echo CHtml::link('新增作品',array('author/createBook'));?></li>
                                 <li><?php echo CHtml::link('进入作者中心',array('author/view','id'=>$this->userInfo['authorId']));?></li>
                                 <?php }else{?>

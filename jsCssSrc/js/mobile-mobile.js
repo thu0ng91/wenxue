@@ -776,6 +776,58 @@ function simpleDialog(diaObj) {
     dom.fadeIn(300);
     setTimeout("closeSimpleDialog()", 2700);
 }
+// 使用message对象封装消息  
+var flashTitle = {  
+    time: 0,  
+    title: document.title,  
+    timer: null,  
+    // 显示新消息提示  
+    show: function () {  
+        var title = flashTitle.title.replace("【　　　】", "").replace("【新消息】", "");  
+        // 定时器，设置消息切换频率闪烁效果就此产生  
+        flashTitle.timer = setTimeout(function () {  
+            flashTitle.time++;  
+            flashTitle.show();  
+            if (flashTitle.time % 2 == 0) {  
+                document.title = "【新消息】" + title  
+            } else {  
+                document.title = "【　　　】" + title  
+            };  
+        }, 600);  
+        return [flashTitle.timer, flashTitle.title];  
+    },  
+    // 取消新消息提示  
+    clear: function () {  
+        clearTimeout(flashTitle.timer);  
+        document.title = flashTitle.title;  
+    }  
+};  
+function getNotice(){
+    doGetNotice();
+    window.setInterval("doGetNotice()",10000);
+}
+function doGetNotice(){
+    if(!checkLogin()){
+        return false;
+    }
+    $.post(zmf.ajaxUrl, {action:'getNotice',YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
+        result = $.parseJSON(result);
+        if (result.status === 1) {
+            var _num=parseInt(result.msg);
+            if(_num>0){
+                $('#top-nav-count').html(_num).css('display','inline-block');
+                if(flashTitle.timer===null){
+                    flashTitle.show();
+                }                
+            }else{
+                $('#top-nav-count').hide();
+                flashTitle.clear();
+            }
+        }else{
+            
+        }
+    })
+}
 function closeSimpleDialog() {
     $('.simpleDialog').fadeOut(100).remove();
 }
@@ -835,62 +887,6 @@ function addComment(dom) {
         }
     });
 }
-function favorite(dom) {
-    var acdata = dom.attr("action-data");
-    var t = dom.attr("action-type");
-    var dt = dom.text();
-    var num = parseInt(dt);
-    if (!acdata || !t) {
-        return false;
-    }
-    if (!checkLogin()) {
-        //没有登录，判断是否包含fa-heart样式，包含则认为已收藏成功过
-        if (dom.children('i').hasClass('fa-heart')) {
-            dialog({msg: '已点赞', modalSize: 'modal-sm'});
-            return false;
-        }
-    }
-    if (!checkAjax()) {
-        return false;
-    }
-    $.post(zmf.favoriteUrl, {type: t, data: acdata, YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
-        ajaxReturn = true;
-        result = $.parseJSON(result);
-        if (result.status === 1) {//收藏成功
-            //dom.text((num + 1) + ' 赞').removeClass('btn-default').addClass('btn-success');
-            dom.children('i').removeClass('fa-heart-o').addClass('fa-heart');
-        } else if (result.status === 2) {//收藏失败
-            //dom.text(dt);
-            dialog({msg: result.msg});
-        } else if (result.status === 3) {//取消成功
-            //dom.text((num - 1) + ' 赞').removeClass('btn-success').addClass('btn-default');
-            dom.children('i').removeClass('fa-heart').addClass('fa-heart-o');
-        } else if (result.status === 4) {//取消失败
-            //dom.text(dt);
-            dialog({msg: result.msg});
-        } else {
-            dialog({msg: result.msg});
-        }
-        return false;
-    });
-}
-function playVideo(company, videoid, targetHolder, dom) {
-    var w=$(window).width()-10;//有边框
-    var h=w*9/16;
-    if (!company || !videoid || !targetHolder) {
-        return false;
-    }
-    var html = '';
-    if (company === 'youku') {
-        html = '<iframe src="http://player.youku.com/embed/' + videoid + '" height="'+h+'" width="'+w+'" allowtransparency="true" allowfullscreen="true" allowfullscreenInteractive="true" scrolling="no" border="0" frameborder="0"  height="'+h+'" width="'+w+'"></iframe>';
-    } else if (company === 'tudou') {
-        html = '<iframe src="http://www.tudou.com/programs/view/html5embed.action?type=2&' + videoid + '" allowtransparency="true" allowfullscreen="true" allowfullscreenInteractive="true" scrolling="no" border="0" frameborder="0"  height="'+h+'" width="'+w+'"></iframe>';
-    } else if (company === 'qq') {
-        html = '<iframe src="http://v.qq.com/iframe/player.html?vid=' + videoid + '&tiny=0&auto=1" allowtransparency="true" allowfullscreen="true" allowfullscreenInteractive="true" scrolling="no" border="0" frameborder="0"  height="'+h+'" width="'+w+'"></iframe>';
-    }
-    $('#' + targetHolder).html(html);
-    $(dom).remove();
-}
 function replyOne(id, logid, title) {
     var longstr = "<span class='reply-one'>回复“" + title + "”<a href='javascript:' onclick='cancelReplyOne(" + logid + ")' title='取消设置'> <i class='ui-icon-close-page'></i></a></span>";
     var pos = $("#replyoneHolder-" + logid).offset().top;
@@ -899,27 +895,6 @@ function replyOne(id, logid, title) {
 }
 function cancelReplyOne(logid) {
     $("#replyoneHolder-" + logid).attr('tocommentid', '').html('');
-}
-function showChapters() {
-    var h = document.documentElement.clientHeight;
-    var w = document.documentElement.clientWidth;
-    var d = window.orientation;
-    var btnsDom = $('#next-prev-btns');
-    if (Math.abs(d) === 0 && h >= w) {
-        //dialog({msg:'横屏效果更佳'});
-        //btnsDom.fadeOut(500);
-    } else {
-
-    }
-    var btnsW = btnsDom.width();
-    btnsDom.css({
-        left: (w - btnsW) / 2
-    }).fadeIn(500);
-}
-function toggleChapters() {
-    var dom = $('#chapters-box');
-    var html = dom.html();
-    dialog({msg: html, title: '跳转章节'});
 }
 function simpleLoading(diaObj) {
     if (typeof diaObj !== "object") {
@@ -1068,3 +1043,4 @@ function closeZoom(){
 }($, window, document);
 
 rebind();
+getNotice();

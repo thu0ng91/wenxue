@@ -92,9 +92,37 @@ a{
     position: absolute;
     top: 0;
     right: 0;
-    width: 14%;
+    max-width: 33.3%;
+    text-align: right;
     padding-right: 10px;
     box-sizing: border-box
+}
+.top-header .header-right a{
+    margin-left: 5px
+}
+.top-header .header-right .top-notices{
+    position: relative
+}
+.top-nav-count {
+    background: #FF0000;
+    border: 1px solid #FF0000;
+    box-shadow: 0 1px 2px rgba(0,0,0,.1),inset 0 1px 0 rgba(255,255,255,.15);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    -webkit-text-size-adjust: none;
+    padding: 0 5px;
+    height: 16px;
+    line-height: 16px;
+    border-radius: 16px;
+    text-indent: 0;
+    text-align: center;
+    text-decoration: none;
+    z-index: 999;    
+    position: absolute;
+    right: -8px;
+    top: -10px;
+    display: none
 }
 .top-header .fa{
     font-size: 18px;
@@ -172,6 +200,11 @@ a{
     margin-bottom: 0;
     border: none
 }
+/*帖子*/
+.forum-page .ui-list-img{
+    width: 100px;
+    height: 68px
+}
 /*用户右侧*/
 .user-header{
     background: #fff;
@@ -202,6 +235,84 @@ a{
     right: 0;
     top: 0;
     border-left: 1px solid #ccc;        
+}
+/*表单*/
+.form-group{
+    margin-bottom: 15px
+}
+.form-group .btn{
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    text-align: center;
+    padding-left: 0;
+    width: 100%;
+    display: block;
+    height: 36px;
+    line-height: 36px;
+    border-radius: 5px;        
+}
+.form-group .btn-success{
+    background: #93ba5f;
+    color: #fff;
+    border: 1px solid #93ba5f
+}
+.form-group .btn-default{
+    background: #fff;
+    color: #999;
+    border: 1px solid #999
+}
+.form-group textarea.form-control{
+    width: 100%;
+    border-color: #f2f2f2;
+    box-shadow: none;
+    -webkit-appearance: none; 
+    border-radius: 5px;
+    line-height: 1.75;
+    color: #999
+}
+.form-group input.form-control{
+    width: 100%;
+    border-color: #f2f2f2;
+    box-shadow: none;
+    -webkit-appearance: none; 
+    border-radius: 5px;
+    line-height: 1.75;
+    padding: 5px;
+    color: #999;
+    box-sizing: border-box
+}
+.form-group select.form-control{
+    width: 100%;
+    border-color: #f2f2f2;
+    box-shadow: none;
+    -webkit-appearance: none; 
+    border-radius: 5px;
+    line-height: 1.75;
+    padding: 5px;
+    color: #999;
+    box-sizing: border-box
+}
+.form-group .help-block{
+    margin-bottom: 10px;
+    margin-top: 5px;
+}
+.toggle-area{
+    display: none
+}
+.replyoneHolder{
+    min-height: 25px;
+}
+.reply-one{
+    background: #93ba5f;
+    color: #fff;
+    padding: 2px 5px;
+}
+.reply-one i{
+    display: inline-block;
+    font-size: 15px;
+    line-height: 15px;
+    color: #fff
 }
 /*登录注册*/
 .login-reg-module{
@@ -276,26 +387,6 @@ a{
     border-radius: 5px;
     margin-right: 5px
 }
-.login-reg-form .form-group .btn{
-    appearance: none;
-    -moz-appearance: none;
-    -webkit-appearance: none;
-    text-align: center;
-    padding-left: 0;
-    width: 100%;
-    display: block;
-    height: 36px;
-    line-height: 36px;
-    border-radius: 5px;        
-}
-.login-reg-form .form-group .btn-success{
-    background: #93ba5f;
-    color: #fff
-}
-.login-reg-form .form-group .btn-default{
-    background: #fff;
-    color: #999
-}
 .login-reg-form .forgot-pass-link{
     position: fixed;
     bottom: 15px;
@@ -355,6 +446,11 @@ body.menu-on .ui-header{
 }
 .footer .ui-tiled{
     margin-top: 5px;
+    color: #999
+}
+.footer .ui-tiled .active{
+    color: #93ba5f;
+    font-weight: 700
 }
 .footer .fa{
     display: block

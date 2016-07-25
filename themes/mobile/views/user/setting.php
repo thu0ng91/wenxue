@@ -12,7 +12,7 @@
 <div class="module">
     <?php if($action=='baseInfo'){?>
     <div class="module-header">修改基本信息</div>
-    <div class="module-body">
+    <div class="module-body padding-body">
         <?php $form=$this->beginWidget('CActiveForm', array(
                 'id'=>'users-create-form',
                 'enableAjaxValidation'=>false,
@@ -25,7 +25,7 @@
         </div>
         <div class="form-group">
             <?php echo $form->labelEx($model,'content'); ?>
-            <?php echo $form->textArea($model,'content',array('class'=>'form-control','rows'=>6,'maxLength'=>255)); ?>
+            <?php echo $form->textArea($model,'content',array('class'=>'form-control','rows'=>3,'maxLength'=>255)); ?>
             <?php echo $form->error($model,'content'); ?>
         </div>
         <div class="form-group">
@@ -33,8 +33,8 @@
             <?php echo $form->dropdownList($model,'sex',  Users::userSex('admin'),array('class'=>'form-control')); ?>
             <?php echo $form->error($model,'sex'); ?>
         </div>
-        <div class="form-group text-right">
-            <?php echo CHtml::submitButton($model->isNewRecord ? '提交' : '更新',array('class'=>'btn btn-primary')); ?>
+        <div class="form-group">
+            <?php echo CHtml::submitButton($model->isNewRecord ? '提交' : '更新',array('class'=>'btn btn-success')); ?>
         </div>
         <?php $this->endWidget(); ?>
     </div>
@@ -68,7 +68,7 @@
     <?php }?>
     <?php if($action=='skin'){?>
     <div class="module-header">更换头像</div>
-    <div class="module-body">
+    <div class="module-body padding-body">
         <?php $form=$this->beginWidget('CActiveForm', array(
                 'id'=>'users-create-form',
                 'enableAjaxValidation'=>false,
@@ -95,7 +95,7 @@
     
     <?php if($action=='checkPhone'){?>
     <div class="module-header">验证手机号</div>
-    <div class="module-body" id="send-sms-form">
+    <div class="module-body padding-body" id="send-sms-form">
         <div class="form-group">
             <label>手机号</label>
             <div class="input-group">

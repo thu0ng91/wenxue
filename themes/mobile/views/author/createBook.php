@@ -17,8 +17,9 @@
 )); ?>
     <?php echo $form->errorSummary($model); ?>
     <?php echo $form->hiddenField($model,'faceImg',array('class'=>'form-control bitian','placeholder'=>'请上传封面图')); ?>
-    <div class="row">
-        <div class="col-xs-3">
+    <div class="module">
+        <div class="module-header">创建作品</div>
+        <div class="module-body padding-body">
             <div class="form-group">
                 <div class="thumbnail">
                     <img src="<?php echo $model->faceImg;?>" alt="更改封面图片" id="book-faceImg">
@@ -30,8 +31,6 @@
                 </div>
                 <?php echo $form->error($model,'faceImg'); ?>
             </div>
-        </div>
-        <div class="col-xs-9">
             <div class="form-group">
                 <?php echo $form->labelEx($model,'colid'); ?>
                 <?php echo $form->dropDownlist($model,'colid',  Column::allCols(),array('class'=>'form-control bitian','empty'=>'--请选择--','placeholder'=>'请选择小说分类')); ?>
@@ -44,31 +43,25 @@
             </div>
             <div class="form-group">
                 <?php echo $form->labelEx($model,'desc'); ?>
-                <?php echo $form->textArea($model,'desc',array('rows'=>4, 'cols'=>50,'class'=>'form-control bitian','placeholder'=>'请填写小说推荐语')); ?>
+                <?php echo $form->textArea($model,'desc',array('rows'=>3, 'cols'=>50,'class'=>'form-control bitian','placeholder'=>'请填写小说推荐语')); ?>
                 <?php echo $form->error($model,'desc'); ?>
             </div>
             <div class="form-group">
                 <?php echo $form->labelEx($model,'content'); ?>
-                <?php echo $form->textArea($model,'content',array('rows'=>6, 'cols'=>50,'class'=>'form-control bitian','placeholder'=>'请填写小说简介')); ?>
+                <?php echo $form->textArea($model,'content',array('rows'=>3, 'cols'=>50,'class'=>'form-control bitian','placeholder'=>'请填写小说简介')); ?>
                 <?php echo $form->error($model,'content'); ?>
             </div>
             <div class="form-group">
                 <?php echo $form->labelEx($model,'iAgree'); ?>
-                <div class="row">
-                    <div class="col-xs-4">
-                        <?php echo $form->textField($model,'iAgree',array('size'=>60,'maxlength'=>3,'class'=>'form-control bitian','placeholder'=>'请阅读并同意本站协议')); ?>
-                        <?php echo $form->error($model,'iAgree'); ?>
-                    </div>
-                    <div class="col-xs-8">
-                        <p>输入“<font style="color: red">我同意</font>”，即表示接受<?php echo CHtml::link('本站协议',array('site/info','code'=>'terms'));?>。</p>
-                    </div>
-                </div>
+                <?php echo $form->textField($model,'iAgree',array('size'=>60,'maxlength'=>3,'class'=>'form-control bitian','placeholder'=>'请阅读并同意本站协议')); ?>
+                <p>输入“<font style="color: red">我同意</font>”，即表示接受<?php echo CHtml::link('本站协议',array('site/info','code'=>'terms'));?>。</p>
+                <?php echo $form->error($model,'iAgree'); ?>
             </div>
             <div class="form-group">
                 <div class="checkbox"><label><?php echo CHtml::activeCheckBox($model, 'shoufa');?> 作品在本站首发</label></div>
             </div>            
-            <div class="form-group text-center">
-                <?php echo CHtml::button($model->isNewRecord ? '新增' : '更新',array('class'=>'btn btn-primary','id'=>'create-book-btn')); ?>
+            <div class="form-group">
+                <?php echo CHtml::button($model->isNewRecord ? '新增' : '更新',array('class'=>'btn btn-success','id'=>'create-book-btn')); ?>
             </div>
         </div>
     </div>

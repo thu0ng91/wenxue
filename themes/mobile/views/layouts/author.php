@@ -82,7 +82,8 @@ $this->beginContent('/layouts/common');
         height: 48px;
         line-height: 48px;
         text-align: center;
-        color: #ccc
+        color: #ccc;
+        margin-bottom: 15px;
     }
     .author-content .author-content-nav .active{
         color: #93ba5f

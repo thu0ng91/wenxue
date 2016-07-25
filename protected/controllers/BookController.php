@@ -7,24 +7,26 @@ class BookController extends Q {
 
     public function actionIndex() {
         $colid = zmf::val('colid', 2);
-        if (!$colid) {
-            throw new CHttpException(404, '请选择分类');
-        }
-        $colInfo = Column::getSimpleInfo($colid);
-        if (!$colInfo) {
-            throw new CHttpException(404, '请选择正确的分类');
-        }
+        $colInfo=array();
+        if ($colid) {
+            $colInfo = Column::getSimpleInfo($colid);
+            if (!$colInfo) {
+                throw new CHttpException(404, '请选择正确的分类');
+            }
+        }        
         $arr=array(
             Books::STATUS_PUBLISHED,
             Books::STATUS_FINISHED
         );
-        $sql = "SELECT id,colid,title,faceImg,`desc`,words,cTime,score,scorer,bookStatus FROM {{books}} WHERE colid='{$colid}' AND status=" . Posts::STATUS_PASSED . " AND bookStatus IN(" . join(',',$arr) . ") ORDER BY score DESC";
+        $sql = "SELECT id,colid,title,faceImg,`desc`,words,cTime,score,scorer,bookStatus FROM {{books}} WHERE ".($colid>0 ? "colid='{$colid}'" : "")." status=" . Posts::STATUS_PASSED . " AND bookStatus IN(" . join(',',$arr) . ") ORDER BY score DESC";
         Posts::getAll(array('sql' => $sql), $pages, $posts);
         foreach ($posts as $k => $val) {
             $posts[$k]['faceImg'] = zmf::getThumbnailUrl($val['faceImg'], 'w120', 'book');
         }
         $this->selectNav = 'column' . $colid;
+        $this->showLeftBtn=false;
         $this->pageTitle = $colInfo['title'] . ' - ' . zmf::config('sitename');
+        $this->mobileTitle='作品集';
         $data = array(
             'posts' => $posts,
             'colInfo' => $colInfo,
@@ -108,6 +110,7 @@ class BookController extends Q {
         $this->mobileTitle='作品详情';
         $this->keywords = $info['title'] . '、' . $info['title'] . '小说阅读、' . $info['title'] . '最新章节';
         $this->pageDescription = "{$info['title']},{$info['title']}小说阅读。{$colInfo['title']}{$info['title']}由作家{$authorInfo['authorName']}创作," . zmf::config('sitename') . "提供{$info['title']}最新章节及章节列表,{$info['title']}最新更新尽在" . zmf::config('sitename') . "。";
+        $this->selectNav = 'book';
         //二维码
         $url = zmf::config('domain') . Yii::app()->createUrl('book/view', array('id' => $id));
         $qrcode = zmf::qrcode($url, 'book', $id);

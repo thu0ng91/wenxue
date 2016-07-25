@@ -21,7 +21,7 @@ class PostsController extends Q {
         }
         Posts::getAll(array('sql' => $sql, 'pageSize' => $this->pageSize), $pages, $posts);
         foreach ($posts as $k=>$val){
-            $posts[$k]['faceimg']=  Attachments::faceImg($val, 'c120', 'posts');
+            $posts[$k]['faceimg']=  Attachments::faceImg($val, $this->isMobile ? 'c280' : 'c120', 'posts');
         }
         if ($type == 'author' && !empty($posts)) {
             $aids = join(',', array_unique(array_filter(array_keys(CHtml::listData($posts, 'aid', '')))));
@@ -48,6 +48,7 @@ class PostsController extends Q {
         //获取展示
         $showcases = Showcases::getPagePosts('authorQzone', NUll, false, 'c360');
         $this->selectNav = $type . 'Forum';
+        $this->showLeftBtn=false;
         $this->pageTitle = $label . ' - ' . zmf::config('sitename');
         $this->mobileTitle=$label;
         $data = array(

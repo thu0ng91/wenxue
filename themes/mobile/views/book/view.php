@@ -3,7 +3,7 @@
     <ul class="ui-list ui-border-b">    
         <li class="ui-border-t">
             <div class="ui-list-img">
-                <img class="lazy w100" src="<?php echo zmf::lazyImg(); ?>" data-original="<?php echo $info['faceImg']; ?>" alt="<?php echo $info['title']; ?>">
+                <img class="lazy w78" src="<?php echo zmf::lazyImg(); ?>" data-original="<?php echo $info['faceImg']; ?>" alt="<?php echo $info['title']; ?>">
             </div>
             <div class="ui-list-info">
                 <p>作者：<?php echo CHtml::link($authorInfo['authorName'], array('author/view', 'id' => $info['aid'])); ?></p>

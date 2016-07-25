@@ -151,7 +151,7 @@ $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
                 <?php }?>
             </div>
             <?php if($info['open']==Posts::STATUS_OPEN){?>
-            <div id="add-comments">
+            <div id="add-comments" class="padding-body">
                 <?php $this->renderPartial('/posts/_addComment', array('keyid' => $info['id'], 'type' => 'posts','authorPanel'=>($info['classify']==Posts::CLASSIFY_AUTHOR && $this->userInfo['authorId']>0),'authorLogin'=>  Authors::checkLogin($this->userInfo, $this->userInfo['authorId']))); ?>
             </div>
             <?php }?>

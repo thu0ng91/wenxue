@@ -3,9 +3,11 @@ $this->beginContent('/layouts/common');
 ?>
 <?php if($this->showTopbar){?>
 <header class="top-header">
+    <?php if($this->showLeftBtn){?>
     <div class="header-left">
         <i class="fa fa-angle-double-left" onclick="history.back()"></i>
     </div>
+    <?php }?>
     <div class="header-center">
         <h1><?php echo $this->mobileTitle;?></h1>
     </div>
@@ -14,7 +16,7 @@ $this->beginContent('/layouts/common');
         <?php if (!$this->uid) { ?>
         <?php echo CHtml::link('<i class="fa fa-bell-o"></i>',array('site/login'));?>
         <?php } else {?>
-        <?php echo CHtml::link('<i class="fa fa-bell-o"></i>',array('user/notice'));?>
+        <?php echo CHtml::link('<i class="fa fa-bell-o"></i><span id="top-nav-count" class="top-nav-count">0</span>',array('user/notice'),array('class'=>'top-notices'));?>
         <?php } ?>
     </div>
 </header>

@@ -8,7 +8,7 @@ $url=  Yii::app()->createUrl('book/view',array('id'=>$data['id']));
 ?>
 <li class="ui-border-t" data-href="<?php echo $url;?>">
     <div class="ui-list-img">
-        <span style="background-image:url(<?php echo $data['faceImg'];?>)"></span>
+        <img class="lazy w78" src="<?php echo zmf::lazyImg();?>" data-original="<?php echo $data['faceImg'];?>" alt="<?php echo $data['title'];?>">        
     </div>
     <div class="ui-list-info">
         <h4 class="ui-nowrap"><?php echo $data['title'];?></h4>
