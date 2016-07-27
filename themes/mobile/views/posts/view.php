@@ -64,13 +64,12 @@ $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
                 <?php echo CHtml::link($tag['title'],array('posts/index','type'=>Posts::exType($info['classify']),'tagid'=>$tag['id']));?>
                 <?php }?>
             </div>
-            <?php }?>
-            
+            <?php }?>            
             <h1><?php echo $info['title'];?></h1>
             <ul class="ui-list author-info">
                 <li class="ui-border-t">
                     <div class="ui-avatar">
-                        <span style="background-image:url(<?php echo $authorInfo['avatar'];?>)"></span>
+                        <img class="lazy a50" src="<?php echo zmf::lazyImg();?>" data-original="<?php echo $authorInfo['avatar'];?>" alt="<?php echo $authorInfo['title'];?>">        
                     </div>
                     <div class="ui-list-info">
                         <h4 class="ui-nowrap"><?php echo CHtml::link($authorInfo['title'],$authorInfo['url']);?></h4>

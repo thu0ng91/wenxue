@@ -1,10 +1,11 @@
 <?php 
 if($adminLogin){
-    $urlArr=array('author/book','bid'=>$data['id']);    
+    $urlArr=array('author/book','bid'=>$data['id']);  
+    $url=  Yii::app()->createUrl('author/book',array('bid'=>$data['id']));
 }else{
     $urlArr=array('book/view','id'=>$data['id']);
+    $url=  Yii::app()->createUrl('book/view',array('id'=>$data['id']));
 }
-$url=  Yii::app()->createUrl('book/view',array('id'=>$data['id']));
 ?>
 <li class="ui-border-t" data-href="<?php echo $url;?>">
     <div class="ui-list-img">

@@ -3,7 +3,7 @@
 </div>
 <div class="form-group">
     <div class="clearfix">
-        <div id="add-tips-score" class="pull-left">
+        <div id="add-tips-score">
             <label class="radio-inline">
                 <input type="radio" name="score" value="1"> 很差
             </label>
@@ -19,8 +19,10 @@
             <label class="radio-inline">
                 <input type="radio" name="score" value="5"> 力荐
             </label>
-        </div>
-        <?php echo CHtml::link('评论','javascript:;',array('class'=>'btn btn-success pull-right','action'=>'add-tips','action-data'=>$keyid,'action-type'=>$type));?>
+        </div>        
     </div>
+</div>
+<div class="form-group">
+    <?php echo CHtml::link('评论','javascript:;',array('class'=>'btn btn-success','action'=>'add-tips','action-data'=>$keyid,'action-type'=>$type));?>
 </div>
 <div class="clearfix"></div>

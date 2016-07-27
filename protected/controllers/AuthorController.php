@@ -2,7 +2,7 @@
 
 class AuthorController extends Q {
 
-    public $authorInfo = array();    
+    public $authorInfo = array();
     public $favorited = false;
 
     public function init() {
@@ -25,8 +25,8 @@ class AuthorController extends Q {
             $this->favorited = Favorites::checkFavored($id, 'author');
         }
         $this->pageTitle = $this->authorInfo['authorName'] . ' - ' . zmf::config('sitename');
-        $this->keywords="{$this->authorInfo['authorName']},{$this->authorInfo['authorName']}小说,{$this->authorInfo['authorName']}全部小说,{$this->authorInfo['authorName']}作品,{$this->authorInfo['authorName']}最新作品,{$this->authorInfo['authorName']}新书,{$this->authorInfo['authorName']}资料及介绍";
-        $this->pageDescription=  "{$this->authorInfo['authorName']}是".zmf::config('sitename')."网作家。这里你可以阅读{$this->authorInfo['authorName']}全部小说及{$this->authorInfo['authorName']}最新作品集，还可以和{$this->authorInfo['authorName']}互动，更多{$this->authorInfo['authorName']}新书及动态请关注".zmf::config('sitename')."网。";
+        $this->keywords = "{$this->authorInfo['authorName']},{$this->authorInfo['authorName']}小说,{$this->authorInfo['authorName']}全部小说,{$this->authorInfo['authorName']}作品,{$this->authorInfo['authorName']}最新作品,{$this->authorInfo['authorName']}新书,{$this->authorInfo['authorName']}资料及介绍";
+        $this->pageDescription = "{$this->authorInfo['authorName']}是" . zmf::config('sitename') . "网作家。这里你可以阅读{$this->authorInfo['authorName']}全部小说及{$this->authorInfo['authorName']}最新作品集，还可以和{$this->authorInfo['authorName']}互动，更多{$this->authorInfo['authorName']}新书及动态请关注" . zmf::config('sitename') . "网。";
     }
 
     private function checkAuthorLogin() {
@@ -40,12 +40,12 @@ class AuthorController extends Q {
     }
 
     public function actionView() {
-        $arr=array(
+        $arr = array(
             Books::STATUS_PUBLISHED,
             Books::STATUS_FINISHED
         );
         $posts = Books::model()->findAll(array(
-            'condition' => 'aid=:aid AND status='.Posts::STATUS_PASSED . (!$this->adminLogin ? " AND bookStatus IN(" . join(',',$arr) . ")" : ""),
+            'condition' => 'aid=:aid AND status=' . Posts::STATUS_PASSED . (!$this->adminLogin ? " AND bookStatus IN(" . join(',', $arr) . ")" : ""),
             'select' => 'id,colid,title,faceImg,`desc`,words,cTime,score,scorer,bookStatus',
             'params' => array(
                 ':aid' => $this->authorInfo['id']
@@ -58,13 +58,13 @@ class AuthorController extends Q {
             Posts::updateCount($this->authorInfo['id'], 'Authors', 1, 'hits');
         }
         //更新作者数据,10分钟更新一次
-        $upAuthorInfo= zmf::getFCache('stat-Authors-'.$this->authorInfo['id']);
-        if(!$upAuthorInfo){
+        $upAuthorInfo = zmf::getFCache('stat-Authors-' . $this->authorInfo['id']);
+        if (!$upAuthorInfo) {
             Authors::updateStatInfo($this->authorInfo);
-            zmf::setFCache('stat-Authors-'.$this->authorInfo['id'], 1, 600);
+            zmf::setFCache('stat-Authors-' . $this->authorInfo['id'], 1, 600);
         }
         $this->selectNav = 'index';
-        $this->pageTitle = $this->authorInfo['authorName'] . ' - ' . zmf::config('sitename');        
+        $this->pageTitle = $this->authorInfo['authorName'] . ' - ' . zmf::config('sitename');
         $data = array(
             'posts' => $posts
         );
@@ -141,7 +141,7 @@ class AuthorController extends Q {
             }
         }
         $this->selectNav = 'createBook';
-        $this->pageTitle =  '发布作品 - ' . zmf::config('sitename');
+        $this->pageTitle = '发布作品 - ' . zmf::config('sitename');
         $this->render('createBook', array(
             'model' => $model,
         ));
@@ -156,7 +156,7 @@ class AuthorController extends Q {
         $this->checkAuthorLogin();
         $bid = zmf::val('bid', 2);
         $info = Books::getOne($bid);
-        if (!$info || $info['status']!=Posts::STATUS_PASSED) {
+        if (!$info || $info['status'] != Posts::STATUS_PASSED) {
             throw new CHttpException(404, 'The requested page does not exist.');
         }
         $chapters = Chapters::getByBook($bid, $this->adminLogin);
@@ -189,13 +189,13 @@ class AuthorController extends Q {
             $model = new Chapters;
         }
         $bookInfo = Books::getOne($bid);
-        if (!$bookInfo || $bookInfo['status']!=Posts::STATUS_PASSED) {
+        if (!$bookInfo || $bookInfo['status'] != Posts::STATUS_PASSED) {
             throw new CHttpException(404, '你所操作的小说不存在');
         } elseif ($bookInfo['uid'] != $this->uid || $bookInfo['aid'] != $this->userInfo['authorId']) {
             throw new CHttpException(403, '你无权本操作');
         } elseif (!$bookInfo['iAgree']) {
             $this->message(0, '请先同意本站协议', Yii::app()->createUrl('author/updateBook', array('bid' => $bid)));
-        } elseif ($bookInfo['bookStatus']==Books::STATUS_FINISHED && !$cid) {
+        } elseif ($bookInfo['bookStatus'] == Books::STATUS_FINISHED && !$cid) {
             $this->message(0, '该小说已完结，不能再添加新章节', Yii::app()->createUrl('author/view', array('id' => $bookInfo['aid'])));
         }
         $model->bid = $bid;
@@ -203,7 +203,7 @@ class AuthorController extends Q {
         $model->aid = $bookInfo['aid'];
         if (isset($_POST['Chapters'])) {
             $filterTitle = Posts::handleContent($_POST['Chapters']['title'], FALSE);
-            $filterContent = Posts::handleContent($_POST['Chapters']['content'],true,'<p>');
+            $filterContent = Posts::handleContent($_POST['Chapters']['content'], true, '<p>');
             $filterPostscript = Posts::handleContent($_POST['Chapters']['postscript'], FALSE);
             $psPosition = zmf::filterInput($_POST['Chapters']['psPosition'], 2);
             $chapterNum = zmf::filterInput($_POST['Chapters']['chapterNum'], 2);
@@ -243,6 +243,7 @@ class AuthorController extends Q {
         } else {
             $hashUuid = zmf::randMykeys(8);
         }
+        $model->content = $model->content != '' ? Chapters::text($model->content) : '';
         $this->pageTitle = '写文章 - ' . zmf::config('sitename');
         $this->render('addChapter', array(
             'model' => $model,
@@ -254,12 +255,12 @@ class AuthorController extends Q {
         $this->checkAuthorLogin();
         $this->checkUserStatus();
         $type = zmf::val('type', 1);
-        if (!in_array($type, array('info', 'skin', 'passwd','avatar'))) {
+        if (!in_array($type, array('info', 'skin', 'passwd', 'avatar'))) {
             throw new CHttpException(403, '不允许的分类');
         }
-        if($type=='passwd' && $this->isMobile){
-            $this->layout='common';
-            $this->referer=Yii::app()->createUrl('author/view',array('id'=>$this->userInfo['authorId']));
+        if ($type == 'passwd' && $this->isMobile) {
+            $this->layout = 'common';
+            $this->referer = Yii::app()->createUrl('author/view', array('id' => $this->userInfo['authorId']));
         }
         $model = Authors::model()->findByPk($this->userInfo['authorId']);
         if (isset($_POST['Authors'])) {
@@ -320,7 +321,7 @@ class AuthorController extends Q {
         unset($model->password);
         unset($model->hashCode);
         $this->pageTitle = '编辑资料';
-        $this->selectNav = 'update' . $type;        
+        $this->selectNav = 'update' . $type;
         $this->render('setting', array(
             'model' => $model,
             'type' => $type,

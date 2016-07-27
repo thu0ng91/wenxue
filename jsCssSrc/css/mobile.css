@@ -18,11 +18,14 @@ a{
 .clearfix:after{
     clear: both
 }
-.help-block,.color-grey{
+.help-block,.color-grey,.color-grey a{
     color: #ccc !important
 }
 .star-color{
     color: #FFAC2D
+}
+.color-warning{
+    color: #BF1031
 }
 .text-center{
     text-align: center
@@ -34,6 +37,10 @@ a{
 .w100{
     width: 100px;
     height: 133px;
+}
+.a50{
+    width: 50px;
+    height: 50px;
 }
 .hidden{
     display: none
@@ -79,7 +86,7 @@ a{
 }
 .top-header .header-left{
     position: absolute;
-    top: 0;
+    top: 2px;
     left: 15px;
     width: 14%;
 }
@@ -92,7 +99,7 @@ a{
     position: absolute;
     top: 0;
     right: 0;
-    max-width: 33.3%;
+    max-width: 50%;
     text-align: right;
     padding-right: 10px;
     box-sizing: border-box
@@ -234,7 +241,8 @@ a{
     position: fixed;
     right: 0;
     top: 0;
-    border-left: 1px solid #ccc;        
+    border-left: 1px solid #ccc;    
+    z-index: 100
 }
 /*表单*/
 .form-group{
@@ -245,7 +253,7 @@ a{
     -moz-appearance: none;
     -webkit-appearance: none;
     text-align: center;
-    padding-left: 0;
+    padding-left: 0 !important;
     width: 100%;
     display: block;
     height: 36px;
@@ -260,7 +268,7 @@ a{
 .form-group .btn-default{
     background: #fff;
     color: #999;
-    border: 1px solid #999
+    border: 1px solid #f2f2f2
 }
 .form-group textarea.form-control{
     width: 100%;
@@ -428,7 +436,15 @@ a{
     text-align: center;
     color: #fff
 }
-body.menu-on .ui-header,body.menu-on .ui-container,body.menu-on .ui-footer{-webkit-transform:translateX(-60%);}
+body.menu-on{
+    height: 100%;
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+    left: 0;
+    top: 0
+}
+body.menu-on .ui-header,body.menu-on .top-header,body.menu-on .ui-container,body.menu-on .ui-footer,body.menu-on .footer{-webkit-transform:translateX(-60%);}
 body.menu-on .ui-header{
     z-index: 102
 }

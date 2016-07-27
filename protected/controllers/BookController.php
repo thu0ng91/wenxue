@@ -278,6 +278,7 @@ class BookController extends Q {
             }
         }
         $this->pageTitle = '编辑点评 - ' . zmf::config('sitename');
+        $this->mobileTitle='编辑点评';
         $data = array(
             'model' => $model,
         );

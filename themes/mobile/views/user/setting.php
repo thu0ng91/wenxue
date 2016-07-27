@@ -68,7 +68,7 @@
     <?php }?>
     <?php if($action=='skin'){?>
     <div class="module-header">更换头像</div>
-    <div class="module-body padding-body">
+    <div class="module-body">
         <?php $form=$this->beginWidget('CActiveForm', array(
                 'id'=>'users-create-form',
                 'enableAjaxValidation'=>false,
@@ -76,18 +76,24 @@
         <?php echo CHtml::hiddenField('action','skin');?>
         <?php echo $form->hiddenField($model,'avatar'); ?>
         <div class="form-group change-avatar-holder">
-            <div class="media">
-                <div class="media-left">
-                    <img src="<?php echo zmf::getThumbnailUrl($model->avatar, 'a120', 'avatar');?>" alt="修改头像" id="user-avatar">
-                </div>
-                <div class="media-body">
-                    <p><a href="javascript:;" class="btn btn-default openGallery" role="button" data-holder="user-avatar" data-field="<?php echo CHtml::activeId($model, 'avatar');?>">从相册选</a></p>
-                    <?php $this->renderPartial('//common/_singleUpload',array('model'=>$model,'fieldName'=>'avatar','type'=>'author','fileholder'=>'filedata','targetHolder'=>'user-avatar','imgsize'=>'a120','width'=>82));?>
-                    <p class="help-block">更换图片后请点击更新按钮保存设置</p>
-                    <p><?php echo CHtml::submitButton($model->isNewRecord ? '提交' : '更新',array('class'=>'btn btn-primary')); ?></p>
-                    <?php echo $form->error($model,'avatar'); ?>
-                </div>
+            <ul class="ui-list">
+                <li>
+                    <div class="ui-avatar">
+                        <img src="<?php echo zmf::getThumbnailUrl($model->avatar, 'a120', 'avatar');?>" alt="修改头像" id="user-avatar" class="a50">
+                    </div>
+                    <div class="ui-list-info">
+                        <?php $this->renderPartial('/common/_singleUpload',array('model'=>$model,'fieldName'=>'avatar','type'=>'author','fileholder'=>'filedata','targetHolder'=>'user-avatar','imgsize'=>'a120','progress'=>true));?>
+                        <p class="help-block">更换图片后请点击更新按钮保存设置</p>
+                    </div>
+                </li>
+            </ul>
+            <div id="progress" class="progress">
+                <div class="progress-bar progress-bar-success" style="width: 0%;"></div>
             </div>
+        </div>
+        <div class="form-group padding-body">
+            <p><?php echo CHtml::submitButton($model->isNewRecord ? '提交' : '更新',array('class'=>'btn btn-success')); ?></p>
+            <?php echo $form->error($model,'avatar'); ?>
         </div>
         <?php $this->endWidget(); ?>
     </div>

@@ -53,7 +53,7 @@ $types=  SiteInfo::searchTypes('admin');
 </style>
 <header class="top-header top-searcher">
     <div class="header-left">
-        <i class="fa fa-angle-double-left" onclick="history.back()"></i>
+        <i class="fa fa-chevron-left" onclick="history.back()"></i>
     </div>
     <form action="<?php echo Yii::app()->createUrl('search/do');?>" method="GET">
         <input type="hidden" name="type" id="search-type" value="<?php if(!$this->searchType){$_types=array_keys($types);$_type=$_types[0];}else{$_type=$this->searchType;}echo $_type;?>"/>

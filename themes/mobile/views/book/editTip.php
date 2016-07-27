@@ -11,12 +11,8 @@ $scoreArr=Tips::exScore('admin');
 ?>
 
 <div class="container">
-    <ol class="breadcrumb">
-        <li><?php echo CHtml::link(zmf::config('sitename').'首页',  zmf::config('baseurl'));?></li>
-        <li class="active">编辑点评</li>
-    </ol>
     <div class="module">
-        <div class="module-body">
+        <div class="padding-body module-body">
         <?php $form=$this->beginWidget('CActiveForm', array( 
             'id'=>'tips-form', 
             'enableAjaxValidation'=>false, 
@@ -44,7 +40,7 @@ $scoreArr=Tips::exScore('admin');
             </div>
         </div>
         <div class="form-group"> 
-            <?php echo CHtml::submitButton($model->isNewRecord ? '新增' : '更新',array('class'=>'btn btn-primary')); ?>
+            <?php echo CHtml::submitButton($model->isNewRecord ? '新增' : '更新',array('class'=>'btn btn-success')); ?>
         </div>
         <?php $this->endWidget(); ?>
         </div>

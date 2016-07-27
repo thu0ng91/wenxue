@@ -53,7 +53,7 @@
         </div>
         <div class="form-group">
             <?php echo $form->labelEx($model,'content'); ?>
-            <?php $this->renderPartial('//common/editor_addChapter', array('model' => $model,'content' => $model->content!='' ? Chapters::text($model->content) : '','editorWidth'=>620,'editorHeight'=>360,'hashUuid'=>$hashUuid,'bookId'=>$model->bid)); ?>
+            <?php $this->renderPartial('//common/editor_addChapter', array('model' => $model,'content' => $model->content,'editorWidth'=>620,'editorHeight'=>360,'hashUuid'=>$hashUuid,'bookId'=>$model->bid)); ?>
             <?php echo $form->error($model,'content'); ?>
         </div>
         <div class="form-group">

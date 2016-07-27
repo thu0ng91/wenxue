@@ -17,7 +17,6 @@
     }
     .chapter-page h1{
         font-size: 24px;
-        margin: 5px 0 0;
         padding-bottom: 0;
         font-weight: 700
     }
@@ -148,8 +147,8 @@
     </div>
     <div class="module chapter-tips-module">
         <div class="module-header">点评</div>
-        <div class="module-body" id="comments-chapter-<?php echo $chapterInfo['id'];?>">                
-            <div id="more-content" class="padding-body book-tips">
+        <div class="padding-body module-body" id="comments-chapter-<?php echo $chapterInfo['id'];?>">                
+            <div id="more-content" class="book-tips">
                 <?php if(!empty($tips)){?>
                 <?php foreach ($tips as $tip){?> 
                 <?php $this->renderPartial('/book/_tip',array('data'=>$tip));?>
@@ -160,7 +159,7 @@
             </div>
         </div>
         <div class="module-header" id="add-tip-holder">写点评</div>
-        <div class="module-body">
+        <div class="module-body padding-body">
             <?php if($this->uid){
                 if($this->tipInfo!==false){
                     if($this->tipInfo['status']==Posts::STATUS_PASSED){
@@ -180,10 +179,10 @@
 <div class="chapter-fixed-navbar">
     <div class="fixed-btns ui-row-flex">
         <div class="ui-col"><?php echo CHtml::link('<i class="fa fa-reply"></i> 返回',array('book/view','id'=>$chapterInfo['bid']));?></div>
-        <div class="ui-col"><?php echo CHtml::link('<i class="fa fa-long-arrow-left"></i> 上一章',!empty($prev) ? $prev['url'] : 'javascript:;',array('action'=>'preChapter','title'=>(!empty($prev) ? $prev['title'].'（键盘←）' : '已是第一篇'),'id'=>'preChapter'));?></div>
+        <div class="ui-col"><?php echo CHtml::link('<i class="fa fa-long-arrow-left"></i> 上一章',!empty($prev) ? $prev['url'] : 'javascript:;',array('action'=>'preChapter','id'=>'preChapter'));?></div>
         <div class="ui-col"><?php echo CHtml::link('<i class="fa fa-list"></i> 目录','javascript:;',array('action'=>'showChapters'));?></div>
         <div class="ui-col"><?php echo CHtml::link((($this->uid && $this->tipInfo!==false) ? '<i class="fa fa-star"></i> 已点评' : '<i class="fa fa-star-o"></i> 点评'),'javascript:;',array('action'=>'scroll','action-target'=>'add-tip-holder'));?></div>
-        <div class="ui-col"><?php echo CHtml::link('<i class="fa fa-long-arrow-right"></i> 下一章',!empty($next) ? $next['url'] : 'javascript:;',array('action'=>'nextChapter','title'=>(!empty($next) ? $next['title'].'（键盘→）' : '已是最后一篇'),'id'=>'nextChapter'));?></div>
+        <div class="ui-col"><?php echo CHtml::link('<i class="fa fa-long-arrow-right"></i> 下一章',!empty($next) ? $next['url'] : 'javascript:;',array('action'=>'nextChapter','id'=>'nextChapter'));?></div>
     </div>
 </div>    
 <div class="fixed-chapters" id="fixed-chapters">    
