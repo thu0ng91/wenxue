@@ -137,7 +137,6 @@ class PostsController extends Q {
     }
 
     public function actionCreate($id = '') {
-        $this->onlyOnPc();
         if (!$this->uid) {
             $this->redirect(array('site/login'));
         }
@@ -147,6 +146,9 @@ class PostsController extends Q {
             $model = $this->loadModel($id);
             if ($model['uid'] != $this->uid && !$this->userInfo['isAdmin']) {
                 throw new CHttpException(403, '你无权本操作');
+            }
+            if($this->isMobile && $model['platform']!=Posts::PLATFORM_MOBILE){
+                throw new CHttpException(403, '暂不能修改除移动端发布的帖子，否则会丢失图片或样式！');
             }
             $isNew = false;
             $type = Posts::exType($model->classify);
@@ -175,7 +177,7 @@ class PostsController extends Q {
             echo CActiveForm::validate($model);
             Yii::app()->end();
         }
-        if (isset($_POST['Posts'])) {            
+        if (isset($_POST['Posts'])) {
             //处理文本
             $filterTitle = Posts::handleContent($_POST['Posts']['title'], FALSE);
             $filterContent = Posts::handleContent($_POST['Posts']['content']);
@@ -196,6 +198,7 @@ class PostsController extends Q {
             //如果标题包含敏感词则直接标记为未通过
             $attr['status'] = $filterTitle['status'] == Posts::STATUS_PASSED ? $filterContent['status'] : $filterTitle['status'];
             $attr['open'] = ($_POST['Posts']['open'] == Posts::STATUS_OPEN) ? 1 : 0;
+            $attr['platform']=$this->isMobile ? Posts::PLATFORM_MOBILE : Posts::PLATFORM_WEB;
             $model->attributes = $attr;
             if ($model->save()) {
                 //将上传的图片置为通过
@@ -238,6 +241,7 @@ class PostsController extends Q {
             $this->pageTitle = '【读者专区】发布文章 - ' . zmf::config('sitename');
             $this->selectNav = 'readerForum';
         }
+        $this->mobileTitle='发布帖子';
         $this->render('create', array(
             'model' => $model,
             'tags' => $tags,

@@ -39,6 +39,12 @@ class Posts extends CActiveRecord {
     //关于可否评论
     const STATUS_UNOPEN=0;
     const STATUS_OPEN=1;
+    //关于来源
+    const PLATFORM_UNKOWN=0;
+    const PLATFORM_WEB=1;
+    const PLATFORM_MOBILE=2;
+    const PLATFORM_ANDROID=3;
+    const PLATFORM_IOS=4;
 
     /**
      * @return string the associated database table name
@@ -58,7 +64,7 @@ class Posts extends CActiveRecord {
             array('cTime,updateTime', 'default', 'setOnEmpty' => true, 'value' => zmf::now()),
             array('status', 'default', 'setOnEmpty' => true, 'value' => Posts::STATUS_PASSED),
             array('uid, title, content', 'required'),
-            array('uid, faceimg, classify, mapZoom, comments, top, hits, status, cTime, updateTime,styleStatus,open', 'numerical', 'integerOnly' => true),
+            array('uid, faceimg, classify, mapZoom, comments, top, hits, status, cTime, updateTime,styleStatus,open,platform', 'numerical', 'integerOnly' => true),
             array('title, tagids', 'length', 'max' => 255),
             array('lat, long', 'length', 'max' => 50),
             array('favors', 'length', 'max' => 11),
@@ -101,6 +107,7 @@ class Posts extends CActiveRecord {
             'updateTime' => '最近更新时间',
             'styleStatus' => '显示状态',
             'open' => '是否允许评论',
+            'platform' => '来源',
         );
     }
 
@@ -166,6 +173,20 @@ class Posts extends CActiveRecord {
             return 'bold red';
         }
         return '';
+    }
+    
+    public static function exPlatform($type) {
+        $arr = array(
+            self::PLATFORM_UNKOWN => '未知',
+            self::PLATFORM_WEB => '网页',
+            self::PLATFORM_MOBILE => '移动端',
+            self::PLATFORM_ANDROID => '安卓客户端',
+            self::PLATFORM_IOS => 'iOS客户端',
+        );
+        if ($type == 'admin') {
+            return $arr;
+        }
+        return $arr[$type];
     }
 
     public static function encode($id, $type = 'post') {
@@ -239,6 +260,7 @@ class Posts extends CActiveRecord {
                 ''
             );
             $content = preg_replace($replace, $to, $content);
+            $content = zmf::removeEmoji($content);
         } else {
             $content = strip_tags($content);
             $content = zmf::removeEmoji($content);

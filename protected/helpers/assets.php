@@ -60,7 +60,7 @@ class assets {
             $staticUrl = Yii::app()->baseUrl . ($status!=3 ? '/jsCssSrc/' : '/common/');
         } else {
             $_staticUrl = zmf::config('cssJsStaticUrl');
-            $staticUrl = $_staticUrl ? $_staticUrl : zmf::config('baseurl'). ($status!=3 ? '/jsCssSrc/' : '/common/');
+            $staticUrl = $_staticUrl ? $_staticUrl : Yii::app()->baseUrl. ($status!=3 ? '/jsCssSrc/' : '/common/');
         }
         $cs = Yii::app()->clientScript;
         $c = Yii::app()->getController()->id;

@@ -21,9 +21,9 @@
         <?php $cookieInfo=zmf::getCookie('checkWithCaptcha');if($cookieInfo=='1'){?>
         <div class="form-group verify-code-holder">
             <span class="fixed-label"><i class="fa fa-exclamation-circle"></i></span>
-            <?php echo $form->textField($model,'verifyCode', array('class'=>'form-control verify-code','placeholder'=>'请输入验证码')); ?>
-            <?php echo $form->error($model,'verifyCode'); ?>
+            <?php echo $form->textField($model,'verifyCode', array('class'=>'form-control verify-code','placeholder'=>'请输入验证码')); ?>            
             <?php $this->widget ( 'CCaptcha', array ('showRefreshButton' => true, 'clickableImage' => true, 'buttonType' => 'link', 'buttonLabel' => '换一换', 'imageOptions' => array ('alt' => zmf::t('change_verify'), 'align'=>'absmiddle'  ) ) );?>
+            <?php echo $form->error($model,'verifyCode'); ?>
         </div>
         <?php }?>
         

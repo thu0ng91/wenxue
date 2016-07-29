@@ -212,6 +212,22 @@ a{
     width: 100px;
     height: 68px
 }
+/*发布帖子*/
+.tags-body .tag-item{
+    border:1px solid #93ba5f;
+    border-radius: 5px;
+    padding: 5px 10px;
+    display: inline-block;
+    margin-bottom: 5px
+}
+.tags-body .tag-item:hover,.tags-body .active{
+    background: #93ba5f;
+    color: #fff;
+    cursor: pointer
+}
+.tags-body .tag-item input{
+    display: none
+}
 /*用户右侧*/
 .user-header{
     background: #fff;
@@ -374,7 +390,7 @@ a{
     line-height: 36px;
     color: #ccc
 }
-.login-reg-form .form-group input{
+.login-reg-form .form-group input.form-control{
     height: 36px;
     width: 100%;
     line-height: 35px;
@@ -385,7 +401,7 @@ a{
     color: #ccc;
     background: #fff
 }
-.login-reg-form .form-group .verify-code{
+.login-reg-form .form-group input.verify-code{
     width: 50%
 }
 .login-reg-form .verify-code-holder img{
