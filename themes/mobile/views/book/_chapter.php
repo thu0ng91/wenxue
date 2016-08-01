@@ -8,16 +8,15 @@
  * @copyright Copyright©2015 阿年飞少 
  * @datetime 2016-5-30  14:21:34 
  */
+$url=Yii::app()->createUrl('book/view',array('id'=>$data['bid']));
 ?>
-<div class="media ui-border-b">
-    <div class="media-left">
-        <a href="<?php echo Yii::app()->createUrl('book/view',array('id'=>$data['bid']));?>" title="<?php echo $data['bTitle'];?>">
-            <img class="media-object lazy w78" src="<?php echo zmf::lazyImg();?>" data-original="<?php echo $data['faceImg'];?>" alt="<?php echo $data['bTitle'];?>">
-        </a>
+<li class="ui-border-t" data-href="<?php echo $url;?>">
+    <div class="ui-list-img">
+        <img class="lazy w78" src="<?php echo zmf::lazyImg();?>" data-original="<?php echo $data['faceImg'];?>" alt="<?php echo $data['bTitle'];?>">        
     </div>
-    <div class="media-body">
-        <h4><?php echo CHtml::link($data['chapterTitle'],array('book/chapter','cid'=>$data['cid']));?></h4>
-        <p>所属：<?php echo CHtml::link($data['bTitle'],array('book/view','id'=>$data['bid']));?></p>
-        <p class="help-block"><?php echo zmf::subStr($data['desc'],70);?></p>
+    <div class="ui-list-info">
+        <h4 class="ui-nowrap"><?php echo $data['chapterTitle'];?></h4>
+        <p>所属：<?php echo $data['bTitle'];?></p>
+        <p class="help-block ui-nowrap-multi"><?php echo $data['desc'];?></p>
     </div>
-</div>
+</li>

@@ -19,13 +19,21 @@
         <div class="module-body">
             <?php if(!empty($posts)){?>
             <?php if($this->searchType=='author'){?>
-            <?php foreach ($posts as $post){$this->renderPartial('/author/_item',array('data'=>$post));}?>
+            <ul class="ui-list ui-list-link">
+                <?php foreach ($posts as $post){$this->renderPartial('/author/_item',array('data'=>$post));}?>
+            </ul>
             <?php }elseif($this->searchType=='book'){?>
-            <?php foreach ($posts as $post){$this->renderPartial('/book/_item',array('data'=>$post));}?>
+            <ul class="ui-list ui-list-link">
+                <?php foreach ($posts as $post){$this->renderPartial('/book/_item',array('data'=>$post));}?>
+            </ul>
             <?php }elseif($this->searchType=='chapter'){?>
-            <?php foreach ($posts as $post){$this->renderPartial('/book/_chapter',array('data'=>$post));}?>
+            <ul class="ui-list ui-list-link">
+                <?php foreach ($posts as $post){$this->renderPartial('/book/_chapter',array('data'=>$post));}?>
+            </ul>
             <?php }elseif($this->searchType=='user'){?>
-            <?php foreach ($posts as $post){$this->renderPartial('/user/_item',array('data'=>$post));}?>
+            <ul class="ui-list ui-list-link">
+                <?php foreach ($posts as $post){$this->renderPartial('/user/_item',array('data'=>$post));}?>
+            </ul>
             <?php }?>
             <?php }else{?>
             <p class="color-grey text-center">暂无搜索结果，请换个关键词试试！</p>

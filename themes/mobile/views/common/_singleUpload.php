@@ -13,52 +13,6 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl . '/jsCssSrc/co
 Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl . '/jsCssSrc/coreJs/fileupload.js', CClientScript::POS_END);
 
 ?>
-<style>
-    .fileinput-button {
-    position: relative;
-    overflow: hidden;
-    display: inline-block;
-}
-.fileinput-button input {
-    position: absolute;
-    top: 0;
-    right: 0;
-    margin: 0;
-    opacity: 0;
-    -ms-filter: 'alpha(opacity=0)';
-    font-size: 200px !important;
-    direction: ltr;
-    cursor: pointer;
-}
-.progress {
-    height: 5px;
-    margin-bottom: 20px;
-    overflow: hidden;
-    background-color: #f5f5f5;
-    border-radius: 4px;
-    -webkit-box-shadow: inset 0 1px 2px rgba(0,0,0,.1);
-    box-shadow: inset 0 1px 2px rgba(0,0,0,.1);
-    display: none
-}
-.progress-bar {
-    float: left;
-    width: 0;
-    height: 100%;
-    font-size: 12px;
-    line-height: 20px;
-    color: #fff;
-    text-align: center;
-    background-color: #428bca;
-    -webkit-box-shadow: inset 0 -1px 0 rgba(0,0,0,.15);
-    box-shadow: inset 0 -1px 0 rgba(0,0,0,.15);
-    -webkit-transition: width .6s ease;
-    -o-transition: width .6s ease;
-    transition: width .6s ease;
-}
-.progress-bar-success {
-    background-color: #5cb85c;
-}
-</style>
 <span class="btn btn-default fileinput-button">
     <i class="fa fa-plus"></i>
     <span>选择图片</span>

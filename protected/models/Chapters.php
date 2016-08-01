@@ -220,6 +220,21 @@ class Chapters extends CActiveRecord {
         $content='<p>'.$content.'</p>';
         return $content;
     }
+    public static function mobileText($content){       
+        $replace = array(
+            "/<\/p>\s*<p>/i",
+            "/<p>/i",
+            "/<\/p>/i",
+            
+        );
+        $to = array(
+            '',
+            '',
+            '',
+        );
+        $content = preg_replace($replace, $to, $content);       
+        return $content;
+    }
     
     /**
      * 处理内容

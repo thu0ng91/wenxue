@@ -180,7 +180,7 @@ class AuthorController extends Q {
             } elseif ($model['uid'] != $this->uid) {
                 throw new CHttpException(403, '你无权本操作');
             }
-            $bid = $model->bid;
+            $bid = $model->bid;            
         } else {
             $bid = zmf::val('bid', 2);
             if (!$bid) {
@@ -203,6 +203,12 @@ class AuthorController extends Q {
         $model->aid = $bookInfo['aid'];
         if (isset($_POST['Chapters'])) {
             $filterTitle = Posts::handleContent($_POST['Chapters']['title'], FALSE);
+            if($this->isMobile){
+                $_POST['Chapters']['content']= '<p>'.nl2br($_POST['Chapters']['content']).'</p>';
+                $_POST['Chapters']['content']=  str_replace('<br />', '</p><p>', $_POST['Chapters']['content']);
+                $_POST['Chapters']['content']=  str_replace('<br/>', '</p><p>', $_POST['Chapters']['content']);
+                $_POST['Chapters']['content']=  str_replace('<br>', '</p><p>', $_POST['Chapters']['content']);
+            }
             $filterContent = Posts::handleContent($_POST['Chapters']['content'], true, '<p>');
             $filterPostscript = Posts::handleContent($_POST['Chapters']['postscript'], FALSE);
             $psPosition = zmf::filterInput($_POST['Chapters']['psPosition'], 2);
@@ -243,7 +249,11 @@ class AuthorController extends Q {
         } else {
             $hashUuid = zmf::randMykeys(8);
         }
-        $model->content = $model->content != '' ? Chapters::text($model->content) : '';
+        if($this->isMobile){
+            $model->content=  $model->content!='' ? Chapters::mobileText($model->content) : '';
+        }else{
+            $model->content = $model->content != '' ? Chapters::text($model->content) : '';
+        }        
         $this->pageTitle = '写文章 - ' . zmf::config('sitename');
         $this->render('addChapter', array(
             'model' => $model,

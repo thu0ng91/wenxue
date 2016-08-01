@@ -64,7 +64,8 @@ class Q extends Controller {
             '/weibo/',
             '/qq/',
             '/weixin/',
-            '/user/index/',
+            '/user/index',
+            '/search/',
         );
         $set = true;
         if ($set) {
@@ -81,13 +82,13 @@ class Q extends Controller {
         if ($set && Yii::app()->request->isAjaxRequest) {
             $set = false;
         }
-        $referer = zmf::getCookie('refererUrl');
+        $referer = zmf::getCookie('refererUrl');        
         if ($set) {
             zmf::setCookie('refererUrl', $currentUrl, 86400);
         }
         if ($referer != '') {
             $this->referer = $referer;
-        }
+        }        
     }
 
     public function onlyOnPc() {

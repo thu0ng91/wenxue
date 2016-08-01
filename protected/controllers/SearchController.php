@@ -81,6 +81,7 @@ class SearchController extends Q {
         $this->searchKeyword=$_keyword;        
         $this->pageTitle='搜索 - '.zmf::config('sitename');
         $this->mobileTitle='搜索';
+        $this->returnUrl=  $this->referer;
         $data=array(
             'posts'=>$posts,
         );

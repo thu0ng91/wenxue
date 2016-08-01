@@ -8,7 +8,8 @@
  * @datetime 2016-5-19  14:28:18 
  */
 $postInfo=$caseInfo['post'][0];
-?>
-<div class="showcase">
-    <?php echo CHtml::link(CHtml::image(zmf::lazyImg(), $postInfo['title'],array('data-original'=>$postInfo['faceimg'],'class'=>'lazy')),$postInfo['url'] ? $postInfo['url'] : 'javascript:;');?>
-</div>
+if(!empty($postInfo)){?>
+<a href="<?php echo $postInfo['url'] ? $postInfo['url'] : 'javascript:;';?>" title="<?php echo $postInfo['title'];?>">
+    <div class="showcase" style="background-image: url(<?php echo $postInfo['faceimg'];?>)"></div>
+</a>
+<?php }

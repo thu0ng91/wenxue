@@ -2,58 +2,6 @@
 $url=zmf::config('domain').Yii::app()->createUrl('posts/view',array('id'=>$info['id']));
 $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
 ?>
-<style>
-    .post-page h1{
-        font-size: 24px;
-        font-weight: 700;
-        padding: 0 10px
-    }
-    .post-page .author-info{
-        margin-bottom: 5px;
-    }
-    .post-page .right-fixed-btns{
-        position: fixed;
-        top: 0;
-        right: 0;
-        height: 45px;
-        line-height: 36px;
-        font-size: 16px;
-        z-index: 999;
-        padding-right: 10px;
-        text-align: right
-    }
-    .post-page .right-fixed-btns a{
-        color:#fff;
-        margin-left: 8px;
-        position: relative;
-    }
-    .post-page .right-fixed-btns a sup{
-        font-size: 12px;
-    }
-    .post-page .post-tags{        
-        margin-top: -5px;
-        padding-left: 10px;
-        margin-bottom: 10px
-    }
-    .post-page .post-tags a{
-        background: #e9e9e9;        
-        color: #888;
-        padding: 5px;
-        border-bottom-left-radius: 5px;
-        border-bottom-right-radius: 5px;
-    }
-    .post-content{
-        font-size: 14px;
-        line-height: 1.75;
-        padding: 0 10px
-    }
-    .post-content p{
-        margin-bottom: 10px
-    }
-    .post-content img{
-        width: 100%;
-    }
-</style>
 <div class="post-page">
     <div class="module">
         <div class="module-body">

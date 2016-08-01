@@ -5,7 +5,7 @@ $this->beginContent('/layouts/common');
 <header class="top-header">
     <?php if($this->showLeftBtn){?>
     <div class="header-left">
-        <i class="fa fa-chevron-left" onclick="history.back()"></i>
+        <i class="fa fa-chevron-left" onclick="<?php echo $this->returnUrl ? "window.location='$this->returnUrl'" : 'history.back()';?>"></i>
     </div>
     <?php }?>
     <div class="header-center">
