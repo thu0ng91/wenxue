@@ -20,7 +20,7 @@
                 <input type="radio" name="score" value="5"> 力荐
             </label>
         </div>
-        <?php echo CHtml::link('评论','javascript:;',array('class'=>'btn btn-success pull-right','action'=>'add-tips','action-data'=>$keyid,'action-type'=>$type));?>
+        <?php echo CHtml::link('点评','javascript:;',array('class'=>'btn btn-success pull-right','action'=>'add-tips','action-data'=>$keyid,'action-type'=>$type));?>
     </div>
 </div>
 <div class="clearfix"></div>

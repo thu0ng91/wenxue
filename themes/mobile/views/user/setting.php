@@ -112,12 +112,10 @@
             </div><!-- /input-group -->            
         </div>
         <div class="form-group">
-            <div class="input-group">
-                <input type="text" class="form-control bitian" placeholder="验证码" id="verifycode">
-                <span class="input-group-btn">
-                    <button class="btn btn-primary nextStep-btn" type="button" data-type="checkPhone" data-target="user-phone">验证手机号</button>
-                </span>
-            </div><!-- /input-group -->
+            <input type="text" class="form-control bitian" placeholder="验证码" id="verifycode">
+        </div>
+        <div class="form-group">
+            <button class="btn btn-success nextStep-btn" type="button" data-type="checkPhone" data-target="user-phone">验证手机号</button>                
         </div>
     </div>
     <?php }?>

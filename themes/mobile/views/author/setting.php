@@ -9,7 +9,7 @@
  * @datetime 2016-5-24  10:39:41 
  */
 ?>
-
+<div class="module">
     <?php $form=$this->beginWidget('CActiveForm', array(
         'id'=>'authors-form',
         'enableAjaxValidation'=>false,
@@ -17,61 +17,71 @@
     <?php echo CHtml::hiddenField('type',$type);?>
     <?php if(Yii::app()->user->hasFlash('updateAuthorInfoSuccess')){echo '<div class="alert alert-danger">'.Yii::app()->user->getFlash('updateAuthorInfoSuccess').'</div>';}?>
     <?php if($type=='info'){?>
-<div class="module-header">修改资料</div>
-<div class="module-body">
-    <div class="form-group">
-        <?php echo $form->labelEx($model,'authorName'); ?>
-        <?php echo $form->textField($model,'authorName',array('class'=>'form-control','disabled'=>'disabled')); ?>
-        <?php echo $form->error($model,'authorName'); ?>
-    </div>
-    <div class="form-group">
-        <?php echo $form->labelEx($model,'content'); ?>
-        <?php echo $form->textArea($model,'content',array('rows'=>6, 'cols'=>50,'class'=>'form-control')); ?>
-        <?php echo $form->error($model,'content'); ?>
-    </div>
-    <div class="form-group">
-        <?php echo CHtml::submitButton($model->isNewRecord ? '新增' : '更新',array('class'=>'btn btn-primary')); ?>
-    </div>
+    <div class="module-header">修改资料</div>
+    <div class="module-body padding-body">
+        <div class="form-group">
+            <?php echo $form->labelEx($model,'authorName'); ?>
+            <?php echo $form->textField($model,'authorName',array('class'=>'form-control','disabled'=>'disabled')); ?>
+            <?php echo $form->error($model,'authorName'); ?>
+        </div>
+        <div class="form-group">
+            <?php echo $form->labelEx($model,'content'); ?>
+            <?php echo $form->textArea($model,'content',array('rows'=>3, 'cols'=>50,'class'=>'form-control')); ?>
+            <?php echo $form->error($model,'content'); ?>
+        </div>
+        <div class="form-group">
+            <?php echo CHtml::submitButton($model->isNewRecord ? '新增' : '更新',array('class'=>'btn btn-success')); ?>
+        </div>
     </div>
     <?php }elseif ($type=='skin') {?>    
-<div class="module-header">修改资料</div>
-<div class="module-body">
-    <?php echo $form->hiddenField($model,'skinUrl'); ?>
-    <div class="form-group change-avatar-holder">
-        <div class="media">
-            <div class="media-left">
-                <img src="<?php echo zmf::getThumbnailUrl($model->skinUrl, 'c120', 'avatar');?>" alt="修改背景图" id="author-skin">
+    <div class="module-header">修改背景</div>
+    <div class="module-body">
+        <div class="form-group">
+            <ul class="ui-list">
+                <li>
+                    <div class="ui-avatar">
+                        <img src="<?php echo zmf::getThumbnailUrl($model->skinUrl, 'c120', 'avatar');?>" alt="修改头像" id="author-skin" class="a50">
+                    </div>
+                    <div class="ui-list-info">
+                        <?php $this->renderPartial('/common/_singleUpload',array('model'=>$model,'fieldName'=>'skinUrl','type'=>'author','fileholder'=>'filedata','targetHolder'=>'author-skin','imgsize'=>'c120','progress'=>true));?>
+                        <p class="help-block">修改作者主页的背景大图，建议尺寸960*300px，其他尺寸将被裁剪，更换图片后请点击更新按钮保存设置</p>
+                    </div>
+                </li>
+            </ul>
+            <div id="progress" class="progress">
+                <div class="progress-bar progress-bar-success" style="width: 0%;"></div>
             </div>
-            <div class="media-body">
-                <p><a href="javascript:;" class="btn btn-default openGallery" role="button" data-holder="author-skin" data-field="<?php echo CHtml::activeId($model, 'skinUrl');?>">从相册选</a></p>
-                <?php $this->renderPartial('//common/_singleUpload',array('model'=>$model,'fieldName'=>'skinUrl','type'=>'author','fileholder'=>'filedata','targetHolder'=>'author-skin','imgsize'=>'c120','width'=>82));?>                
-                <p class="help-block">修改作者主页的背景大图，建议尺寸960*300px，其他尺寸将被裁剪</p>
-                <p class="help-block">更换图片后请点击更新按钮保存设置</p>
-                <?php echo $form->error($model,'skinUrl'); ?>
-                <p><?php echo CHtml::submitButton($model->isNewRecord ? '新增' : '更新',array('class'=>'btn btn-primary')); ?></p>
-            </div>
+        </div>        
+        <?php echo $form->hiddenField($model,'skinUrl'); ?>
+        <div class="form-group padding-body">
+            <p><?php echo CHtml::submitButton($model->isNewRecord ? '新增' : '更新',array('class'=>'btn btn-success')); ?></p>
+            <?php echo $form->error($model,'skinUrl'); ?>
         </div>
-    </div>
     </div>
     <?php }elseif($type=='avatar'){?> 
-<div class="module-header">修改资料</div>
-<div class="module-body">
-    <?php echo $form->hiddenField($model,'avatar'); ?>
-    <div class="form-group change-avatar-holder">
-        <div class="media">
-            <div class="media-left">
-                <img src="<?php echo zmf::getThumbnailUrl($model->avatar, 'c120', 'avatar');?>" alt="修改头像" id="author-avatar">
-            </div>
-            <div class="media-body">
-                <p><a href="javascript:;" class="btn btn-default openGallery" role="button" data-holder="author-avatar" data-field="<?php echo CHtml::activeId($model, 'avatar');?>">从相册选</a></p>
-                <?php $this->renderPartial('//common/_singleUpload',array('model'=>$model,'fieldName'=>'avatar','type'=>'author','fileholder'=>'filedata','targetHolder'=>'author-avatar','imgsize'=>'c120','width'=>82));?>
-                <p class="help-block">修改作者的头像</p>
-                <p class="help-block">图片必须是站内图片，<?php echo CHtml::link('点此管理素材',array('user/gallery'));?></p>
-                <?php echo $form->error($model,'avatar'); ?>
-                <p><?php echo CHtml::submitButton($model->isNewRecord ? '新增' : '更新',array('class'=>'btn btn-primary')); ?></p>
+    <div class="module-header">修改头像</div>
+    <div class="module-body">
+        <?php echo $form->hiddenField($model,'avatar'); ?>
+        <div class="form-group">
+            <ul class="ui-list">
+                <li>
+                    <div class="ui-avatar">
+                        <img src="<?php echo zmf::getThumbnailUrl($model->avatar, 'a120', 'avatar');?>" alt="修改头像" id="author-avatar" class="a50">
+                    </div>
+                    <div class="ui-list-info">
+                        <?php $this->renderPartial('/common/_singleUpload',array('model'=>$model,'fieldName'=>'avatar','type'=>'author','fileholder'=>'filedata','targetHolder'=>'author-avatar','imgsize'=>'c120','progress'=>true));?>
+                        <p class="help-block">修改作者的头像，更换图片后请点击更新按钮保存设置</p>
+                    </div>
+                </li>
+            </ul>
+            <div id="progress" class="progress">
+                <div class="progress-bar progress-bar-success" style="width: 0%;"></div>
             </div>
         </div>
-    </div>
+        <div class="form-group padding-body">
+            <p><?php echo CHtml::submitButton($model->isNewRecord ? '新增' : '更新',array('class'=>'btn btn-success')); ?></p>
+            <?php echo $form->error($model,'avatar'); ?>
+        </div>
     </div>
     <?php }elseif($type=='passwd'){?> 
 <div class="login-reg-module">    
@@ -96,3 +106,4 @@
 </div>    
     <?php }?>
     <?php $this->endWidget(); ?>
+</div>

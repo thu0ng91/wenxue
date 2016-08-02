@@ -246,7 +246,9 @@ a{
     text-indent: 2em;
     margin-bottom: 15px
 }
-
+.chapter-tips-module{
+    margin-bottom: 60px
+}
 .chapter-fixed-navbar{
     position: fixed;
     bottom: 10px;
