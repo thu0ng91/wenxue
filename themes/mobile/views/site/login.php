@@ -10,7 +10,7 @@
         <?php CHtml::$afterRequiredLabel = '';?>
         <div class="form-group">
             <span class="fixed-label"><i class="fa fa-user"></i></span>
-            <?php echo $form->textField($model,'phone', array('class'=>'form-control','placeholder'=>'请输入手机号')); ?>
+            <?php echo $form->textField($model,'phone', array('class'=>'form-control','placeholder'=>'请输入邮箱/手机号')); ?>
             <?php echo $form->error($model,'phone'); ?>
         </div>
         <div class="form-group">
