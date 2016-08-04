@@ -18,7 +18,3 @@
 <p><label>微信回调地址：</label><input class="form-control" type="text" name="weixin_app_callback" id="weixin_app_callback" value="<?php echo $c['weixin_app_callback'];?>"/></p>
 <p><label>微博网站接入APPKEY：</label><input class="form-control" type="text" name="weixin_app_id" id="weiboAppkey" value="<?php echo $c['weiboAppkey'];?>"/></p>
 <p><label>官方微博ID：</label><input class="form-control" type="text" name="weiboRalateUid" id="weiboRalateUid" value="<?php echo $c['weiboRalateUid'];?>"/></p>
-<p><label>谷歌地图API KEY：</label><input class="form-control" name="googleApiKey" id="googleApiKey" value="<?php echo $c['googleApiKey'];?>"/></p>    
-<p><label>地图默认缩放比例：</label><input class="form-control" name="mapZoomLevel" id="mapZoomLevel" value="<?php echo $c['mapZoomLevel'];?>"/></p>
-<p><label>地图图片宽度：</label><input class="form-control" name="mapImgWidth" id="mapImgWidth" value="<?php echo $c['mapImgWidth'];?>"/></p>
-<p><label>地图图片高度：</label><input class="form-control" name="mapImgHeight" id="mapImgHeight" value="<?php echo $c['mapImgHeight'];?>"/></p>

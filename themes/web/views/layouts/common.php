@@ -17,7 +17,8 @@
 <title><?php echo CHtml::encode($this->pageTitle); ?></title>
 </head>
 <body class="module-<?php echo $this->currentModule;?>">       
-<?php echo $content; ?>
-<?php assets::jsConfig('web',$this->currentModule);?> 
+    <?php echo $content; ?>
+    <?php assets::jsConfig('web',$this->currentModule);?>
+    <?php echo zmf::config('tongji');?>
 </body>
 </html>

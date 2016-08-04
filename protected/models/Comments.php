@@ -18,7 +18,7 @@ class Comments extends CActiveRecord {
         return array(
             array('uid, logid,content,classify, status, cTime', 'required'),
             array('status', 'numerical', 'integerOnly' => true),
-            array('uid,aid,logid,tocommentid, cTime', 'length', 'max' => 10),
+            array('uid,aid,logid,tocommentid, cTime,favors', 'length', 'max' => 10),
             array('content,username,email,ipInfo', 'length', 'max' => 255),
             array('platform, classify,ip', 'length', 'max' => 16),
         );
@@ -55,6 +55,7 @@ class Comments extends CActiveRecord {
             'ip' => 'IP',
             'ipInfo' => 'IP信息',
             'aid' => '作者ID',
+            'favors' => '赞',
         );
     }
 
@@ -96,7 +97,7 @@ class Comments extends CActiveRecord {
         return $info;
     }
 
-    public static function getCommentsByPage($id, $classify, $page = 1, $pageSize = 30, $field = "c.id,c.uid,u.truename,c.aid,c.logid,c.tocommentid,c.content,c.cTime,c.status") {
+    public static function getCommentsByPage($id,$uid, $classify, $page = 1, $pageSize = 30, $field = "c.id,c.uid,u.truename,c.aid,c.logid,c.tocommentid,c.content,c.cTime,c.status") {
         if (!$id || !$classify) {
             return array();
         }
@@ -112,7 +113,21 @@ class Comments extends CActiveRecord {
             if ($uidsStr != '') {
                 $usernames = Yii::app()->db->createCommand("SELECT id,authorName,avatar FROM {{authors}} WHERE id IN($uidsStr)")->queryAll();
             }
+            //取出我已赞过的评论
+            $favoredArr=array();
+            if($uid){
+                $comIds = array_filter(array_keys(CHtml::listData($items, 'id', '')));
+                $comIdsStr=  join(',', $comIds);            
+                if ($comIdsStr != '') {
+                    $comTempArr = Yii::app()->db->createCommand("SELECT id,logid FROM {{favorites}} WHERE classify='comment' AND uid='{$uid}' AND logid IN($comIdsStr)")->queryAll();
+                    $favoredArr=  array_values(CHtml::listData($comTempArr, 'id', 'logid'));
+                }
+            }
             foreach ($items as $k => $val) {
+                $items[$k]['favorited']=0;
+                if(in_array($val['id'], $favoredArr)){
+                    $items[$k]['favorited']=1;
+                }
                 $find = false;
                 if (!empty($usernames)) {
                     foreach ($usernames as $val2) {

@@ -705,6 +705,12 @@ function favorite(dom) {
         }else{
             dom.removeClass('btn-danger').addClass('btn-default').html('<i class="fa fa-star"></i> 已赞');
         }
+    }else if(t==='comment'){
+        if(childDom.hasClass('fa-thumbs-up')){
+            dom.html('<i class="fa fa-thumbs-o-up"></i> '+(--num));
+        }else{
+            dom.html('<i class="fa fa-thumbs-up"></i> '+(++num));
+        }
     }
     $.post(zmf.favoriteUrl, {type: t, data: acdata, YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
         ajaxReturn = true;

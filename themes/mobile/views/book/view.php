@@ -34,7 +34,7 @@
             <?php }?>
         </div>
     </div>
-    <div class="module">
+    <div class="module" id="book-desc-holder">
         <div class="module-header">作品简介</div>
         <div class="module-body padding-body">
             <p><?php echo nl2br($info['content']); ?></p>
@@ -73,3 +73,26 @@
         <?php }?>
     </div>
 </div>
+<footer class="footer book-footer">
+    <div class="ui-row-flex">
+        <div class="ui-col">
+            <div class="ui-row-flex">
+                <div class="ui-col ui-col ui-border-r ui-item"><?php echo CHtml::link('<i class="fa fa-user"></i>作者', array('author/view', 'id' => $info['aid'])); ?></div>
+                <div class="ui-col ui-col ui-border-r ui-item"><?php echo CHtml::link('<i class="fa fa-quote-left"></i>简介','javascript:;',array('action'=>'scroll','action-target'=>'book-desc-holder'));?></div>
+                <div class="ui-col ui-col ui-border-r ui-item"><?php echo CHtml::link('<i class="fa fa-star"></i>点评','javascript:;',array('action'=>'scroll','action-target'=>'chapter-tips-holder'));?></div>
+            </div>
+        </div>
+        <div class="ui-col ui-col-2">
+            <div class="ui-row-flex">
+                <div class="ui-col ui-border-r favor-btn">                    
+                    <?php if($this->favorited){?>
+                    <?php echo CHtml::link('已收藏','javascript:;',array('class'=>'btn btn-default btn-xs','action'=>'favorite','action-data'=>$info['id'],'action-type'=>'book'));?>
+                    <?php }else{?>
+                    <?php echo CHtml::link('加入收藏','javascript:;',array('class'=>'btn btn-danger btn-xs','action'=>'favorite','action-data'=>$info['id'],'action-type'=>'book'));?>
+                    <?php }?>
+                </div>
+                <div class="ui-col read-btn" data-href="<?php echo Yii::app()->createUrl('book/chapter',array('cid'=>$chapters[0]['id']));?>">立即阅读</div>
+            </div>
+        </div>
+    </div>
+</footer>

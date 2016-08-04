@@ -111,6 +111,9 @@ class BookController extends Q {
         $this->keywords = $info['title'] . '、' . $info['title'] . '小说阅读、' . $info['title'] . '最新章节';
         $this->pageDescription = "{$info['title']},{$info['title']}小说阅读。{$colInfo['title']}{$info['title']}由作家{$authorInfo['authorName']}创作," . zmf::config('sitename') . "提供{$info['title']}最新章节及章节列表,{$info['title']}最新更新尽在" . zmf::config('sitename') . "。";
         $this->selectNav = 'book';
+        if($this->isMobile){
+            $this->layout='book';
+        }
         //二维码
         $url = zmf::config('domain') . Yii::app()->createUrl('book/view', array('id' => $id));
         $qrcode = zmf::qrcode($url, 'book', $id);

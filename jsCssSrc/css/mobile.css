@@ -158,6 +158,28 @@ a{
     height: 100px
 }
 /*作品*/
+.book-footer .ui-item{
+    padding-top: 5px;
+    box-sizing: border-box;
+    height: 45px;
+    font-size: 12px;
+}
+.book-footer .ui-item .fa{
+    font-size: 16px;
+}
+.book-footer .favor-btn,.book-footer .read-btn{
+    line-height: 45px;
+    color: #fff;
+}
+.book-footer .favor-btn a,.book-footer .read-btn a{        
+    color: #fff;
+}
+.book-footer .favor-btn{
+    background: #FFAC2D
+}
+.book-footer .read-btn{
+    background: #DD2727;
+}
 .book-page{
     background: #fff
 }

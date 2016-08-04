@@ -648,7 +648,80 @@ function showUserSide(){
         $('body').removeClass('menu-on');            
     }   
 }
-
+function favorite(dom) {
+    var acdata = dom.attr("action-data");
+    var t = dom.attr("action-type");
+    var tmp = dom.html();
+    var num = parseInt(dom.text());
+    if (!acdata || !t) {
+        return false;
+    }
+    if (!checkLogin()) {
+        //没有登录，判断是否包含fa-heart样式，包含则认为已收藏成功过
+        dialog({msg: '请先登录哦~'});
+        return false;
+    }
+    if (!checkAjax()) {
+        return false;
+    }
+    var childDom=dom.children('i');
+    if(t==='tip'){
+        if(childDom.hasClass('fa-thumbs-up')){
+            dom.html('<i class="fa fa-thumbs-o-up"></i> '+(--num));
+        }else{
+            dom.html('<i class="fa fa-thumbs-up"></i> '+(++num));
+        }
+    }else if(t==='author'){
+        if(dom.hasClass('btn-default')){
+            dom.removeClass('btn-default').addClass('btn-danger').html('<i class="fa fa-plus"></i> 关注');
+        }else{
+            dom.removeClass('btn-danger').addClass('btn-default').html('<i class="fa fa-check"></i> 已关注');
+        }
+    }else if(t==='book'){
+        if(dom.text()==='已收藏'){
+            dom.text('加入收藏');
+        }else{
+            dom.text('已收藏');
+        }
+    }else if(t==='post'){
+        if(childDom.hasClass('fa-thumbs-up')){
+            dom.html('<i class="fa fa-thumbs-o-up"></i><sup>'+(--num))+'</sup>';
+        }else{
+            dom.html('<i class="fa fa-thumbs-up"></i><sup>'+(++num))+'</sup>';
+        }
+    }else if(t==='user'){
+        if(dom.hasClass('btn-default')){
+            dom.removeClass('btn-default').addClass('btn-danger').html('<i class="fa fa-star-o"></i> 赞');
+        }else{
+            dom.removeClass('btn-danger').addClass('btn-default').html('<i class="fa fa-star"></i> 已赞');
+        }
+    }else if(t==='comment'){
+        if(childDom.hasClass('fa-thumbs-up')){
+            dom.html('<i class="fa fa-thumbs-o-up"></i> '+(--num));
+        }else{
+            dom.html('<i class="fa fa-thumbs-up"></i> '+(++num));
+        }
+    }
+    $.post(zmf.favoriteUrl, {type: t, data: acdata, YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
+        ajaxReturn = true;
+        result = $.parseJSON(result);
+        if (result.status === 1) {//收藏成功            
+            
+        } else if (result.status === 2) {//收藏失败
+            dom.html(tmp);
+            dialog({msg: result.msg});
+        } else if (result.status === 3) {//取消成功
+            
+        } else if (result.status === 4) {//取消失败
+            dom.html(tmp);
+            dialog({msg: result.msg});
+        } else {
+            dom.html(tmp);
+            dialog({msg: result.msg});
+        }
+        return false;
+    });
+}
 /**
  * 获取内容
  * @param {type} dom

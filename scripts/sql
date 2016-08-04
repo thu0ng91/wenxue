@@ -219,3 +219,6 @@ update pre_chapters set status=1;
 
 alter table pre_posts add platform tinyint(1) unsigned not null COMMENT '来源';
 update pre_posts set platform=1;
+
+alter table pre_comments add favors int(10) unsigned not null COMMENT '赞';
+update pre_comments set platform=1;

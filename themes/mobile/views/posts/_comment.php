@@ -24,6 +24,9 @@ $_uname=$data['userInfo']['username'];
             <?php if(!empty($data['replyInfo'])){?>
             回复 <b><?php echo CHtml::link($data['replyInfo']['username'],$data['replyInfo']['linkArr']);?></b>        
             <?php }?>
+            <span class="pull-right">
+                <?php echo CHtml::link('<i class="fa '.($data['favorited'] ? 'fa-thumbs-up' : 'fa-thumbs-o-up').'"></i> '.$data['favors'],'javascript:;',array('action'=>'favorite','action-data'=>$data['id'],'action-type'=>'comment'));?>
+            </span>
         </p>
         <p><?php echo nl2br(CHtml::encode($data['content'])); ?></p>
         <p class="help-block">

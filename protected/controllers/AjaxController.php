@@ -862,10 +862,11 @@ class AjaxController extends Q {
             'content' => $content,
             'cTime' => zmf::now(),
             'classify' => $type,
-            'platform' => '', //$this->platform
+            'platform' => $this->isMobile ? Posts::PLATFORM_MOBILE : Posts::PLATFORM_WEB,
             'tocommentid' => $to,
             'status' => $status,
             'aid' => $authorId,
+            'favors' => 0,
         );
         unset(Yii::app()->session['checkHasBadword']);
         $model->attributes = $intoData;
@@ -939,7 +940,7 @@ class AjaxController extends Q {
                 if(!$bookInfo || $bookInfo['status']!=Posts::STATUS_PASSED){
                     $this->jsonOutPut(0, '你所评论的小说不存在');
                 };
-                $posts = Comments::getCommentsByPage($id, 'tip', $page, $this->pageSize);
+                $posts = Comments::getCommentsByPage($id,$this->uid, 'tip', $page, $this->pageSize);
                 $view = '/posts/_comment';
                 $from='tip';
                 $showFormHtml=true;
@@ -949,7 +950,7 @@ class AjaxController extends Q {
                 if (!$postInfo || $postInfo['status'] != Posts::STATUS_PASSED) {
                     $this->jsonOutPut(0, '你所评论的内容不存在');
                 }
-                $posts = Comments::getCommentsByPage($id, 'posts', $page, $this->pageSize,"c.id,c.uid,u.truename,u.avatar,c.aid,c.logid,c.tocommentid,c.content,c.cTime,c.status");
+                $posts = Comments::getCommentsByPage($id,$this->uid,'posts', $page, $this->pageSize,"c.id,c.uid,u.truename,u.avatar,c.aid,c.logid,c.tocommentid,c.content,c.cTime,c.status");
                 $view = '/posts/_comment';
                 $from='post';
                 $showAvatar=true;

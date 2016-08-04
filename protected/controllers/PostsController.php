@@ -116,7 +116,7 @@ class PostsController extends Q {
             $this->layout='post';
         }
         $info['content'] = zmf::text(array(), $info['content'], true, $size);
-        $comments = Comments::getCommentsByPage($id, 'posts', 1, $this->pageSize,"c.id,c.uid,u.truename,u.avatar,c.aid,c.logid,c.tocommentid,c.content,c.cTime,c.status");
+        $comments = Comments::getCommentsByPage($id, $this->uid, 'posts', 1, $this->pageSize,"c.id,c.uid,u.truename,u.avatar,c.aid,c.logid,c.tocommentid,c.content,c.cTime,c.status,c.favors");
         $tags = Tags::getByIds($info['tagids']);
         $relatePosts = Posts::getRelations($id, 5);        
         $topsPosts=  Posts::getTops($info['id'], $info['classify'], 10);

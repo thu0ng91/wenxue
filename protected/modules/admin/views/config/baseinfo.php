@@ -5,4 +5,5 @@
 <p><label>网站根目录：</label><input class="form-control" name="baseurl" id="baseurl" value="<?php echo $c['baseurl'];?>"/></p>
 <p><label>网站关键字：</label><textarea class="form-control" name="siteKeywords"><?php echo $c['siteKeywords'];?></textarea></p>
 <p><label>网站描述：</label><textarea class="form-control" name="siteDesc" rows="5"><?php echo $c['siteDesc'];?></textarea></p>
+<p><label>网站统计：</label><textarea class="form-control" name="tongji" rows="5"><?php echo $c['tongji'];?></textarea></p>
 <p><label>备案号：</label><input class="form-control" name="beian" id="beian" value="<?php echo $c['beian'];?>"/></p>
