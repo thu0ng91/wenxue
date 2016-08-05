@@ -11,4 +11,5 @@ $postInfo=$caseInfo['post'][0];
 ?>
 <div class="showcase">
     <?php echo CHtml::link(CHtml::image(zmf::lazyImg(), $postInfo['title'],array('data-original'=>$postInfo['faceimg'],'class'=>'lazy')),$postInfo['url'] ? $postInfo['url'] : 'javascript:;');?>
+    <?php if($this->userInfo['isAdmin']){?><div class="column-fixed-btn"><?php echo CHtml::link('<i class="fa fa-edit"></i>',array('admin/showcaseLink/index','sid'=>$caseInfo['id']),array('target'=>'_blank'));?></div><?php }?>
 </div>

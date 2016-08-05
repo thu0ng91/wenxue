@@ -8,6 +8,7 @@ return array(
         'category/<cid:\d+>' => 'showcase/index',
         'book/<id:\d+>' => 'book/view',
         'book/chapter-<cid:\d+>' => 'book/chapter',
+        'books/list-<colid:\d+>' => 'book/index',
         'author/<id:\d+>' => 'author/view',
         'user/<id:\d+>' => 'user/index',
         'forum/<type:\w+>' => 'posts/index',

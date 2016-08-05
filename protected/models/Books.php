@@ -308,5 +308,17 @@ class Books extends CActiveRecord {
         }
         return $str;
     }
+    
+    public static function orderConditions($type){
+        $arr=array(
+            'score'=>'综合排序',
+            'hits'=>'按热门度',
+            'scorer'=>'按点评人数',
+        );
+        if($type=='admin'){
+            return $arr;
+        }
+        return $arr[$type];
+    }
 
 }

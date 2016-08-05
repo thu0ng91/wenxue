@@ -32,6 +32,7 @@ $_sidePosts=$sideInfo['posts'];
         <?php continue;}?>
         <p class="ui-nowrap item"><span class="dot"><?php echo ($k+1);?></span><?php echo CHtml::link(($_post['colTitle']!='' ? '['.$_post['colTitle'].']' : '').$_post['title'],array('book/view','id'=>$_post['id']));?></p>
         <?php }?>
-        <?php }?>        
+        <?php }?>  
+        <?php if($this->userInfo['isAdmin']){?><div class="column-fixed-btn"><?php echo CHtml::link('<i class="fa fa-edit"></i>',array('admin/showcaseLink/index','sid'=>$sideInfo['id']),array('target'=>'_blank'));?></div><?php }?>
     </div>
 </div>

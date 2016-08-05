@@ -38,6 +38,7 @@
             <a href="<?php echo $_info['url']!='' ? $_info['url'] : 'javascript:;';?>" target="_blank">
                 <img src="<?php echo zmf::lazyImg();?>" data-original="<?php echo $_info['faceimg'];?>" class="img-responsive lazy"/>
             </a>
+            <?php if($this->userInfo['isAdmin']){?><div class="column-fixed-btn"><?php echo CHtml::link('<i class="fa fa-edit"></i>',array('admin/showcaseLink/index','sid'=>$showcases['author']['id']),array('target'=>'_blank'));?></div><?php }?>
         </div>
         <?php }?>
         <?php $sideTops=$showcases[$type.'Top'];if(!empty($sideTops)){$_sideTops=$sideTops['post'];?>
@@ -47,6 +48,7 @@
                 <?php  foreach ($_sideTops as $_side){?>
                 <p><?php echo CHtml::link($_side['title'],$_side['url'],array('target'=>'_blank'));?></p>
                 <?php }?>
+                <?php if($this->userInfo['isAdmin']){?><div class="column-fixed-btn"><?php echo CHtml::link('<i class="fa fa-edit"></i>',array('admin/showcaseLink/index','sid'=>$sideTops['id']),array('target'=>'_blank'));?></div><?php }?>
             </div>
         </div>
         <?php }?>

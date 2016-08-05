@@ -7,22 +7,32 @@ class BookController extends Q {
 
     public function actionIndex() {
         $colid = zmf::val('colid', 2);
+        $order = zmf::val('order', 1);
         $colInfo=array();
         if ($colid) {
             $colInfo = Column::getSimpleInfo($colid);
             if (!$colInfo) {
                 throw new CHttpException(404, '请选择正确的分类');
             }
-        }        
+        }else{
+            throw new CHttpException(404, '请选择作品分类');
+        }
+        $_orderTitle=  Books::orderConditions($order);
+        if((!$_orderTitle || !$order) && $order!='admin'){
+            $orderBy=$order='score';
+        }else{
+            $orderBy=$order;
+        }
         $arr=array(
             Books::STATUS_PUBLISHED,
             Books::STATUS_FINISHED
         );
-        $sql = "SELECT id,colid,title,faceImg,`desc`,words,cTime,score,scorer,bookStatus FROM {{books}} WHERE ".($colid>0 ? "colid='{$colid}' AND " : "")." status=" . Posts::STATUS_PASSED . " AND bookStatus IN(" . join(',',$arr) . ") ORDER BY score DESC";
+        $sql = "SELECT id,colid,title,faceImg,`desc`,words,cTime,score,scorer,bookStatus FROM {{books}} WHERE ".($colid>0 ? "colid='{$colid}' AND " : "")." status=" . Posts::STATUS_PASSED . " AND bookStatus IN(" . join(',',$arr) . ") ORDER BY {$orderBy} DESC";
         Posts::getAll(array('sql' => $sql), $pages, $posts);
         foreach ($posts as $k => $val) {
             $posts[$k]['faceImg'] = zmf::getThumbnailUrl($val['faceImg'], 'w120', 'book');
         }
+        $cols=  Column::allCols();
         $this->selectNav = 'column' . $colid;
         $this->showLeftBtn=false;
         $this->pageTitle = $colInfo['title'] . ' - ' . zmf::config('sitename');
@@ -31,6 +41,8 @@ class BookController extends Q {
             'posts' => $posts,
             'colInfo' => $colInfo,
             'pages' => $pages,
+            'cols' => $cols,
+            'order' => $order,
         );
         $this->render('index', $data);
     }

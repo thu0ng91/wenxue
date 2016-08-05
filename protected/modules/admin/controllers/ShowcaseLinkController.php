@@ -72,8 +72,8 @@ class ShowcaseLinkController extends Admin {
         $sid = zmf::val('sid', 2);
         if (!$sid) {
             throw new CHttpException(404, '请选择板块');
-        }
-        $select = "id,sid,logid,classify,startTime,endTime";
+        }        
+        $select = "id,sid,logid,classify,startTime,endTime,status";
         $model = new ShowcaseLink();
         $criteria = new CDbCriteria();
         $criteria->addCondition("sid='{$sid}'");

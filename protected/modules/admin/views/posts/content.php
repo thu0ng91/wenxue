@@ -128,6 +128,8 @@ $form=$this->beginWidget('CActiveForm', array(
                 <?php echo CHtml::link('章节',array('chapters/index','bid'=>$post['id']));?>                
                 <?php }elseif($from=='showcases'){?>
                 <?php echo CHtml::link('文章',array('showcaseLink/index','sid'=>$post['id']));?>
+                <?php }elseif($from=='column'){?>
+                <?php echo CHtml::link('预览',array('/showcase/index','cid'=>$post['id']),array('target'=>'_blank'));?>
                 <?php }?>
                 <?php echo CHtml::link('删除',array('delete','id'=>$post['id']));?>
             <?php }?>

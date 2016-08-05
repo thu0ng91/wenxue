@@ -41,5 +41,6 @@ $_columnClass=$class!='' ? $class : 'column-min';
         </div>
         <?php }?>
         <?php }?>
+        <?php if($this->userInfo['isAdmin']){?><div class="column-fixed-btn"><?php echo CHtml::link('<i class="fa fa-edit"></i>',array('admin/showcaseLink/index','sid'=>$moduleInfo['id']),array('target'=>'_blank'));?></div><?php }?>
     </div>
 </div>

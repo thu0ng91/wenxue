@@ -229,7 +229,8 @@ button, input, select, textarea,.form-control,.btn{
     background: #fff;
     margin-bottom: 40px;
     overflow: hidden;
-    border: none
+    border: none;
+    position: relative
 }
 .showcase img{
     width: 100%;
@@ -291,6 +292,17 @@ button, input, select, textarea,.form-control,.btn{
     margin-right: 10px;
     border-radius: 2px;
     line-height: 18px
+}
+.column-fixed-btn{
+    position: absolute;
+    right: 5px;
+    bottom: 5px;
+    background: transparent;
+    text-align: right
+}
+.column-fixed-btn a{
+    color: #CCC;
+    margin-left: 5px;
 }
 /*作者主页*/
 .author-module{

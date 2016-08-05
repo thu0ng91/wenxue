@@ -3,15 +3,41 @@
         width: 78px;
         height: 104px;
     }
+    .books-category .module{
+        border-top: none;
+        box-shadow: none
+    }
 </style>
 <div class="container">
     <ol class="breadcrumb">
         <li><?php echo CHtml::link(zmf::config('sitename').'首页',  zmf::config('baseurl'));?></li>
-        <li><?php echo CHtml::link($colInfo['title'],  array('book/index','colid'=>$colInfo['id']));?></li>
+        <li><?php echo CHtml::link($colInfo['title'],  array('showcase/index','cid'=>$colInfo['id']));?></li>
+        <li><?php echo $colInfo['title'].'作品库';?></li>
     </ol>
-    <div class="main-part">
-        <div class="module books-category">
-            <div class="module-header"><?php echo $colInfo['title'];?></div>
+    <div class="main-part books-category">
+        <ul class="nav nav-tabs">
+            <li role="presentation" class="active">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                    <?php echo $colInfo['title'];?> <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                    <?php foreach ($cols as $colid=>$colTitle){?>
+                    <li><?php echo CHtml::link($colTitle, array('book/index','colid'=>$colid,'order'=>$order)); ?></li>
+                    <?php }?>
+                </ul>
+            </li>
+            <li role="presentation" class="pull-right">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                    <?php echo Books::orderConditions($order);?> <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                    <?php $orders=  Books::orderConditions('admin');foreach ($orders as $orderBy=>$orderTitle){?>
+                    <li><?php echo CHtml::link($orderTitle, array('book/index','colid'=>$colInfo['id'],'order'=>$orderBy)); ?></li>
+                    <?php }?>
+                </ul>
+            </li>
+        </ul>
+        <div class="module">            
             <div class="module-body">
                 <?php if(!empty($posts)){?>
                     <?php foreach ($posts as $post){$this->renderPartial('/book/_item',array('data'=>$post,'adminLogin'=>false));}?>
@@ -22,7 +48,8 @@
             </div>
         </div>
     </div>
-    <div class="aside-part">
+    
+<!--    <div class="aside-part">
         <div class="module">
             <div class="module-header">推荐作者</div>
             <div class="module-body">
@@ -35,7 +62,7 @@
                 
             </div>
         </div>
-    </div>
+    </div>-->
 </div>
 <?php
 

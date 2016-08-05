@@ -84,7 +84,7 @@ class ColumnController extends Admin {
             'model' => $model,
             'pages' => $pager,
             'posts' => $posts,
-            'from' => 'packageDate',
+            'from' => 'column',
             'selectArr' => explode(',', $select),
         ));
     }
