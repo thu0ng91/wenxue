@@ -14,8 +14,6 @@ class BookController extends Q {
             if (!$colInfo) {
                 throw new CHttpException(404, '请选择正确的分类');
             }
-        }else{
-            throw new CHttpException(404, '请选择作品分类');
         }
         $_orderTitle=  Books::orderConditions($order);
         if((!$_orderTitle || !$order) && $order!='admin'){
