@@ -19,5 +19,6 @@
   <body ontouchstart>
       <?php echo $content; ?>
       <?php assets::jsConfig('mobile',$this->currentModule);?> 
+      <?php echo zmf::config('tongji');?> 
   </body>
 </html>

@@ -793,6 +793,40 @@ a{
     box-shadow: 0 0 5px #333;
     display: none
 }
+/*举报弹框*/
+.displayNone{
+    display: none
+}
+.fixed-report-holder{
+    position: fixed;
+    right: -1000px;
+    top: 0;
+    width: 80%;
+    height: 100%;
+    background: #fff;
+    z-index: 1000;
+    display: none;       
+    box-shadow:-10px 0 10px #999
+}
+.fixed-report-holder .close{
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 45px;
+    height: 45px;
+    border-radius: 200px;
+    line-height: 45px;
+    text-align: center
+}
+.fixed-report-holder .report-content{
+    color: red
+}
+.fixed-report-holder .module-header{
+    border-bottom: 1px solid #f2f2f2
+}
+.fixed-report-holder .module-body{
+    padding: 15px;
+}
 /*自定义加载*/
 .simple-loading-box{
     position: fixed;

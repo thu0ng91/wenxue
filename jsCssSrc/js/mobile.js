@@ -432,8 +432,11 @@ function rebind() {
         if(!type){
             alert('缺少参数');
             return false;
-        }
-        var html='<div class="form-group"><label>举报对象</label><p class="help-block ui-nowarp">'+title+'</p><input type="hidden" name="report-id" id="report-id" value="'+id+'"/></div>';
+        }        
+        //外层容器
+        var html='<div class="fixed-report-holder" id="fixed-report-holder"><span class="close" onclick="closeReportDia()"><i class="fa fa-remove"></i></span><div class="module"><div class="module-header">举报</div><div class="module-body" id="fixed-report-body">';
+        //内容
+        html+='<div class="form-group"><label>举报对象</label><p class="report-content ui-nowarp">'+title+'</p><input type="hidden" name="report-id" id="report-id" value="'+id+'"/></div>';
         if(type==='book' || type==='chapter'){
             html+= '<div class="form-group"><label for="feedback-reason">举报原因</label><select name="report-reason" id="report-reason" class="form-control"><option value="色情低俗">色情低俗</option><option value="暴力血腥">暴力血腥</option><option value="涉政违规">涉政违规</option><option value="欺诈广告">欺诈广告</option><option value="抄袭侵权">抄袭侵权</option><option value="">其他原因</option></select></div>';
         }else if(type==='tip' || type==='book' || type==='comment' || type==='post' || type==='user' || type==='author'){
@@ -444,9 +447,13 @@ function rebind() {
         }
         html+='<div class="form-group displayNone" id="report-content-holder"><label for="report-content">其他原因</label><textarea id="report-content" class="form-control" max-lenght="255" placeholder="请描述你的举报原因"></textarea></div>';
         if(!checkLogin()){
-            html+='<div class="form-group"><label for="report-contact">联系方式</label><input type="text" id="report-contact" class="form-control" placeholder="常用联系方式(邮箱、QQ、微信等)，便于告知处理进度(可选)"/></div>';
+            html+='<div class="form-group"><label for="report-contact">联系方式</label><textarea type="text" id="report-contact" class="form-control" placeholder="常用联系方式(邮箱、QQ、微信等)，便于告知处理进度(可选)"></textarea></div>';
         }
-        dialog({msg: html, title: '举报', action: 'doReport'});
+        html+='<div class="form-group"><button class="btn btn-success" action="doReport">提交举报</button></div>';
+        html+='</div></div></div>';
+        //dialog({msg: html, title: '举报', action: 'doReport'});
+        $('body').append(html);
+        $('#fixed-report-holder').show().animate({right:0});
         $('#report-reason').on('change',function(){
             var reason=$(this).val();
             if(!reason){
@@ -479,14 +486,14 @@ function rebind() {
                 result = eval('(' + result + ')');
                 if (result['status'] == '1') {
                     simpleDialog({content:result['msg']});
-                    closeDialog();
+                    closeReportDia();
                     return false;
                 } else {
                     simpleDialog({content:result['msg']});
                     return false;
                 }
             });
-        });
+        });        
     });
     $('.openGallery').unbind('click').click(function(){
         var dom=$(this);
@@ -647,6 +654,10 @@ function showUserSide(){
         _dom.hide();
         $('body').removeClass('menu-on');            
     }   
+}
+function closeReportDia(){
+    var $dom=$('#fixed-report-holder');
+    $dom.animate({right:'-1000px'},300,'linear',function(){$dom.remove()})
 }
 function favorite(dom) {
     var acdata = dom.attr("action-data");
