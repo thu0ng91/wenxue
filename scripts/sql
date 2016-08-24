@@ -222,3 +222,16 @@ update pre_posts set platform=1;
 
 alter table pre_comments add favors int(10) unsigned not null COMMENT '赞';
 update pre_comments set platform=1;
+
+
+DROP TABLE IF EXISTS `pre_dapipi`;
+CREATE TABLE `pre_dapipi` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `uid` int(10) unsigned NOT NULL COMMENT '用户ID',
+  `aid` int(10) unsigned NOT NULL COMMENT '作者ID',
+  `bid` int(10) unsigned NOT NULL COMMENT '作品ID',  
+  `cTime` int(10) unsigned NOT NULL COMMENT '时间',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=33 DEFAULT CHARSET=utf8;
+alter table pre_authors add totalUrge int(10) unsigned not null COMMENT '总催更数';
+alter table pre_authors add unUrge int(10) unsigned not null COMMENT '现催更数';

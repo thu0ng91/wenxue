@@ -17,7 +17,7 @@ class AjaxController extends Q {
 
     public function actionDo() {
         $action = zmf::val('action', 1);
-        if (!in_array($action, array('addTip', 'saveUploadImg', 'publishBook', 'publishChapter', 'saveDraft', 'report', 'sendSms', 'checkSms', 'setStatus', 'delContent', 'getNotice', 'getContents', 'delBook', 'delChapter','finishBook'))) {
+        if (!in_array($action, array('addTip', 'saveUploadImg', 'publishBook', 'publishChapter', 'saveDraft', 'report', 'sendSms', 'checkSms', 'setStatus', 'delContent', 'getNotice', 'getContents', 'delBook', 'delChapter','finishBook','dapipi'))) {
             $this->jsonOutPut(0, Yii::t('default', 'forbiddenaction'));
         }
         $this->$action();
@@ -741,6 +741,16 @@ class AjaxController extends Q {
         $this->checkLogin();
         $noticeNum = Notification::getNum();
         $this->jsonOutPut(1, $noticeNum);
+    }
+    
+    private function dapipi(){
+        $this->checkLogin();
+        $bid=  zmf::val('k', 2);
+        $ckInfo=  Dapipi::daTapipi($bid, $this->userInfo);
+        if(!$ckInfo['status']){
+            $this->jsonOutPut($ckInfo['status'],$ckInfo['msg']);
+        }
+        $this->jsonOutPut($ckInfo['status'],$ckInfo['msg']);
     }
 
     public function actionFeedback() {

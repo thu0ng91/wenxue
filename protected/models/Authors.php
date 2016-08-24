@@ -45,7 +45,7 @@ class Authors extends CActiveRecord {
             array('status', 'default', 'setOnEmpty' => true, 'value' => Posts::STATUS_PASSED),
             array('uid, authorName, avatar, password', 'required'),
             array('avatar, skinUrl', 'checkUrl'),
-            array('uid, favors, posts, hits, score, cTime, status', 'numerical', 'integerOnly' => true),
+            array('uid, favors, posts, hits, score, cTime, status,totalUrge,unUrge', 'numerical', 'integerOnly' => true),
             array('authorName', 'length', 'max' => 16),
             array('avatar,skinUrl', 'length', 'max' => 255),
             array('password', 'length', 'max' => 32),
@@ -87,6 +87,8 @@ class Authors extends CActiveRecord {
             'score' => '积分',
             'cTime' => '创建时间',
             'status' => '状态',
+            'totalUrge' => '总催更数',
+            'unUrge' => '现催更数',
         );
     }
 

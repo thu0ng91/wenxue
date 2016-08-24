@@ -417,6 +417,26 @@ function rebind() {
             simpleDialog({content: title});
         }
     });
+    $("a[action=dapipi]").unbind('click').click(function () {
+        var dom = $(this);
+        var k = dom.attr("action-data");     
+        if (!k) {
+            dialog({msg: '缺少参数'});
+            return false;
+        }
+        if (!checkAjax()) {
+            return false;
+        }
+        $.post(zmf.ajaxUrl, {action:'dapipi',k: k,YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
+            ajaxReturn = true;
+            result = eval('(' + result + ')');
+            if (result['status'] == '1') {
+                dialog({msg: result['msg']});
+            } else {
+                dialog({msg: result['msg']});
+            }
+        });
+    });
     $('.tooltip').mouseover(function(){
         $(this).remove();
     });

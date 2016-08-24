@@ -119,6 +119,9 @@ class Msg extends CActiveRecord {
             case 'forget':
                 $content = 'SMS_10390068';
                 break;
+            case 'dapipi':
+                $content = 'SMS_10390068';
+                break;
             default :
                 $content = 'SMS_10390068';
                 break;
@@ -132,6 +135,7 @@ class Msg extends CActiveRecord {
             'forget' => '找回密码',
             'exphone' => '更换手机',
             'checkPhone' => '验证手机',
+            'dapipi' => '催更',
         );
         if ($type == 'admin') {
             return $arr;
