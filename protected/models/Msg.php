@@ -120,7 +120,7 @@ class Msg extends CActiveRecord {
                 $content = 'SMS_10390068';
                 break;
             case 'dapipi':
-                $content = 'SMS_10390068';
+                $content = 'SMS_13250825';
                 break;
             default :
                 $content = 'SMS_10390068';
@@ -177,6 +177,41 @@ class Msg extends CActiveRecord {
             );
             $status = Msg::sendOne($params);
             return $status;
+        }
+        return false;
+    }
+    
+    /**
+     * 自定义短信参数
+     * @param array $userData
+     * @param string $type
+     * @param array $params
+     * @return boolean
+     */
+    public static function sendWithParams($userData, $type, $params) {
+        //时间有效期
+        $_time = zmf::now();
+        $template = Msg::returnTemplate($type);
+        $attr = array(
+            'uid' => $userData['id'],
+            'phone' => $userData['phone'],
+            'type' => $type,
+            'sendType' => Msg::TYPE_SMS,
+            'code' => $type,
+            'expiredTime' => $_time,
+            'cTime' => $_time,
+            'content' => $template,
+        );
+        $model = new Msg();
+        $model->attributes = $attr;
+        if ($model->save()) {
+            $attr = array(
+                'sign' => '初心创文',
+                'phone' => $userData['phone'],
+                'attr' => $params,
+                'template' => $template,
+            );
+            return Msg::sendMsg($attr);
         }
         return false;
     }

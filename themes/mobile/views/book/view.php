@@ -4,6 +4,7 @@
         <li class="ui-border-t">
             <div class="ui-list-img">
                 <img class="lazy w78" src="<?php echo zmf::lazyImg(); ?>" data-original="<?php echo $info['faceImg']; ?>" alt="<?php echo $info['title']; ?>">
+                <?php echo $info['bookStatus']!=Books::STATUS_FINISHED ? CHtml::link('<i class="fa fa-rocket"></i> 催更','javascript:;',array('class'=>'ui-btn-s','action'=>'dapipi','action-data'=>$info['id'])) : '';?>
             </div>
             <div class="ui-list-info">
                 <p>作者：<?php echo CHtml::link($authorInfo['authorName'], array('author/view', 'id' => $info['aid'])); ?></p>

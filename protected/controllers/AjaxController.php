@@ -746,6 +746,9 @@ class AjaxController extends Q {
     private function dapipi(){
         $this->checkLogin();
         $bid=  zmf::val('k', 2);
+        if (zmf::actionLimit('daTapipi', 'book-' . $bid, 3, 3600)) {
+            $this->jsonOutPut(0, '我们已收到你的催更请求，请勿频繁操作');
+        }
         $ckInfo=  Dapipi::daTapipi($bid, $this->userInfo);
         if(!$ckInfo['status']){
             $this->jsonOutPut($ckInfo['status'],$ckInfo['msg']);

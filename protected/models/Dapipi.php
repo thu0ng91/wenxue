@@ -99,35 +99,38 @@ class Dapipi extends CActiveRecord {
     public static function model($className = __CLASS__) {
         return parent::model($className);
     }
-    
-    public static function daTapipi($bid,$userInfo){        
-        if(!$bid){
+
+    public static function daTapipi($bid, $userInfo) {
+        if (!$bid) {
             return array(
-                'status'=>0,
-                'msg'=>'缺少参数'
-            );  
-            
+                'status' => 0,
+                'msg' => '缺少参数'
+            );
         }
-        if(empty($userInfo)){
+        if (empty($userInfo)) {
             return array(
-                'status'=>0,
-                'msg'=>'请先登录'
-            );  
-            
+                'status' => 0,
+                'msg' => '请先登录'
+            );
         }
-        $bookInfo=  Books::getOne($bid);
-        if(!$bookInfo || $bookInfo['status']!=Posts::STATUS_PASSED){
+        $bookInfo = Books::getOne($bid);
+        if (!$bookInfo || $bookInfo['status'] != Posts::STATUS_PASSED) {
             return array(
-                'status'=>0,
-                'msg'=>'该作品不存在'
-            );  
+                'status' => 0,
+                'msg' => '该作品不存在'
+            );
+        }elseif($bookInfo['bookStatus']==Books::STATUS_FINISHED){
+            return array(
+                'status' => 0,
+                'msg' => '该作品已完结，不能再催更'
+            );
         }
-        $authorInfo=  Authors::getOne($bookInfo['aid']);
-        if(!$authorInfo || $authorInfo['status']!=Posts::STATUS_PASSED){
+        $authorInfo = Authors::getOne($bookInfo['aid']);
+        if (!$authorInfo || $authorInfo['status'] != Posts::STATUS_PASSED) {
             return array(
-                'status'=>0,
-                'msg'=>'该作者不存在'
-            );  
+                'status' => 0,
+                'msg' => '该作者不存在'
+            );
         }
         $dayStart = strtotime(date('Y-m-d'));
         $ckinfo = Dapipi::model()->find(array(
@@ -141,9 +144,9 @@ class Dapipi extends CActiveRecord {
         ));
         if ($ckinfo) {
             return array(
-                'status'=>0,
-                'msg'=>'今天已经催过了，明天再来吧！'
-            );  
+                'status' => 0,
+                'msg' => '今天已经催过了，明天再来吧！'
+            );
         }
         $attr = array(
             'uid' => $userInfo['id'],
@@ -152,27 +155,47 @@ class Dapipi extends CActiveRecord {
         );
         $model = new Dapipi;
         $model->attributes = $attr;
-        if ($model->save()) {            
-            Authors::model()->updateByPk($authorInfo['id'], array('totalUrge'=>$authorInfo['totalUrge']+1,'unUrge'=>$authorInfo['unUrge']+1));
+        if ($model->save()) {
+            $_num = $authorInfo['unUrge'] + 1;
+            Authors::model()->updateByPk($authorInfo['id'], array('totalUrge' => $authorInfo['totalUrge'] + 1, 'unUrge' => $_num));
             //todo，根据作者热度来计算分母
-            if(($authorInfo['unUrge']+1)%10==0){
-                $authorUInfo=  Users::getOne($bookInfo['uid']);
-                if($authorUInfo){
-                    $res = Msg::initSend($authorUInfo, 'dapipi');
+            if ($_num % 10== 0) {
+                $authorUInfo = Users::getOne($bookInfo['uid']);
+                if ($authorUInfo) {
+                    $authorUInfo['phone']=  strval($authorUInfo['phone']);
+                    $status = Msg::sendWithParams($authorUInfo, 'dapipi', array(
+                                'name' => $authorInfo['authorName'],
+                                'num' => strval($_num)
+                    ));
+                    if ($status) {
+                        return array(
+                            'status' => 1,
+                            'msg' => '已催更！'
+                        );
+                    } else {
+                        zmf::fp($status,1);
+                        zmf::fp('Dapipi---171');
+                        return array(
+                            'status' => 1,
+                            'msg' => '已催更！'
+                        );
+                    }
+                } else {
+                    return array(
+                        'status' => 0,
+                        'msg' => '该作者不存在！'
+                    );
                 }
-                
-                
             }
-            
             return array(
-                'status'=>1,
-                'msg'=>'已催更！'
-            );  
+                'status' => 1,
+                'msg' => '已催更！'
+            );
         } else {
             return array(
-                'status'=>0,
-                'msg'=>'催更失败！'
-            );  
+                'status' => 0,
+                'msg' => '催更失败！'
+            );
         }
     }
 
