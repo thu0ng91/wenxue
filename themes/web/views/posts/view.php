@@ -72,6 +72,9 @@ $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
                     <p class="text-center"><?php echo CHtml::link('<i class="fa fa-thumbs-o-up"></i> 赞','javascript:;',array('class'=>'btn btn-danger btn-sm','action'=>'favorite','action-data'=>$info['id'],'action-type'=>'post'));?></p>
                     <?php }?>
                 <?php }?>
+                <div class="pull-right">   
+                    <?php $this->renderPartial('/common/share');?>
+                </div> 
             </div>
         </div>
         <?php if(!empty($comments) || $info['open']==Posts::STATUS_OPEN){?>

@@ -11,7 +11,7 @@
                 <p>收藏：<?php echo $info['favorites']; ?></p>
                 <p>点击：<?php echo $info['hits']; ?></p>
                 <p>总字：<?php echo $info['words']; ?></p>
-                <p>状态：<?php echo Books::exStatus($info['bookStatus']); ?></p>
+                <p>状态：<?php echo Books::exStatus($info['bookStatus']); ?><span class="pull-right color-grey"><?php echo CHtml::link('<i class="fa fa-exclamation-triangle"></i> 举报','javascript:;',array('action'=>'report','action-type'=>'book','action-id'=>$info['id'],'action-title'=>$info['title']));?></span></p>
             </div>
         </li>
     </ul>    
