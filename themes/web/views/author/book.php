@@ -24,9 +24,11 @@
         </div>
         <div class="media-body">
             <h4><?php echo $info['title'];?></h4>
+            <p><?php echo Books::starCss($info['score']).$info['scorer'].'人评价';?></p>
+            <p class="help-block"><?php echo $info['favorites'].'收藏 '.$info['favorites'].'评论 '.$info['favorites'].'点击';?></p>
             <p><b>简介：</b><span class="color-grey"><?php echo $info['desc'];?></span></p>
             <p><b>介绍：</b><span class="color-grey"><?php echo $info['content'];?></span></p>
-            <p class="color-grey"><?php echo CHtml::link('<i class="fa fa-exclamation-triangle"></i> 删除本书','javascript:;',array('action'=>'delBook','data-id'=>$info['id'],'data-redirect'=>  Yii::app()->createUrl('author/view',array('id'=>$info['aid']))));?></p>
+            <p><b>数据：</b></p>
         </div>
     </div>
     <div class="module-header">目录</div>
