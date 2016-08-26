@@ -88,7 +88,8 @@ class ChaptersController extends Admin {
             $criteria->addCondition('bid=' . $bid);
         } else {
             if ($type == 'stayCheck') {
-                $criteria->addCondition('status=' . Posts::STATUS_STAYCHECK);
+                $criteria->addCondition('status=' . Posts::STATUS_PASSED);
+                $criteria->addCondition('chapterStatus=' . Posts::STATUS_STAYCHECK);
             } else {
                 $criteria->addCondition('status!=' . Posts::STATUS_DELED);
             }
