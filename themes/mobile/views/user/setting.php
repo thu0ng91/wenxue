@@ -105,7 +105,7 @@
         <div class="form-group">
             <label>手机号</label>
             <div class="input-group">
-                <input type="text" class="form-control" value="<?php echo zmf::hideWord($model->phone);?>" disabled="disabled" id="user-phone"/>
+                <input type="text" class="form-control" value="<?php echo $model->phone ? zmf::hideWord($model->phone) : '';?>" <?php echo $model->phone ? 'disabled="disabled"' : '';?> id="user-phone"/>
                 <span class="input-group-btn">
                     <button class="btn btn-default sendSms-btn" type="button"  data-target="user-phone" data-type="checkPhone">发送验证码</button>
                 </span>

@@ -109,9 +109,11 @@ class assets {
                 'mobile',
             ); 
             if(($c=='author' && $a=='createBook') || ($c=='author' && $a=='setting') || ($c=='user' && $a=='setting')){
-                $coreJsArr['ui.widget']=array('pos'=>'end');
-                $coreJsArr['iframe-transport']=array('pos'=>'end');
-                $coreJsArr['fileupload']=array('pos'=>'end');
+                if(!in_array($_GET['action'], array('checkPhone'))){
+                    $coreJsArr['ui.widget']=array('pos'=>'end');
+                    $coreJsArr['iframe-transport']=array('pos'=>'end');
+                    $coreJsArr['fileupload']=array('pos'=>'end');
+                }
             }
         } elseif ($type == 'admin') {
             $cssArr = array(
