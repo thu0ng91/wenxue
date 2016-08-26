@@ -105,14 +105,14 @@
         <div class="form-group">
             <label>手机号</label>
             <div class="input-group">
-                <input type="text" class="form-control" value="<?php echo $model->phone ? zmf::hideWord($model->phone) : '';?>" <?php echo $model->phone ? 'disabled="disabled"' : '';?> id="user-phone"/>
+                <input type="text" class="form-control" value="<?php echo $model->phone ? zmf::hideWord($model->phone) : '';?>" <?php echo $model->phone ? 'disabled="disabled"' : '';?> id="user-phone" placeholder="请输入常用手机号"/>
                 <span class="input-group-btn">
                     <button class="btn btn-default sendSms-btn" type="button"  data-target="user-phone" data-type="checkPhone">发送验证码</button>
                 </span>
             </div><!-- /input-group -->            
         </div>
         <div class="form-group">
-            <input type="text" class="form-control bitian" placeholder="验证码" id="verifycode">
+            <input type="text" class="form-control bitian" placeholder="请输入收到的验证码" id="verifycode">
         </div>
         <div class="form-group">
             <button class="btn btn-success nextStep-btn" type="button" data-type="checkPhone" data-target="user-phone">验证手机号</button>                

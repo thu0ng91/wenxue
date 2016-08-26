@@ -11,13 +11,13 @@
 ?>
 <div class="module">
     <div class="module-header">找回密码</div>
-    <div class="module-body" id="send-sms-form">
+    <div class="module-body padding-body" id="send-sms-form">
         <div class="form-group">
             <label>手机号</label>
             <div class="input-group">
                 <input type="text" class="form-control" value="<?php echo zmf::hideWord($this->userInfo['phone']);?>" disabled="disabled" id="user-phone"/>
                 <span class="input-group-btn">
-                    <button class="btn btn-primary sendSms-btn" type="button"  data-target="user-phone" data-type="authorPass">发送验证码</button>
+                    <button class="btn btn-default sendSms-btn" type="button"  data-target="user-phone" data-type="authorPass">发送验证码</button>
                 </span>
             </div><!-- /input-group -->            
         </div>
@@ -31,7 +31,7 @@
             <p class="help-block">密码长度不小于6位</p>
         </div>
         <div class="form-group text-right">
-            <button class="btn btn-primary nextStep-btn" type="button" data-type="authorPass" data-target="user-phone">提交</button>                        
+            <button class="btn btn-success nextStep-btn" type="button" data-type="authorPass" data-target="user-phone">提交</button>                        
         </div>
     </div>
 </div>
