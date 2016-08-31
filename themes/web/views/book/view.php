@@ -47,7 +47,7 @@
                         <?php }?>
                     </div>
                     <div class="clearfix"></div>
-                    <?php $this->renderPartial('/common/share');?>
+                    <?php $this->renderPartial('/common/share',array('text'=>$this->pageTitle.'，'.$info['desc'],'pic'=>$info['faceImg']));?>
                 </div>
             </div>
             <div class="module-header">内容简介</div>

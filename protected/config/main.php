@@ -71,6 +71,11 @@ return array(
                 ),
             ),
         ),
+        'clientScript' => array(
+            'scriptMap' => array(
+                'pager.css' => false,
+            ),
+        ),
     ),
     'params' => array(
         'c' => require(dirname(__FILE__) . '/../runtime/config/zmfconfig.php'),

@@ -895,3 +895,4 @@ body.menu-on .ui-header{
     z-index: -1;
     opacity: 0.5;
 }
+ul.yiiPager{height:26px;margin:30px 0;padding:0;text-align:center;}ul.yiiPager li{display:inline;margin-right: 5px}ul.yiiPager a:link,ul.yiiPager a:visited{padding:5px 9px;border:1px solid #ccc;border-radius:3px;background:#fff;color:#777;font-weight:normal}ul.yiiPager a:hover{border-color:#93ba5f;box-shadow:1px 1px 1px #333;color:#93ba5f;text-decoration:none}ul.yiiPager .selected a{padding:6px 10px;border:0;border-radius:3px;background:#93ba5f;color:#fff}ul.yiiPager .hidden,ul.yiiPager .last,ul.yiiPager .first{display:none}

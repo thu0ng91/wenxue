@@ -33,7 +33,7 @@ class BookController extends Q {
         $cols=  Column::allCols();
         $this->selectNav = 'column' . $colid;
         $this->showLeftBtn=false;
-        $this->pageTitle = $colInfo['title'] . ' - ' . zmf::config('sitename');
+        $this->pageTitle = ($colInfo['title'] ? $colInfo['title'] : '作品集') . ' - ' . zmf::config('sitename');
         $this->mobileTitle='作品集';
         $data = array(
             'posts' => $posts,

@@ -912,6 +912,20 @@ class zmf {
         }
         return $content;
     }
+    
+    public static function trimText($str){
+        $replace=array(
+            ' ',
+            '　',
+            PHP_EOL
+        );
+        
+        $to=array(
+            ''
+        );
+        $str=  str_replace($replace, $to, $str);
+        return $str;
+    }
 
     public static function qrcode($content, $origin, $keyid) {
         if (!$content || !$origin || !$keyid) {
