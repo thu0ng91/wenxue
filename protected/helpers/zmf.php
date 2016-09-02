@@ -915,15 +915,13 @@ class zmf {
     
     public static function trimText($str){
         $replace=array(
-            ' ',
             '　',
+            "\r\n",
+            "\r", 
+            "\n",
             PHP_EOL
-        );
-        
-        $to=array(
-            ''
-        );
-        $str=  str_replace($replace, $to, $str);
+        );        
+        $str=  str_replace($replace, ' ', $str);
         return $str;
     }
 

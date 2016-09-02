@@ -50,7 +50,7 @@ class AdminCommon extends CActiveRecord {
             'url' => Yii::app()->createUrl('admin/reports/index'),
             'active' => in_array($c, array('reports'))
         );
-        $attr['group'] = array(
+        $attr['tags'] = array(
             'title' => '标签',
             'url' => Yii::app()->createUrl('admin/tags/index'),
             'active' => in_array($c, array('tags'))
@@ -59,16 +59,6 @@ class AdminCommon extends CActiveRecord {
             'title' => '用户',
             'url' => Yii::app()->createUrl('admin/users/index'),
             'active' => in_array($c, array('users'))
-        );
-        $attr['attachments'] = array(
-            'title' => '图片',
-            'url' => Yii::app()->createUrl('admin/attachments/index'),
-            'active' => in_array($c, array('attachments'))
-        );
-        $attr['siteInfo'] = array(
-            'title' => '站点',
-            'url' => Yii::app()->createUrl('admin/siteInfo/index'),
-            'active' => in_array($c, array('siteInfo'))
         );
         $attr['words'] = array(
             'title' => '敏感词',
