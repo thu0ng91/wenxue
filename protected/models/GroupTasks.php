@@ -35,8 +35,8 @@ class GroupTasks extends CActiveRecord {
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('gid, tid, action, type, num, score, startTime, endTime, times', 'required'),
-            array('type, num', 'numerical', 'integerOnly' => true),
+            array('gid, tid, action', 'required'),
+            array('type,continuous, num', 'numerical', 'integerOnly' => true),
             array('gid, tid, score, startTime, endTime, times', 'length', 'max' => 10),
             array('action', 'length', 'max' => 16),
             // The following rule is used by search().
@@ -52,6 +52,8 @@ class GroupTasks extends CActiveRecord {
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
+            'groupInfo' => array(self::BELONGS_TO, 'Group', 'gid'),
+            'taskInfo' => array(self::BELONGS_TO, 'Task', 'tid'),
         );
     }
 
@@ -62,13 +64,14 @@ class GroupTasks extends CActiveRecord {
         return array(
             'id' => 'ID',
             'gid' => '团队ID',
-            'tid' => '权限ID',
+            'tid' => '任务ID',
             'action' => '操作标识',
-            'type' => '类型，一次性还是重复性任务',
+            'type' => '一次性任务',
+            'continuous' => '不可中断',
             'num' => '每天次数',
             'score' => '奖励积分',
-            'startTime' => '任务数',
-            'endTime' => '任务数',
+            'startTime' => '开始时间',
+            'endTime' => '结束时间',
             'times' => '参与人数',
         );
     }

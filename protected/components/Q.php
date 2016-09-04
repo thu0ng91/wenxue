@@ -50,6 +50,11 @@ class Q extends Controller {
                 Yii::app()->user->logout();
                 unset($this->uid);
                 unset($this->userInfo);
+            }elseif(!$this->userInfo['groupid']){
+                $currentUrl = Yii::app()->request->url;
+                if (strpos($currentUrl, 'user/joinGroup') === false && !$this->isAjax) {
+                    $this->redirect(array('user/joinGroup'));
+                }
             }
         }
     }
@@ -108,6 +113,9 @@ class Q extends Controller {
             if (!$this->userInfo['phoneChecked']) {
                 $msg = '请先验证你的手机号';
                 $url = Yii::app()->createUrl('user/setting',array('action'=>'checkPhone'));
+            }elseif(!$this->userInfo['groupid']){
+                $msg = '请先选择你的角色';
+                $url = Yii::app()->createUrl('user/joinGroup');
             }
         }
         if ($return) {

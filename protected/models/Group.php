@@ -33,7 +33,8 @@ class Group extends CActiveRecord {
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('title, faceImg, desc, tasks, members, status, cTime', 'required'),
+            array('cTime', 'default', 'setOnEmpty' => true, 'value' => zmf::now()),
+            array('title', 'required'),
             array('status', 'numerical', 'integerOnly' => true),
             array('title', 'length', 'max' => 50),
             array('faceImg, desc', 'length', 'max' => 255),
@@ -65,7 +66,7 @@ class Group extends CActiveRecord {
             'desc' => '描述',
             'tasks' => '任务数',
             'members' => '成员数',
-            'status' => '状态',
+            'status' => '推荐',
             'cTime' => '创建时间',
         );
     }
@@ -109,6 +110,15 @@ class Group extends CActiveRecord {
      */
     public static function model($className = __CLASS__) {
         return parent::model($className);
+    }
+    
+    public static function listAll(){
+        $items=  Group::model()->findAll();
+        return CHtml::listData($items, 'id', 'title');
+    }
+    
+    public static function getOne($id){
+        return Group::model()->findByPk($id);
     }
 
 }

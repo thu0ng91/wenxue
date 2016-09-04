@@ -30,7 +30,7 @@ class GroupPowers extends CActiveRecord {
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('gid, tid, value, score', 'required'),
+            array('gid, tid', 'required'),
             array('value, score', 'numerical', 'integerOnly' => true),
             array('gid, tid', 'length', 'max' => 10),
             // The following rule is used by search().
@@ -46,6 +46,8 @@ class GroupPowers extends CActiveRecord {
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
+            'groupInfo' => array(self::BELONGS_TO, 'Group', 'gid'),
+            'typeInfo' => array(self::BELONGS_TO, 'GroupPowerTypes', 'tid'),
         );
     }
 
@@ -55,8 +57,8 @@ class GroupPowers extends CActiveRecord {
     public function attributeLabels() {
         return array(
             'id' => 'ID',
-            'gid' => '团队ID',
-            'tid' => '权限ID',
+            'gid' => '用户组',
+            'tid' => '权限',
             'value' => '权限值',
             'score' => '积分值',
         );

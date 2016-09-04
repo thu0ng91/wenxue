@@ -1,13 +1,13 @@
 <?php
 
 /**
- * @filename GroupTasksController.php 
+ * @filename PostThreadsController.php 
  * @Description
  * @author 阿年飞少 <ph7pal@qq.com> 
  * @link http://www.newsoul.cn 
  * @copyright Copyright©2016 阿年飞少 
- * @datetime 2016-09-02 11:21:04 */
-class GroupTasksController extends Admin {
+ * @datetime 2016-09-04 22:17:36 */
+class PostThreadsController extends Admin {
 
     /**
      * Displays a particular model.
@@ -27,23 +27,15 @@ class GroupTasksController extends Admin {
         if ($id) {
             $model = $this->loadModel($id);
         } else {
-            $model = new GroupTasks;
+            $model = new PostThreads;
         }
         // Uncomment the following line if AJAX validation is needed
         // $this->performAjaxValidation($model);
-        if (isset($_POST['GroupTasks'])) {
-            if($_POST['GroupTasks']['tid']){
-                $taskInfo=  Task::getOne($_POST['GroupTasks']['tid']);
-                if($taskInfo){
-                    $_POST['GroupTasks']['action']=$taskInfo['action'];
-                }else{
-                    unset($_POST['GroupTasks']['tid']);
-                }
-            }
-            $model->attributes = $_POST['GroupTasks'];
+        if (isset($_POST['PostThreads'])) {
+            $model->attributes = $_POST['PostThreads'];
             if ($model->save()) {
                 if (!$id) {
-                    Yii::app()->user->setFlash('addGroupTasksSuccess', "保存成功！您可以继续添加。");
+                    Yii::app()->user->setFlash('addPostThreadsSuccess', "保存成功！您可以继续添加。");
                     $this->redirect(array('create'));
                 } else {
                     $this->redirect(array('index'));
@@ -81,8 +73,8 @@ class GroupTasksController extends Admin {
      * Lists all models.
      */
     public function actionIndex() {
-        $select = "id,gid,tid,action,type,num,score,startTime,endTime,times";
-        $model = new GroupTasks;
+        $select = "id,fid,type,uid,title,hits,posts,comments,favorites,styleStatus,digest,top,open,display,lastpost,lastposter,cTime";
+        $model = new PostThreads;
         $criteria = new CDbCriteria();
         $criteria->select = $select;
         $count = $model->count($criteria);
@@ -101,10 +93,10 @@ class GroupTasksController extends Admin {
      * Manages all models.
      */
     public function actionAdmin() {
-        $model = new GroupTasks('search');
+        $model = new PostThreads('search');
         $model->unsetAttributes();  // clear any default values
-        if (isset($_GET['GroupTasks']))
-            $model->attributes = $_GET['GroupTasks'];
+        if (isset($_GET['PostThreads']))
+            $model->attributes = $_GET['PostThreads'];
 
         $this->render('admin', array(
             'model' => $model,
@@ -115,11 +107,11 @@ class GroupTasksController extends Admin {
      * Returns the data model based on the primary key given in the GET variable.
      * If the data model is not found, an HTTP exception will be raised.
      * @param integer $id the ID of the model to be loaded
-     * @return GroupTasks the loaded model
+     * @return PostThreads the loaded model
      * @throws CHttpException
      */
     public function loadModel($id) {
-        $model = GroupTasks::model()->findByPk($id);
+        $model = PostThreads::model()->findByPk($id);
         if ($model === null)
             throw new CHttpException(404, 'The requested page does not exist.');
         return $model;
@@ -127,10 +119,10 @@ class GroupTasksController extends Admin {
 
     /**
      * Performs the AJAX validation.
-     * @param GroupTasks $model the model to be validated
+     * @param PostThreads $model the model to be validated
      */
     protected function performAjaxValidation($model) {
-        if (isset($_POST['ajax']) && $_POST['ajax'] === 'group-tasks-form') {
+        if (isset($_POST['ajax']) && $_POST['ajax'] === 'post-threads-form') {
             echo CActiveForm::validate($model);
             Yii::app()->end();
         }

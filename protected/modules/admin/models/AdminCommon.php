@@ -10,6 +10,16 @@ class AdminCommon extends CActiveRecord {
             'url' => Yii::app()->createUrl('admin/index/index'),
             'active' => in_array($c, array('index'))
         );
+        $attr['content'] = array(
+            'title' => '内容管理',
+            'url' => Yii::app()->createUrl('admin/index/index'),
+            'active' => in_array($c, array('index'))
+        );
+        $attr['users'] = array(
+            'title' => '用户管理',
+            'url' => Yii::app()->createUrl('admin/index/index'),
+            'active' => in_array($c, array('index'))
+        );
         $attr['showcases'] = array(
             'title' => '版块',
             'url' => Yii::app()->createUrl('admin/showcases/index'),
@@ -30,10 +40,15 @@ class AdminCommon extends CActiveRecord {
             'url' => Yii::app()->createUrl('admin/books/index'),
             'active' => in_array($c, array('books'))
         );
-        $attr['posts'] = array(
-            'title' => '文章',
-            'url' => Yii::app()->createUrl('admin/posts/index'),
-            'active' => in_array($c, array('posts'))
+        $attr['postThreads'] = array(
+            'title' => '帖子',
+            'url' => Yii::app()->createUrl('admin/postThreads/index'),
+            'active' => in_array($c, array('postThreads'))
+        );
+        $attr['postForums'] = array(
+            'title' => '帖子分类',
+            'url' => Yii::app()->createUrl('admin/postForums/index'),
+            'active' => in_array($c, array('postForums'))
         );
         $attr['comments'] = array(
             'title' => '评论',

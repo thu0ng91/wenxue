@@ -1048,8 +1048,8 @@ class zmf {
      */
     public static function yesOrNo($type = '') {
         $arr = array(
-            '0' => '不是',
-            '1' => '是',
+            '0' => 'No',
+            '1' => 'Yes',
         );
         if ($type == 'admin') {
             return $arr;

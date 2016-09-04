@@ -68,7 +68,7 @@ class Posts extends CActiveRecord {
             array('title, tagids', 'length', 'max' => 255),
             array('lat, long', 'length', 'max' => 50),
             array('favors', 'length', 'max' => 11),
-            array('favorite,zazhi,order,aid', 'length', 'max' => 10),
+            array('favorite,zazhi,order,aid,forumid', 'length', 'max' => 10),
         );
     }
 
@@ -108,6 +108,7 @@ class Posts extends CActiveRecord {
             'styleStatus' => '显示状态',
             'open' => '是否允许评论',
             'platform' => '来源',
+            'forumid' => '所属版块',
         );
     }
 

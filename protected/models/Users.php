@@ -163,7 +163,7 @@ class Users extends CActiveRecord {
         if(!$uid || !$field){
             return false;
         }
-        if(!in_array($field, array('password'))){
+        if(!in_array($field, array('password','groupid'))){
             return false;
         }
         $attr[$field]=$value;

@@ -327,6 +327,25 @@ class UserController extends Q {
             'action' => $action,
         ));
     }
+    
+    public function actionJoinGroup(){
+        $this->checkLogin();
+        $this->layout='common';
+        if($this->userInfo['groupid']){
+            $this->message(0, '你已选择过角色，请勿重复操作');
+        }
+        $groups=  Group::model()->findAll(array(
+            'condition'=>'status=1',//推荐
+        ));
+        foreach ($groups as $k=>$val){
+            $groups[$k]['id']=  Posts::encode($val['id'],'group');
+        }
+        $this->pageTitle='角色选择 - '.zmf::config('sitename');
+        $data=array(
+            'groups'=>$groups
+        );
+        $this->render('joinGroup',$data);
+    }
 
     public function actionNotice() {
         $this->checkLogin();

@@ -28,7 +28,7 @@ class GroupPowerTypes extends CActiveRecord {
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('key, desc', 'required'),
+            array('key', 'required'),
             array('key', 'length', 'max' => 16),
             array('desc', 'length', 'max' => 255),
             // The following rule is used by search().
@@ -92,6 +92,16 @@ class GroupPowerTypes extends CActiveRecord {
      */
     public static function model($className = __CLASS__) {
         return parent::model($className);
+    }
+    
+    public static function listAll(){
+        $items= GroupPowerTypes::model()->findAll();
+        return CHtml::listData($items, 'id', 'desc');
+    }
+    
+    public static function listKeys(){
+        $items= GroupPowerTypes::model()->findAll();
+        return CHtml::listData($items, 'key', 'desc');
     }
 
 }

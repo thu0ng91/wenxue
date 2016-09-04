@@ -15,10 +15,6 @@ $this->menu=array(
         'link'=>array('users/index'),
         'active'=>in_array($a,array('index'))
     ),
-    '新增用户'=>array(
-        'link'=>array('users/create'),
-        'active'=>in_array($a,array('create'))
-    ),
     '管理员'=>array(
         'link'=>array('users/admins'),
         'active'=>in_array($a,array('admins'))
@@ -38,5 +34,9 @@ $this->menu=array(
     '用户组任务'=>array(
         'link'=>array('groupTasks/index'),
         'active'=>in_array($c,array('groupTasks'))
+    ),
+    '任务'=>array(
+        'link'=>array('task/index'),
+        'active'=>in_array($c,array('task'))
     ),
 );

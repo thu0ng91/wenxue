@@ -15,76 +15,24 @@
 )); ?>
 <?php echo $form->errorSummary($model); ?>
     <div class="form-group">
-        <?php echo $form->labelEx($model,'title'); ?>
-        
+        <?php echo $form->labelEx($model,'title'); ?>        
         <?php echo $form->textField($model,'title',array('class'=>'form-control')); ?>
         <?php echo $form->error($model,'title'); ?>
     </div>
     <div class="form-group">
-        <?php echo $form->labelEx($model,'faceImg'); ?>
-        
+        <?php echo $form->labelEx($model,'faceImg'); ?>        
         <?php echo $form->textField($model,'faceImg',array('class'=>'form-control')); ?>
         <?php echo $form->error($model,'faceImg'); ?>
     </div>
     <div class="form-group">
-        <?php echo $form->labelEx($model,'desc'); ?>
-        
-        <?php echo $form->textField($model,'desc',array('class'=>'form-control')); ?>
+        <?php echo $form->labelEx($model,'desc'); ?>        
+        <?php echo $form->textArea($model,'desc',array('class'=>'form-control')); ?>
         <?php echo $form->error($model,'desc'); ?>
     </div>
     <div class="form-group">
-        <?php echo $form->labelEx($model,'action'); ?>
-        
-        <?php echo $form->textField($model,'action',array('class'=>'form-control')); ?>
+        <?php echo $form->labelEx($model,'action'); ?>        
+        <?php echo $form->dropDownlist($model,'action',  GroupPowerTypes::listKeys(),array('class'=>'form-control','empty'=>'--请选择--')); ?>
         <?php echo $form->error($model,'action'); ?>
-    </div>
-    <div class="form-group">
-        <?php echo $form->labelEx($model,'type'); ?>
-        
-        <?php echo $form->textField($model,'type',array('class'=>'form-control')); ?>
-        <?php echo $form->error($model,'type'); ?>
-    </div>
-    <div class="form-group">
-        <?php echo $form->labelEx($model,'continuous'); ?>
-        
-        <?php echo $form->textField($model,'continuous',array('class'=>'form-control')); ?>
-        <?php echo $form->error($model,'continuous'); ?>
-    </div>
-    <div class="form-group">
-        <?php echo $form->labelEx($model,'num'); ?>
-        
-        <?php echo $form->textField($model,'num',array('class'=>'form-control')); ?>
-        <?php echo $form->error($model,'num'); ?>
-    </div>
-    <div class="form-group">
-        <?php echo $form->labelEx($model,'score'); ?>
-        
-        <?php echo $form->textField($model,'score',array('class'=>'form-control')); ?>
-        <?php echo $form->error($model,'score'); ?>
-    </div>
-    <div class="form-group">
-        <?php echo $form->labelEx($model,'startTime'); ?>
-        
-        <?php echo $form->textField($model,'startTime',array('class'=>'form-control')); ?>
-        <?php echo $form->error($model,'startTime'); ?>
-    </div>
-    <div class="form-group">
-        <?php echo $form->labelEx($model,'endTime'); ?>
-        
-        <?php echo $form->textField($model,'endTime',array('class'=>'form-control')); ?>
-        <?php echo $form->error($model,'endTime'); ?>
-    </div>
-    <div class="form-group">
-        <?php echo $form->labelEx($model,'times'); ?>
-        
-        <?php echo $form->textField($model,'times',array('class'=>'form-control')); ?>
-        <?php echo $form->error($model,'times'); ?>
-    </div>
-    <div class="form-group">
-        <?php echo $form->labelEx($model,'cTime'); ?>
-        
-        <?php echo $form->textField($model,'cTime',array('class'=>'form-control')); ?>
-        <?php echo $form->error($model,'cTime'); ?>
     </div>
     <div class="form-group">
         <?php echo CHtml::submitButton($model->isNewRecord ? '新增' : '更新',array('class'=>'btn btn-primary')); ?>

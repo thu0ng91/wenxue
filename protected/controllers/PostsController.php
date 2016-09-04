@@ -3,22 +3,30 @@
 class PostsController extends Q {
 
     public $favorited = false;
+    
+    public function actionTypes(){
+        $items=  PostForums::model()->findAll();
+        $this->pageTitle='关注圈子 - '.zmf::config('sitename');
+        $data=array(
+            'forums'=>$items
+        );
+        $this->render('forums',$data);
+    }
 
     public function actionIndex() {
         $type = zmf::val('type', 1);
-        if (!in_array($type, array('author', 'reader'))) {
-            $type = 'author';
+        if ($type) {
+            $this->redirect(array('posts/types'));
+        }      
+        $forumId=  zmf::val('forum',2);
+        if(!$forumId){
+            $this->redirect(array('posts/types'));
         }
         $classify = 0;
-        if ($type == 'author') {
-            $classify = Posts::CLASSIFY_AUTHOR;
-            $label = '作者专区';
-            $sql = "SELECT p.id,p.title,p.faceimg,p.uid,u.truename AS username,p.cTime,p.comments,p.favorite,p.classify,p.top,p.styleStatus,p.aid FROM {{posts}} p,{{users}} u WHERE p.classify='{$classify}' AND p.status=" . Posts::STATUS_PASSED . " AND p.uid=u.id AND u.status=" . Posts::STATUS_PASSED . " ORDER BY p.top DESC,p.cTime DESC";
-        } elseif ($type == 'reader') {
-            $classify = Posts::CLASSIFY_READER;
-            $label = '读者专区';
-            $sql = "SELECT p.id,p.title,p.faceimg,p.uid,u.truename AS username,p.cTime,p.comments,p.favorite,p.classify,p.top,p.styleStatus FROM {{posts}} p,{{users}} u WHERE p.classify='{$classify}' AND p.status=" . Posts::STATUS_PASSED . " AND p.uid=u.id AND u.status=" . Posts::STATUS_PASSED . " ORDER BY p.top DESC,p.cTime DESC";
-        }
+        
+        $label = '作者专区';
+        $sql = "SELECT p.id,p.title,p.faceimg,p.uid,u.truename AS username,p.cTime,p.comments,p.favorite,p.classify,p.top,p.styleStatus,p.aid FROM {{posts}} p,{{users}} u WHERE p.status=" . Posts::STATUS_PASSED . " AND p.uid=u.id AND u.status=" . Posts::STATUS_PASSED . " ORDER BY p.top DESC,p.cTime DESC";
+        
         Posts::getAll(array('sql' => $sql, 'pageSize' => $this->pageSize), $pages, $posts);
         foreach ($posts as $k=>$val){
             $posts[$k]['faceimg']=  Attachments::faceImg($val, $this->isMobile ? 'c280' : 'c120', 'posts');

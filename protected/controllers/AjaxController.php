@@ -17,7 +17,7 @@ class AjaxController extends Q {
 
     public function actionDo() {
         $action = zmf::val('action', 1);
-        if (!in_array($action, array('addTip', 'saveUploadImg', 'publishBook', 'publishChapter', 'saveDraft', 'report', 'sendSms', 'checkSms', 'setStatus', 'delContent', 'getNotice', 'getContents', 'delBook', 'delChapter','finishBook','dapipi'))) {
+        if (!in_array($action, array('addTip', 'saveUploadImg', 'publishBook', 'publishChapter', 'saveDraft', 'report', 'sendSms', 'checkSms', 'setStatus', 'delContent', 'getNotice', 'getContents', 'delBook', 'delChapter','finishBook','dapipi','joinGroup'))) {
             $this->jsonOutPut(0, Yii::t('default', 'forbiddenaction'));
         }
         $this->$action();
@@ -1137,6 +1137,32 @@ class AjaxController extends Q {
         } else {
             $this->jsonOutPut(0, '操作失败，请重试');
         }
+    }
+    
+    private function joinGroup(){
+        $this->checkLogin();
+        if($this->userInfo['groupid']>0){
+            $this->jsonOutPut(0, '你已选择过角色，请勿重复操作');
+        }
+        $gidStr=  zmf::val('gid',1);
+        if(!$gidStr){
+            $this->jsonOutPut(0, '请选择你喜欢的角色');
+        }
+        $arr=  Posts::decode($gidStr);
+        if(!$arr['id'] || $arr['type']!='group'){
+            $this->jsonOutPut(0, '请选择你喜欢的角色');
+        }
+        $gid=$arr['id'];
+        $ginfo=  Group::getOne($gid);
+        if(!$ginfo || $ginfo['status']!=1){
+            $this->jsonOutPut(0, '暂不能选择该角色');
+        }
+        if(Users::updateInfo($this->uid, 'groupid', $gid)){
+            $url=  Yii::app()->createUrl('user/index');
+            $this->jsonOutPut(1, $url);
+        }else{
+            $this->jsonOutPut(0, '未知错误，请稍后重试');
+        }        
     }
 
 }

@@ -1,13 +1,13 @@
 <?php
 
 /**
- * @filename GroupTasksController.php 
+ * @filename PostForumsController.php 
  * @Description
  * @author 阿年飞少 <ph7pal@qq.com> 
  * @link http://www.newsoul.cn 
  * @copyright Copyright©2016 阿年飞少 
- * @datetime 2016-09-02 11:21:04 */
-class GroupTasksController extends Admin {
+ * @datetime 2016-09-04 20:55:29 */
+class PostForumsController extends Admin {
 
     /**
      * Displays a particular model.
@@ -27,23 +27,15 @@ class GroupTasksController extends Admin {
         if ($id) {
             $model = $this->loadModel($id);
         } else {
-            $model = new GroupTasks;
+            $model = new PostForums;
         }
         // Uncomment the following line if AJAX validation is needed
         // $this->performAjaxValidation($model);
-        if (isset($_POST['GroupTasks'])) {
-            if($_POST['GroupTasks']['tid']){
-                $taskInfo=  Task::getOne($_POST['GroupTasks']['tid']);
-                if($taskInfo){
-                    $_POST['GroupTasks']['action']=$taskInfo['action'];
-                }else{
-                    unset($_POST['GroupTasks']['tid']);
-                }
-            }
-            $model->attributes = $_POST['GroupTasks'];
+        if (isset($_POST['PostForums'])) {
+            $model->attributes = $_POST['PostForums'];
             if ($model->save()) {
                 if (!$id) {
-                    Yii::app()->user->setFlash('addGroupTasksSuccess', "保存成功！您可以继续添加。");
+                    Yii::app()->user->setFlash('addPostForumsSuccess', "保存成功！您可以继续添加。");
                     $this->redirect(array('create'));
                 } else {
                     $this->redirect(array('index'));
@@ -81,8 +73,8 @@ class GroupTasksController extends Admin {
      * Lists all models.
      */
     public function actionIndex() {
-        $select = "id,gid,tid,action,type,num,score,startTime,endTime,times";
-        $model = new GroupTasks;
+        $select = "id,title,posts,favors";
+        $model = new PostForums;
         $criteria = new CDbCriteria();
         $criteria->select = $select;
         $count = $model->count($criteria);
@@ -101,10 +93,10 @@ class GroupTasksController extends Admin {
      * Manages all models.
      */
     public function actionAdmin() {
-        $model = new GroupTasks('search');
+        $model = new PostForums('search');
         $model->unsetAttributes();  // clear any default values
-        if (isset($_GET['GroupTasks']))
-            $model->attributes = $_GET['GroupTasks'];
+        if (isset($_GET['PostForums']))
+            $model->attributes = $_GET['PostForums'];
 
         $this->render('admin', array(
             'model' => $model,
@@ -115,11 +107,11 @@ class GroupTasksController extends Admin {
      * Returns the data model based on the primary key given in the GET variable.
      * If the data model is not found, an HTTP exception will be raised.
      * @param integer $id the ID of the model to be loaded
-     * @return GroupTasks the loaded model
+     * @return PostForums the loaded model
      * @throws CHttpException
      */
     public function loadModel($id) {
-        $model = GroupTasks::model()->findByPk($id);
+        $model = PostForums::model()->findByPk($id);
         if ($model === null)
             throw new CHttpException(404, 'The requested page does not exist.');
         return $model;
@@ -127,10 +119,10 @@ class GroupTasksController extends Admin {
 
     /**
      * Performs the AJAX validation.
-     * @param GroupTasks $model the model to be validated
+     * @param PostForums $model the model to be validated
      */
     protected function performAjaxValidation($model) {
-        if (isset($_POST['ajax']) && $_POST['ajax'] === 'group-tasks-form') {
+        if (isset($_POST['ajax']) && $_POST['ajax'] === 'post-types-form') {
             echo CActiveForm::validate($model);
             Yii::app()->end();
         }

@@ -15,6 +15,5 @@
     <?php foreach ($cols as $colid=>$colTitle){?>
     <li<?php echo $this->selectNav == 'column'.$colid ? ' class="active"' : ''; ?>><?php echo CHtml::link($colTitle, array('showcase/index','cid'=>$colid)); ?></li>
     <?php }?>
-    <li<?php echo $this->selectNav == 'authorForum' ? ' class="active"' : ''; ?>><?php echo CHtml::link('作者专区', array('posts/index','type'=>'author')); ?></li>
-    <li<?php echo $this->selectNav == 'readerForum' ? ' class="active"' : ''; ?>><?php echo CHtml::link('读者专区', array('posts/index','type'=>'reader')); ?></li>
+    <li<?php echo $this->selectNav == 'authorForum' ? ' class="active"' : ''; ?>><?php echo CHtml::link('论坛', array('posts/types')); ?></li>
 </ul>

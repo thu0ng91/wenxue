@@ -15,15 +15,13 @@
 )); ?>
 <?php echo $form->errorSummary($model); ?>
     <div class="form-group">
-        <?php echo $form->labelEx($model,'key'); ?>
-        
+        <?php echo $form->labelEx($model,'key'); ?>        
         <?php echo $form->textField($model,'key',array('class'=>'form-control')); ?>
         <?php echo $form->error($model,'key'); ?>
     </div>
     <div class="form-group">
-        <?php echo $form->labelEx($model,'desc'); ?>
-        
-        <?php echo $form->textField($model,'desc',array('class'=>'form-control')); ?>
+        <?php echo $form->labelEx($model,'desc'); ?>        
+        <?php echo $form->textArea($model,'desc',array('class'=>'form-control')); ?>
         <?php echo $form->error($model,'desc'); ?>
     </div>
     <div class="form-group">

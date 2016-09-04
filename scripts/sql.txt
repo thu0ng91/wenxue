@@ -1,0 +1,133 @@
+DROP TABLE IF EXISTS `pre_group`;
+CREATE TABLE `pre_group` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `title` varchar(50) NOT NULL COMMENT '标题',
+  `faceImg` varchar(255) NOT NULL COMMENT '封面图',
+  `desc` varchar(255) NOT NULL COMMENT '描述',
+  `tasks` int(10) unsigned NOT NULL COMMENT '任务数',
+  `members` int(10) unsigned NOT NULL COMMENT '成员数',
+  `status` tinyint(1) NOT NULL COMMENT '状态',
+  `cTime` int(10) unsigned NOT NULL COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `pre_power_types`;
+CREATE TABLE `pre_group_power_types` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `key` varchar(16) NOT NULL COMMENT '权限',
+  `desc` varchar(255) NOT NULL COMMENT '描述',  
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `pre_group_powers`;
+CREATE TABLE `pre_group_powers` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `gid` int(10) unsigned NOT NULL COMMENT '团队ID',
+  `tid` int(10) unsigned NOT NULL COMMENT '权限ID',
+  `value` tinyint(3) unsigned NOT NULL COMMENT '权限值',
+  `score` int(10)  NOT NULL COMMENT '积分值',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `pre_group_tasks`;
+CREATE TABLE `pre_group_tasks` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `gid` int(10) unsigned NOT NULL COMMENT '团队ID',
+  `tid` int(10) unsigned NOT NULL COMMENT '权限ID',  
+  `action` varchar(16) NOT NULL COMMENT '操作标识',
+  `type` tinyint(1) unsigned NOT NULL COMMENT '类型，一次性还是重复性任务',
+  `continuous` tinyint(1) unsigned NOT NULL COMMENT '不可中断',
+  `num` tinyint(3) unsigned NOT NULL COMMENT '每天次数',
+  `score` int(10) unsigned NOT NULL COMMENT '奖励积分',
+  `startTime` int(10) unsigned NOT NULL COMMENT '任务数',
+  `endTime` int(10) unsigned NOT NULL COMMENT '任务数',  
+  `times` int(10) unsigned NOT NULL COMMENT '参与人数',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `pre_task`;
+CREATE TABLE `pre_task` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `title` varchar(50) NOT NULL COMMENT '标题',
+  `faceImg` varchar(255) NOT NULL COMMENT '封面图',
+  `desc` varchar(255) NOT NULL COMMENT '描述',
+  `action` varchar(16) NOT NULL COMMENT '操作标识',  
+  `times` int(10) unsigned NOT NULL COMMENT '参与人数',
+  `cTime` int(10) unsigned NOT NULL COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+
+DROP TABLE IF EXISTS `pre_task_logs`;
+CREATE TABLE `pre_task_logs` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `uid` int(10) unsigned NOT NULL COMMENT '用户ID',
+  `tid` int(10) unsigned NOT NULL COMMENT '任务ID',  
+  `times` tinyint(3) unsigned NOT NULL COMMENT '参与次数',
+  `cTime` int(10) unsigned NOT NULL COMMENT '参与时间',
+  `status` tinyint(1) NOT NULL COMMENT '状态，是否已达成',
+  `score` int(10) unsigned NOT NULL COMMENT '奖励积分',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `pre_task_records`;
+CREATE TABLE `pre_task_records` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `uid` int(10) unsigned NOT NULL COMMENT '用户ID',
+  `tid` int(10) unsigned NOT NULL COMMENT '任务ID',    
+  `cTime` int(10) unsigned NOT NULL COMMENT '参与时间',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `pre_score_logs`;
+CREATE TABLE `pre_score_logs` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `uid` int(10) unsigned NOT NULL COMMENT '用户ID',
+  `classify` varchar(16) NOT NULL COMMENT '分类',
+  `logid` int(10) unsigned NOT NULL COMMENT '对象ID',  
+  `score` int(10) NOT NULL COMMENT '积分',
+  `cTime` int(10) unsigned NOT NULL COMMENT '参与时间',  
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+alter TABLE pre_users add groupid int(10) UNSIGNED not null COMMENT '所属团队ID';
+
+
+DROP TABLE IF EXISTS `pre_post_forums`;
+CREATE TABLE `pre_post_forums` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `title` varchar(16) NOT NULL COMMENT '标题',
+  `desc` varchar(255) NOT NULL COMMENT '描述',
+  `faceImg` varchar(255) NOT NULL COMMENT '封面图',
+  `posts` int(10) unsigned NOT NULL COMMENT '作品数',  
+  `favors` int(10) unsigned NOT NULL COMMENT '关注数', 
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+alter TABLE pre_posts add forumid int(10) UNSIGNED not null COMMENT '所属版块ID';
+
+
+DROP TABLE IF EXISTS pre_post_threads;
+CREATE TABLE pre_post_threads (
+  id int(10) unsigned NOT NULL AUTO_INCREMENT,
+  fid int(10) unsigned NOT NULL COMMENT '所属版块',  
+  type int(10) unsigned NOT NULL COMMENT '文章分类',
+  uid int(10) unsigned NOT NULL COMMENT '作者',
+  title char(80) NOT NULL COMMENT '标题',
+  faceImg char(255) NOT NULL COMMENT '封面图',
+  
+  hits int(10) unsigned NOT NULL COMMENT '点击',
+  posts int(10) unsigned NOT NULL COMMENT '楼层数',
+  comments int(10) unsigned NOT NULL COMMENT '评论数',
+  favorites int(10) unsigned NOT NULL COMMENT '收藏数',  
+
+  styleStatus tinyint(1) NOT NULL COMMENT '显示状态',
+  digest tinyint(1) NOT NULL COMMENT '是否加精',
+  `top` tinyint(1) NOT NULL COMMENT '是否置顶',
+  `open` tinyint(1) NOT NULL COMMENT '是否开放回复',
+  `display` tinyint(1) NOT NULL COMMENT '是否倒序',
+  
+  lastpost int(10) unsigned NOT NULL COMMENT '最后回帖时间',
+  lastposter int(10) unsigned NOT NULL COMMENT '最后回帖人',
+  cTime int(10) unsigned NOT NULL COMMENT '发布时间',
+  PRIMARY KEY (id)
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
