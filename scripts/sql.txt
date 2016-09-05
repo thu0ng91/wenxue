@@ -154,3 +154,5 @@ CREATE TABLE `pre_post_posts` (
 alter TABLE pre_post_threads add status tinyint(1) UNSIGNED not null COMMENT '帖子状态';
 alter TABLE pre_post_posts add isFirst tinyint(1) UNSIGNED not null COMMENT '是否首贴';
 alter TABLE pre_post_posts add platform tinyint(1) UNSIGNED not null COMMENT '来源';
+
+alter TABLE pre_post_threads add aid int(10) UNSIGNED not null COMMENT '作者ID';

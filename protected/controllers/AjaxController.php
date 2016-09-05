@@ -17,10 +17,26 @@ class AjaxController extends Q {
 
     public function actionDo() {
         $action = zmf::val('action', 1);
-        if (!in_array($action, array('addTip', 'saveUploadImg', 'publishBook', 'publishChapter', 'saveDraft', 'report', 'sendSms', 'checkSms', 'setStatus', 'delContent', 'getNotice', 'getContents', 'delBook', 'delChapter','finishBook','dapipi','joinGroup'))) {
+        if (!in_array($action, array('addTip', 'saveUploadImg', 'publishBook', 'publishChapter', 'saveDraft', 'report', 'sendSms', 'checkSms', 'setStatus', 'delContent', 'getNotice', 'getContents', 'delBook', 'delChapter','finishBook','dapipi','joinGroup','float'))) {
             $this->jsonOutPut(0, Yii::t('default', 'forbiddenaction'));
         }
         $this->$action();
+    }
+    
+    private function float(){
+        $data=  zmf::val('data',1);
+        if(!$data){
+            $this->jsonOutPut(0, '缺少参数~');
+        }
+        $arr=  Posts::decode($data);
+        switch ($arr['type']) {
+            case 'tasks':
+                $this->userTasks();
+                break;
+            default:
+                $this->jsonOutPut(0, '不被允许的操作~');
+                break;
+        }
     }
 
     private function addTip() {
@@ -1163,6 +1179,17 @@ class AjaxController extends Q {
         }else{
             $this->jsonOutPut(0, '未知错误，请稍后重试');
         }        
+    }
+    
+    private function userTasks(){
+        $this->checkLogin();
+        $this->checkUserStatus();
+        $sql="SELECT t.id,t.title,t.faceImg FROM {{task}} t,{{group_tasks}} gt WHERE gt.gid=:gid AND gt.tid=t.id LIMIT 10";
+        $res=  Yii::app()->db->createCommand($sql);
+        $res->bindValue(':gid', $this->userInfo['groupid']);
+        $tasks=$res->queryAll();
+        $html=$this->renderPartial('/user/tasks',array('tasks'=>$tasks),true);
+        $this->jsonOutPut(1, $html);
     }
 
 }

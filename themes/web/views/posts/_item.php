@@ -22,7 +22,7 @@
             <?php }?>
             <span><?php echo zmf::formatTime($data['cTime']);?></span>                            
             <span><?php echo $data['comments'];?>评论</span>                            
-            <span><?php echo $data['favorite'];?>赞</span>                            
+            <span><?php echo $data['favorites'];?>赞</span>                            
         </p>
     </div>
 </div>

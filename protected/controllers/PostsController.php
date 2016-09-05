@@ -27,13 +27,13 @@ class PostsController extends Q {
             $this->message(0, '你所查看的版块不存在');
         }
 
-        $sql = "SELECT p.id,p.title,p.faceimg,p.uid,u.truename AS username,p.cTime,p.comments,p.favorite,p.classify,p.top,p.styleStatus,p.aid FROM {{posts}} p,{{users}} u WHERE p.status=" . Posts::STATUS_PASSED . " AND p.uid=u.id AND u.status=" . Posts::STATUS_PASSED . " ORDER BY p.top DESC,p.cTime DESC";
+        $sql = "SELECT p.id,p.title,p.faceImg,p.uid,u.truename AS username,p.cTime,p.comments,p.favorites,p.top,p.digest,p.styleStatus,p.aid FROM {{post_threads}} p,{{users}} u WHERE p.status=" . Posts::STATUS_PASSED . " AND p.uid=u.id AND u.status=" . Posts::STATUS_PASSED . " ORDER BY p.top DESC,p.cTime DESC";
 
         Posts::getAll(array('sql' => $sql, 'pageSize' => $this->pageSize), $pages, $posts);
         foreach ($posts as $k => $val) {
-            $posts[$k]['faceimg'] = Attachments::faceImg($val, $this->isMobile ? 'c280' : 'c120', 'posts');
+            $posts[$k]['faceImg'] = zmf::getThumbnailUrl($val['faceImg'], $this->isMobile ? 'c280' : 'c120', 'posts');
         }
-        if ($type == 'author' && !empty($posts)) {
+        if (!empty($posts)) {
             $aids = join(',', array_unique(array_filter(array_keys(CHtml::listData($posts, 'aid', '')))));
             $authors = array();
             if ($aids != '') {

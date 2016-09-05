@@ -11,7 +11,7 @@ return array(
         'books/list-<colid:\d+>' => 'book/index',
         'author/<id:\d+>' => 'author/view',
         'user/<id:\d+>' => 'user/index',
-        'forum-<forum:\d+>' => 'posts/index',
+        //'forum-<forum:\d+>' => 'posts/index',
         'forum/<type:\w+>' => 'posts/index',
         'updatePost/<id:\d+>' => 'posts/create',
         'post/<id:\d+>' => 'posts/view',

@@ -648,6 +648,30 @@ function rebind() {
             }
         });
     });
+    $("a[action=float]").unbind('click').click(function () {
+        var dom=$(this);
+        var data=dom.attr('action-data');
+        if(!data){
+            return false;
+        }
+        var width=dom.outerWidth();
+        var height=dom.outerHeight();
+        var domTop=dom.offset().top;
+        var leftDom=dom.offset().left;
+        var widthWindow=$(window).width();
+        var widthBody=960;
+        var w=(widthBody/2)-(leftDom-widthWindow/2)-width/2-7;
+        $('#float-triangle').css({right:w+'px'});
+        $('#float-holder').css({top:(domTop+height)+'px'}).show();
+        $.post(zmf.ajaxUrl, {action: 'float', data: data,YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
+            result = eval('(' + result + ')');
+            if (result['status'] === 1) {
+                $('#float-content').html(result['msg']);
+            } else {
+                dialog({msg: result['msg']});
+            }
+        });
+    });
     //调用复制
     var clipboard = new Clipboard('.btn-copy');
     clipboard.on('success', function (e) {
