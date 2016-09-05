@@ -28,6 +28,8 @@
  * @property string $cTime
  */
 class PostThreads extends CActiveRecord {
+    
+    public $content;//帖子第一楼正文
 
     /**
      * @return string the associated database table name
@@ -46,7 +48,7 @@ class PostThreads extends CActiveRecord {
             array('uid', 'default', 'setOnEmpty' => true, 'value' => zmf::uid()),
             array('cTime', 'default', 'setOnEmpty' => true, 'value' => zmf::now()),
             array('fid,uid,title', 'required'),
-            array('styleStatus, digest, top, open, display', 'numerical', 'integerOnly' => true),
+            array('styleStatus, digest, top, open, display,status', 'numerical', 'integerOnly' => true),
             array('fid, type, uid, hits, posts, comments, favorites, lastpost, lastposter, cTime', 'length', 'max' => 10),
             array('title', 'length', 'max' => 80),
             array('faceImg', 'length', 'max' => 255),
@@ -89,6 +91,7 @@ class PostThreads extends CActiveRecord {
             'lastpost' => '最后回帖时间',
             'lastposter' => '最后回帖人',
             'cTime' => '发布时间',
+            'status' => '帖子状态',
         );
     }
 

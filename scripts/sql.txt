@@ -131,3 +131,26 @@ CREATE TABLE pre_post_threads (
   cTime int(10) unsigned NOT NULL COMMENT '发布时间',
   PRIMARY KEY (id)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+
+DROP TABLE IF EXISTS `pre_post_posts`;
+CREATE TABLE `pre_post_posts` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uid` int(11) NOT NULL COMMENT '作者ID',  
+  `aid` int(10) unsigned NOT NULL COMMENT '作者ID',
+  `tid` int(10) unsigned NOT NULL COMMENT '帖子ID',
+  `content` text NOT NULL COMMENT '正文',
+  `comments` int(10) NOT NULL COMMENT '评论数',
+  `favors` int(11) unsigned NOT NULL COMMENT '点赞数',    
+  `cTime` int(11) NOT NULL COMMENT '创建时间',
+  `updateTime` int(11) NOT NULL COMMENT '最近更新时间',  
+  `open` tinyint(1) unsigned NOT NULL COMMENT '是否允许评论',
+  `status` tinyint(1) NOT NULL COMMENT '楼层状态',
+  PRIMARY KEY (`id`),
+  KEY `uid` (`uid`),
+  KEY `tid` (`tid`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+alter TABLE pre_post_threads add status tinyint(1) UNSIGNED not null COMMENT '帖子状态';
+alter TABLE pre_post_posts add isFirst tinyint(1) UNSIGNED not null COMMENT '是否首贴';
+alter TABLE pre_post_posts add platform tinyint(1) UNSIGNED not null COMMENT '来源';

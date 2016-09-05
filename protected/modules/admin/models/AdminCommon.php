@@ -46,7 +46,7 @@ class AdminCommon extends CActiveRecord {
             'active' => in_array($c, array('postThreads'))
         );
         $attr['postForums'] = array(
-            'title' => '帖子分类',
+            'title' => '帖子版块',
             'url' => Yii::app()->createUrl('admin/postForums/index'),
             'active' => in_array($c, array('postForums'))
         );

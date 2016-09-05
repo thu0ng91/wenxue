@@ -104,4 +104,8 @@ class PostForums extends CActiveRecord {
         return parent::model($className);
     }
 
+    public static function getOne($id) {
+        return PostForums::model()->findByPk($id);
+    }
+
 }

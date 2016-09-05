@@ -13,14 +13,14 @@
     <div class="main-part">
         <div class="module">
             <div class="module-header">
-                <?php echo $label;?>                
+                <?php echo $forumInfo['title'];?>                
                 <?php 
                 if($type=='author'){
                     if($this->userInfo['authorId']>0 || $this->userInfo['isAdmin']){
-                        echo CHtml::link('<i class="fa fa-plus"></i> 发布文章',array('posts/create','type'=>$type),array('class'=>'pull-right'));
+                        echo CHtml::link('<i class="fa fa-plus"></i> 发布文章',array('posts/create','forum'=>$forumInfo['id']),array('class'=>'pull-right'));
                     }
                 }else{
-                    echo CHtml::link('<i class="fa fa-plus"></i> 发布文章',array('posts/create','type'=>$type),array('class'=>'pull-right'));
+                    echo CHtml::link('<i class="fa fa-plus"></i> 发布文章',array('posts/create','forum'=>$forumInfo['id']),array('class'=>'pull-right'));
                 }
                 ?>
             </div>

@@ -2,52 +2,50 @@
 $url=zmf::config('domain').Yii::app()->createUrl('posts/view',array('id'=>$info['id']));
 $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
 ?>
-<div class="container post-page">    
+<style>
+    .post-page .main-part .module .module-body{
+        padding-left: 0;
+        padding-right: 0
+    }
+    .post-header{
+        border-bottom: 1px solid #e4e4e4;
+        padding-left: 20px;
+        padding-right: 20px;
+        
+    }
+    .post-title-right{
+        width: 140px;
+        display: inline-block
+    }
+    .post-content .media .media-left{
+        padding-left: 20px;
+    }
+    .post-content .media .media-body{
+        padding-left: 0;
+        padding-right: 20px;
+    }
+</style>
+<div class="container post-page">
     <ol class="breadcrumb">
-        <li><?php echo CHtml::link(zmf::config('sitename').'首页',  zmf::config('baseurl'));?></li>
-        <?php if($info['classify']==Posts::CLASSIFY_AUTHOR){?>
-        <li><?php echo CHtml::link('作者专区',array('posts/index','type'=>'author'));?></li>
-        <?php }elseif($info['classify']==Posts::CLASSIFY_READER){?>
-        <li><?php echo CHtml::link('读者专区',array('posts/index','type'=>'reader'));?></li>
-        <?php }?>
+        <li><?php echo CHtml::link(zmf::config('sitename').'首页',  zmf::config('baseurl'));?></li>        
+        <li><?php echo CHtml::link($forumInfo['title'],array('posts/index','forum'=>$forumInfo['id']));?></li>        
         <li class="active"><?php echo $info['title']; ?></li>
     </ol>
     <div class="main-part">
         <div class="module">
             <div class="module-body">
-                <div class="media">
-                    <div class="media-left">
-                        <?php echo CHtml::link(CHtml::image(zmf::lazyImg(), $authorInfo['title'], array('data-original'=>$authorInfo['avatar'],'class'=>'lazy img-circle a64 media-object')),$authorInfo['url']);?>
-                    </div>
+                <div class="media post-header">
                     <div class="media-body">
                         <h1><?php echo $info['title'];?></h1>
-                        <p class="color-grey tips">
+<!--                        <p class="color-grey tips">
                             <?php if($info['top']){?>
                             <span style="color:red" title="置顶"><i class="fa fa-bookmark"></i></span>
                             <?php }?>
                             <?php if($info['styleStatus']){?>
                             <span style="color:red" title="加精"><i class="fa fa-flag"></i></span>
                             <?php }?>
-                            <span><?php echo CHtml::link($authorInfo['title'],$authorInfo['url']);?></span>
-                            <span><?php echo zmf::time($info['cTime'],'Y-m-d H:i');?></span>
-                            <?php if($this->uid){?>
-                            <span>|</span>
-                            <?php }?>
-                            <?php if($info['uid']==$this->uid && $this->uid){?>
-                            <span><?php echo CHtml::link('编辑',array('posts/create','id'=>$info['id']));?></span>
-                            <span><?php echo CHtml::link('删除','javascript:;',array('action'=>'delContent','data-type'=>'post','data-id'=>$info['id'],'data-confirm'=>1,'data-redirect'=>Yii::app()->createUrl('posts/index',array('type'=>$type))));?></span>
-                            <?php }else{?>
-                            <span><?php echo CHtml::link('举报','javascript:;',array('action'=>'report','action-type'=>'post','action-id'=>$info['id'],'action-title'=>$info['title']));?></span>
-                            <?php }?>
-                            <span class="pull-right">
-                                <span title="点击"><i class="fa fa-eye"></i> <?php echo $info['hits'];?></span>
-                                <span title="评论"><?php echo CHtml::link('<i class="fa fa-comments"></i> '.$info['comments'],'javascript:;',array('action'=>'scroll','action-target'=>'comments-posts-'.$info['id'].'-box'));?></span>
-                                <span title="点赞"><i class="fa fa-thumbs-up"></i> <?php echo $info['favorite'];?></span>
-                            </span>
-                        </p>
-                        <?php if($this->uid && $this->userInfo['isAdmin']){?>
-                        <p class="color-grey tips">
-                            <span>更多操作：</span>                            
+                        
+                            <?php if($this->uid && $this->userInfo['isAdmin']){?>
                             <span><?php echo CHtml::link($info['top'] ? '已置顶' : '置顶','javascript:;',array('action'=>'setStatus','data-type'=>'post','data-action'=>'top','data-id'=>$info['id']));?></span>
                             <span><?php echo CHtml::link($info['styleStatus']==Posts::STATUS_BOLD ? '已加粗' : '加粗','javascript:;',array('action'=>'setStatus','data-type'=>'post','data-action'=>'bold','data-id'=>$info['id']));?></span>
                             <span><?php echo CHtml::link($info['styleStatus']==Posts::STATUS_RED ? '已标红' : '标红','javascript:;',array('action'=>'setStatus','data-type'=>'post','data-action'=>'red','data-id'=>$info['id']));?></span>
@@ -57,55 +55,50 @@ $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
                             <?php if($info['uid']!=$this->uid){?>
                             <span><?php echo CHtml::link('编辑',array('posts/create','id'=>$info['id']));?></span>
                             <span><?php echo CHtml::link('删除','javascript:;',array('action'=>'delContent','data-type'=>'post','data-id'=>$info['id'],'data-confirm'=>1,'data-redirect'=>Yii::app()->createUrl('posts/index',array('type'=>$type))));?></span>
+                            <?php }?>                        
                             <?php }?>
+                            <?php if($info['uid']==$this->uid && $this->uid){?>
+                            <span><?php echo CHtml::link('编辑',array('posts/create','id'=>$info['id']));?></span>
+                            <span><?php echo CHtml::link('删除','javascript:;',array('action'=>'delContent','data-type'=>'post','data-id'=>$info['id'],'data-confirm'=>1,'data-redirect'=>Yii::app()->createUrl('posts/index',array('type'=>$type))));?></span>
+                            <?php }else{?>
+                            <span><?php echo CHtml::link('举报','javascript:;',array('action'=>'report','action-type'=>'post','action-id'=>$info['id'],'action-title'=>$info['title']));?></span>
+                            <?php }?>
+                        </p>-->
+                    </div>                    
+                    <div class="media-right">
+                        <p class="post-title-right">
+                            <?php echo CHtml::link('只看楼主',array('posts/view','id'=>$info['id'],'see_lz'=>1),array('class'=>'btn btn-xs btn-default'));?>
+                            <?php echo CHtml::link('收藏','javascript:;',array('class'=>'btn btn-xs btn-default'));?>
+                            <?php echo CHtml::link('回复',array('posts/reply','tid'=>$info['id']),array('class'=>'btn btn-xs btn-default'));?>
                         </p>
-                        <?php }?>
                     </div>
                 </div>
                 <div class="post-content">
-                    <?php echo $info['content'];?>
+                    <?php foreach ($posts as $post){?>
+                    <?php $this->renderPartial('/posts/_postPost',array('data'=>$post));?>                    
+                    <?php }?>
                 </div>
+                
+                
                 <?php if($info['open']==Posts::STATUS_OPEN){?>
                     <?php if($this->favorited){?>
                     <p class="text-center"><?php echo CHtml::link('<i class="fa fa-thumbs-up"></i> 已赞','javascript:;',array('class'=>'btn btn-default btn-sm','action'=>'favorite','action-data'=>$info['id'],'action-type'=>'post'));?></p>
                     <?php }else{?>
                     <p class="text-center"><?php echo CHtml::link('<i class="fa fa-thumbs-o-up"></i> 赞','javascript:;',array('class'=>'btn btn-danger btn-sm','action'=>'favorite','action-data'=>$info['id'],'action-type'=>'post'));?></p>
                     <?php }?>
-                <?php }?>
-                <div class="pull-right">   
-                    <?php $this->renderPartial('/common/share');?>
-                </div> 
+                <?php }?> 
             </div>
         </div>
-        <?php if(!empty($comments) || $info['open']==Posts::STATUS_OPEN){?>
-        <div class="module">
-            <div class="module-header">评论</div>
-            <div class="module-body">
-                <div id="comments-posts-<?php echo $info['id'];?>-box" class="post-comments">
-                    <div id="comments-posts-<?php echo $info['id'];?>">
-                        <?php if(!empty($comments)){?>
-                        <?php foreach($comments as $comment){?>
-                        <?php $this->renderPartial('/posts/_comment',array('data'=>$comment,'postInfo'=>$info,'showAvatar'=>true));?>
-                        <?php }?>
-                        <?php }else{?>
-                        <p class="help-block text-center">暂无评论！</p>
-                        <?php }?>
-                        <?php if($loadMore){?>
-                        <div class="loading-holder"><a class="btn btn-default btn-sm text-center" action="getContents" data-id="<?php echo $info['id'];?>" data-type="postComments" data-target="comments-posts-<?php echo $info['id'];?>" href="javascript:;" data-page="2">加载更多</a></div>
-                        <?php }?>
-                    </div>
-                    
-                </div>
-                <?php if($info['open']==Posts::STATUS_OPEN){?>
-                <div id="add-comments">
-                    <?php $this->renderPartial('/posts/_addComment', array('keyid' => $info['id'], 'type' => 'posts','authorPanel'=>($info['classify']==Posts::CLASSIFY_AUTHOR && $this->userInfo['authorId']>0),'authorLogin'=>  Authors::checkLogin($this->userInfo, $this->userInfo['authorId']))); ?>
-                </div>
-                <?php }?>
-            </div>
-        </div>
-        <?php }?>
+        
     </div>
     <div class="aside-part">
+        <div class="module">
+            <div class="module-header">分享</div>
+            <div class="module-body">
+                <?php $this->renderPartial('/common/share');?>
+            </div>
+        </div>
+        
         <?php if(!empty($tags)){?>
         <div class="module">
             <div class="module-header">文章标签</div>

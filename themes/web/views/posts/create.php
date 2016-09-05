@@ -17,11 +17,7 @@
     )); ?>
     <ol class="breadcrumb">
         <li><a href="#">初心创文首页</a></li>
-        <?php if($model['classify']==Posts::CLASSIFY_AUTHOR){?>
-        <li><?php echo CHtml::link('作者专区',array('posts/index','type'=>'author'));?></li>
-        <?php }elseif($model['classify']==Posts::CLASSIFY_READER){?>
-        <li><?php echo CHtml::link('读者专区',array('posts/index','type'=>'reader'));?></li>
-        <?php }?>
+        <li><?php echo CHtml::link($forumInfo['title'],array('posts/index','forum'=>$forumInfo['id']));?></li>        
         <li class="active">新增文章</li>
     </ol>
     <div class="module add-post-page">
