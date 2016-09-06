@@ -17,6 +17,8 @@
  * @property string $ip
  */
 class UserAction extends CActiveRecord {
+    
+    const STATUS_DISPLAY=1;//显示为动态
 
     /**
      * @return string the associated database table name
@@ -36,8 +38,10 @@ class UserAction extends CActiveRecord {
             array('cTime', 'default', 'setOnEmpty' => true, 'value' => zmf::now()),
             array('ip', 'default', 'setOnEmpty' => true, 'value' => ip2long(Yii::app()->request->userHostAddress)),
             array('uid, logid, classify, data', 'required'),
-            array('uid, logid', 'length', 'max' => 10),
+            array('display', 'numerical', 'integerOnly' => true),
+            array('uid, logid,score', 'length', 'max' => 10),
             array('classify', 'length', 'max' => 32),
+            array('action', 'length', 'max' => 16),
             array('cTime, ip', 'length', 'max' => 11),
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
@@ -67,6 +71,9 @@ class UserAction extends CActiveRecord {
             'data' => '对象内容',
             'cTime' => '创建时间',
             'ip' => '所在IP',
+            'action' => '操作',
+            'score' => '积分',
+            'display' => '是否显示为动态',
         );
     }
 
@@ -141,6 +148,15 @@ class UserAction extends CActiveRecord {
         $model = new UserAction();        
         $model->attributes = $data;
         return $model->save();
+    }    
+    
+    public static function simpleRecord($attr){        
+        if(empty($attr)){
+            return false;
+        }
+        $model=new UserAction;
+        $model->attributes=$attr;
+        return $model->save();
     }
 
     public static function delAction($logid, $type) {
@@ -160,6 +176,11 @@ class UserAction extends CActiveRecord {
         } else {
             return false;
         }
+    }
+    
+    public static function statAction($uid,$action){
+        $num=  UserAction::model()->count('uid=:uid AND action=:action', array(':uid'=>$uid,':action'=>$action));
+        return $num;
     }
 
 }

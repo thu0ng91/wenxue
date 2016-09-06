@@ -18,6 +18,8 @@
  */
 class TaskLogs extends CActiveRecord {
 
+    const STATUS_REACHED = 1;
+
     /**
      * @return string the associated database table name
      */
@@ -32,7 +34,9 @@ class TaskLogs extends CActiveRecord {
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('uid, tid, times, cTime, status, score', 'required'),
+            array('uid', 'default', 'setOnEmpty' => true, 'value' => zmf::uid()),
+            array('cTime', 'default', 'setOnEmpty' => true, 'value' => zmf::now()),
+            array('uid, tid', 'required'),
             array('times, status', 'numerical', 'integerOnly' => true),
             array('uid, tid, cTime, score', 'length', 'max' => 10),
             // The following rule is used by search().
@@ -104,6 +108,10 @@ class TaskLogs extends CActiveRecord {
      */
     public static function model($className = __CLASS__) {
         return parent::model($className);
+    }
+
+    public static function checkInfo($uid, $tid) {
+        return TaskLogs::model()->find('uid=:uid AND tid=:tid', array(':uid' => $uid, ':tid' => $tid));
     }
 
 }

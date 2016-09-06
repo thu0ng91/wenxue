@@ -40,24 +40,74 @@
     }
     .float-holder .float-triangle{
         position: absolute; 
-        background: url('http://192.168.1.123/wenxue/common/images/tri_up.png') no-repeat center;
+        background: url('<?php echo zmf::config('baseurl');?>common/images/tri_up.png') no-repeat center;
         width: 14px;
         height: 8px;
         z-index:1000
     }
     .float-holder .float-content{
-        background: #fff;
         width: 100%;
         height: 100%;
         display: block;
-        border: 1px solid #DDDDDD;
-        margin-top: 7px;
-        padding: 15px;
+        margin-top: 7px;        
+    }
+    .float-holder .float-content .module .module-body{
+        padding:15px 10px 10px;
+    }
+    .float-holder .float-content .media .media-body p{
+        line-height:22px;
+    }
+    .float-holder .float-footer{
+        background:#fff;
+        width:100%;
+        height:36px;
+        border-top: 1px solid #DDDDDD;
+        box-sizing: border-box
+    }
+    .float-holder .float-footer ul{
+        padding:0;
+        margin:0
+    }
+    .float-holder .float-footer ul li{        
+        text-align:center;
+        width:50%;
+        float:left;
+        list-style:none;
+        line-height: 36px;
+        border-right:1px solid #DDDDDD;
+    }
+    .float-holder .float-footer ul li:last-child{
+        border-right:none
+    }
+    .float-holder .float-footer ul li a{
+        width:100%;
+        height:100%;
+        display:block;
+        color:#DDDDDD
+    }
+    .float-holder .float-footer ul li:hover{
+        background:#DDDDDD;        
+    }
+    .float-holder .float-footer ul li:hover a{
+        color:#999;
+        text-decoration:none
     }
 </style>
 <div class="float-holder" id='float-holder'>
     <div class="float-triangle" id='float-triangle'></div>
-    <div class="float-content" id='float-content'>
-        <span class="color-grey text-center">正在努力加载……</span>
+    <div class="float-content">
+        <div class="module">
+            <div class="module-header">任务列表</div>
+            <div class="module-body" id='float-content'>
+                <span class="color-grey text-center">正在努力加载……</span>
+            </div>
+            <div class="float-footer">
+                <ul>
+                    <li><a href="">查看全部</a></li>
+                    <li><a href="javascript:;" onclick="$('#float-holder').hide()">关闭</a></li>
+                </ul>
+            </div>
+        </div>        
     </div>
+    
 </div>

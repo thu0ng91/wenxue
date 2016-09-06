@@ -102,4 +102,39 @@ class GroupPowers extends CActiveRecord {
         return parent::model($className);
     }
 
+    public static function checkPower($userInfo, $action) {
+        if (!$userInfo || !$action || !$userInfo['groupid'] || !$userInfo['id']) {
+            return array(
+                'status' => 0,
+                'msg' => '缺少参数',
+            );
+        }
+        $sql = "SELECT gt.key,gt.desc,gp.value,gp.score FROM {{group_power_types}} gt,{{group_powers}} gp WHERE gt.key=:key AND gp.gid=:gid AND gp.tid=gt.id";
+        $res = Yii::app()->db->createCommand($sql);
+        $res->bindValues(array(
+            ':key' => $action,
+            ':gid' => $userInfo['groupid']
+        ));
+        $info = $res->queryRow();
+        //没有记录或者记录值为0，则表示不允许
+        if (!$info || !$info['value']) {
+            return array(
+                'status' => 0,
+                'msg' => '你无权本操作',
+            );
+        }
+        //在用户操作记录表中查询今天该操作的记录数
+        $num = UserAction::statAction($userInfo['id'], $action);
+        if ($num >= $info['value']) {
+            return array(
+                'status' => 0,
+                'msg' => '你今日' . $info['desc'] . '已达上限',
+            );
+        }
+        return array(
+            'status' => 1,
+            'msg' => $info,
+        );
+    }
+
 }

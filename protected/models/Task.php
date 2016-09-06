@@ -123,5 +123,9 @@ class Task extends CActiveRecord {
         $items= Task::model()->findAll();
         return CHtml::listData($items, 'id', 'title');
     }
+    
+    public static function checkTask($userInfo,$action){
+        $sql="SELECT t.id,t.title,t.faceImg,t.desc,tl.status,tl.score,tl.times,gt.type,gt.continuous";
+    }
 
 }

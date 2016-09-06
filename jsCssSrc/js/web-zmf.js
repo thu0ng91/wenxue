@@ -648,6 +648,7 @@ function rebind() {
             }
         });
     });
+    //弹出浮框
     $("a[action=float]").unbind('click').click(function () {
         var dom=$(this);
         var data=dom.attr('action-data');
@@ -667,11 +668,29 @@ function rebind() {
             result = eval('(' + result + ')');
             if (result['status'] === 1) {
                 $('#float-content').html(result['msg']);
+                rebind();
             } else {
                 dialog({msg: result['msg']});
             }
         });
     });
+    //ajax请求
+    $("a[action=ajax]").unbind('click').click(function () {
+        var dom=$(this);
+        var data=dom.attr('action-data');
+        if(!data){
+            return false;
+        }
+        $.post(zmf.ajaxUrl, {action: 'ajax', data: data,YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
+            result = eval('(' + result + ')');
+            if (result['status'] === 1) {
+                dialog({msg: result['msg']});
+            } else {
+                dialog({msg: result['msg']});
+            }
+        });
+    });
+    
     //调用复制
     var clipboard = new Clipboard('.btn-copy');
     clipboard.on('success', function (e) {

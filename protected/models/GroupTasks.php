@@ -119,4 +119,48 @@ class GroupTasks extends CActiveRecord {
         return parent::model($className);
     }
 
+    public static function getOneTask($userInfo, $tid) {
+        if (!$userInfo || !$tid || !$userInfo['id'] || !$userInfo['groupid']) {
+            return array(
+                'status' => 0,
+                'msg' => '缺少参数'
+            );
+        }
+        //首先判断用户所在用户组是否可以参与该任务
+        $reinfo = GroupTasks::model()->find('gid=:gid AND tid=:tid', array(':gid' => $userInfo['groupid'], ':tid' => $tid));
+        if (!$reinfo) {
+            return array(
+                'status' => 0,
+                'msg' => '任务不存在'
+            );
+        }
+        $now = zmf::now();
+        if ($reinfo['endTime'] > 0 && $now > $reinfo['endTime']) {
+            return array(
+                'status' => 0,
+                'msg' => '任务已过期'
+            );
+        }
+        $taskInfo = Task::getOne($tid);
+        $arr = array(
+            'tid' => $reinfo['tid'],
+            'title' => $taskInfo['title'],
+            'faceImg' => $taskInfo['faceImg'],
+            'desc' => $taskInfo['desc'],
+            'gid' => $reinfo['gid'],
+            'action' => $reinfo['action'],
+            'type' => $reinfo['type'],
+            'continuous' => $reinfo['continuous'],
+            'num' => $reinfo['num'],
+            'score' => $reinfo['score'],
+            'startTime' => $reinfo['startTime'],
+            'endTime' => $reinfo['endTime'],
+            'times' => $reinfo['times'],
+        );
+        return array(
+            'status' => 1,
+            'msg' => $arr
+        );
+    }
+
 }

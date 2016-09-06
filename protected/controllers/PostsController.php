@@ -159,6 +159,11 @@ class PostsController extends Q {
         if (!$forumInfo) {
             $this->message(0, '你所查看的版块不存在');
         }
+        //获取用户组的权限
+        $powerInfo=  GroupPowers::checkPower($this->userInfo, 'addPost');
+        if(!$powerInfo['status']){
+            $this->message($powerInfo['status'],$powerInfo['msg']);
+        }
         $model = new PostThreads;
         $model->fid = $forumId;
         $isNew = true;
@@ -222,13 +227,25 @@ class PostsController extends Q {
                 if (!$isNew || !empty($intoTags)) {
                     Posts::model()->updateByPk($model->id, array('tagids' => join(',', $intoTags)));
                 }
-                //记录用户操作
+                //记录用户操作及积分
                 $jsonData = CJSON::encode(array(
                             'id' => $model->id,
                             'title' => $model->title,
                             'faceimg' => $model->faceImg
                 ));
-                UserAction::recordAction($model->id, 'post', $jsonData);
+                //UserAction::recordAction($model->id, 'post', $jsonData);                
+                $attr=array(
+                    'uid' => $this->uid,
+                    'logid' => $model->id,
+                    'classify' => 'post',
+                    'data' => $jsonData,            
+                    'action' => 'addPost',
+                    'score' => $powerInfo['msg']['score'],
+                    'display' => 1,
+                );
+                UserAction::simpleRecord($attr);
+                //判断本操作是否同属任务
+                
                 $this->redirect(array('posts/view', 'id' => $model->id));
             }
         }

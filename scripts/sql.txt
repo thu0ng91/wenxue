@@ -156,3 +156,8 @@ alter TABLE pre_post_posts add isFirst tinyint(1) UNSIGNED not null COMMENT '是
 alter TABLE pre_post_posts add platform tinyint(1) UNSIGNED not null COMMENT '来源';
 
 alter TABLE pre_post_threads add aid int(10) UNSIGNED not null COMMENT '作者ID';
+
+
+alter TABLE pre_user_action add action varchar(16) not null COMMENT '操作';
+alter TABLE pre_user_action add score int(10) not null COMMENT '积分';
+alter TABLE pre_user_action add display tinyint(1) unsigned not null COMMENT '是否显示';
