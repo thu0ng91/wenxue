@@ -114,18 +114,96 @@ class Task extends CActiveRecord {
     public static function model($className = __CLASS__) {
         return parent::model($className);
     }
-    
-    public static function getOne($id){
+
+    public static function getOne($id) {
         return Task::model()->findByPk($id);
     }
-    
-    public static function listAll(){
-        $items= Task::model()->findAll();
+
+    public static function listAll() {
+        $items = Task::model()->findAll();
         return CHtml::listData($items, 'id', 'title');
     }
-    
-    public static function checkTask($userInfo,$action){
-        $sql="SELECT t.id,t.title,t.faceImg,t.desc,tl.status,tl.score,tl.times,gt.type,gt.continuous";
+
+    public static function addTaskLog($userInfo, $action) {
+        if (!$userInfo['id'] || !$userInfo['groupid'] || !$action) {
+            return array(
+                'status' => 0,
+                'msg' => '缺少参数'
+            );
+        }
+        $sql = "SELECT t.id,gt.id AS groupTaskId,tl.id AS taskLogId,t.title AS taskTitle,t.faceImg AS taskFaceImg,t.desc AS taskDesc,tl.status AS taskStatus,tl.score,tl.times,gt.type,gt.continuous,gt.num,gt.startTime,gt.endTime FROM {{task}} t INNER JOIN {{task_logs}} tl ON t.id=tl.tid INNER JOIN {{group_tasks}} gt ON t.id=gt.tid WHERE tl.uid=:uid AND gt.gid=:gid AND gt.action=:action";
+        $res = Yii::app()->db->createCommand($sql);
+        $res->bindValues(array(
+            ':uid' => $userInfo['id'],
+            ':gid' => $userInfo['groupid'],
+            ':action' => $action
+        ));
+        $info = $res->queryRow();
+        $now = zmf::now();
+        if (!$info) {
+            return array(
+                'status' => 0,
+                'msg' => '未领取相关任务'
+            );
+        } elseif ($info['startTime'] > 0 && $info['startTime'] > $now) {
+            return array(
+                'status' => 0,
+                'msg' => '任务尚未开始'
+            );
+        } elseif ($info['endTime'] > 0 && $info['endTime'] < $now) {
+            return array(
+                'status' => 0,
+                'msg' => '任务已经结束'
+            );
+        } elseif ($info['taskStatus'] == TaskLogs::STATUS_REACHED) {
+            //任务已达成
+            return array(
+                'status' => 1,
+                'msg' => '任务已达成'
+            );
+        } elseif ($info['num'] <= $info['times']) {
+            //任务参与数已超过任务规定参与数，则说明本任务已完成
+            TaskLogs::finishTask($userInfo, $info['taskLogId']);
+            return array(
+                'status' => 1,
+                'msg' => '任务已达成'
+            );
+        }
+        //处理任务
+        if ($info['type'] == GroupTasks::TYPE_ONETIME) {//如果是一次性任务
+            //由于判断是否参与任务是在记录用户操作之后，所以可以在此判断用户此类操作的次数
+            //根据次数判断是否已达成任务
+            $num = UserAction::statAction($userInfo['id'], $action);
+            if ($info['num'] <= $num) {//已达成任务
+                TaskLogs::finishTask($userInfo, $info['taskLogId']);
+                return array(
+                    'status' => 1,
+                    'msg' => '任务已达成'
+                );
+            } else {//否则没有达成任务
+                //记录一条参与任务的记录
+                $taskRecordAttr = array(
+                    'uid' => $userInfo['id'],
+                    'tid' => $info['id'],
+                );
+                TaskRecords::simpleAdd($taskRecordAttr);
+                //更新我的任务的参与次数
+                TaskLogs::model()->updateByPk($info['taskLogId'], array('times' => $num));
+                return array(
+                    'status' => 1,
+                    'msg' => $info
+                );
+            }
+        } elseif ($info['continuous']) {//如果是连续性任务
+            
+            
+        } else {//既不是一次性任务也不是连续性任务
+        }
+
+        return array(
+            'status' => 1,
+            'msg' => $info
+        );
     }
 
 }

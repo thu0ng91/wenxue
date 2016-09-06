@@ -20,6 +20,8 @@
  * @property string $times
  */
 class GroupTasks extends CActiveRecord {
+    
+    const TYPE_ONETIME=1;
 
     /**
      * @return string the associated database table name
@@ -143,6 +145,7 @@ class GroupTasks extends CActiveRecord {
         }
         $taskInfo = Task::getOne($tid);
         $arr = array(
+            'groupTaskId' => $reinfo['id'],
             'tid' => $reinfo['tid'],
             'title' => $taskInfo['title'],
             'faceImg' => $taskInfo['faceImg'],

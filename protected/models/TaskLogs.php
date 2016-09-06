@@ -38,7 +38,7 @@ class TaskLogs extends CActiveRecord {
             array('cTime', 'default', 'setOnEmpty' => true, 'value' => zmf::now()),
             array('uid, tid', 'required'),
             array('times, status', 'numerical', 'integerOnly' => true),
-            array('uid, tid, cTime, score', 'length', 'max' => 10),
+            array('uid, tid, cTime, score,finishTime', 'length', 'max' => 10),
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
             array('id, uid, tid, times, cTime, status, score', 'safe', 'on' => 'search'),
@@ -65,6 +65,7 @@ class TaskLogs extends CActiveRecord {
             'tid' => '任务ID',
             'times' => '参与次数',
             'cTime' => '参与时间',
+            'finishTime' => '完成时间',
             'status' => '状态，是否已达成',
             'score' => '奖励积分',
         );
@@ -92,6 +93,7 @@ class TaskLogs extends CActiveRecord {
         $criteria->compare('tid', $this->tid, true);
         $criteria->compare('times', $this->times);
         $criteria->compare('cTime', $this->cTime, true);
+        $criteria->compare('finishTime', $this->finishTime, true);
         $criteria->compare('status', $this->status);
         $criteria->compare('score', $this->score, true);
 
@@ -112,6 +114,18 @@ class TaskLogs extends CActiveRecord {
 
     public static function checkInfo($uid, $tid) {
         return TaskLogs::model()->find('uid=:uid AND tid=:tid', array(':uid' => $uid, ':tid' => $tid));
+    }
+    
+    public static function finishTask($userInfo,$logid){
+        if(TaskLogs::model()->updateByPk($logid, array(
+            'status'=>  TaskLogs::STATUS_REACHED,
+            'finishTime'=>  zmf::now()
+        ))){
+            //todo,如果标记成功，则新增一条积分记录
+            return true;
+        }else{
+            return false;
+        }
     }
 
 }

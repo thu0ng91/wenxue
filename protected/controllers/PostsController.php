@@ -243,7 +243,7 @@ class PostsController extends Q {
                     'score' => $powerInfo['msg']['score'],
                     'display' => 1,
                 );
-                UserAction::simpleRecord($attr);
+                UserAction::simpleRecord($attr);//Task::addTaskLog($this->userInfo, 'addPost');
                 //判断本操作是否同属任务
                 
                 $this->redirect(array('posts/view', 'id' => $model->id));

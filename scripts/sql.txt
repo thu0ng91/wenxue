@@ -161,3 +161,6 @@ alter TABLE pre_post_threads add aid int(10) UNSIGNED not null COMMENT '作者ID
 alter TABLE pre_user_action add action varchar(16) not null COMMENT '操作';
 alter TABLE pre_user_action add score int(10) not null COMMENT '积分';
 alter TABLE pre_user_action add display tinyint(1) unsigned not null COMMENT '是否显示';
+update pre_user_action set display=1;
+
+alter TABLE pre_task_logs add finishTime int(10) unsigned not null COMMENT '完成时间';

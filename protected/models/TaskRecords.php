@@ -29,7 +29,9 @@ class TaskRecords extends CActiveRecord {
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('uid, tid, cTime', 'required'),
+            array('cTime', 'default', 'setOnEmpty' => true, 'value' => zmf::now()),
+            array('uid', 'default', 'setOnEmpty' => true, 'value' => zmf::uid()),
+            array('uid, tid', 'required'),
             array('uid, tid, cTime', 'length', 'max' => 10),
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
@@ -94,6 +96,12 @@ class TaskRecords extends CActiveRecord {
      */
     public static function model($className = __CLASS__) {
         return parent::model($className);
+    }
+    
+    public static function simpleAdd($attr){
+        $model=new TaskRecords;
+        $model->attributes=$attr;
+        return $model->save();
     }
 
 }

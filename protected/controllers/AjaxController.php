@@ -1256,6 +1256,10 @@ class AjaxController extends Q {
         $model=new TaskLogs;
         $model->attributes=$attr;
         if($model->save()){
+            //已领取后要增加任务的参与人数
+            Posts::updateCount($taskInfo['groupTaskId'], 'GroupTasks', 1, 'times');
+            //更新任务的参与人数
+            Posts::updateCount($id, 'Task', 1, 'times');            
             $this->jsonOutPut(1, '已领取');
         }else{
             $this->jsonOutPut(0, '领取失败，请稍后重试');
