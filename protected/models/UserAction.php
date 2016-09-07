@@ -128,6 +128,46 @@ class UserAction extends CActiveRecord {
         return $arr[$type];
     }
 
+    public static function userActions() {
+        $arr = array(
+            'post' => array(
+                'desc' => '论坛相关',
+                'items' => array(
+                    'addPost' => '发表帖子',
+                    'addPostReply'=>'回复帖子',                    
+                    'favorPost'=>'赞帖子',
+                    'favoritePost'=>'赞帖子',
+                    'rewardPost'=>'打赏帖子',
+                    'delPost'=>'删除帖子',
+                    'delPostReply'=>'删除楼层'
+                ),
+            ),
+            'book' => array(
+                'desc' => '小说相关',
+                'items' => array(
+                    'favoriteBook'=>'收藏作品',
+                    'addChapterTip'=>'点评作品',
+                    'delChapterTip'=>'删除点评',
+                    'favorChapterTip'=>'赞点评',
+                    'addBook' => '发表作品',
+                    'addChapter' => '新增章节',                    
+                ),
+            ),
+            'comment' => array(
+                'desc' => '评论相关',
+                'items' => array(
+                    'commentPost'=>'评论帖子',
+                    'commentChapterTip'=>'评论点评',
+                ),
+            ),
+        );
+        $tmpArr=array();
+        foreach ($arr as $type=>$detail){
+            $tmpArr=  array_merge($tmpArr,$detail['items']);
+        }
+        return $tmpArr;
+    }
+
     public static function recordAction($logid, $type, $jsonData, $uid = '') {
         if (!$logid || !$type || !$jsonData) {
             return false;
@@ -200,18 +240,18 @@ class UserAction extends CActiveRecord {
         ));
         return $num;
     }
-    
-    public static function statTodayAction($userInfo,$taskInfo){
+
+    public static function statTodayAction($userInfo, $taskInfo) {
         //取出用户领取任务到任务结束时间内该操作的所有时间
-        $now=  zmf::now();
+        $now = zmf::now();
         $_time = strtotime(zmf::time($now, 'Y-m-d'), $now);
         $params = array(
             ':uid' => $userInfo['id'],
             ':action' => $taskInfo['action'],
             ':startTime' => $taskInfo['userStartTime'],
-            ':endTime' => ($_time+86400),
+            ':endTime' => ($_time + 86400),
         );
-        $params[':endTime'] = $taskInfo['endTime'];        
+        $params[':endTime'] = $taskInfo['endTime'];
         $num = UserAction::model()->count(array(
             'condition' => 'uid=:uid AND action=:action AND cTime>=:startTime AND cTime<=:endTime',
             'params' => $params

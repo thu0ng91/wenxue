@@ -14,6 +14,7 @@ class PostsController extends Q {
     }
 
     public function actionIndex() {
+        UserAction::userActions();
         $type = zmf::val('type', 1);
         if ($type) {
             $this->redirect(array('posts/types'));
@@ -160,9 +161,9 @@ class PostsController extends Q {
             $this->message(0, '你所查看的版块不存在');
         }
         //获取用户组的权限
-        $powerInfo=  GroupPowers::checkPower($this->userInfo, 'addPost');
-        if(!$powerInfo['status']){
-            $this->message($powerInfo['status'],$powerInfo['msg']);
+        $powerInfo = GroupPowers::checkPower($this->userInfo, 'addPost');
+        if (!$powerInfo['status']) {
+            $this->message($powerInfo['status'], $powerInfo['msg']);
         }
         $model = new PostThreads;
         $model->fid = $forumId;
@@ -196,7 +197,7 @@ class PostsController extends Q {
                 $postAttr = array(
                     'tid' => $model->id,
                     'content' => $content,
-                    'isFirst' => 1,//首层
+                    'isFirst' => 1, //首层
                 );
                 $modelPost = new PostPosts;
                 $modelPost->attributes = $postAttr;
@@ -233,20 +234,19 @@ class PostsController extends Q {
                             'title' => $model->title,
                             'faceimg' => $model->faceImg
                 ));
-                //UserAction::recordAction($model->id, 'post', $jsonData);                
-                $attr=array(
+                $attr = array(
                     'uid' => $this->uid,
                     'logid' => $model->id,
                     'classify' => 'post',
-                    'data' => $jsonData,            
+                    'data' => $jsonData,
                     'action' => 'addPost',
                     'score' => $powerInfo['msg']['score'],
                     'display' => 1,
                 );
-                UserAction::simpleRecord($attr);//Task::addTaskLog($this->userInfo, 'addPost');
-                //判断本操作是否同属任务
-                $ckTaskStatus=Task::addTaskLog($this->userInfo, 'addPost');
-                zmf::fp($ckTaskStatus, 1);
+                if (UserAction::simpleRecord($attr)) {
+                    //判断本操作是否同属任务
+                    $ckTaskStatus = Task::addTaskLog($this->userInfo, 'addPost');
+                }
                 $this->redirect(array('posts/view', 'id' => $model->id));
             }
         }
@@ -287,7 +287,7 @@ class PostsController extends Q {
             $attr = array(
                 'content' => $content,
                 'isFirst' => 0,
-            );            
+            );
             //如果标题包含敏感词则直接标记为未通过
             $attr['status'] = $filterContent['status'];
             $attr['open'] = ($_POST['PostPosts']['open'] == Posts::STATUS_OPEN) ? 1 : 0;
@@ -306,10 +306,10 @@ class PostsController extends Q {
                         Attachments::model()->updateAll(array('status' => Posts::STATUS_PASSED, 'logid' => $model->id), 'id IN(' . $attstr . ')');
                     }
                 }
-                $this->redirect(array('posts/view','id'=>$model->tid));
+                $this->redirect(array('posts/view', 'id' => $model->tid));
             }
         }
-        $this->pageTitle='回帖 - '.zmf::config('sitename');
+        $this->pageTitle = '回帖 - ' . zmf::config('sitename');
         $this->render('reply', array(
             'model' => $model,
             'threadInfo' => $threadInfo,
