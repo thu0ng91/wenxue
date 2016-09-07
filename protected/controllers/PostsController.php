@@ -245,7 +245,8 @@ class PostsController extends Q {
                 );
                 UserAction::simpleRecord($attr);//Task::addTaskLog($this->userInfo, 'addPost');
                 //判断本操作是否同属任务
-                
+                $ckTaskStatus=Task::addTaskLog($this->userInfo, 'addPost');
+                zmf::fp($ckTaskStatus, 1);
                 $this->redirect(array('posts/view', 'id' => $model->id));
             }
         }

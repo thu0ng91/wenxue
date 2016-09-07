@@ -17,12 +17,13 @@
  * @property string $ip
  */
 class UserAction extends CActiveRecord {
-    
-    const STATUS_DISPLAY=1;//显示为动态
+
+    const STATUS_DISPLAY = 1; //显示为动态
 
     /**
      * @return string the associated database table name
      */
+
     public function tableName() {
         return '{{user_action}}';
     }
@@ -116,19 +117,19 @@ class UserAction extends CActiveRecord {
     public static function model($className = __CLASS__) {
         return parent::model($className);
     }
-    
-    public static function exClassify($type){
-        $arr=array(
-            'favoriteAuthor'=>'关注了作者',
-            'favoriteBook'=>'收藏了小说',
-            'chapterTip'=>'点评了',
-            'post'=>'发布帖子',
+
+    public static function exClassify($type) {
+        $arr = array(
+            'favoriteAuthor' => '关注了作者',
+            'favoriteBook' => '收藏了小说',
+            'chapterTip' => '点评了',
+            'post' => '发布帖子',
         );
         return $arr[$type];
     }
 
     public static function recordAction($logid, $type, $jsonData, $uid = '') {
-        if(!$logid || !$type || !$jsonData){
+        if (!$logid || !$type || !$jsonData) {
             return false;
         }
         $data = array(
@@ -136,26 +137,26 @@ class UserAction extends CActiveRecord {
             'logid' => $logid,
             'classify' => $type,
         );
-        $info=  UserAction::model()->findByAttributes($data);
-        if($info){
-            $attr=array(
-                'data'=>$jsonData,
-                'cTime'=>  zmf::now()
+        $info = UserAction::model()->findByAttributes($data);
+        if ($info) {
+            $attr = array(
+                'data' => $jsonData,
+                'cTime' => zmf::now()
             );
             return UserAction::model()->updateByPk($info['id'], $attr);
         }
-        $data['data']=$jsonData;
-        $model = new UserAction();        
+        $data['data'] = $jsonData;
+        $model = new UserAction();
         $model->attributes = $data;
         return $model->save();
-    }    
-    
-    public static function simpleRecord($attr){        
-        if(empty($attr)){
+    }
+
+    public static function simpleRecord($attr) {
+        if (empty($attr)) {
             return false;
         }
-        $model=new UserAction;
-        $model->attributes=$attr;
+        $model = new UserAction;
+        $model->attributes = $attr;
         return $model->save();
     }
 
@@ -177,10 +178,102 @@ class UserAction extends CActiveRecord {
             return false;
         }
     }
-    
-    public static function statAction($uid,$action){
-        $num=  UserAction::model()->count('uid=:uid AND action=:action', array(':uid'=>$uid,':action'=>$action));
+
+    public static function statAction($uid, $action) {
+        $num = UserAction::model()->count('uid=:uid AND action=:action', array(':uid' => $uid, ':action' => $action));
         return $num;
+    }
+
+    public static function statTaskAction($userInfo, $taskInfo) {
+        //取出用户领取任务到任务结束时间内该操作的所有时间
+        $params = array(
+            ':uid' => $userInfo['id'],
+            ':action' => $taskInfo['action'],
+            ':startTime' => $taskInfo['userStartTime'],
+        );
+        if ($taskInfo['endTime'] > 0) {
+            $params['endTime'] = $taskInfo['endTime'];
+        }
+        $num = UserAction::model()->count(array(
+            'condition' => 'uid=:uid AND action=:action AND cTime>=:startTime' . ($taskInfo['endTime'] > 0 ? ' AND cTime<=:endTime' : ''),
+            'params' => $params
+        ));
+        return $num;
+    }
+    
+    public static function statTodayAction($userInfo,$taskInfo){
+        //取出用户领取任务到任务结束时间内该操作的所有时间
+        $now=  zmf::now();
+        $_time = strtotime(zmf::time($now, 'Y-m-d'), $now);
+        $params = array(
+            ':uid' => $userInfo['id'],
+            ':action' => $taskInfo['action'],
+            ':startTime' => $taskInfo['userStartTime'],
+            ':endTime' => ($_time+86400),
+        );
+        $params[':endTime'] = $taskInfo['endTime'];        
+        $num = UserAction::model()->count(array(
+            'condition' => 'uid=:uid AND action=:action AND cTime>=:startTime AND cTime<=:endTime',
+            'params' => $params
+        ));
+        return $num;
+    }
+
+    public static function checkTaskAction($userInfo, $taskInfo) {
+        //取出用户领取任务到任务结束时间内该操作的所有时间
+        $params = array(
+            ':uid' => $userInfo['id'],
+            ':action' => $taskInfo['action'],
+            ':startTime' => $taskInfo['userStartTime'],
+        );
+        if ($taskInfo['endTime'] > 0) {
+            $params[':endTime'] = $taskInfo['endTime'];
+        }
+        $timeItems = UserAction::model()->findAll(array(
+            'condition' => 'uid=:uid AND action=:action AND cTime>=:startTime' . ($taskInfo['endTime'] > 0 ? ' AND cTime<=:endTime' : ''),
+            'params' => $params,
+            'select' => 'cTime'
+        ));
+        $len = count($timeItems);
+        if ($len < 1) {
+            return false;
+        }
+        $now = zmf::now();
+        if ($taskInfo['days'] > 1) {//大于1，说明必须连续几天每天都有一定数量的操作
+            $tmpArr = array();
+            foreach ($timeItems as $item) {
+                $_time = strtotime(zmf::time($item['cTime'], 'Y-m-d'), $now);
+                $tmpArr[$_time]+=1;
+            }
+            $_prevTime = 0;
+            $_continuous = true;
+            foreach ($tmpArr as $_day => $_num) {
+                if (!$_continuous) {
+                    break;
+                }
+                if ($taskInfo['continuous']) {//必须连续不间断
+                    if (!$_prevTime) {
+                        $_prevTime = $_day;
+                    }
+                    //如果那天的操作数小于规定数量 或者 那天与前一天的时间差大于1天，则说明没有连续
+                    if ($_num < $taskInfo['num'] || ($_day - $_prevTime > 86400)) {
+                        $_continuous = false;
+                    }
+                    $_prevTime = $_day;
+                } else {//只需要总数达到了规定数量即可
+                    if ($_num >= $taskInfo['num']) {
+                        $_prevTime+=1;
+                    }
+                }
+            }
+            //如果不是连续性任务，且符合数量的天数小于规定天数，则说明没达标
+            if (!$taskInfo['continuous'] && ($_prevTime < $taskInfo['days'])) {
+                $_continuous = false;
+            }
+            return $_continuous;
+        } else {
+            return true;
+        }
     }
 
 }

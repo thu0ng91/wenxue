@@ -40,6 +40,10 @@ class GroupTasksController extends Admin {
                     unset($_POST['GroupTasks']['tid']);
                 }
             }
+            if($_POST['GroupTasks']['type']==GroupTasks::TYPE_ONETIME){
+                $_POST['GroupTasks']['days']=1;
+                $_POST['GroupTasks']['continuous']=0;                
+            }
             $model->attributes = $_POST['GroupTasks'];
             if ($model->save()) {
                 if (!$id) {
@@ -81,7 +85,7 @@ class GroupTasksController extends Admin {
      * Lists all models.
      */
     public function actionIndex() {
-        $select = "id,gid,tid,action,type,num,score,startTime,endTime,times";
+        $select = "id,gid,tid,action,type,days,num,score,startTime,endTime,times";
         $model = new GroupTasks;
         $criteria = new CDbCriteria();
         $criteria->select = $select;

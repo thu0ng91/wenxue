@@ -26,20 +26,28 @@
     </div>
     <div class="form-group">
         <?php echo $form->labelEx($model,'type'); ?>        
-        <?php echo $form->dropDownlist($model,'type', zmf::yesOrNo('admin'),array('class'=>'form-control')); ?>
+        <?php echo $form->dropDownlist($model,'type', zmf::yesOrNo('admin'),array('class'=>'form-control','onclick'=>'toggleThis()')); ?>
         <p class="help-block">该任务是否只能参与一次</p>
         <?php echo $form->error($model,'type'); ?>
     </div>
-    <div class="form-group">
-        <?php echo $form->labelEx($model,'continuous'); ?>        
-        <?php echo $form->dropDownlist($model,'continuous', zmf::yesOrNo('admin'),array('class'=>'form-control')); ?>
-        <p class="help-block">比如，是否需要连续5天发帖</p>
-        <?php echo $form->error($model,'continuous'); ?>
+    <div id="toggleArea" style="display: <?php echo $model->type==GroupTasks::TYPE_ONETIME ? 'none' : '';?>">
+        <div class="form-group">
+            <?php echo $form->labelEx($model,'continuous'); ?>        
+            <?php echo $form->dropDownlist($model,'continuous', zmf::yesOrNo('admin'),array('class'=>'form-control')); ?>
+            <p class="help-block">比如，是否需要连续5天发帖（当任务是一次性任务时，此项只能为No）</p>
+            <?php echo $form->error($model,'continuous'); ?>
+        </div>
+        <div class="form-group">
+            <?php echo $form->labelEx($model,'days'); ?>        
+            <?php echo $form->textField($model,'days',array('class'=>'form-control')); ?>
+            <p class="help-block">持续天数，必须不小于1（当任务是一次性任务时，此项只能为1）</p>
+            <?php echo $form->error($model,'days'); ?>
+        </div>
     </div>
     <div class="form-group">
         <?php echo $form->labelEx($model,'num'); ?>        
         <?php echo $form->textField($model,'num',array('class'=>'form-control')); ?>
-        <p class="help-block">当不是一次性任务时，此栏才有效</p>
+        <p class="help-block">每天需要操作几次</p>
         <?php echo $form->error($model,'num'); ?>
     </div>
     <div class="form-group">
@@ -62,3 +70,13 @@
     </div>
 <?php $this->endWidget(); ?>
 </div><!-- form -->
+<script>
+    function toggleThis(){
+        var v=$('#GroupTasks_type').val();
+        if(v==='1'){
+            $('#toggleArea').hide();
+        }else{
+            $('#toggleArea').show();
+        }
+    }
+</script>

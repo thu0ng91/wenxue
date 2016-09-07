@@ -1,4 +1,8 @@
-<?php if (!$this->uid) { ?>
+<?php if(Yii::app()->user->hasFlash('fixedTipDialog')){?>
+<div class="fixedDialog" id="fixedDialog">
+    <?php echo Yii::app()->user->getFlash('fixedTipDialog');?>
+</div>
+<?php } if (!$this->uid) { ?>
 <ul class="nav navbar-nav navbar-right">
     <li><?php echo CHtml::link('登录', array('site/login')); ?></li>
     <li><?php echo CHtml::link('注册', array('site/reg')); ?></li>
@@ -29,6 +33,17 @@
 </ul>
 <?php } ?>
 <style>
+    .fixedDialog{
+        position: fixed;
+        top: 40%;
+        left: 50%;
+        background: #d9534f;
+        padding: 15px;
+        z-index: 999;
+        border-radius:5px;
+        box-shadow: 3px 3px 3px #e4e4e4;
+        color:#fff
+    }
     .float-holder{
         position: absolute;
         right: 0;
@@ -108,6 +123,5 @@
                 </ul>
             </div>
         </div>        
-    </div>
-    
+    </div>    
 </div>

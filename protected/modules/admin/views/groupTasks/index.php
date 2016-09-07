@@ -15,6 +15,7 @@ $this->renderPartial('_nav');
         <th><?php echo $model->getAttributeLabel("tid"); ?></th>
         <th><?php echo $model->getAttributeLabel("action"); ?></th>
         <th><?php echo $model->getAttributeLabel("type"); ?></th>
+        <th><?php echo $model->getAttributeLabel("days"); ?></th>
         <th><?php echo $model->getAttributeLabel("num"); ?></th>
         <th><?php echo $model->getAttributeLabel("score"); ?></th>
         <th><?php echo $model->getAttributeLabel("startTime"); ?></th>
@@ -29,6 +30,7 @@ $this->renderPartial('_nav');
             <td><?php echo $data->taskInfo->title; ?></td>
             <td><?php echo $data->action; ?></td>
             <td><?php echo zmf::yesOrNo($data->type); ?></td>
+            <td><?php echo $data->days; ?></td>
             <td><?php echo $data->num; ?></td>
             <td><?php echo $data->score; ?></td>
             <td><?php echo $data->startTime; ?></td>

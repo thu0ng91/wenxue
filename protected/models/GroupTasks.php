@@ -37,9 +37,9 @@ class GroupTasks extends CActiveRecord {
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('gid, tid, action', 'required'),
+            array('gid, tid,days,num,action,startTime, endTime', 'required'),
             array('type,continuous, num', 'numerical', 'integerOnly' => true),
-            array('gid, tid, score, startTime, endTime, times', 'length', 'max' => 10),
+            array('gid, tid, score, startTime, endTime, times,days', 'length', 'max' => 10),
             array('action', 'length', 'max' => 16),
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
@@ -70,6 +70,7 @@ class GroupTasks extends CActiveRecord {
             'action' => '操作标识',
             'type' => '一次性任务',
             'continuous' => '不可中断',
+            'days' => '总天数',
             'num' => '每天次数',
             'score' => '奖励积分',
             'startTime' => '开始时间',
