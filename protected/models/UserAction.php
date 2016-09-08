@@ -136,10 +136,11 @@ class UserAction extends CActiveRecord {
                     'addPost' => '发表帖子',
                     'addPostReply'=>'回复帖子',                    
                     'favorPost'=>'赞帖子',
-                    'favoritePost'=>'赞帖子',
+                    'favoritePost'=>'收藏帖子',
                     'rewardPost'=>'打赏帖子',
                     'delPost'=>'删除帖子',
-                    'delPostReply'=>'删除楼层'
+                    'delPostReply'=>'删除楼层',
+                    'favoriteForum'=>'关注版块'
                 ),
             ),
             'book' => array(
@@ -150,7 +151,16 @@ class UserAction extends CActiveRecord {
                     'delChapterTip'=>'删除点评',
                     'favorChapterTip'=>'赞点评',
                     'addBook' => '发表作品',
-                    'addChapter' => '新增章节',                    
+                    'finishBook' => '完结作品',
+                    'delBook' => '删除作品',
+                    'addChapter' => '新增章节',
+                    'publishChapter' => '发表章节',
+                ),
+            ),
+            'author' => array(
+                'desc' => '作者相关',
+                'items' => array(
+                    'createAuthor'=>'成为作者',             
                 ),
             ),
             'comment' => array(
@@ -158,6 +168,7 @@ class UserAction extends CActiveRecord {
                 'items' => array(
                     'commentPost'=>'评论帖子',
                     'commentChapterTip'=>'评论点评',
+                    'favorComment'=>'评论点评',
                 ),
             ),
         );

@@ -270,6 +270,11 @@ class PostsController extends Q {
         if (!$tid) {
             throw new CHttpException(404, '该页面不存在或已被删除！');
         }
+        //获取用户组的权限
+        $powerInfo = GroupPowers::checkPower($this->userInfo, 'addPostReply');
+        if (!$powerInfo['status']) {
+            $this->message($powerInfo['status'], $powerInfo['msg']);
+        }
         $threadInfo = $this->loadModel($tid);
         if ($pid) {
             $model = PostPosts::model()->findByPk($pid);

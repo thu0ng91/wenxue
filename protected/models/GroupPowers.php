@@ -137,4 +137,62 @@ class GroupPowers extends CActiveRecord {
         );
     }
 
+    private function _getGroupActions($groupid) {
+        if (!$groupid) {
+            return array(
+                'status' => 0,
+                'msg' => '缺少参数',
+            );
+        }
+        $sql = "SELECT gt.key,gt.desc FROM {{group_power_types}} gt,{{group_powers}} gp WHERE gp.gid=:gid AND gp.value>0 AND gp.tid=gt.id";
+        $res = Yii::app()->db->createCommand($sql);
+        $res->bindValues(array(
+            ':gid' => $groupid
+        ));
+        $items = $res->queryAll();
+        return $items;
+    }
+
+    public static function cacheActions($groupid) {
+        self::getGroupActions($groupid);
+        return true;
+    }
+
+    public static function delActionsCache($groupid) {
+        $key = "group-powers-" . $groupid;
+        zmf::delFCache($key);
+        return true;
+    }
+
+    public static function getGroupActions($groupid) {
+        $key = "group-powers-" . $groupid;
+        $items = zmf::getFCache($key);
+        if (!$items) {
+            $actions = self::_getGroupActions($groupid);
+            $items = CHtml::listData($actions, 'key', 'desc');
+            $_items = !empty($items) ? $items : array();
+            $time = 2592000; //一个月
+            zmf::setFCache($key, $_items, $time);
+        }
+        return $items;
+    }
+
+    public static function checkAction($userInfo, $action) {
+        if (!$userInfo || !$userInfo['id'] || !$action || !$userInfo['groupid']) {
+            return '';
+        }
+        $actions = self::getGroupActions($userInfo['groupid']);
+        if (empty($actions) || !is_array($actions)) {
+            return false;
+        }
+        return array_key_exists($action, $actions);
+    }
+
+    public static function link($action, $userInfo, $text, $url = '#', $htmlOptions = array(), $showText = false) {
+        if (!$userInfo || !$userInfo['id'] || !$action || !$userInfo['groupid']) {
+            return '';
+        }
+        return self::checkAction($userInfo, $action) ? CHtml::link($text, $url, $htmlOptions) : ($showText ? $text : '');
+    }
+
 }

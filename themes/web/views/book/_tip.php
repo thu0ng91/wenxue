@@ -17,7 +17,7 @@
             <?php }?>
             <?php echo Books::starCss($data['score']*2);?>            
             <span class="pull-right">
-                <?php echo CHtml::link('<i class="fa '.($data['favorited'] ? 'fa-thumbs-up' : 'fa-thumbs-o-up').'"></i> '.$data['favors'],'javascript:;',array('action'=>'favorite','action-data'=>$data['id'],'action-type'=>'tip'));?>
+                <?php echo GroupPowers::link('favorChapterTip',$this->userInfo,'<i class="fa '.($data['favorited'] ? 'fa-thumbs-up' : 'fa-thumbs-o-up').'"></i> '.$data['favors'],'javascript:;',array('action'=>'favorite','action-data'=>$data['id'],'action-type'=>'tip'),true);?>
             </span>
         </p>
         <p><?php echo nl2br(CHtml::encode($data['content'])); ?></p>

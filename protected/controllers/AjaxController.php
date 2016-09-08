@@ -76,6 +76,12 @@ class AjaxController extends Q {
         if (!$content) {
             $this->jsonOutPut(0, '评论不能为空哦~');
         }
+        //获取用户组的权限
+        $powerAction = 'addChapterTip';
+        $powerInfo = GroupPowers::checkPower($this->userInfo, $powerAction);
+        if (!$powerInfo['status']) {
+            $this->jsonOutPut(0, $powerInfo['msg']);
+        }
         $uid = $this->uid;
         //todo，按分类获取信息
         $ckInfo = Chapters::checkTip($keyid, $uid);
@@ -150,7 +156,19 @@ class AjaxController extends Q {
                             'bDesc' => $bookInfo['desc'],
                             'bFaceImg' => $bookInfo['faceImg'],
                 ));
-                UserAction::recordAction($model->id, 'chapterTip', $jsonData);
+                $attr = array(
+                    'uid' => $this->uid,
+                    'logid' => $model->id,
+                    'classify' => 'chapterTip',
+                    'data' => $jsonData,
+                    'action' => $powerAction,
+                    'score' => $powerInfo['msg']['score'],
+                    'display' => 1,
+                );
+                if (UserAction::simpleRecord($attr)) {
+                    //判断本操作是否同属任务
+                    Task::addTaskLog($this->userInfo, $powerAction);
+                }
                 $html = $this->renderPartial('/book/_tip', array('data' => $intoData, 'postInfo' => $postInfo), true);
                 $this->jsonOutPut(1, $html);
             } else {
@@ -232,6 +250,12 @@ class AjaxController extends Q {
         if (!$id) {
             $this->jsonOutPut(0, '缺少参数哦~');
         }
+        //获取用户组的权限
+        $powerAction = 'addBook';
+        $powerInfo = GroupPowers::checkPower($this->userInfo, $powerAction);
+        if (!$powerInfo['status']) {
+            $this->jsonOutPut(0, $powerInfo['msg']);
+        }
         $bookInfo = Books::getOne($id);
         if (!$bookInfo || $bookInfo['status'] != Posts::STATUS_PASSED) {
             if ($bookInfo && $bookInfo['status'] == Books::STATUS_STAYCHECK) {
@@ -262,6 +286,26 @@ class AjaxController extends Q {
             Books::updateBookStatInfo($id);
             //更新作者信息
             Authors::updateStatInfo($authorInfo);
+            //记录用户操作
+            $jsonData = CJSON::encode(array(
+                        'bid' => $bookInfo['id'],
+                        'bTitle' => $bookInfo['title'],
+                        'bDesc' => $bookInfo['desc'],
+                        'bFaceImg' => $bookInfo['faceImg'],
+            ));
+            $attr = array(
+                'uid' => $this->uid,
+                'logid' => $bookInfo['id'],
+                'classify' => $powerAction,
+                'data' => $jsonData,
+                'action' => $powerAction,
+                'score' => $powerInfo['msg']['score'],
+                'display' => 0,
+            );
+            if (UserAction::simpleRecord($attr)) {
+                //判断本操作是否同属任务
+                Task::addTaskLog($this->userInfo, $powerAction);
+            }
             $this->jsonOutPut(1, '已发表');
         } else {
             $this->jsonOutPut(1, '已发表');
@@ -274,6 +318,12 @@ class AjaxController extends Q {
         $id = zmf::val('bid', 2);
         if (!$id) {
             $this->jsonOutPut(0, '缺少参数哦~');
+        }
+        //获取用户组的权限
+        $powerAction = 'finishBook';
+        $powerInfo = GroupPowers::checkPower($this->userInfo, $powerAction);
+        if (!$powerInfo['status']) {
+            $this->jsonOutPut(0, $powerInfo['msg']);
         }
         $bookInfo = Books::getOne($id);
         if (!$bookInfo || $bookInfo['status'] != Posts::STATUS_PASSED) {
@@ -312,6 +362,26 @@ class AjaxController extends Q {
             Books::updateBookStatInfo($id);
             //更新作者信息
             Authors::updateStatInfo($authorInfo);
+            //记录用户操作
+            $jsonData = CJSON::encode(array(
+                        'bid' => $bookInfo['id'],
+                        'bTitle' => $bookInfo['title'],
+                        'bDesc' => $bookInfo['desc'],
+                        'bFaceImg' => $bookInfo['faceImg'],
+            ));
+            $attr = array(
+                'uid' => $this->uid,
+                'logid' => $bookInfo['id'],
+                'classify' => $powerAction,
+                'data' => $jsonData,
+                'action' => $powerAction,
+                'score' => $powerInfo['msg']['score'],
+                'display' => 0,
+            );
+            if (UserAction::simpleRecord($attr)) {
+                //判断本操作是否同属任务
+                Task::addTaskLog($this->userInfo, $powerAction);
+            }
             $this->jsonOutPut(1, '已标记为完结');
         } else {
             $this->jsonOutPut(1, '标记失败');
@@ -328,6 +398,12 @@ class AjaxController extends Q {
         }
         if (!$passwd) {
             $this->jsonOutPut(0, '请输入密码');
+        }
+        //获取用户组的权限
+        $powerAction = 'delBook';
+        $powerInfo = GroupPowers::checkPower($this->userInfo, $powerAction);
+        if (!$powerInfo['status']) {
+            $this->jsonOutPut(0, $powerInfo['msg']);
         }
         $bookInfo = Books::getOne($id);
         if (!$bookInfo || $bookInfo['status'] != Posts::STATUS_PASSED) {
@@ -354,6 +430,26 @@ class AjaxController extends Q {
             Books::updateBookStatInfo($id);
             //更新作者信息
             Authors::updateStatInfo($authorInfo);
+            //记录用户操作
+            $jsonData = CJSON::encode(array(
+                        'bid' => $bookInfo['id'],
+                        'bTitle' => $bookInfo['title'],
+                        'bDesc' => $bookInfo['desc'],
+                        'bFaceImg' => $bookInfo['faceImg'],
+            ));
+            $attr = array(
+                'uid' => $this->uid,
+                'logid' => $bookInfo['id'],
+                'classify' => $powerAction,
+                'data' => $jsonData,
+                'action' => $powerAction,
+                'score' => $powerInfo['msg']['score'],
+                'display' => 0,
+            );
+            if (UserAction::simpleRecord($attr)) {
+                //判断本操作是否同属任务
+                Task::addTaskLog($this->userInfo, $powerAction);
+            }
             $this->jsonOutPut(1, '已删除');
         } else {
             $this->jsonOutPut(1, '删除失败');
@@ -366,6 +462,12 @@ class AjaxController extends Q {
         $id = zmf::val('id', 2);
         if (!$id) {
             $this->jsonOutPut(0, '缺少参数哦~');
+        }
+        //获取用户组的权限
+        $powerAction = 'publishChapter';
+        $powerInfo = GroupPowers::checkPower($this->userInfo, $powerAction);
+        if (!$powerInfo['status']) {
+            $this->jsonOutPut(0, $powerInfo['msg']);
         }
         $chapterInfo = Chapters::getOne($id);
         $bookInfo = Books::getOne($chapterInfo['bid']);
@@ -398,6 +500,24 @@ class AjaxController extends Q {
         if (Chapters::model()->updateByPk($id, array('chapterStatus' => Books::STATUS_PUBLISHED))) {
             Books::updateBookStatInfo($chapterInfo['bid']);
             Authors::updateStatInfo($authorInfo);
+            //记录用户操作
+            $jsonData = CJSON::encode(array(
+                        'cid' => $chapterInfo['id'],
+                        'cTitle' => $chapterInfo['title'],
+            ));
+            $attr = array(
+                'uid' => $this->uid,
+                'logid' => $chapterInfo['id'],
+                'classify' => $powerAction,
+                'data' => $jsonData,
+                'action' => $powerAction,
+                'score' => $powerInfo['msg']['score'],
+                'display' => 0,
+            );
+            if (UserAction::simpleRecord($attr)) {
+                //判断本操作是否同属任务
+                Task::addTaskLog($this->userInfo, $powerAction);
+            }
             $this->jsonOutPut(1, '已发表');
         } else {
             $this->jsonOutPut(1, '已发表');
@@ -1203,29 +1323,29 @@ class AjaxController extends Q {
     private function userTasks() {
         $this->checkLogin();
         $this->checkUserStatus();
-        $now=  zmf::now();
+        $now = zmf::now();
         $sql = "SELECT t.id,t.title,t.faceImg FROM {{task}} t,{{group_tasks}} gt WHERE ((gt.startTime=0 OR gt.startTime<=:cTime) AND (gt.endTime=0 OR gt.endTime>=:cTime)) AND gt.gid=:gid AND gt.tid=t.id LIMIT 10";
         $res = Yii::app()->db->createCommand($sql);
         $res->bindValues(array(
-            ':gid'=>$this->userInfo['groupid'],
-            ':cTime'=>$now,
+            ':gid' => $this->userInfo['groupid'],
+            ':cTime' => $now,
         ));
         $tasks = $res->queryAll();
         //取出已经参与的任务
         //todo，排除已完成的任务
-        $logs=  TaskLogs::model()->findAll(array(
-            'condition'=>'uid=:uid',
-            'params'=>array(
-                ':uid'=>  $this->uid
+        $logs = TaskLogs::model()->findAll(array(
+            'condition' => 'uid=:uid',
+            'params' => array(
+                ':uid' => $this->uid
             ),
-            'select'=>'id,tid'
+            'select' => 'id,tid'
         ));
-        $logsArr=  CHtml::listData($logs, 'id', 'tid');
+        $logsArr = CHtml::listData($logs, 'id', 'tid');
         foreach ($tasks as $k => $val) {
             $tasks[$k]['action'] = Posts::encode($val['id'], 'joinTask');
-            $receive=false;//是否已领取
-            if(in_array($val['id'], $logsArr)){
-                $receive=true;
+            $receive = false; //是否已领取
+            if (in_array($val['id'], $logsArr)) {
+                $receive = true;
             }
             $tasks[$k]['receive'] = $receive;
         }
@@ -1238,8 +1358,8 @@ class AjaxController extends Q {
             $this->jsonOutPut(0, '参数有误，请核实');
         }
         $id = $arr['id'];
-        $logInfo=  TaskLogs::checkInfo($this->uid, $id);
-        if($logInfo){
+        $logInfo = TaskLogs::checkInfo($this->uid, $id);
+        if ($logInfo) {
             $this->jsonOutPut(0, '你已领取过，请勿重复操作');
         }
         $checkInfo = GroupTasks::getOneTask($this->userInfo, $id);
@@ -1253,15 +1373,15 @@ class AjaxController extends Q {
             'status' => 0,
             'score' => $taskInfo['score'],
         );
-        $model=new TaskLogs;
-        $model->attributes=$attr;
-        if($model->save()){
+        $model = new TaskLogs;
+        $model->attributes = $attr;
+        if ($model->save()) {
             //已领取后要增加任务的参与人数
             Posts::updateCount($taskInfo['groupTaskId'], 'GroupTasks', 1, 'times');
             //更新任务的参与人数
-            Posts::updateCount($id, 'Task', 1, 'times');            
+            Posts::updateCount($id, 'Task', 1, 'times');
             $this->jsonOutPut(1, '已领取');
-        }else{
+        } else {
             $this->jsonOutPut(0, '领取失败，请稍后重试');
         }
     }

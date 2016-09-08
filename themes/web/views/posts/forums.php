@@ -13,7 +13,7 @@
                         <p class="color-grey"><?php echo $forum['desc'];?></p>                        
                     </div>
                     <div class="media-right">
-                        <p><?php echo CHtml::link('<i class="fa fa-plus"></i> 关注','javascript:;',array('class'=>'btn btn-default btn-xs'));?></p>
+                        <p><?php echo GroupPowers::link('favoriteForum',$this->userInfo,'<i class="fa fa-plus"></i> 关注','javascript:;',array('class'=>'btn btn-default btn-xs'));?></p>
                     </div>
                 </div>
                 <?php }?>

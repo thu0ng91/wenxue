@@ -15,7 +15,8 @@ $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
     }
     .post-title-right{
         width: 140px;
-        display: inline-block
+        display: inline-block;
+        text-align: right;
     }
     .post-content .media .media-left{
         padding-left: 20px;
@@ -68,8 +69,8 @@ $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
                     <div class="media-right">
                         <p class="post-title-right">
                             <?php echo CHtml::link('只看楼主',array('posts/view','id'=>$info['id'],'see_lz'=>1),array('class'=>'btn btn-xs btn-default'));?>
-                            <?php echo CHtml::link('收藏','javascript:;',array('class'=>'btn btn-xs btn-default'));?>
-                            <?php echo CHtml::link('回复',array('posts/reply','tid'=>$info['id']),array('class'=>'btn btn-xs btn-default'));?>
+                            <?php echo GroupPowers::link('favoritePost',$this->userInfo,'收藏','javascript:;',array('class'=>'btn btn-xs btn-default'));?>
+                            <?php echo GroupPowers::link('addPostReply',$this->userInfo,'回复',array('posts/reply','tid'=>$info['id']),array('class'=>'btn btn-xs btn-default'));?>
                         </p>
                     </div>
                 </div>

@@ -91,6 +91,11 @@ class UserController extends Q {
         if ($authorInfo) {
             throw new CHttpException(403, '你已成为作者，请勿重复操作');
         }
+        //获取用户组的权限
+        $powerInfo = GroupPowers::checkPower($this->userInfo, 'createAuthor');
+        if (!$powerInfo['status']) {
+            $this->message($powerInfo['status'], $powerInfo['msg']);
+        }
         $this->selectNav = 'setting';
         $model = new Authors;
         $model->uid = $this->uid;

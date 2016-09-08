@@ -40,7 +40,7 @@ $this->beginContent('/layouts/common');
                             </button>
                             <ul class="dropdown-menu">
                                 <?php if($this->adminLogin){?>
-                                <li><?php echo CHtml::link('新增作品',array('author/createBook'));?></li>
+                                <li><?php echo GroupPowers::link('addBook',$this->userInfo,'新增作品',array('author/createBook'));?></li>
                                 <li><?php echo CHtml::link('进入作者中心',array('author/view','id'=>$this->userInfo['authorId']));?></li>
                                 <?php }else{?>
                                 <li><?php echo CHtml::link('登录作者中心',array('user/authorAuth'));?></li>
@@ -48,7 +48,7 @@ $this->beginContent('/layouts/common');
                             </ul>
                         </div>
                         <?php }else{?>
-                        <?php echo CHtml::link('成为作者',array('user/author'),array('class'=>'btn btn-primary'));?>                        
+                        <?php echo GroupPowers::link('createAuthor',$this->userInfo,'成为作者',array('user/author'),array('class'=>'btn btn-primary'));?>                        
                         <?php }?>                        
                     </div>                
                     <?php }else{?>

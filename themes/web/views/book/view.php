@@ -18,11 +18,11 @@
                     <p>
                         <?php echo CHtml::link('立即阅读',array('book/chapter','cid'=>$chapters[0]['id']),array('class'=>'btn btn-danger btn-xs'));?>
                         <?php if($this->favorited){?>
-                        <?php echo CHtml::link('<i class="fa fa-heart"></i> 已收藏','javascript:;',array('class'=>'btn btn-default btn-xs','action'=>'favorite','action-data'=>$info['id'],'action-type'=>'book'));?>
+                        <?php echo GroupPowers::link('favoriteBook',$this->userInfo,'<i class="fa fa-heart"></i> 已收藏','javascript:;',array('class'=>'btn btn-default btn-xs','action'=>'favorite','action-data'=>$info['id'],'action-type'=>'book'));?>
                         <?php }else{?>
-                        <?php echo CHtml::link('<i class="fa fa-heart-o"></i> 收藏','javascript:;',array('class'=>'btn btn-danger btn-xs','action'=>'favorite','action-data'=>$info['id'],'action-type'=>'book'));?>
+                        <?php echo GroupPowers::link('favoriteBook',$this->userInfo,'<i class="fa fa-heart-o"></i> 收藏','javascript:;',array('class'=>'btn btn-danger btn-xs','action'=>'favorite','action-data'=>$info['id'],'action-type'=>'book'));?>
                         <?php }?>
-                        <?php echo $info['bookStatus']!=Books::STATUS_FINISHED ? CHtml::link('<i class="fa fa-rocket"></i> 催更','javascript:;',array('class'=>'btn btn-success btn-xs','action'=>'dapipi','action-data'=>$info['id'])) : '';?>
+                        <?php echo $info['bookStatus']!=Books::STATUS_FINISHED ? GroupPowers::link('favoriteBook',$this->userInfo,'<i class="fa fa-rocket"></i> 催更','javascript:;',array('class'=>'btn btn-success btn-xs','action'=>'dapipi','action-data'=>$info['id'])) : '';?>
                     </p>
                     <p class="color-grey" style="margin-top:10px"><?php echo CHtml::link('<i class="fa fa-exclamation-triangle"></i> 举报','javascript:;',array('action'=>'report','action-type'=>'book','action-id'=>$info['id'],'action-title'=>$info['title']));?></p>
                 </div>

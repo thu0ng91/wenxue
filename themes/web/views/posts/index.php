@@ -14,7 +14,7 @@
         <div class="module">
             <div class="module-header">
                 <?php echo $forumInfo['title'];?>                
-                <?php echo CHtml::link('<i class="fa fa-plus"></i> 发布文章',array('posts/create','forum'=>$forumInfo['id']),array('class'=>'pull-right'));?>
+                <?php echo GroupPowers::link('addPost',$this->userInfo,'<i class="fa fa-plus"></i> 发布文章',array('posts/create','forum'=>$forumInfo['id']),array('class'=>'pull-right'));?>
             </div>
             <div class="module-body">
                 <?php foreach ($posts as $k=>$_post){?>

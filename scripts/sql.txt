@@ -167,3 +167,70 @@ alter TABLE pre_task_logs add finishTime int(10) unsigned not null COMMENT '完�
 
 
 alter TABLE pre_group_tasks add days int(10) unsigned not null COMMENT '总天数';
+
+
+
+
+DROP TABLE IF EXISTS `pre_user_order`;
+CREATE TABLE `pre_user_order` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '关系ID',
+  `orderId` char(32) NOT NULL COMMENT '订单号',
+  `uid` int(10) unsigned NOT NULL COMMENT '用户ID',
+  `mid` char(32) NOT NULL COMMENT '所属商户',
+  `addressId` int(10) unsigned NOT NULL COMMENT '收货地址',
+  `paidOrderId` varchar(255) NOT NULL COMMENT '支付订单号',
+  `paidType` varchar(16) NOT NULL COMMENT '支付方式',
+  `price` varchar(16) NOT NULL COMMENT '价格',
+  `freight` varchar(16) NOT NULL COMMENT '运费',
+  `totalPrice` varchar(16) NOT NULL COMMENT '总价',
+  `paidPrice` varchar(16) NOT NULL COMMENT '实付价',
+  `wedAddress` varchar(255) NOT NULL COMMENT '婚礼地点',
+  `wedDate` int(10) unsigned NOT NULL COMMENT '婚礼日期',
+  `wedPeriod` char(5) NOT NULL COMMENT '婚礼时段',
+  `content` varchar(255) NOT NULL COMMENT '备注',
+  `num` int(10) unsigned NOT NULL COMMENT '总量',
+  `orderStatus` tinyint(3) unsigned NOT NULL COMMENT '订单状态',
+  `status` tinyint(3) unsigned NOT NULL COMMENT '状态',
+  `cTime` int(10) unsigned NOT NULL COMMENT '创建时间',
+  `paidTime` int(10) unsigned NOT NULL COMMENT '支付时间',
+  `bankType` varchar(16) NOT NULL COMMENT '银行类别',
+  `wgmOrderId` varchar(255) NOT NULL COMMENT '总动员订单ID',
+  `title` varchar(255) NOT NULL COMMENT '标题',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=31 DEFAULT CHARSET=utf8;
+
+
+DROP TABLE IF EXISTS `pre_user_order_item`;
+CREATE TABLE `pre_user_order_item` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `uid` int(10) unsigned NOT NULL COMMENT '用户ID',
+  `orderId` char(32) NOT NULL COMMENT '所属订单',
+  `mid` char(32) NOT NULL COMMENT '所属商户',
+  `sid` varchar(255) NOT NULL COMMENT '服务ID',
+  `title` varchar(255) NOT NULL COMMENT '标题',
+  `faceUrl` varchar(255) NOT NULL COMMENT '封面地址',
+  `type` int(10) unsigned NOT NULL COMMENT '类型',
+  `typeName` varchar(255) NOT NULL COMMENT '类型名称',
+  `area` mediumtext NOT NULL COMMENT '服务地区',
+  `content` mediumtext NOT NULL COMMENT '服务介绍',
+  `imgsUrl` mediumtext NOT NULL COMMENT '服务展示',
+  `oldPrice` int(10) unsigned NOT NULL COMMENT '原价',
+  `price` int(10) unsigned NOT NULL COMMENT '成交价',
+  `num` int(10) unsigned NOT NULL COMMENT '数量',
+  `cTime` int(10) unsigned NOT NULL COMMENT '记录时间',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=31 DEFAULT CHARSET=utf8;
+
+
+DROP TABLE IF EXISTS `pre_user_order_log`;
+CREATE TABLE `pre_user_order_log` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '订单记录ID',
+  `uid` int(10) unsigned NOT NULL COMMENT '用户ID',
+  `mid` char(32) NOT NULL COMMENT '商户ID',
+  `orderId` varchar(255) NOT NULL COMMENT '订单ID',
+  `cTime` int(10) unsigned NOT NULL COMMENT '操作时间',
+  `content` varchar(255) NOT NULL COMMENT '描述',
+  PRIMARY KEY (`id`),
+  KEY `uid` (`uid`),
+  KEY `orderId` (`orderId`)
+) ENGINE=MyISAM AUTO_INCREMENT=26 DEFAULT CHARSET=utf8;

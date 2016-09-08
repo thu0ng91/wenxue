@@ -52,6 +52,7 @@
                     <?php }?>
                 </div>
             </div>
+            <?php if(GroupPowers::checkAction($this->userInfo, 'addChapterTip')){?>
             <div class="module-header" id="add-tip-holder">写点评</div>
             <div class="module-body">
                 <?php if($this->uid){
@@ -68,6 +69,7 @@
                 <p class="help-block">登录后享有更多功能，<?php echo CHtml::link('立即登录',array('site/login'));?>或<?php echo CHtml::link('注册',array('site/reg'));?>。</p>
                 <?php }?>
             </div>
+            <?php }?>
         </div>
     </div>
     <div class="chapter-fixed-navbar">
