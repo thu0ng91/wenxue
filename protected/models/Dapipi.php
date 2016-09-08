@@ -113,6 +113,15 @@ class Dapipi extends CActiveRecord {
                 'msg' => '请先登录'
             );
         }
+        //获取用户组的权限
+        $powerAction = 'dapipi';
+        $powerInfo = GroupPowers::checkPower($userInfo, $powerAction);
+        if (!$powerInfo['status']) {
+            return array(
+                'status' => 0,
+                'msg' => '你无权本操作'
+            );
+        }
         $bookInfo = Books::getOne($bid);
         if (!$bookInfo || $bookInfo['status'] != Posts::STATUS_PASSED) {
             return array(
@@ -186,6 +195,26 @@ class Dapipi extends CActiveRecord {
                         'msg' => '该作者不存在！'
                     );
                 }
+            }
+            //记录用户操作
+            $jsonData = CJSON::encode(array(
+                        'bid' => $bookInfo['id'],
+                        'bTitle' => $bookInfo['title'],
+                        'bDesc' => $bookInfo['desc'],
+                        'bFaceImg' => $bookInfo['faceImg'],
+            ));
+            $attr = array(
+                'uid' => $this->uid,
+                'logid' => $bookInfo['id'],
+                'classify' => $powerAction,
+                'data' => $jsonData,
+                'action' => $powerAction,
+                'score' => $powerInfo['msg']['score'],
+                'display' => 0,
+            );
+            if (UserAction::simpleRecord($attr)) {
+                //判断本操作是否同属任务
+                Task::addTaskLog($userInfo, $powerAction);
             }
             return array(
                 'status' => 1,

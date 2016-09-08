@@ -33,18 +33,18 @@ class Posts extends CActiveRecord {
     const CLASSIFY_AUTHOR = 2;
     const CLASSIFY_READER = 3;
     //关于置顶    
-    const STATUS_BOLD=1;//仅加粗
-    const STATUS_RED=2;//仅标红
-    const STATUS_BOLDRED=3;//加粗标红
+    const STATUS_BOLD = 1; //仅加粗
+    const STATUS_RED = 2; //仅标红
+    const STATUS_BOLDRED = 3; //加粗标红
     //关于可否评论
-    const STATUS_UNOPEN=0;
-    const STATUS_OPEN=1;
+    const STATUS_UNOPEN = 0;
+    const STATUS_OPEN = 1;
     //关于来源
-    const PLATFORM_UNKOWN=0;
-    const PLATFORM_WEB=1;
-    const PLATFORM_MOBILE=2;
-    const PLATFORM_ANDROID=3;
-    const PLATFORM_IOS=4;
+    const PLATFORM_UNKOWN = 0;
+    const PLATFORM_WEB = 1;
+    const PLATFORM_MOBILE = 2;
+    const PLATFORM_ANDROID = 3;
+    const PLATFORM_IOS = 4;
 
     /**
      * @return string the associated database table name
@@ -159,23 +159,23 @@ class Posts extends CActiveRecord {
         }
         return $arr[$type];
     }
-    
-    public static function exTopClass($status){
-        if($status<1){
+
+    public static function exTopClass($status) {
+        if ($status < 1) {
             return '';
         }
-        if($status==Posts::STATUS_BOLD){
+        if ($status == Posts::STATUS_BOLD) {
             return 'bold';
         }
-        if($status==Posts::STATUS_RED){
+        if ($status == Posts::STATUS_RED) {
             return 'red';
         }
-        if($status==Posts::STATUS_BOLDRED){
+        if ($status == Posts::STATUS_BOLDRED) {
             return 'bold red';
         }
         return '';
     }
-    
+
     public static function exPlatform($type) {
         $arr = array(
             self::PLATFORM_UNKOWN => '未知',
@@ -212,7 +212,7 @@ class Posts extends CActiveRecord {
      * @return boolean
      */
     public static function updateCount($keyid, $type, $num = 1, $field = 'hits') {
-        if (!$keyid || !$type || !in_array($type, array('Books', 'Authors', 'Chapters', 'Tips', 'Users', 'Posts','Comments','GroupTasks','Task'))) {
+        if (!$keyid || !$type || !in_array($type, array('Books', 'Authors', 'Chapters', 'Tips', 'Users', 'Posts', 'Comments', 'GroupTasks', 'Task'))) {
             return false;
         }
         $model = new $type;
@@ -224,7 +224,7 @@ class Posts extends CActiveRecord {
      * @param type $content
      * @return type
      */
-    public static function handleContent($content, $fullText = TRUE,$allowTags='<b><strong><em><span><a><p><u><i><img><br><br/><div><blockquote><h1><h2><h3><h4><h5><h6><ol><ul><li><hr>') {
+    public static function handleContent($content, $fullText = TRUE, $allowTags = '<b><strong><em><span><a><p><u><i><img><br><br/><div><blockquote><h1><h2><h3><h4><h5><h6><ol><ul><li><hr>') {
         if ($fullText) {
             $pattern = '/<img[\s\S]+?(data|mapinfo|video)=("|\')([^\2]+?)\2[^>]+?>/i';
             preg_match_all($pattern, $content, $matches);
@@ -252,7 +252,7 @@ class Posts extends CActiveRecord {
             }
             $content = strip_tags($content, $allowTags);
             $replace = array(
-                "/style=\"[^\"]*?\"/i",                
+                "/style=\"[^\"]*?\"/i",
                 "/<p><span>\&nbsp\;<\/span><\/p>/i",
                 "/<p>\&nbsp\;<\/p>/i",
                 "/<p><\/p>/i",
@@ -321,18 +321,18 @@ class Posts extends CActiveRecord {
         $items = Yii::app()->db->createCommand($sql)->queryAll();
         return $items;
     }
-    
-    public static function getTops($notId,$classify=  Posts::CLASSIFY_POST,$limit = 5) {
+
+    public static function getTops($notId, $classify = Posts::CLASSIFY_POST, $limit = 5) {
         $sql = "SELECT id,title FROM {{posts}} WHERE classify='{$classify}' AND id!='{$notId}' AND status=" . Posts::STATUS_PASSED . " ORDER BY hits DESC LIMIT {$limit}";
         $items = Yii::app()->db->createCommand($sql)->queryAll();
         return $items;
     }
 
-    public static function favorite($code, $type, $from = 'web', $uid = '') {
+    public static function favorite($code, $type, $from = 'web', $userInfo = array()) {
         if (!$code || !$type) {
             return array('status' => 0, 'msg' => '数据不全，请核实');
         }
-        if (!in_array($type, array('book', 'author', 'tip', 'user', 'post','comment'))) {
+        if (!in_array($type, array('book', 'author', 'tip', 'user', 'post', 'comment'))) {
             return array('status' => 0, 'msg' => '暂不允许的分类');
         }
         if (is_numeric($code)) {
@@ -344,8 +344,11 @@ class Posts extends CActiveRecord {
             }
             $id = $codeArr['id'];
         }
-        if (!$uid) {
+        if (!$userInfo['id']) {
             $uid = zmf::uid();
+            $userInfo=  Users::getOne($uid);
+        } else {
+            $uid = $userInfo['id'];
         }
         if (!$uid) {
             return array('status' => 0, 'msg' => '请先登录');
@@ -364,6 +367,7 @@ class Posts extends CActiveRecord {
                         'bDesc' => $postInfo['desc'],
                         'bFaceImg' => $postInfo['faceImg']
             ));
+            $powerAction = 'favoriteBook';
         } elseif ($type == 'author') {
             $postInfo = Authors::getOne($id);
             $content = "关注了你的作者主页【{$postInfo['authorName']}】";
@@ -375,6 +379,7 @@ class Posts extends CActiveRecord {
                         'avatar' => $postInfo['avatar'],
                         'content' => $postInfo['content']
             ));
+            $powerAction = 'favoriteAuthor';
         } elseif ($type == 'tip') {
             $postInfo = Tips::getOne($id);
             if (!$postInfo || $postInfo['status'] != Posts::STATUS_PASSED) {
@@ -386,17 +391,20 @@ class Posts extends CActiveRecord {
             }
             $content = "赞了你对【{$chapterInfo['title']}】的点评";
             $noticeUid = $postInfo['uid'];
+            $powerAction = 'favorChapterTip';
         } elseif ($type == 'user') {
             $postInfo = Users::getOne($id);
             $content = "关注了你";
             $noticeUid = $id;
+            $powerAction = 'favoriteUser';
         } elseif ($type == 'post') {
             $postInfo = Posts::getOne($id);
             if (!$postInfo || $postInfo['status'] != Posts::STATUS_PASSED) {
                 return array('status' => 0, 'msg' => '你所操作的内容不存在');
             }
-            $content = "赞了你的文章【{$postInfo['title']}】，".CHtml::link('查看详情',array('posts/view','id'=>$id));
+            $content = "赞了你的文章【{$postInfo['title']}】，" . CHtml::link('查看详情', array('posts/view', 'id' => $id));
             $noticeUid = $postInfo['uid'];
+            $powerAction = 'favoritePost';
         } elseif ($type == 'comment') {
             $postInfo = Comments::getSimpleInfo($id);
             if (!$postInfo || $postInfo['status'] != Posts::STATUS_PASSED) {
@@ -404,9 +412,14 @@ class Posts extends CActiveRecord {
             }
             $content = "赞了你的评论。";
             $noticeUid = $postInfo['uid'];
+            $powerAction = 'favorComment';
         }
         if (!$postInfo || $postInfo['status'] != Posts::STATUS_PASSED) {
             return array('status' => 0, 'msg' => '你所操作的内容不存在');
+        }
+        $powerInfo = GroupPowers::checkPower($userInfo, $powerAction);
+        if (!$powerInfo['status']) {
+            return array('status' => 0, 'msg' => $powerInfo['msg']);
         }
         $attr = array(
             'uid' => $uid,
@@ -432,6 +445,7 @@ class Posts extends CActiveRecord {
                 } elseif ($type == 'comment') {
                     Posts::updateCount($id, 'Comments', -1, 'favors');
                 }
+                //todo，取消的赞应扣除相应积分
                 return array('status' => 1, 'msg' => '取消点赞', 'state' => 3);
             } else {
                 return array('status' => 0, 'msg' => '取消点赞失败', 'state' => 4);
@@ -470,7 +484,20 @@ class Posts extends CActiveRecord {
                 );
                 Notification::add($_noticedata);
                 //记录用户操作
-                UserAction::recordAction($id, 'favorite' . ucfirst($type), $jsonData);
+                //UserAction::recordAction($id, 'favorite' . ucfirst($type), $jsonData);
+                $attr = array(
+                    'uid' => $uid,
+                    'logid' => $id,
+                    'classify' => 'favorite' . ucfirst($type),
+                    'data' => $jsonData,
+                    'action' => $powerAction,
+                    'score' => $powerInfo['msg']['score'],
+                    'display' => 1,
+                );
+                if (UserAction::simpleRecord($attr)) {
+                    //判断本操作是否同属任务
+                    Task::addTaskLog($userInfo, $powerAction);
+                }
                 return array('status' => 1, 'msg' => '点赞成功', 'state' => 1);
             } else {
                 return array('status' => 0, 'msg' => '点赞失败', 'state' => 2);

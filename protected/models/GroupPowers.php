@@ -120,7 +120,7 @@ class GroupPowers extends CActiveRecord {
         if (!$info || !$info['value']) {
             return array(
                 'status' => 0,
-                'msg' => '你无权本操作',
+                'msg' => '你所在用户组不能完成此操作',
             );
         }
         //在用户操作记录表中查询今天该操作的记录数

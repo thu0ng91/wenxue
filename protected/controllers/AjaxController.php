@@ -535,6 +535,12 @@ class AjaxController extends Q {
         if (!$passwd) {
             $this->jsonOutPut(0, '请输入密码');
         }
+        //获取用户组的权限
+        $powerAction = 'delChapter';
+        $powerInfo = GroupPowers::checkPower($this->userInfo, $powerAction);
+        if (!$powerInfo['status']) {
+            $this->jsonOutPut(0, $powerInfo['msg']);
+        }
         $chapterInfo = Chapters::getOne($id);
         if (!$chapterInfo) {
             $this->jsonOutPut(0, '操作对象不存在，请核实');
@@ -555,6 +561,25 @@ class AjaxController extends Q {
         if (Chapters::model()->updateByPk($id, array('status' => Posts::STATUS_DELED))) {
             Books::updateBookStatInfo($chapterInfo['bid']);
             Authors::updateStatInfo($authorInfo);
+            //记录用户操作
+            $jsonData = CJSON::encode(array(
+                        'cid' => $id,
+                        'cTitle' => $chapterInfo['title'],
+                        'bid' => $chapterInfo['bid'],
+            ));
+            $attr = array(
+                'uid' => $this->uid,
+                'logid' => $id,
+                'classify' => $powerAction,
+                'data' => $jsonData,
+                'action' => $powerAction,
+                'score' => $powerInfo['msg']['score'],
+                'display' => 0,
+            );
+            if (UserAction::simpleRecord($attr)) {
+                //判断本操作是否同属任务
+                Task::addTaskLog($this->userInfo, $powerAction);
+            }
             $this->jsonOutPut(1, '已删除');
         } else {
             $this->jsonOutPut(0, '删除失败');
@@ -617,6 +642,12 @@ class AjaxController extends Q {
         if (zmf::actionLimit('report', $type . '-' . $logid, 3, 3600)) {
             $this->jsonOutPut(0, '我们已收到你的举报，请勿频繁操作');
         }
+        //获取用户组的权限
+        $powerAction = 'addReport';
+        $powerInfo = GroupPowers::checkPower($this->userInfo, $powerAction);
+        if (!$powerInfo['status']) {
+            $this->jsonOutPut(0, $powerInfo['msg']);
+        }
         $data['logid'] = $logid;
         $data['classify'] = $type;
         $info = false;
@@ -631,6 +662,26 @@ class AjaxController extends Q {
             $data['times'] = $info['times'] + 1;
             $data['cTime'] = zmf::now();
             if (Reports::model()->updateByPk($info['id'], $data)) {
+                //记录用户操作
+                $jsonData = CJSON::encode(array(
+                            'logid' => $logid,
+                            'classify' => $type,
+                            'desc' => $data['desc'],
+                            'contact' => $data['contact'],
+                ));
+                $attr = array(
+                    'uid' => $this->uid,
+                    'logid' => $info['id'],
+                    'classify' => $powerAction,
+                    'data' => $jsonData,
+                    'action' => $powerAction,
+                    'score' => $powerInfo['msg']['score'],
+                    'display' => 0,
+                );
+                if (UserAction::simpleRecord($attr)) {
+                    //判断本操作是否同属任务
+                    Task::addTaskLog($this->userInfo, $powerAction);
+                }
                 $this->jsonOutPut(1, '感谢你的举报');
             }
             $this->jsonOutPut(1, '感谢你的举报');
@@ -643,6 +694,26 @@ class AjaxController extends Q {
             $fm = new Reports();
             $fm->attributes = $data;
             if ($fm->save()) {
+                //记录用户操作
+                $jsonData = CJSON::encode(array(
+                            'logid' => $logid,
+                            'classify' => $type,
+                            'desc' => $data['desc'],
+                            'contact' => $data['contact'],
+                ));
+                $attr = array(
+                    'uid' => $this->uid,
+                    'logid' => $info['id'],
+                    'classify' => $powerAction,
+                    'data' => $jsonData,
+                    'action' => $powerAction,
+                    'score' => $powerInfo['msg']['score'],
+                    'display' => 0,
+                );
+                if (UserAction::simpleRecord($attr)) {
+                    //判断本操作是否同属任务
+                    Task::addTaskLog($this->userInfo, $powerAction);
+                }
                 $this->jsonOutPut(1, '感谢你的举报');
             } else {
                 $this->jsonOutPut(0, '举报失败，请稍后重试');
@@ -920,6 +991,14 @@ class AjaxController extends Q {
         if (zmf::actionLimit('feedback', '', 5, 3600)) {
             $this->jsonOutPut(0, '操作太频繁，请稍后再试');
         }
+        if ($this->uid) {
+            //获取用户组的权限
+            $powerAction = 'feedback';
+            $powerInfo = GroupPowers::checkPower($this->userInfo, $powerAction);
+            if (!$powerInfo['status']) {
+                $this->jsonOutPut(0, $powerInfo['msg']);
+            }
+        }
         $attr['uid'] = $this->uid;
         $attr['type'] = 'web';
         $attr['contact'] = zmf::val('email', 1);
@@ -930,6 +1009,26 @@ class AjaxController extends Q {
         $model->attributes = $attr;
         if ($model->validate()) {
             if ($model->save()) {
+                if ($this->uid) {
+                    //记录用户操作
+                    $jsonData = CJSON::encode(array(
+                                'contact' => $attr['contact'],
+                                'content' => $content,
+                    ));
+                    $attr = array(
+                        'uid' => $this->uid,
+                        'logid' => $model->id,
+                        'classify' => $powerAction,
+                        'data' => $jsonData,
+                        'action' => $powerAction,
+                        'score' => $powerInfo['msg']['score'],
+                        'display' => 0,
+                    );
+                    if (UserAction::simpleRecord($attr)) {
+                        //判断本操作是否同属任务
+                        Task::addTaskLog($this->userInfo, $powerAction);
+                    }
+                }
                 $this->jsonOutPut(1, '感谢你的反馈');
             } else {
                 $this->jsonOutPut(1, '感谢你的反馈');
@@ -950,11 +1049,20 @@ class AjaxController extends Q {
         if (!isset($type) OR ! in_array($type, array('posts', 'tipComments'))) {
             $this->jsonOutPut(0, Yii::t('default', 'forbiddenaction'));
         }
+        if ($type == 'posts') {
+            $powerAction = 'commentPost';
+        } elseif ($type == 'tipComments') {
+            $powerAction = 'commentChapterTip';
+        }
         if (!isset($keyid) OR ! is_numeric($keyid)) {
             $this->jsonOutPut(0, Yii::t('default', 'pagenotexists'));
         }
         if (!$content) {
             $this->jsonOutPut(0, '评论不能为空哦~');
+        }
+        $powerInfo = GroupPowers::checkPower($this->userInfo, $powerAction);
+        if (!$powerInfo['status']) {
+            $this->jsonOutPut(0, $powerInfo['msg']);
         }
         $uid = $this->uid;
         if ($type == 'posts') {
@@ -1073,6 +1181,24 @@ class AjaxController extends Q {
                 $intoData['userInfo']['linkArr'] = !empty($authorInfo) ? array('author/view', 'id' => $this->userInfo['authorId']) : array('user/index', 'id' => $this->uid);
                 $intoData['replyInfo'] = $replyInfo;
                 $html = $this->renderPartial('/posts/_comment', array('data' => $intoData, 'postInfo' => $postInfo), true);
+                //记录用户操作
+                $jsonData = CJSON::encode(array(
+                            'keyid' => $keyid,
+                            'classify' => $type
+                ));
+                $attr = array(
+                    'uid' => $this->uid,
+                    'logid' => $model->id,
+                    'classify' => $powerAction,
+                    'data' => $jsonData,
+                    'action' => $powerAction,
+                    'score' => $powerInfo['msg']['score'],
+                    'display' => 0,
+                );
+                if (UserAction::simpleRecord($attr)) {
+                    //判断本操作是否同属任务
+                    Task::addTaskLog($this->userInfo, $powerAction);
+                }
                 $this->jsonOutPut(1, $html);
             } else {
                 $this->jsonOutPut(0, '新增评论失败');
@@ -1246,7 +1372,7 @@ class AjaxController extends Q {
     public function actionFavorite() {
         $data = zmf::val('data', 1);
         $type = zmf::val('type', 1);
-        $ckinfo = Posts::favorite($data, $type, 'web');
+        $ckinfo = Posts::favorite($data, $type, 'web', $this->userInfo);
         $this->jsonOutPut($ckinfo['state'], $ckinfo['msg']);
     }
 
@@ -1357,6 +1483,12 @@ class AjaxController extends Q {
         if (!$arr['id'] || !is_numeric($arr['id']) || $arr['type'] != 'joinTask') {
             $this->jsonOutPut(0, '参数有误，请核实');
         }
+        //获取用户组的权限
+        $powerAction = 'joinTask';
+        $powerInfo = GroupPowers::checkPower($this->userInfo, $powerAction);
+        if (!$powerInfo['status']) {
+            $this->jsonOutPut(0, $powerInfo['msg']);
+        }
         $id = $arr['id'];
         $logInfo = TaskLogs::checkInfo($this->uid, $id);
         if ($logInfo) {
@@ -1380,6 +1512,26 @@ class AjaxController extends Q {
             Posts::updateCount($taskInfo['groupTaskId'], 'GroupTasks', 1, 'times');
             //更新任务的参与人数
             Posts::updateCount($id, 'Task', 1, 'times');
+            //记录用户操作
+            $jsonData = CJSON::encode(array(
+                        'tid' => $taskInfo['id'],
+                        'tTitle' => $taskInfo['title'],
+                        'tDesc' => $taskInfo['desc'],
+                        'tFaceImg' => $taskInfo['faceImg'],
+            ));
+            $attr = array(
+                'uid' => $this->uid,
+                'logid' => $taskInfo['id'],
+                'classify' => $powerAction,
+                'data' => $jsonData,
+                'action' => $powerAction,
+                'score' => $powerInfo['msg']['score'],
+                'display' => 0,
+            );
+            if (UserAction::simpleRecord($attr)) {
+                //判断本操作是否同属任务
+                Task::addTaskLog($this->userInfo, $powerAction);
+            }
             $this->jsonOutPut(1, '已领取');
         } else {
             $this->jsonOutPut(0, '领取失败，请稍后重试');

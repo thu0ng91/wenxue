@@ -150,17 +150,20 @@ class UserAction extends CActiveRecord {
                     'addChapterTip'=>'点评作品',
                     'delChapterTip'=>'删除点评',
                     'favorChapterTip'=>'赞点评',
+                    'dapipi'=>'催更作品',
                     'addBook' => '发表作品',
                     'finishBook' => '完结作品',
                     'delBook' => '删除作品',
                     'addChapter' => '新增章节',
                     'publishChapter' => '发表章节',
+                    'delChapter' => '发表章节',
                 ),
             ),
             'author' => array(
                 'desc' => '作者相关',
                 'items' => array(
                     'createAuthor'=>'成为作者',             
+                    'favoriteAuthor'=>'关注作者',             
                 ),
             ),
             'comment' => array(
@@ -168,7 +171,33 @@ class UserAction extends CActiveRecord {
                 'items' => array(
                     'commentPost'=>'评论帖子',
                     'commentChapterTip'=>'评论点评',
-                    'favorComment'=>'评论点评',
+                    'favorComment'=>'点赞评论',
+                ),
+            ),
+            'report' => array(
+                'desc' => '评论相关',
+                'items' => array(
+                    'addReport'=>'举报',
+                ),
+            ),
+            'feedback' => array(
+                'desc' => '意见反馈',
+                'items' => array(
+                    'feedback'=>'举报',
+                ),
+            ),
+            'user' => array(
+                'desc' => '用户相关',
+                'items' => array(
+                    'favoriteUser'=>'关注用户',
+                ),
+            ),
+            'task' => array(
+                'desc' => '任务相关',
+                'items' => array(
+                    'joinTask'=>'接受任务',
+                    'delTask'=>'删除任务',
+                    'finishTask'=>'完成任务',
                 ),
             ),
         );
