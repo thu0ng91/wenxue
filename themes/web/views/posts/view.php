@@ -24,6 +24,10 @@ $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
     .post-content .media .media-body{
         padding-left: 0;
         padding-right: 20px;
+        font-size: 13px
+    }
+    .post-content .media .comments-list{
+        position: relative
     }
 </style>
 <div class="container post-page">

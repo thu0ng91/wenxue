@@ -135,9 +135,10 @@ class UserAction extends CActiveRecord {
                 'items' => array(
                     'addPost' => '发表帖子',
                     'addPostReply'=>'回复帖子',                    
-                    'favorPost'=>'赞帖子',
+                    'favorPost'=>'赞帖子',                    
                     'favoritePost'=>'收藏帖子',
-                    'rewardPost'=>'打赏帖子',
+                    'favorPostReply'=>'赞楼层',
+                    'rewardPostReply'=>'打赏帖子',
                     'delPost'=>'删除帖子',
                     'delPostReply'=>'删除楼层',
                     'favoriteForum'=>'关注版块'

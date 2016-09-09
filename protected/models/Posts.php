@@ -332,7 +332,7 @@ class Posts extends CActiveRecord {
         if (!$code || !$type) {
             return array('status' => 0, 'msg' => '数据不全，请核实');
         }
-        if (!in_array($type, array('book', 'author', 'tip', 'user', 'post', 'comment'))) {
+        if (!in_array($type, array('book', 'author', 'tip', 'user', 'post', 'comment','postPosts'))) {
             return array('status' => 0, 'msg' => '暂不允许的分类');
         }
         if (is_numeric($code)) {
@@ -413,6 +413,22 @@ class Posts extends CActiveRecord {
             $content = "赞了你的评论。";
             $noticeUid = $postInfo['uid'];
             $powerAction = 'favorComment';
+        } elseif ($type == 'postPosts') {
+            $postInfo = PostPosts::model()->findByPk($id);
+            if (!$postInfo || $postInfo['status'] != Posts::STATUS_PASSED) {
+                return array('status' => 0, 'msg' => '你所操作的内容不存在');
+            }
+            $threadInfo=  PostThreads::getOne($postInfo['tid']);
+            if(!$threadInfo || $threadInfo['status']!=Posts::STATUS_PASSED){
+                return array('status' => 0, 'msg' => '你所操作的帖子不存在');
+            }
+            if($postInfo['isFirst']){
+                $content = "赞了你的帖子【{$threadInfo['title']}】，" . CHtml::link('查看详情', array('posts/view', 'id' => $postInfo['tid']));
+            }else{
+                $content = "赞了你对【{$postInfo['title']}】的回帖，" . CHtml::link('查看详情', array('posts/view', 'id' => $postInfo['tid'],'#'=>'reply-'.$id));
+            }
+            $noticeUid = $postInfo['uid'];
+            $powerAction = 'favorPostReply';
         }
         if (!$postInfo || $postInfo['status'] != Posts::STATUS_PASSED) {
             return array('status' => 0, 'msg' => '你所操作的内容不存在');

@@ -1215,7 +1215,7 @@ class AjaxController extends Q {
         if (!$id || !$type) {
             $this->jsonOutPut(0, '数据不全，请核实');
         }
-        if (!in_array($type, array('tipComments', 'postComments'))) {
+        if (!in_array($type, array('tipComments', 'postComments','postPosts'))) {
             $this->jsonOutPut(0, '暂不允许的分类');
         }
         if ($page < 1 || !is_numeric($page)) {
@@ -1238,6 +1238,16 @@ class AjaxController extends Q {
                 $view = '/posts/_comment';
                 $from = 'tip';
                 $showFormHtml = true;
+                break;
+            case 'postPosts':
+                $postInfo = PostPosts::model()->findByPk($id);
+                if (!$postInfo || $postInfo['status'] != Posts::STATUS_PASSED) {
+                    $this->jsonOutPut(0, '你所评论的内容不存在');
+                }
+                $posts = Comments::getCommentsByPage($id, $this->uid, 'postPosts', $page, $this->pageSize);
+                $view = '/posts/_comment';
+                $from = 'postPosts';
+                $showFormHtml = $postInfo['open']==PostPosts::OPEN_COMMENT;
                 break;
             case 'postComments':
                 $postInfo = Posts::model()->findByPk($id);
