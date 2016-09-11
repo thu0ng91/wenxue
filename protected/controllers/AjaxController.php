@@ -1046,13 +1046,15 @@ class AjaxController extends Q {
         $type = zmf::val('t', 1);
         $isAuthor = zmf::val('isAuthor', 2);
         $content = zmf::val('c', 1);
-        if (!isset($type) OR ! in_array($type, array('posts', 'tipComments'))) {
+        if (!isset($type) OR ! in_array($type, array('posts', 'tipComments','postPosts'))) {
             $this->jsonOutPut(0, Yii::t('default', 'forbiddenaction'));
         }
         if ($type == 'posts') {
             $powerAction = 'commentPost';
         } elseif ($type == 'tipComments') {
             $powerAction = 'commentChapterTip';
+        }elseif ($type=='postPosts') {
+            $powerAction = 'commentPost';
         }
         if (!isset($keyid) OR ! is_numeric($keyid)) {
             $this->jsonOutPut(0, Yii::t('default', 'pagenotexists'));
@@ -1078,6 +1080,13 @@ class AjaxController extends Q {
                 $this->jsonOutPut(0, '你所评论的内容不存在');
             }
             $type = 'tip';
+        } elseif ($type == 'postPosts') {
+            $postInfo = PostPosts::model()->findByPk($keyid);
+            if (!$postInfo || $postInfo['status'] != Posts::STATUS_PASSED) {
+                $this->jsonOutPut(0, '你所评论的楼层不存在');
+            } elseif ($postInfo['open'] != Posts::STATUS_OPEN) {
+                $this->jsonOutPut(0, '楼层已关闭评论');
+            }
         }
         //处理使用作者身份回复
         $authorId = 0;
@@ -1160,6 +1169,12 @@ class AjaxController extends Q {
                         Posts::updateCount($keyid, 'Tips', 1, 'comments');
                     }
                     $_content = '评论了你的点评【' . zmf::subStr($postInfo['content']) . '】,' . $_url;
+                } elseif ($type == 'postPosts') {
+                    $_url = CHtml::link('查看详情', array('posts/view', 'id' => $postInfo['tid'], '#' => 'reply-' . $keyid));
+                    if ($status == Posts::STATUS_PASSED) {
+                        Posts::updateCount($keyid, 'PostPosts', 1, 'comments');
+                    }
+                    $_content = '评论了你的楼层【' . zmf::subStr($postInfo['content']) . '】,' . $_url;
                 }
                 if ($to && $_url) {
                     $_content = '回复了你的评论【' . zmf::subStr($comInfo['content']) . '】,' . $_url;

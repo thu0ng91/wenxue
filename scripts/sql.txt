@@ -234,3 +234,41 @@ CREATE TABLE `pre_user_order_log` (
   KEY `uid` (`uid`),
   KEY `orderId` (`orderId`)
 ) ENGINE=MyISAM AUTO_INCREMENT=26 DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `pre_goods_classify`;
+CREATE TABLE `pre_goods_classify` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '分类ID',
+  `belongid` int(10) unsigned NOT NULL COMMENT '所属分类',
+  `title` char(32) NOT NULL COMMENT '分类标题',
+  `order` int(10) unsigned NOT NULL COMMENT '排序',
+  `goods` int(10) unsigned NOT NULL COMMENT '商品数',
+  `level` tinyint(1) unsigned NOT NULL COMMENT '层级',
+  PRIMARY KEY (`id`),
+  KEY `belongid` (`belongid`)
+) ENGINE=MyISAM AUTO_INCREMENT=26 DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `pre_goods`;
+CREATE TABLE `pre_goods` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '商品ID',
+  `title` char(32) NOT NULL COMMENT '分类标题',
+  `desc` varchar(255) NOT NULL COMMENT '描述',
+  `scorePrice` varchar(16) NOT NULL COMMENT '积分价格',
+  `goldPrice` varchar(16) NOT NULL COMMENT '金币价格',
+  `content` int(10) unsigned NOT NULL COMMENT '商品描述',
+  `classify` int(10) unsigned NOT NULL COMMENT '分类ID',
+  `comments` int(10) unsigned NOT NULL COMMENT '评论数',
+  `hits` int(10) unsigned NOT NULL COMMENT '点击数',
+  `score` varchar(4) NOT NULL COMMENT '评分',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+
+DROP TABLE IF EXISTS `pre_goods_content`;
+CREATE TABLE `pre_goods_content` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '商品ID',
+  `gid` int(10) unsigned NOT NULL COMMENT '商品ID',
+  `content` text NOT NULL COMMENT '商品描述',  
+  `cTime` int(10) unsigned NOT NULL COMMENT '创建时间',
+  PRIMARY KEY (`id`),
+  KEY `gid` (`gid`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
