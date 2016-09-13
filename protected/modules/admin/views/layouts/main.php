@@ -14,7 +14,7 @@
                     if(!$nav['seconds']){
                         echo "<li class='".($nav['active']?'active':'')."'>".CHtml::link($nav['title'],$nav['url'])."</li>";
                     }else{
-                        echo "<li class='".($nav['active']?'active':'')." dropdown'><a href='{$nav['url']}' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'>{$nav['title']} <span class='caret'></span></a><ul class='dropdown-menu' role='menu'>";
+                        echo "<li class='".($nav['active']?'active':'')." dropdown'><a href='#' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-expanded='false'>{$nav['title']} <span class='caret'></span></a><ul class='dropdown-menu' role='menu'>";
                         foreach ($nav['seconds'] as $val){
                             echo "<li>".CHtml::link($val['title'],$val['url'])."</li>";
                         }

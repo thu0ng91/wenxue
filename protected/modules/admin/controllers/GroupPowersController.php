@@ -28,6 +28,10 @@ class GroupPowersController extends Admin {
             $model = $this->loadModel($id);
         } else {
             $model = new GroupPowers;
+            $gid=  zmf::val('gid',2);
+            if($gid){
+                $model->gid=$gid;
+            }
         }
         // Uncomment the following line if AJAX validation is needed
         // $this->performAjaxValidation($model);
