@@ -108,4 +108,35 @@ class GoodsClassify extends CActiveRecord {
         return self::model()->findByPk($id);
     }
 
+    public static function getNavbar() {
+        $items = GoodsClassify::model()->findAll(array(
+            'order' => '`order` ASC'
+        ));
+        $navbar = array();
+        foreach ($items as $val) {
+            if ($val['belongid'] > 0) {
+                if ($val['level'] == 1) {
+                    $navbar[$val['belongid']]['items'][$val['id']] = array(
+                        'id' => $val['id'],
+                        'title' => $val['title'],
+                        'items' => array()
+                    );
+                } else {//第三层级，需要取出第二层级的所属层级
+                    $_beInfo=  self::getOne($val['belongid']);
+                    $navbar[$_beInfo['belongid']]['items'][$val['belongid']]['items'][$val['id']] = array(
+                        'id' => $val['id'],
+                        'title' => $val['title']
+                    );
+                }
+            } else {
+                $navbar[$val['id']] = array(
+                    'id' => $val['id'],
+                    'title' => $val['title'],
+                    'items' => array()
+                );
+            }
+        }
+        return $navbar;
+    }
+
 }
