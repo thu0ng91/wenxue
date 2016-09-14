@@ -19,7 +19,7 @@
         display: block;
         font-weight: 700
     }
-    .goods-classify a.goods-nav-item:hover{
+    .goods-classify a.goods-nav-item:hover,.goods-classify a.active{
         background: #fff;
         color: #93ba5f;
         text-decoration: none;
@@ -28,7 +28,7 @@
     .goods-classify a .fa{
         padding-top: 10px
     }
-    .goods-classify a.goods-nav-item:hover .fa{
+    .goods-classify a.goods-nav-item:hover .fa,.goods-classify a.active:hover .fa{
         color: #fff
     }
     .goods-classify-holder{
@@ -42,6 +42,7 @@
         border: 1px solid #93ba5f;
         border-left: none;
         box-sizing: border-box;
+        display: none
     }
     .goods-classify-holder .items-holder{
         line-height: 31px;
@@ -70,25 +71,27 @@
 </style>
 <div class="container">
     <div class="goods-header">
-        <div class="goods-classify">
+        <div class="goods-classify" id="goods-classify">
             <?php foreach ($navbars as $navbar){?>
             <?php echo CHtml::link($navbar['title'].'<i class="fa fa-angle-right pull-right"></i>','javascript:;',array('class'=>'goods-nav-item','data-id'=>$navbar['id']));?>  
             <?php }?>
         </div>
-        <?php foreach ($navbars as $navbar){$seconds=$navbar['items'];?>
-        <div class="goods-classify-holder">
-            <?php foreach($seconds as $second){$thirds=$second['items'];?>
-            <div class="items-holder">
-                <span class="items-label"><?php echo CHtml::link($second['title'],array());?></span>     
-                <div class="items">
-                    <?php foreach($thirds as $third){?>
-                    <?php echo CHtml::link($third['title'],array(),array('class'=>'item'));?>
-                    <?php }?>   
+        <div id="goods-classify-holder">
+            <?php foreach ($navbars as $navbar){$seconds=$navbar['items'];?>
+            <div class="goods-classify-holder" id="classify-holder-<?php echo $navbar['id'];?>">
+                <?php foreach($seconds as $second){$thirds=$second['items'];?>
+                <div class="items-holder">
+                    <span class="items-label"><?php echo CHtml::link($second['title'],array());?></span>     
+                    <div class="items">
+                        <?php foreach($thirds as $third){?>
+                        <?php echo CHtml::link($third['title'],array(),array('class'=>'item'));?>
+                        <?php }?>   
+                    </div>
                 </div>
+                <?php }?>
             </div>
             <?php }?>
         </div>
-        <?php }?>
         <div class="goods-carousel">
             <?php $this->renderPartial('/site/login-carousel');?>
         </div>
@@ -101,3 +104,19 @@
         </div>
     </div>
 </div>
+<script>
+    $(document).ready(function(){
+        $('#goods-classify>a').mouseover(function(){
+            $('#goods-classify>a').each(function(){
+                $(this).removeClass('active');
+            });
+            $('#goods-classify-holder>div').each(function(){
+                $(this).hide();
+            })
+            var dom=$(this);
+            dom.addClass('active');
+            var _id=dom.attr('data-id');
+            $('#classify-holder-'+_id).show();
+        })
+    })
+</script>

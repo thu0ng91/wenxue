@@ -115,24 +115,28 @@ class GoodsClassify extends CActiveRecord {
         $navbar = array();
         foreach ($items as $val) {
             if ($val['belongid'] > 0) {
-                if ($val['level'] == 1) {
+                if ($val['level'] == 2) {
+                    $_seconds=$navbar[$val['belongid']]['items'][$val['id']]['items'];
                     $navbar[$val['belongid']]['items'][$val['id']] = array(
                         'id' => $val['id'],
                         'title' => $val['title'],
-                        'items' => array()
+                        'level'=>2,
+                        'items' => $_seconds,                        
                     );
-                } else {//第三层级，需要取出第二层级的所属层级
+                } elseif ($val['level'] == 3) {//第三层级，需要取出第二层级的所属层级
                     $_beInfo=  self::getOne($val['belongid']);
+                    $_seconds=$navbar[$_beInfo['belongid']]['items'][$val['belongid']]['items'];
                     $navbar[$_beInfo['belongid']]['items'][$val['belongid']]['items'][$val['id']] = array(
                         'id' => $val['id'],
                         'title' => $val['title']
-                    );
+                    );                    
                 }
             } else {
                 $navbar[$val['id']] = array(
                     'id' => $val['id'],
                     'title' => $val['title'],
-                    'items' => array()
+                    'level'=>1,
+                    'items' => $navbar[$val['id']]['items'],                    
                 );
             }
         }

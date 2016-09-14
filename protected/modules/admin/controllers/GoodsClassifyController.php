@@ -24,15 +24,15 @@ class GoodsClassifyController extends Admin {
      * If creation is successful, the browser will be redirected to the 'view' page.
      */
     public function actionCreate($id = '') {
-        $belongid=  zmf::val('belongid',2);
+        $belongid = zmf::val('belongid', 2);
         if ($id) {
             $model = $this->loadModel($id);
         } else {
             $model = new GoodsClassify;
-            $belongInfo=  GoodsClassify::getOne($belongid);            
-            if($belongInfo['level']<=2){
-                $model->belongid=$belongid;
-                $model->level=$belongInfo['level']+1;
+            $belongInfo = GoodsClassify::getOne($belongid);
+            if ($belongInfo['level'] <= 2) {
+                $model->belongid = $belongid;
+                $model->level = $belongInfo['level'] + 1;
             }
         }
         // Uncomment the following line if AJAX validation is needed
@@ -42,9 +42,9 @@ class GoodsClassifyController extends Admin {
             if ($model->save()) {
                 if (!$id) {
                     Yii::app()->user->setFlash('addGoodsClassifySuccess', "保存成功！您可以继续添加。");
-                    if($model->belongid){
-                        $this->redirect(array('create','belongid'=>$model->belongid));
-                    }else{
+                    if ($model->belongid) {
+                        $this->redirect(array('create', 'belongid' => $model->belongid));
+                    } else {
                         $this->redirect(array('create'));
                     }
                 } else {
@@ -83,19 +83,19 @@ class GoodsClassifyController extends Admin {
      * Lists all models.
      */
     public function actionIndex() {
-        $select = "id,belongid,title,goods";
-        $model = new GoodsClassify;
-        $criteria = new CDbCriteria();
-        $criteria->select = $select;
-        $count = $model->count($criteria);
-        $pager = new CPagination($count);
-        $pager->pageSize = 30;
-        $pager->applyLimit($criteria);
-        $posts = $model->findAll($criteria);
+        $navbars = GoodsClassify::getNavbar();
+//        foreach ($navbars as $t1 => $v1) {
+//            $_total1 = 0;
+//            foreach ($v1['items'] as $t2 => $v2) {
+//                $_total2 = count($v2['items']);
+//                $v1['items'][$t2]['total'] = ($_total2 > 0 ? $_total2 : 1);                
+//                $_total1+=($_total2 > 0 ? $_total2 : 1);
+//            }
+//            $navbars[$t1] = $v1;
+//            $navbars[$t1]['total']+=$_total1;
+//        }
         $this->render('index', array(
-            'pages' => $pager,
-            'posts' => $posts,
-            'model' => $model
+            'navbars' => $navbars,
         ));
     }
 
