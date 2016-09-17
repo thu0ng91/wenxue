@@ -11,10 +11,10 @@ $this->renderPartial('_nav');
 <table class="table table-hover table-striped">
     <tr>
         <th><?php echo $model->getAttributeLabel("id"); ?></th>
+        <th><?php echo $model->getAttributeLabel("classify"); ?></th>
         <th><?php echo $model->getAttributeLabel("title"); ?></th>
         <th><?php echo $model->getAttributeLabel("scorePrice"); ?></th>
-        <th><?php echo $model->getAttributeLabel("goldPrice"); ?></th>
-        <th><?php echo $model->getAttributeLabel("classify"); ?></th>
+        <th><?php echo $model->getAttributeLabel("goldPrice"); ?></th>        
         <th><?php echo $model->getAttributeLabel("comments"); ?></th>
         <th><?php echo $model->getAttributeLabel("hits"); ?></th>
         <th><?php echo $model->getAttributeLabel("score"); ?></th>
@@ -24,10 +24,10 @@ $this->renderPartial('_nav');
     <?php foreach ($posts as $data): ?> 
         <tr>
             <td><?php echo $data->id; ?></td>
+            <td><?php echo $data->classify; ?></td>
             <td><?php echo $data->title; ?></td>
             <td><?php echo $data->scorePrice; ?></td>
-            <td><?php echo $data->goldPrice; ?></td>
-            <td><?php echo $data->classify; ?></td>
+            <td><?php echo $data->goldPrice; ?></td>            
             <td><?php echo $data->comments; ?></td>
             <td><?php echo $data->hits; ?></td>
             <td><?php echo $data->score; ?></td>

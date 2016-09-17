@@ -272,3 +272,30 @@ CREATE TABLE `pre_goods_content` (
   PRIMARY KEY (`id`),
   KEY `gid` (`gid`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+alter TABLE pre_goods add groupids varchar(255) not null COMMENT '所属团队';
+
+DROP TABLE IF EXISTS `pre_goods_group`;
+CREATE TABLE `pre_goods_group` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `goodsId` int(10) unsigned NOT NULL COMMENT '商品ID',
+  `groupId` int(10) unsigned NOT NULL COMMENT '团队ID',
+  PRIMARY KEY (`id`),
+  KEY `goodsId` (`goodsId`),
+  KEY `groupId` (`groupId`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+alter TABLE pre_goods add faceimg int(10) unsigned not null COMMENT '封面图ID';
+alter TABLE pre_goods add faceUrl varchar(255) not null COMMENT '封面图';
+
+DROP TABLE IF EXISTS `pre_goods_action`;
+CREATE TABLE `pre_goods_action` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `gid` int(10) unsigned NOT NULL COMMENT '商品ID',
+  `classify` varchar(16) NOT NULL COMMENT '分类，如道具',
+  `action` varchar(16) NOT NULL COMMENT '操作，如转换卡',
+  `from` varchar(16) NOT NULL COMMENT '起始值',
+  `to` varchar(16) NOT NULL COMMENT '结束值',
+  PRIMARY KEY (`id`),
+  KEY `gid` (`gid`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;

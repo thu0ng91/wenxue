@@ -99,6 +99,55 @@ class GoodsClassifyController extends Admin {
         ));
     }
 
+    public function actionOrder() {
+        $belongid = zmf::val('belongid', 2);
+        if (!$belongid) {
+            throw new CHttpException(404, 'The requested page does not exist.');
+        }
+        $info = $this->loadModel($belongid);
+        $arr = GoodsClassify::model()->findAll(array(
+            'condition' => 'belongid=:bid',
+            'order' => '`order` DESC',
+            'params' => array(
+                ':bid' => $belongid
+            )
+        ));
+        $data = array(
+            'info' => $info,
+            'items' => CHtml::listData($arr, 'id', 'title')
+        );
+        $this->render('order', $data);
+    }
+
+    public function actionOrderClassify() {
+        $ids = zmf::val('ids', 1, 2);
+        if (!$ids) {
+            $this->jsonOutPut(0, '数据不全');
+        }
+        $arr = array_filter(explode('#', $ids));
+        if (empty($arr)) {
+            $this->jsonOutPut(0, '数据不全');
+        }
+        $s = $e = 0;
+        $model = new GoodsClassify();
+        $now = zmf::now();
+        foreach ($arr as $k => $v) {
+            $data = array(
+                'order' => ($now - $k * 10000)
+            );
+            $_info = $model->updateByPk($v, $data);
+            if ($_info) {
+                $s+=1;
+            } else {
+                $e+=1;
+            }
+        }
+        if ($s > 0) {
+            $this->jsonOutPut(1, '已更新');
+        }
+        $this->jsonOutPut(0, '可能未做修改');
+    }
+
     /**
      * Manages all models.
      */

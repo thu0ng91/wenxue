@@ -110,7 +110,7 @@ class GoodsClassify extends CActiveRecord {
 
     public static function getNavbar() {
         $items = GoodsClassify::model()->findAll(array(
-            'order' => '`order` ASC'
+            'order' => '`order` DESC'
         ));
         $navbar = array();
         foreach ($items as $val) {
