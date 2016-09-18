@@ -81,10 +81,10 @@
             <div class="goods-classify-holder" id="classify-holder-<?php echo $navbar['id'];?>">
                 <?php foreach($seconds as $second){$thirds=$second['items'];?>
                 <div class="items-holder">
-                    <span class="items-label"><?php echo CHtml::link($second['title'],array());?></span>     
+                    <span class="items-label"><?php echo CHtml::link($second['title'],array('shop/all','id'=>$second['id']));?></span>     
                     <div class="items">
                         <?php foreach($thirds as $third){?>
-                        <?php echo CHtml::link($third['title'],array(),array('class'=>'item'));?>
+                        <?php echo CHtml::link($third['title'],array('shop/all','id'=>$third['id']),array('class'=>'item'));?>
                         <?php }?>   
                     </div>
                 </div>

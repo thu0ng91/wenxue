@@ -11,4 +11,4 @@ $this->renderPartial('_nav');
 if (Yii::app()->user->hasFlash('addGoodsSuccess')) {
     echo '<div class="alert alert-danger">' . Yii::app()->user->getFlash('addGoodsSuccess') . '</div>';
 }
-$this->renderPartial('_form', array('model' => $model, 'classifyHtml' => $classifyHtml));
+$this->renderPartial('_form', array('model' => $model, 'classifyHtml' => $classifyHtml,'actionClassifyHtml'=>$actionClassifyHtml));

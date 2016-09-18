@@ -37,7 +37,7 @@ class Goods extends CActiveRecord {
         return array(
             array('title,scorePrice,goldPrice,classify', 'required'),
             array('title', 'length', 'max' => 32),
-            array('desc,faceUrl,groupids', 'length', 'max' => 255),
+            array('desc,faceUrl,groupids,actionId', 'length', 'max' => 255),
             array('scorePrice, goldPrice', 'length', 'max' => 16),
             array('content, classify, comments, hits,faceimg', 'length', 'max' => 10),
             array('score', 'length', 'max' => 4),
@@ -75,6 +75,7 @@ class Goods extends CActiveRecord {
             'groupids' => '所属团队',
             'faceimg' => '封面图ID',
             'faceUrl' => '封面图',
+            'actionId' => '关联事件ID',
         );
     }
 
@@ -119,6 +120,26 @@ class Goods extends CActiveRecord {
      */
     public static function model($className = __CLASS__) {
         return parent::model($className);
+    }
+    
+    public static function getOne($id){
+        return Goods::model()->findByPk($id);
+    }
+    public static function detail($id,$imgSize='640'){
+        $info=  self::getOne($id);
+        if(!$info){
+            return array(
+                'status'=>0,
+                'msg'=>'你所查看的商品不存在'
+            );
+        }
+        $classify=  GoodsClassify::getOneBelongs($info['classify']);
+        $info['classify']=$classify;
+        $info['content']=  GoodsContent::detailOne($info['content'], $imgSize);
+        return array(
+            'status'=>1,
+            'msg'=>$info
+        );
     }
 
 }

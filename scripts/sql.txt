@@ -299,3 +299,5 @@ CREATE TABLE `pre_goods_action` (
   PRIMARY KEY (`id`),
   KEY `gid` (`gid`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+alter TABLE pre_goods add actionId varchar(255) not null COMMENT '关联ID';

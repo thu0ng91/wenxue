@@ -37,6 +37,23 @@ p{
     white-space: nowrap;
     text-overflow: ellipsis;
 }
+.ui-nowrap-flex {
+    display: -webkit-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    -webkit-box-flex: 1;
+    height: inherit; 
+}
+
+.ui-nowrap-multi {
+    display: -webkit-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2; 
+}
 .ui-border-b{
     border-bottom: 1px dashed #f2f2f2
 }

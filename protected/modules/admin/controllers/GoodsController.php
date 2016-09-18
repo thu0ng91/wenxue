@@ -38,9 +38,13 @@ class GoodsController extends Admin {
             $handleInfo = Posts::handleContent($_POST['Goods']['content'], true);
             $content = $handleInfo['content'];
             $attachids = $handleInfo['attachids'];
-            $_POST['Goods']['content']=0;
-            $_POST['Goods']['faceimg']=$attachids[0];
-            $_POST['Goods']['faceUrl']=  Attachments::faceImg(array('faceimg'=>$attachids[0]), '', 'goods');
+            $_POST['Goods']['content'] = 0;
+            $_POST['Goods']['faceimg'] = $attachids[0];
+            $_POST['Goods']['faceUrl'] = Attachments::faceImg(array('faceimg' => $attachids[0]), '', 'goods');
+            //处理商品关联操作
+            $actionClassify = zmf::val('actionClassify', 1);
+            $fromGroupid = zmf::val('fromGroupid', 2);
+            $toGroupid = zmf::val('toGroupid', 2);
             $model->attributes = $_POST['Goods'];
             if ($model->save()) {
                 //删除商品与用户组的关系
@@ -68,21 +72,40 @@ class GoodsController extends Admin {
                     $_ggModel->attributes = $_ggAttr;
                     $_ggModel->save();
                 }
+                //绑定商品操作
+                if (!$id) {
+                    GoodsAction::model()->deleteAll('gid=:gid', array(':gid' => $model->id));
+                }
+                $actionClassifyArr = array_unique(array_filter(explode('#', $actionClassify)));
+                if (!empty($actionClassifyArr)) {
+                    $_goodsActionAttr = array(
+                        'gid' => $model->id,
+                        'classify' => $actionClassifyArr[0],
+                        'action' => $actionClassifyArr[1],
+                        'from' => ($actionClassifyArr[2]==1 ? $fromGroupid : ''),
+                        'to' =>  ($actionClassifyArr[2]==1 ? $toGroupid : ''),
+                    );
+                    $_goodsActionModel=new GoodsAction;
+                    $_goodsActionModel->attributes=$_goodsActionAttr;
+                    if($_goodsActionModel->save()){
+                        $model->updateByPk($model->id, array('actionId' => $_goodsActionModel->id));
+                    }
+                }
                 //删除商品的详情
                 //todo,判断详情是否有更新
                 //todo,备份每个版本
-                if($id){
-                    GoodsContent::model()->deleteAll('gid=:gid',array(':gid'=>$model->id));
+                if ($id) {
+                    GoodsContent::model()->deleteAll('gid=:gid', array(':gid' => $model->id));
                 }
-                if($content!=''){
-                    $_gcAttr=array(
-                        'gid'=>$model->id,
-                        'content'=>$content
+                if ($content != '') {
+                    $_gcAttr = array(
+                        'gid' => $model->id,
+                        'content' => $content
                     );
-                    $_gcModel=new GoodsContent;
-                    $_gcModel->attributes=$_gcAttr;
-                    if($_gcModel->save()){
-                        $model->updateByPk($model->id, array('content'=>$_gcModel->id));
+                    $_gcModel = new GoodsContent;
+                    $_gcModel->attributes = $_gcAttr;
+                    if ($_gcModel->save()) {
+                        $model->updateByPk($model->id, array('content' => $_gcModel->id));
                     }
                 }
                 //将上传的图片置为通过
@@ -92,7 +115,7 @@ class GoodsController extends Admin {
                     if ($attstr != '') {
                         Attachments::model()->updateAll(array('status' => Posts::STATUS_PASSED, 'logid' => $model->id), 'id IN(' . $attstr . ')');
                     }
-                }                
+                }
                 if (!$id) {
                     Yii::app()->user->setFlash('addGoodsSuccess', "保存成功！您可以继续添加。");
                     $this->redirect(array('create'));
@@ -101,11 +124,27 @@ class GoodsController extends Admin {
                 }
             }
         }
+        //获取商品关联操作的分类
+        $actions = GoodsAction::exClassify('all');
+        $actionClassifyHtml = '<select class="form-control" onchange="selectActionClassify()" name="actionClassify" id="actionClassify">';
+        foreach ($actions as $k1 => $val1) {
+            if (!empty($val1['seconds'])) {
+                $actionClassifyHtml.='<option value="">--请选择--</option>';
+                foreach ($val1['seconds'] as $k2 => $val2) {
+                    $actionClassifyHtml.='<option value="' . ($k1 . '#' . $k2 . ($val2['fromto'] ? '#1' : '')) . '">' . $val1['desc'] . '->' . $val2['desc'] . '</option>';
+                }
+            } else {
+                $actionClassifyHtml.='<option value="' . ($k1) . '">' . $val1['desc'] . '</option>';
+            }
+        }
+        $actionClassifyHtml.='</select>';
+        //获取商品分类
         $navbars = GoodsClassify::getNavbar();
         $classifyHtml = $this->renderPartial('/goodsClassify/index', array('navbars' => $navbars, 'from' => 'goods'), true);
         $this->render('create', array(
             'model' => $model,
             'classifyHtml' => $classifyHtml,
+            'actionClassifyHtml' => $actionClassifyHtml,
         ));
     }
 
@@ -149,6 +188,27 @@ class GoodsController extends Admin {
             'posts' => $posts,
             'model' => $model
         ));
+    }
+
+    public function actionChkAction() {
+        $classify = zmf::val('classify', 1);
+        $level = zmf::val('level', 1);
+        $action = zmf::val('action', 1);
+        $info = GoodsAction::exClassify($classify);
+        $html = '';
+        if (!empty($info['seconds'])) {
+            if ($level == 'first') {
+                $html = '<label>' . $info['desc'] . '</label>';
+                $html.=CHtml::dropDownList('actionAction', '', CHtml::listData($info['seconds'], 'key', 'desc'), array('class' => 'form-control', 'empty' => '--请选择--', 'onclick' => 'selectActionClassify("second")'));
+            } else {
+                $secondInfo = $info[$action];
+                $html = '<label>' . $info['desc'] . '</label>';
+                $html.=CHtml::dropDownList('actionAction', '', CHtml::listData($info['seconds'], 'key', 'desc'), array('class' => 'form-control', 'empty' => '--请选择--', 'onclick' => 'selectActionClassify("second")'));
+            }
+        } else {
+            
+        }
+        $this->jsonOutPut(1, $html);
     }
 
     /**

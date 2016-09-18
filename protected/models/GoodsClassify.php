@@ -108,6 +108,29 @@ class GoodsClassify extends CActiveRecord {
         return self::model()->findByPk($id);
     }
 
+    public static function getOneBelongs($id) {
+        $info = self::getOne($id);
+        $arr = array();
+        $arr[$info['level']] = array(
+            'id' => $info['id'],
+            'title' => $info['title'],
+        );
+        for ($i = $info['level'] - 1; $i > 0; --$i) {
+            if ($info['belongid'] > 0) {
+                $_info = self::getOne($info['belongid']);
+                if ($_info) {
+                    $arr[$i] = array(
+                        'id' => $_info['id'],
+                        'title' => $_info['title'],
+                    );
+                    $info = $_info;
+                }
+            }
+        }
+        asort($arr);
+        return $arr;
+    }
+
     public static function getNavbar() {
         $items = GoodsClassify::model()->findAll(array(
             'order' => '`order` DESC'
@@ -116,27 +139,27 @@ class GoodsClassify extends CActiveRecord {
         foreach ($items as $val) {
             if ($val['belongid'] > 0) {
                 if ($val['level'] == 2) {
-                    $_seconds=$navbar[$val['belongid']]['items'][$val['id']]['items'];
+                    $_seconds = $navbar[$val['belongid']]['items'][$val['id']]['items'];
                     $navbar[$val['belongid']]['items'][$val['id']] = array(
                         'id' => $val['id'],
                         'title' => $val['title'],
-                        'level'=>2,
-                        'items' => $_seconds,                        
+                        'level' => 2,
+                        'items' => $_seconds,
                     );
                 } elseif ($val['level'] == 3) {//第三层级，需要取出第二层级的所属层级
-                    $_beInfo=  self::getOne($val['belongid']);
-                    $_seconds=$navbar[$_beInfo['belongid']]['items'][$val['belongid']]['items'];
+                    $_beInfo = self::getOne($val['belongid']);
+                    $_seconds = $navbar[$_beInfo['belongid']]['items'][$val['belongid']]['items'];
                     $navbar[$_beInfo['belongid']]['items'][$val['belongid']]['items'][$val['id']] = array(
                         'id' => $val['id'],
                         'title' => $val['title']
-                    );                    
+                    );
                 }
             } else {
                 $navbar[$val['id']] = array(
                     'id' => $val['id'],
                     'title' => $val['title'],
-                    'level'=>1,
-                    'items' => $navbar[$val['id']]['items'],                    
+                    'level' => 1,
+                    'items' => $navbar[$val['id']]['items'],
                 );
             }
         }
