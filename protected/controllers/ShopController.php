@@ -15,7 +15,7 @@ class ShopController extends Q {
         $sql="SELECT id,title,`desc`,scorePrice,goldPrice,classify,comments,score,faceUrl FROM {{goods}}";
         Posts::getAll(array('sql' => $sql), $pages, $posts);
         foreach ($posts as $k=>$val){
-            $posts[$k]['faceUrl']=  zmf::getThumbnailUrl($val['faceUrl'], '280', 'goods');
+            $posts[$k]['faceUrl']=  zmf::getThumbnailUrl($val['faceUrl'], 'a210', 'goods');
         }
         $data=array(
             'pages'=>$pages,
@@ -33,8 +33,10 @@ class ShopController extends Q {
         if(!$return['status']){
             throw new CHttpException(403, $return['msg']);
         }
+        $info=$return['msg'];
+        $info['faceUrl']=  zmf::getThumbnailUrl($info['faceUrl'], 'a360', 'goods');
         $data=array(
-            'info'=>$return['msg']
+            'info'=>$info
         );
         $this->render('detail',$data);
     }

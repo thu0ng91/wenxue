@@ -28,7 +28,7 @@
     }
     .goods-container .thumbnail img{
         width: 208px;
-        height: 156px;
+        height: 208px;
     }
     .goods-container .thumbnail h3{
         margin: 0 0 5px;

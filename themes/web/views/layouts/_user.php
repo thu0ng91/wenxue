@@ -12,8 +12,9 @@
     <?php if(!$this->userInfo['authorId']){?>
     <li class="color-warning"><?php echo GroupPowers::link('createAuthor',$this->userInfo,'<i class="fa fa-exclamation-circle"></i> 成为作者', array('user/author'), array('role' => 'menuitem')); ?></li>
     <?php }?>
-    <li><?php echo CHtml::link('<i class="fa fa-bell-o unread-bell"></i><span class="top-nav-count" id="top-nav-count">100</span>', array('user/notice'), array('role' => 'menuitem')); ?></li>
-    <li><?php echo CHtml::link('<i class="fa fa-tasks"></i>', 'javascript:;', array('role' => 'menuitem','action'=>'float','action-data'=> Posts::encode($this->uid,'tasks'))); ?></li>
+    <li><?php echo CHtml::link('<i class="fa fa-bell-o unread-bell"></i><span class="top-nav-count" id="top-nav-count">100</span>', array('user/notice'), array('role' => 'menuitem','title'=>'提醒')); ?></li>
+    <li><?php echo CHtml::link('<i class="fa fa-tasks"></i>', 'javascript:;', array('role' => 'menuitem','action'=>'float','action-data'=> Posts::encode($this->uid,'tasks'),'title'=>'任务')); ?></li>
+    <li><?php echo CHtml::link('<i class="fa fa-shopping-cart"></i>', 'javascript:;', array('role' => 'menuitem','action'=>'float','action-data'=> Posts::encode($this->uid,'tasks'),'title'=>'购物车')); ?></li>
     <li class="dropdown">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php echo $this->userInfo['truename']; ?> <span class="caret"></span></a>               
         <ul class="dropdown-menu">

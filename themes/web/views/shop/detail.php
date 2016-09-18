@@ -10,45 +10,159 @@
  */
 ?>
 <style>
-    .goods-detail-container{
+    .goods-detail-container h1{
+        line-height: 1.75;
+        overflow: hidden;
+        font-weight: 700;
+        font-size: 24px;
+        margin-top: 10px;
+    }
+    .goods-detail-container .media{
         background: #fff;
+        margin-bottom: 10px;
+    }
+    .goods-detail-container .media .bdsharebuttonbox{
+        float: left
     }
     .goods-detail-container .media-left img{
-        width: 280px;
-        height: 210px;
+        width: 240px;
+        height: 240px;
+    }
+    .goods-detail-container .price-holder{
+        background: #f8f8f8;
+        padding: 15px 10px;
+        color: #666;
+        margin-bottom: 15px;
+    }
+    .goods-detail-container .price-holder .price{
+        font-size: 16px;
+        color: #F40;
+    }
+    .goods-detail-container .buy-btns{
+        margin-top: 15px;
+        margin-bottom: 15px;
     }
     .goods-content .content-aside{
         width: 240px;
         float: left
     }
     .goods-content .content-main{
-        width: 720px;
+        width: 710px;
         float: right
     }
     .goods-content .content-main img{
         margin: 0 auto
     }
+    
+    .tb-amount dd {
+    height: 35px;
+    line-height: 31px;
+    color: #878787;
+}
+.tb-metatit {
+    text-align: left;
+    float: left;
+    width: 66px;
+    margin-top: 6px;
+}
+.tb-amount-widget .mui-amount-input {
+    vertical-align: middle;
+}
+.tb-amount-widget .mui-amount-btn {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.tb-text {
+    color: #666;
+    font-size: 12px;
+    margin: 0;
+    padding: 3px 2px 0 3px;
+    height: 26px;
+    border: 1px solid #a7a6ac;
+    width: 36px;
+    line-height: 26px;
+}
+.tb-amount-widget .mui-amount-increase {
+    width: 16px;
+    height: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    border: 1px solid #a7a6ab;
+    display: block;
+    line-height: 12px;
+    font-size: 16px;
+    margin-bottom: 3px;
+}
+.tb-amount-widget .mui-amount-decrease {
+    width: 16px;
+    height: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    border: 1px solid #a7a6ab;
+    display: block;
+    line-height: 12px;
+    font-size: 16px;
+}
+.tb-amount-widget .mui-amount-unit {
+    vertical-align: middle;
+    margin-left: 5px;
+}
 </style>
 <div class="container goods-detail-container">
     <div class="media">
         <div class="media-left">
             <img src="<?php echo zmf::lazyImg();?>" class="lazy" data-original="<?php echo $info['faceUrl'];?>"/>
+            <p>
+                <?php $this->renderPartial('/common/share',array('text'=>$info['title'].'，'.$info['desc'],'pic'=>$info['faceUrl']));?>
+                <span class="pull-right">举报</span>
+            </p>
         </div>
         <div class="media-body">
             <h1><?php echo $info['title'];?></h1>
             <p><?php echo $info['desc'];?></p>
             <div class="price-holder">
-                <p>积分价格：<?php echo $info['scorePrice'];?></p>
-                <p>金币价格：<?php echo $info['goldPrice'];?></p>
+                <p>积分价格：<span class="price"><?php echo $info['scorePrice'];?> <i class="fa fa-rmb"></i></span></p>
+                <p>金币价格：<span class="price"><?php echo $info['goldPrice'];?> <i class="fa fa-diamond"></i></span></p>
+            </div>
+            <p>用途：道具，从纯读者转换成任务作者</p>            
+            <dl class="tb-amount tm-clear">
+                <dt class="tb-metatit">数量</dt>
+                <dd id="J_Amount"><span class="tb-amount-widget mui-amount-wrap">
+                        <input type="text" class="tb-text mui-amount-input" value="1" maxlength="8" title="请输入购买量">
+                        <span class="mui-amount-btn">
+                            <span class="mui-amount-increase"><i class="fa fa-angle-up"></i></span>
+                            <span class="mui-amount-decrease"><i class="fa fa-angle-down"></i></span>
+                        </span>
+                        <span class="mui-amount-unit">件</span>
+                    </span>
+                </dd>
+            </dl>
+        
+            <div class="buy-btns">
+                <button type="button" class="btn btn-default">收藏商品</button>
+                <button type="button" class="btn btn-default">加入购物车</button>
+                <button type="button" class="btn btn-danger">积分兑换</button>
+                <button type="button" class="btn btn-danger">金币兑换</button>
             </div>
         </div>
     </div>
     <div class="goods-content">
-        <div class="content-aside">
-            
+        <div class="content-aside module">
+            <div class="module-header">相关推荐</div>
+            <div class="module-body">
+                
+            </div>
         </div>
-        <div class="content-main">
-            <?php echo $info['content'];?>
+        <div class="content-main module">
+            <div class="module-header">详情</div>
+            <div class="module-body">
+                <?php echo $info['content'];?>
+            </div>
+            <div class="module-header">评价</div>
+            <div class="module-body">
+                
+            </div>
         </div>
     </div>
 </div>
