@@ -37,7 +37,7 @@ class Users extends CActiveRecord {
             array('status', 'default', 'setOnEmpty' => true, 'value' => Posts::STATUS_PASSED),
             array('ip', 'default', 'setOnEmpty' => true, 'value' => ip2long(Yii::app()->request->userHostAddress)),
             array('hits, sex, isAdmin, status,phoneChecked', 'numerical', 'integerOnly' => true),
-            array('truename,ip', 'length', 'max' => 16),
+            array('truename,ip,score,gold', 'length', 'max' => 16),
             array('cTime,authorId,favors,favord,favorAuthors', 'length', 'max' => 10),
             array('phone', 'length', 'max' => 11),
             array('password', 'length', 'max' => 32),
@@ -82,6 +82,8 @@ class Users extends CActiveRecord {
             'favord' => '关注了',
             'favorAuthors' => '收藏作者数',
             'phoneChecked' => '手机号是否已验证',
+            'score' => '总积分',
+            'gold' => '总金币',
         );
     }
 

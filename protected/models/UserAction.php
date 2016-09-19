@@ -134,24 +134,24 @@ class UserAction extends CActiveRecord {
                 'desc' => '论坛相关',
                 'items' => array(
                     'addPost' => '发表帖子',
-                    'addPostReply'=>'回复帖子',                    
-                    'favorPost'=>'赞帖子',                    
-                    'favoritePost'=>'收藏帖子',
-                    'favorPostReply'=>'赞楼层',
-                    'rewardPostReply'=>'打赏帖子',
-                    'delPost'=>'删除帖子',
-                    'delPostReply'=>'删除楼层',
-                    'favoriteForum'=>'关注版块'
+                    'addPostReply' => '回复帖子',
+                    'favorPost' => '赞帖子',
+                    'favoritePost' => '收藏帖子',
+                    'favorPostReply' => '赞楼层',
+                    'rewardPostReply' => '打赏帖子',
+                    'delPost' => '删除帖子',
+                    'delPostReply' => '删除楼层',
+                    'favoriteForum' => '关注版块'
                 ),
             ),
             'book' => array(
                 'desc' => '小说相关',
                 'items' => array(
-                    'favoriteBook'=>'收藏作品',
-                    'addChapterTip'=>'点评作品',
-                    'delChapterTip'=>'删除点评',
-                    'favorChapterTip'=>'赞点评',
-                    'dapipi'=>'催更作品',
+                    'favoriteBook' => '收藏作品',
+                    'addChapterTip' => '点评作品',
+                    'delChapterTip' => '删除点评',
+                    'favorChapterTip' => '赞点评',
+                    'dapipi' => '催更作品',
                     'addBook' => '发表作品',
                     'finishBook' => '完结作品',
                     'delBook' => '删除作品',
@@ -163,48 +163,48 @@ class UserAction extends CActiveRecord {
             'author' => array(
                 'desc' => '作者相关',
                 'items' => array(
-                    'createAuthor'=>'成为作者',             
-                    'favoriteAuthor'=>'关注作者',             
+                    'createAuthor' => '成为作者',
+                    'favoriteAuthor' => '关注作者',
                 ),
             ),
             'comment' => array(
                 'desc' => '评论相关',
                 'items' => array(
-                    'commentPost'=>'评论帖子',
-                    'commentChapterTip'=>'评论点评',
-                    'favorComment'=>'点赞评论',
+                    'commentPost' => '评论帖子',
+                    'commentChapterTip' => '评论点评',
+                    'favorComment' => '点赞评论',
                 ),
             ),
             'report' => array(
                 'desc' => '评论相关',
                 'items' => array(
-                    'addReport'=>'举报',
+                    'addReport' => '举报',
                 ),
             ),
             'feedback' => array(
                 'desc' => '意见反馈',
                 'items' => array(
-                    'feedback'=>'举报',
+                    'feedback' => '举报',
                 ),
             ),
             'user' => array(
                 'desc' => '用户相关',
                 'items' => array(
-                    'favoriteUser'=>'关注用户',
+                    'favoriteUser' => '关注用户',
                 ),
             ),
             'task' => array(
                 'desc' => '任务相关',
                 'items' => array(
-                    'joinTask'=>'接受任务',
-                    'delTask'=>'删除任务',
-                    'finishTask'=>'完成任务',
+                    'joinTask' => '接受任务',
+                    'delTask' => '删除任务',
+                    'finishTask' => '完成任务',
                 ),
             ),
         );
-        $tmpArr=array();
-        foreach ($arr as $type=>$detail){
-            $tmpArr=  array_merge($tmpArr,$detail['items']);
+        $tmpArr = array();
+        foreach ($arr as $type => $detail) {
+            $tmpArr = array_merge($tmpArr, $detail['items']);
         }
         return $tmpArr;
     }
@@ -238,7 +238,22 @@ class UserAction extends CActiveRecord {
         }
         $model = new UserAction;
         $model->attributes = $attr;
-        return $model->save();
+        if ($model->save()) {
+            if ($attr['score'] != 0 && $attr['score'] != '') {
+                $_attr = array(
+                    'uid' => $attr['uid'],
+                    'classify' => $attr['action'],
+                    'logid' => $attr['logid'],
+                    'score' => $attr['score']
+                );
+                $_scoreLogModel = new ScoreLogs;
+                $_scoreLogModel->attributes = $_attr;
+                $_scoreLogModel->save();
+            }
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public static function delAction($logid, $type) {

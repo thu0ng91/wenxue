@@ -22,6 +22,7 @@
     <div class="form-group">
         <?php echo $form->labelEx($model,'tid'); ?>       
         <?php echo $form->dropDownlist($model,'tid', Task::listAll(),array('class'=>'form-control','empty'=>'--请选择--')); ?>
+        <p class="help-block">每个用户组只能领取一次同一任务</p>
         <?php echo $form->error($model,'tid'); ?>
     </div>
     <div class="form-group">

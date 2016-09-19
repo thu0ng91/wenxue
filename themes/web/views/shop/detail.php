@@ -20,6 +20,8 @@
     .goods-detail-container .media{
         background: #fff;
         margin-bottom: 10px;
+        margin-top: 0;
+        padding-top: 0
     }
     .goods-detail-container .media .bdsharebuttonbox{
         float: left
@@ -91,8 +93,9 @@
     border: 1px solid #a7a6ab;
     display: block;
     line-height: 12px;
-    font-size: 16px;
+    font-size: 12px;
     margin-bottom: 3px;
+    text-align: center;
 }
 .tb-amount-widget .mui-amount-decrease {
     width: 16px;
@@ -102,7 +105,8 @@
     border: 1px solid #a7a6ab;
     display: block;
     line-height: 12px;
-    font-size: 16px;
+    font-size: 12px;
+    text-align: center;
 }
 .tb-amount-widget .mui-amount-unit {
     vertical-align: middle;
@@ -110,29 +114,36 @@
 }
 </style>
 <div class="container goods-detail-container">
+    <ol class="breadcrumb">
+        <li><?php echo CHtml::link(zmf::config('sitename').'首页',  zmf::config('baseurl'));?></li>
+        <?php foreach($info['classify'] as $_nav){?>
+        <li><?php echo CHtml::link($_nav['title'],array('shop/all','id'=>$_nav['id']));?></li>        
+        <?php }?>
+    </ol>
     <div class="media">
         <div class="media-left">
             <img src="<?php echo zmf::lazyImg();?>" class="lazy" data-original="<?php echo $info['faceUrl'];?>"/>
             <p>
                 <?php $this->renderPartial('/common/share',array('text'=>$info['title'].'，'.$info['desc'],'pic'=>$info['faceUrl']));?>
-                <span class="pull-right">举报</span>
             </p>
         </div>
         <div class="media-body">
             <h1><?php echo $info['title'];?></h1>
             <p><?php echo $info['desc'];?></p>
             <div class="price-holder">
-                <p>积分价格：<span class="price"><?php echo $info['scorePrice'];?> <i class="fa fa-rmb"></i></span></p>
+                <p>
+                    积分价格：<span class="price"><?php echo $info['scorePrice'];?> <i class="fa fa-rmb"></i></span>                    
+                </p>
                 <p>金币价格：<span class="price"><?php echo $info['goldPrice'];?> <i class="fa fa-diamond"></i></span></p>
             </div>
             <p>用途：道具，从纯读者转换成任务作者</p>            
             <dl class="tb-amount tm-clear">
                 <dt class="tb-metatit">数量</dt>
                 <dd id="J_Amount"><span class="tb-amount-widget mui-amount-wrap">
-                        <input type="text" class="tb-text mui-amount-input" value="1" maxlength="8" title="请输入购买量">
+                        <input type="text" class="tb-text mui-amount-input" value="1" maxlength="8" title="请输入购买量" id="amount-input">
                         <span class="mui-amount-btn">
-                            <span class="mui-amount-increase"><i class="fa fa-angle-up"></i></span>
-                            <span class="mui-amount-decrease"><i class="fa fa-angle-down"></i></span>
+                            <span class="mui-amount-increase"><i class="fa fa-angle-up"></i></span>
+                            <span class="mui-amount-decrease"><i class="fa fa-angle-down"></i></span>
                         </span>
                         <span class="mui-amount-unit">件</span>
                     </span>
@@ -141,12 +152,12 @@
         
             <div class="buy-btns">
                 <button type="button" class="btn btn-default">收藏商品</button>
-                <button type="button" class="btn btn-default">加入购物车</button>
-                <button type="button" class="btn btn-danger">积分兑换</button>
-                <button type="button" class="btn btn-danger">金币兑换</button>
+                <?php echo CHtml::link('积分兑换', 'javascript:;', array('action'=>'gotoBuy','action-data'=> Posts::encode($info['id'].'@score','goToBuy'),'title'=>'积分兑换','class'=>'btn btn-danger')); ?>
+                <?php echo CHtml::link('金币兑换', 'javascript:;', array('action'=>'gotoBuy','action-data'=> Posts::encode($info['id'].'@gold','goToBuy'),'title'=>'金币兑换','class'=>'btn btn-danger')); ?>
             </div>
         </div>
     </div>
+    <div class="clearfix"></div>
     <div class="goods-content">
         <div class="content-aside module">
             <div class="module-header">相关推荐</div>

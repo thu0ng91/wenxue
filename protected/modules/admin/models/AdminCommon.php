@@ -121,16 +121,16 @@ class AdminCommon extends CActiveRecord {
                     'url' => Yii::app()->createUrl('admin/group/index'),
                     'active' => in_array($c, array('group'))
                 ),
-//                'groupPowerTypes' => array(
-//                    'title' => '用户组权限分类',
-//                    'url' => Yii::app()->createUrl('admin/groupPowerTypes/index'),
-//                    'active' => in_array($c, array('groupPowerTypes'))
-//                ),
-//                'groupPowers' => array(
-//                    'title' => '用户组权限',
-//                    'url' => Yii::app()->createUrl('admin/groupPowers/index'),
-//                    'active' => in_array($c, array('groupPowers'))
-//                ),
+                'groupPowerTypes' => array(
+                    'title' => '用户组权限分类',
+                    'url' => Yii::app()->createUrl('admin/groupPowerTypes/index'),
+                    'active' => in_array($c, array('groupPowerTypes'))
+                ),
+                'groupPowers' => array(
+                    'title' => '用户组权限',
+                    'url' => Yii::app()->createUrl('admin/groupPowers/index'),
+                    'active' => in_array($c, array('groupPowers'))
+                ),
                 'admins' => array(
                     'title' => '管理员',
                     'url' => Yii::app()->createUrl('admin/users/admins'),

@@ -171,69 +171,34 @@ alter TABLE pre_group_tasks add days int(10) unsigned not null COMMENT '总天�
 
 
 
-DROP TABLE IF EXISTS `pre_user_order`;
-CREATE TABLE `pre_user_order` (
+DROP TABLE IF EXISTS `pre_orders`;
+CREATE TABLE `pre_orders` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '关系ID',
   `orderId` char(32) NOT NULL COMMENT '订单号',
-  `uid` int(10) unsigned NOT NULL COMMENT '用户ID',
-  `mid` char(32) NOT NULL COMMENT '所属商户',
-  `addressId` int(10) unsigned NOT NULL COMMENT '收货地址',
-  `paidOrderId` varchar(255) NOT NULL COMMENT '支付订单号',
-  `paidType` varchar(16) NOT NULL COMMENT '支付方式',
-  `price` varchar(16) NOT NULL COMMENT '价格',
-  `freight` varchar(16) NOT NULL COMMENT '运费',
-  `totalPrice` varchar(16) NOT NULL COMMENT '总价',
-  `paidPrice` varchar(16) NOT NULL COMMENT '实付价',
-  `wedAddress` varchar(255) NOT NULL COMMENT '婚礼地点',
-  `wedDate` int(10) unsigned NOT NULL COMMENT '婚礼日期',
-  `wedPeriod` char(5) NOT NULL COMMENT '婚礼时段',
-  `content` varchar(255) NOT NULL COMMENT '备注',
+  `uid` int(10) unsigned NOT NULL COMMENT '用户ID',  
+
+  `gid` int(10) unsigned NOT NULL COMMENT '商品ID',
+  `title` varchar(255) NOT NULL COMMENT '标题',
+  `desc` varchar(255) NOT NULL COMMENT '描述',  
+  `faceUrl` varchar(255) NOT NULL COMMENT '封面地址',  
+  `classify` varchar(255) NOT NULL COMMENT '分类信息',  
+  `content` text NOT NULL COMMENT '商品介绍',
+  `scorePrice` varchar(16) NOT NULL COMMENT '积分价格',
+  `goldPrice` varchar(16) NOT NULL COMMENT '金币价格',
   `num` int(10) unsigned NOT NULL COMMENT '总量',
+  `payAction` varchar(16) NOT NULL COMMENT '购买方式，积分还是金币',
+
   `orderStatus` tinyint(3) unsigned NOT NULL COMMENT '订单状态',
   `status` tinyint(3) unsigned NOT NULL COMMENT '状态',
   `cTime` int(10) unsigned NOT NULL COMMENT '创建时间',
   `paidTime` int(10) unsigned NOT NULL COMMENT '支付时间',
-  `bankType` varchar(16) NOT NULL COMMENT '银行类别',
-  `wgmOrderId` varchar(255) NOT NULL COMMENT '总动员订单ID',
-  `title` varchar(255) NOT NULL COMMENT '标题',
+  `paidOrderId` varchar(255) NOT NULL COMMENT '支付订单号',
+  `paidType` varchar(16) NOT NULL COMMENT '支付方式',
+
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=31 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 
-DROP TABLE IF EXISTS `pre_user_order_item`;
-CREATE TABLE `pre_user_order_item` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `uid` int(10) unsigned NOT NULL COMMENT '用户ID',
-  `orderId` char(32) NOT NULL COMMENT '所属订单',
-  `mid` char(32) NOT NULL COMMENT '所属商户',
-  `sid` varchar(255) NOT NULL COMMENT '服务ID',
-  `title` varchar(255) NOT NULL COMMENT '标题',
-  `faceUrl` varchar(255) NOT NULL COMMENT '封面地址',
-  `type` int(10) unsigned NOT NULL COMMENT '类型',
-  `typeName` varchar(255) NOT NULL COMMENT '类型名称',
-  `area` mediumtext NOT NULL COMMENT '服务地区',
-  `content` mediumtext NOT NULL COMMENT '服务介绍',
-  `imgsUrl` mediumtext NOT NULL COMMENT '服务展示',
-  `oldPrice` int(10) unsigned NOT NULL COMMENT '原价',
-  `price` int(10) unsigned NOT NULL COMMENT '成交价',
-  `num` int(10) unsigned NOT NULL COMMENT '数量',
-  `cTime` int(10) unsigned NOT NULL COMMENT '记录时间',
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=31 DEFAULT CHARSET=utf8;
-
-
-DROP TABLE IF EXISTS `pre_user_order_log`;
-CREATE TABLE `pre_user_order_log` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '订单记录ID',
-  `uid` int(10) unsigned NOT NULL COMMENT '用户ID',
-  `mid` char(32) NOT NULL COMMENT '商户ID',
-  `orderId` varchar(255) NOT NULL COMMENT '订单ID',
-  `cTime` int(10) unsigned NOT NULL COMMENT '操作时间',
-  `content` varchar(255) NOT NULL COMMENT '描述',
-  PRIMARY KEY (`id`),
-  KEY `uid` (`uid`),
-  KEY `orderId` (`orderId`)
-) ENGINE=MyISAM AUTO_INCREMENT=26 DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `pre_goods_classify`;
 CREATE TABLE `pre_goods_classify` (
@@ -301,3 +266,6 @@ CREATE TABLE `pre_goods_action` (
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 alter TABLE pre_goods add actionId varchar(255) not null COMMENT '关联ID';
+
+alter TABLE pre_users add score varchar(16) not null COMMENT '总积分';
+alter TABLE pre_users add gold varchar(16) not null COMMENT '总金币';

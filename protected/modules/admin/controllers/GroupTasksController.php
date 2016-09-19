@@ -32,25 +32,34 @@ class GroupTasksController extends Admin {
         // Uncomment the following line if AJAX validation is needed
         // $this->performAjaxValidation($model);
         if (isset($_POST['GroupTasks'])) {
-            if($_POST['GroupTasks']['tid']){
-                $taskInfo=  Task::getOne($_POST['GroupTasks']['tid']);
-                if($taskInfo){
-                    $_POST['GroupTasks']['action']=$taskInfo['action'];
-                }else{
-                    unset($_POST['GroupTasks']['tid']);
+            $_gtaskInfo = false;
+            if (!$id) {
+                $_gtaskInfo = GroupTasks::model()->find('gid=:gid AND tid=:tid', array(':gid' => $_POST['GroupTasks']['gid'], ':tid' => $_POST['GroupTasks']['tid']));
+            }
+            if ($_gtaskInfo) {
+                $model->attributes = $_POST['GroupTasks'];
+                $model->addError('tid', '每个用户组只能领取一次同一任务');
+            } else {
+                if ($_POST['GroupTasks']['tid']) {
+                    $taskInfo = Task::getOne($_POST['GroupTasks']['tid']);
+                    if ($taskInfo) {
+                        $_POST['GroupTasks']['action'] = $taskInfo['action'];
+                    } else {
+                        unset($_POST['GroupTasks']['tid']);
+                    }
                 }
-            }
-            if($_POST['GroupTasks']['type']==GroupTasks::TYPE_ONETIME){
-                $_POST['GroupTasks']['days']=1;
-                $_POST['GroupTasks']['continuous']=0;                
-            }
-            $model->attributes = $_POST['GroupTasks'];
-            if ($model->save()) {
-                if (!$id) {
-                    Yii::app()->user->setFlash('addGroupTasksSuccess', "保存成功！您可以继续添加。");
-                    $this->redirect(array('create'));
-                } else {
-                    $this->redirect(array('index'));
+                if ($_POST['GroupTasks']['type'] == GroupTasks::TYPE_ONETIME) {
+                    $_POST['GroupTasks']['days'] = 1;
+                    $_POST['GroupTasks']['continuous'] = 0;
+                }
+                $model->attributes = $_POST['GroupTasks'];
+                if ($model->save()) {
+                    if (!$id) {
+                        Yii::app()->user->setFlash('addGroupTasksSuccess', "保存成功！您可以继续添加。");
+                        $this->redirect(array('create'));
+                    } else {
+                        $this->redirect(array('index'));
+                    }
                 }
             }
         }

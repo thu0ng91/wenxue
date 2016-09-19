@@ -678,13 +678,92 @@ function rebind() {
     $("a[action=ajax]").unbind('click').click(function () {
         var dom=$(this);
         var data=dom.attr('action-data');
+        var input=dom.attr('action-input');
         if(!data){
+            alert('缺少参数');
             return false;
         }
-        $.post(zmf.ajaxUrl, {action: 'ajax', data: data,YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
+        var passData = {
+            YII_CSRF_TOKEN: zmf.csrfToken,
+            action: 'ajax',
+            data: data
+        };
+        if(input){
+            var inputDom=$('#'+input);
+            var inputVal=inputDom.val();
+            if(!inputVal || parseInt(inputVal)<1){
+                simpleDialog({content: '请完善输入'});
+                inputDom.focus();
+                return false;
+            }else{
+                passData.extra=inputVal;
+            }
+        }
+        $.post(zmf.ajaxUrl, passData, function (result) {
             result = eval('(' + result + ')');
             if (result['status'] === 1) {
                 dialog({msg: result['msg']});
+            } else {
+                dialog({msg: result['msg']});
+            }
+        });
+    });
+    $("a[action=gotoBuy]").unbind('click').click(function () {
+        var dom=$(this);
+        var data=dom.attr('action-data');
+        if(!data){
+            alert('缺少参数');
+            return false;
+        }
+        var passData = {
+            YII_CSRF_TOKEN: zmf.csrfToken,
+            action: 'gotoBuy',
+            data: data
+        };
+        
+        var inputDom=$('#amount-input');
+        var inputVal=inputDom.val();
+        if(!inputVal || parseInt(inputVal)<1){
+            simpleDialog({content: '请选择兑换数量'});
+            inputDom.focus();
+            return false;
+        }else{
+            passData.num=inputVal;
+        }
+        
+        $.post(zmf.ajaxUrl, passData, function (result) {
+            result = eval('(' + result + ')');
+            if (result['status'] === 1) {
+                dialog({msg: result['msg'], title: '确认兑换？', action: 'confirmBuy'});
+                $("button[action=confirmBuy]").unbind('click').click(function () {
+                    var data=$('#confirm-buy-data').val();     
+                    var passDom=$('#user-password');
+                    var pass=passDom.val();
+                    if(!data){
+                        simpleDialog({content:'缺少参数'});
+                        return false;
+                    }
+                    if(!pass){
+                        simpleDialog({content:'请输入密码'});
+                        passDom.focus();
+                        return false;
+                    }
+                    passData.data=data;
+                    passData.action='confirmBuy';
+                    passData.password=pass;
+                    
+                    $.post(zmf.ajaxUrl, passData, function (result) {
+                        result = eval('(' + result + ')');
+                        if (result['status'] == '1') {
+                            simpleDialog({content:result['msg']});
+                            closeDialog();
+                            return false;
+                        } else {
+                            simpleDialog({content:result['msg']});
+                            return false;
+                        }
+                    });
+                });
             } else {
                 dialog({msg: result['msg']});
             }

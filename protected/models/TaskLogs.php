@@ -118,18 +118,27 @@ class TaskLogs extends CActiveRecord {
 
     public static function finishTask($userInfo, $taskInfo, $logid) {
         $num = TaskLogs::model()->count('uid=:uid AND tid=:tid', array(':uid' => $userInfo['id'], ':tid' => $taskInfo['id']));
-        $now=  zmf::now();
+        $now = zmf::now();
         if (TaskLogs::model()->updateByPk($logid, array(
                     'status' => TaskLogs::STATUS_REACHED,
                     'finishTime' => $now,
                     'times' => $num
                 ))) {
-            //todo,如果标记成功，则新增一条积分记录
+            //如果标记成功，则新增一条积分记录
+            $_attr = array(
+                'uid' => $userInfo['id'],
+                'classify' => 'task',
+                'logid' => $taskInfo['id'],
+                'score' => $taskInfo['score']
+            );
+            $_scoreLogModel = new ScoreLogs;
+            $_scoreLogModel->attributes = $_attr;
+            $_scoreLogModel->save();
             //发送一条提示
             $_noticedata = array(
                 'uid' => $userInfo['id'],
                 'authorid' => 0,
-                'content' => '恭喜你已完成任务「'.$taskInfo['taskTitle'].'」',
+                'content' => '恭喜你已完成任务「' . $taskInfo['taskTitle'] . '」',
                 'new' => 1,
                 'type' => 'finishTask',
                 'cTime' => $now,

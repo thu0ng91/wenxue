@@ -31,7 +31,9 @@ class ScoreLogs extends CActiveRecord {
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('uid, classify, logid, score, cTime', 'required'),
+            array('uid', 'default', 'setOnEmpty' => true, 'value' => zmf::uid()),
+            array('cTime', 'default', 'setOnEmpty' => true, 'value' => zmf::now()),
+            array('uid,classify,score', 'required'),
             array('score', 'numerical', 'integerOnly' => true),
             array('uid, logid, cTime', 'length', 'max' => 10),
             array('classify', 'length', 'max' => 16),

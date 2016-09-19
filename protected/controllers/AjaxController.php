@@ -17,7 +17,7 @@ class AjaxController extends Q {
 
     public function actionDo() {
         $action = zmf::val('action', 1);
-        if (!in_array($action, array('addTip', 'saveUploadImg', 'publishBook', 'publishChapter', 'saveDraft', 'report', 'sendSms', 'checkSms', 'setStatus', 'delContent', 'getNotice', 'getContents', 'delBook', 'delChapter', 'finishBook', 'dapipi', 'joinGroup', 'float', 'ajax'))) {
+        if (!in_array($action, array('addTip', 'saveUploadImg', 'publishBook', 'publishChapter', 'saveDraft', 'report', 'sendSms', 'checkSms', 'setStatus', 'delContent', 'getNotice', 'getContents', 'delBook', 'delChapter', 'finishBook', 'dapipi', 'joinGroup', 'float', 'ajax','gotoBuy'))) {
             $this->jsonOutPut(0, Yii::t('default', 'forbiddenaction'));
         }
         $this->$action();
@@ -1561,6 +1561,57 @@ class AjaxController extends Q {
         } else {
             $this->jsonOutPut(0, '领取失败，请稍后重试');
         }
+    }
+    
+    private function gotoBuy(){
+        $data=  zmf::val('data',1);
+        if(!$data){
+            $this->jsonOutPut(0, '缺少参数');
+        }
+        $arr = Posts::decode($data);
+        if($arr['type']!='goToBuy'){
+            $this->jsonOutPut(0, '参数有误');
+        }
+        $num=  zmf::val('num',2);
+        if(!$num || $num<1){
+            $this->jsonOutPut(0, '请选择购买数量');
+        }
+        $idStr=$arr['id'];
+        $idStrArr=  explode('@', $idStr);
+        if(count($idStrArr)!=2 || !is_numeric($idStrArr[0]) || !in_array($idStrArr[1],array('score','gold'))){
+            $this->jsonOutPut(0, '参数有误');
+        }
+        $id=$idStrArr[0];
+        $actionType=$idStrArr[1];
+        $return=  Goods::detail($id);
+        if(!$return['status']){
+            $this->jsonOutPut(0, $return['msg']);
+        }
+        $info=$return['msg'];
+        if($actionType=='score' && $info['scorePrice']=='0'){
+            $this->jsonOutPut(0, '该商品不支持积分兑换');
+        }elseif($actionType=='gold' && $info['goldPrice']=='0'){
+            $this->jsonOutPut(0, '该商品不支持金币兑换');
+        }elseif($actionType=='score'){
+            $perPrice=$info['scorePrice'];   
+            $label='积分';
+        }elseif($actionType=='gold'){
+            $perPrice=$info['goldPrice'];
+            $label='金币';
+        }
+        $totalPrice=$perPrice*$num;
+        $now=  zmf::now();
+        $passdata=  zmf::jiaMi($id.'#'.$actionType.'#'.$perPrice.'#'.$num.'#'.$now);        
+        $passData=array(
+            'info'=>$info,
+            'label'=>$label,
+            'perPrice'=>$perPrice,
+            'num'=>$num,
+            'totalPrice'=>$totalPrice,
+            'passdata'=>$passdata,
+        );
+        $html=$this->renderPartial('/shop/_confirmDia',$passData,TRUE);
+        $this->jsonOutPut(1,$html);
     }
 
 }
