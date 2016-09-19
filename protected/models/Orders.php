@@ -29,6 +29,8 @@
  * @property string $paidType
  */
 class Orders extends CActiveRecord {
+    const PAID_NOTPAID = 0; //未支付
+    const PAID_PAID = 1; //已支付，等待对方接受订单
 
     /**
      * @return string the associated database table name
@@ -47,12 +49,14 @@ class Orders extends CActiveRecord {
             array('uid', 'default', 'setOnEmpty' => true, 'value' => zmf::uid()),
             array('cTime', 'default', 'setOnEmpty' => true, 'value' => zmf::now()),
             array('status', 'default', 'setOnEmpty' => true, 'value' => Posts::STATUS_PASSED),
+            //array('orderId', 'default', 'setOnEmpty' => true, 'value' => Orders::genOrderid()),
             array('orderId, uid, gid, scorePrice, goldPrice, num, payAction', 'required'),
             array('orderStatus, status', 'numerical', 'integerOnly' => true),
             array('orderId', 'length', 'max' => 32),
             array('uid, gid, num, cTime, paidTime', 'length', 'max' => 10),
             array('title, desc, faceUrl, classify, paidOrderId', 'length', 'max' => 255),
             array('scorePrice, goldPrice, payAction, paidType', 'length', 'max' => 16),
+            array('content', 'safe'),
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
             array('id, orderId, uid, gid, title, desc, faceUrl, classify, content, scorePrice, goldPrice, num, payAction, orderStatus, status, cTime, paidTime, paidOrderId, paidType', 'safe', 'on' => 'search'),
@@ -146,6 +150,13 @@ class Orders extends CActiveRecord {
      */
     public static function model($className = __CLASS__) {
         return parent::model($className);
+    }
+    
+    public static function genOrderid() {
+        $now= zmf::now();
+        $time=  zmf::time($now,'YmdHis');
+        $code=$time.(number_format(abs(microtime(true)-$now)*1000,0,'.','')).mt_rand(100, 999);
+        return $code;
     }
 
 }

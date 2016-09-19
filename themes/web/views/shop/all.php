@@ -55,10 +55,6 @@
         <div class="module-body goods-container">
             <?php foreach ($posts as $post){?>
             <?php $this->renderPartial('_item',array('data'=>$post));?>
-            <?php $this->renderPartial('_item',array('data'=>$post));?>
-            <?php $this->renderPartial('_item',array('data'=>$post));?>
-            <?php $this->renderPartial('_item',array('data'=>$post));?>
-            <?php $this->renderPartial('_item',array('data'=>$post));?>
             <?php }?>
         </div>
     </div>

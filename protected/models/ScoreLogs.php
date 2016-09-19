@@ -105,5 +105,13 @@ class ScoreLogs extends CActiveRecord {
     public static function model($className = __CLASS__) {
         return parent::model($className);
     }
+    
+    public static function statUserScore($uid){
+        $sql="SELECT SUM(score) AS total FROM {{score_logs}} WHERE uid=:uid";
+        $res=  Yii::app()->db->createCommand($sql);
+        $res->bindValue(':uid', $uid);
+        $info=$res->queryRow();
+        return $info['total'];
+    }
 
 }

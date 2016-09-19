@@ -16,6 +16,7 @@
  * @property integer $status
  */
 class Users extends CActiveRecord {
+
     public $newPassword;
 
     /**
@@ -100,9 +101,9 @@ class Users extends CActiveRecord {
     public static function getOne($id) {
         return Users::model()->findByPk($id);
     }
-    
-    public static function getUsername($id){
-        $info= Users::model()->findByPk($id);
+
+    public static function getUsername($id) {
+        $info = Users::model()->findByPk($id);
         return $info ? $info['truename'] : '';
     }
 
@@ -141,35 +142,72 @@ class Users extends CActiveRecord {
         }
         return $arr[$return];
     }
-    
-    public static function findByName($truename){
-        $info=  Users::model()->find('truename=:truename AND status='.Posts::STATUS_PASSED, array(
-            ':truename'=>$truename
+
+    public static function findByName($truename) {
+        $info = Users::model()->find('truename=:truename AND status=' . Posts::STATUS_PASSED, array(
+            ':truename' => $truename
         ));
         return $info;
     }
-    public static function findByPhone($phone){
-        $info=  Users::model()->find('phone=:phone AND status='.Posts::STATUS_PASSED, array(
-            ':phone'=>$phone
+
+    public static function findByPhone($phone) {
+        $info = Users::model()->find('phone=:phone AND status=' . Posts::STATUS_PASSED, array(
+            ':phone' => $phone
         ));
         return $info;
     }
-    public static function findByEmail($email){
-        $info=  Users::model()->find('email=:email AND status='.Posts::STATUS_PASSED, array(
-            ':email'=>$email
+
+    public static function findByEmail($email) {
+        $info = Users::model()->find('email=:email AND status=' . Posts::STATUS_PASSED, array(
+            ':email' => $email
         ));
         return $info;
     }
-    
-    public static function updateInfo($uid,$field,$value=''){
-        if(!$uid || !$field){
+
+    public static function updateInfo($uid, $field, $value = '') {
+        if (!$uid || !$field) {
             return false;
         }
-        if(!in_array($field, array('password','groupid'))){
+        if (!in_array($field, array('password', 'groupid'))) {
             return false;
         }
-        $attr[$field]=$value;
+        $attr[$field] = $value;
         return Users::model()->updateByPk($uid, $attr);
+    }
+
+    public static function checkWealth($uid, $actionType, $totalCost) {
+        if (!$uid || !$actionType || !$totalCost) {
+            return false;
+        }
+        if ($actionType == 'score') {
+            $totalWealth = ScoreLogs::statUserScore($uid);
+        } elseif ($actionType == 'gold') {
+            $totalWealth = 0;
+        }
+        if ($totalWealth >= $totalCost) {
+            return TRUE;
+        }
+        return false;
+    }
+
+    public static function costWealth($uid, $actionType, $totalCost,$goodsInfo) {
+        if (!self::checkWealth($uid, $actionType, $totalCost)) {
+            return false;
+        }
+        if ($actionType == 'score') {
+            $_attr = array(
+                'uid' => $uid,
+                'classify' => 'goods',
+                'logid' => $goodsInfo['id'],
+                'score' => (-1)*$totalCost
+            );
+            $_scoreLogModel = new ScoreLogs;
+            $_scoreLogModel->attributes = $_attr;
+            return $_scoreLogModel->save();
+        } elseif ($actionType == 'gold') {
+            $totalWealth = 0;
+        }
+        return false;
     }
 
 }

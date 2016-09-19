@@ -970,9 +970,15 @@ var flashTitle = {
         document.title = flashTitle.title;  
     }  
 };  
+var notice_interval=null;
 function getNotice(){
     doGetNotice();
-    window.setInterval("doGetNotice()",10000);
+    window.onblur = function() {
+        clearInterval(notice_interval);
+    };
+    window.onfocus = function() {
+        notice_interval=window.setInterval("doGetNotice()",10000);
+    }    
 }
 function doGetNotice(){
     if(!checkLogin()){

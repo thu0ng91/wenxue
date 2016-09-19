@@ -17,6 +17,7 @@ class ShopController extends Q {
         foreach ($posts as $k=>$val){
             $posts[$k]['faceUrl']=  zmf::getThumbnailUrl($val['faceUrl'], 'a210', 'goods');
         }
+        $this->pageTitle='商品分类 - '.  zmf::config('sitename');
         $data=array(
             'pages'=>$pages,
             'posts'=>$posts,
@@ -35,6 +36,7 @@ class ShopController extends Q {
         }
         $info=$return['msg'];
         $info['faceUrl']=  zmf::getThumbnailUrl($info['faceUrl'], 'a360', 'goods');
+        $this->pageTitle=$info['title'].' - '.  zmf::config('sitename');
         $data=array(
             'info'=>$info
         );

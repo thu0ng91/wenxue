@@ -269,3 +269,16 @@ alter TABLE pre_goods add actionId varchar(255) not null COMMENT '关联ID';
 
 alter TABLE pre_users add score varchar(16) not null COMMENT '总积分';
 alter TABLE pre_users add gold varchar(16) not null COMMENT '总金币';
+
+DROP TABLE IF EXISTS `pre_props`;
+CREATE TABLE `pre_props` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `uid` int(10) unsigned NOT NULL COMMENT '用户ID',
+  `gid` int(10) unsigned NOT NULL COMMENT '商品ID',
+  `classify` varchar(16) NOT NULL COMMENT '分类，如道具',
+  `action` varchar(16) NOT NULL COMMENT '操作，如转换卡',
+  `from` varchar(16) NOT NULL COMMENT '起始值',
+  `to` varchar(16) NOT NULL COMMENT '结束值',
+  PRIMARY KEY (`id`),
+  KEY `gid` (`gid`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
