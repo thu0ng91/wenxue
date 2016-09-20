@@ -20,7 +20,7 @@
  * @property string $score
  */
 class Goods extends CActiveRecord {
-
+    
     /**
      * @return string the associated database table name
      */
@@ -136,6 +136,7 @@ class Goods extends CActiveRecord {
         $classify=  GoodsClassify::getOneBelongs($info['classify']);
         $info['classify']=$classify;
         $info['content']=  GoodsContent::detailOne($info['content'], $imgSize);
+        $info['actionId']=  GoodsAction::getOneActions($id);
         return array(
             'status'=>1,
             'msg'=>$info

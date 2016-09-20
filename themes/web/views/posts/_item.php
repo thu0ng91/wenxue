@@ -1,4 +1,4 @@
-<div class="media post-item <?php echo $data['top'] && !$posts[$k+1]['top'] ? 'last-toped' : '';?>">
+<div class="media post-item ui-border-b <?php echo $data['top'] && !$posts[$k+1]['top'] ? 'last-toped' : '';?>">
     <?php if($data['faceimg']){?>
     <div class="media-left">
         <a href="<?php echo Yii::app()->createUrl('posts/view',array('id'=>$data['id']));?>">

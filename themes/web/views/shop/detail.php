@@ -149,11 +149,10 @@
                     </span>
                 </dd>
             </dl>
-        
             <div class="buy-btns">
-                <button type="button" class="btn btn-default">收藏商品</button>
-                <?php echo CHtml::link('积分兑换', 'javascript:;', array('action'=>'gotoBuy','action-data'=> Posts::encode($info['id'].'@score','goToBuy'),'title'=>'积分兑换','class'=>'btn btn-danger')); ?>
-                <?php echo CHtml::link('金币兑换', 'javascript:;', array('action'=>'gotoBuy','action-data'=> Posts::encode($info['id'].'@gold','goToBuy'),'title'=>'金币兑换','class'=>'btn btn-danger')); ?>
+                <?php echo GroupPowers::link('favoriteGoods',$this->userInfo,'收藏商品','javascript:;',array('class'=>'btn btn-default','action'=>'favorite','action-data'=>$info['id'],'action-type'=>'goods'));?>
+                <?php echo GroupPowers::link('buyGoods',$this->userInfo,'积分兑换','javascript:;',array('action'=>'gotoBuy','action-data'=> Posts::encode($info['id'].'@score','goToBuy'),'title'=>'积分兑换','class'=>'btn btn-danger'));?>
+                <?php echo GroupPowers::link('buyGoods',$this->userInfo,'金币兑换','javascript:;',array('action'=>'gotoBuy','action-data'=> Posts::encode($info['id'].'@gold','goToBuy'),'title'=>'金币兑换','class'=>'btn btn-danger'));?>
             </div>
         </div>
     </div>

@@ -1230,7 +1230,7 @@ class AjaxController extends Q {
         if (!$id || !$type) {
             $this->jsonOutPut(0, '数据不全，请核实');
         }
-        if (!in_array($type, array('tipComments', 'postComments', 'postPosts'))) {
+        if (!in_array($type, array('tipComments', 'postComments', 'postPosts', 'props'))) {
             $this->jsonOutPut(0, '暂不允许的分类');
         }
         if ($page < 1 || !is_numeric($page)) {
@@ -1271,6 +1271,21 @@ class AjaxController extends Q {
                 }
                 $posts = Comments::getCommentsByPage($id, $this->uid, 'posts', $page, $this->pageSize, "c.id,c.uid,u.truename,u.avatar,c.aid,c.logid,c.tocommentid,c.content,c.cTime,c.status");
                 $view = '/posts/_comment';
+                $from = 'post';
+                $showAvatar = true;
+                break;
+            case 'props':
+                $this->checkLogin();
+                $sql = "SELECT p.id,o.title,o.faceUrl,p.classify,p.action,p.from,p.to,p.num FROM {{orders}} o,{{props}} p WHERE p.uid='{$this->userInfo['id']}' AND o.uid='{$this->userInfo['id']}' AND p.gid=o.gid ORDER BY p.updateTime DESC";
+                $posts = Posts::getByPage(array(
+                            'sql' => $sql,
+                            'page' => $this->page,
+                            'pageSize' => $this->pageSize,
+                ));
+                foreach ($posts as $k => $val) {
+                    $posts[$k]['faceUrl'] = zmf::getThumbnailUrl($val['faceUrl'], 'a120', 'goods');
+                }
+                $view = '/user/_prop';
                 $from = 'post';
                 $showAvatar = true;
                 break;
@@ -1564,6 +1579,8 @@ class AjaxController extends Q {
     }
 
     private function gotoBuy() {
+        $this->checkLogin();
+        $this->checkUserStatus();
         $data = zmf::val('data', 1);
         if (!$data) {
             $this->jsonOutPut(0, '缺少参数');
@@ -1580,6 +1597,11 @@ class AjaxController extends Q {
         $idStrArr = explode('@', $idStr);
         if (count($idStrArr) != 2 || !is_numeric($idStrArr[0]) || !in_array($idStrArr[1], array('score', 'gold'))) {
             $this->jsonOutPut(0, '参数有误');
+        }
+        //获取用户组的权限
+        $powerInfo = GroupPowers::checkPower($this->userInfo, 'buyGoods');
+        if (!$powerInfo['status']) {
+            $this->jsonOutPut($powerInfo['status'], $powerInfo['msg']);
         }
         $id = $idStrArr[0];
         $actionType = $idStrArr[1];
@@ -1602,6 +1624,11 @@ class AjaxController extends Q {
         $totalPrice = $perPrice * $num;
         $now = zmf::now();
         $passdata = zmf::jiaMi($id . '#' . $actionType . '#' . $perPrice . '#' . $num . '#' . $now);
+        //判断财富值
+        $enough = false;
+        if (Users::checkWealth($this->uid, $actionType, $totalPrice)) {
+            $enough = true;
+        }
         $passData = array(
             'info' => $info,
             'label' => $label,
@@ -1609,9 +1636,10 @@ class AjaxController extends Q {
             'num' => $num,
             'totalPrice' => $totalPrice,
             'passdata' => $passdata,
+            'enough' => $enough,
         );
         $html = $this->renderPartial('/shop/_confirmDia', $passData, TRUE);
-        $this->jsonOutPut(1, $html);
+        $this->jsonOutPut($enough ? 1 : 2, $html);
     }
 
     private function confirmBuy() {
@@ -1637,6 +1665,11 @@ class AjaxController extends Q {
             $this->jsonOutPut(0, '停留在本页面的时间过长，请刷新');
         } elseif ($passDataArr[3] < 1) {
             $this->jsonOutPut(0, '请设置购买数量');
+        }
+        //获取用户组的权限
+        $powerInfo = GroupPowers::checkPower($this->userInfo, 'buyGoods');
+        if (!$powerInfo['status']) {
+            $this->jsonOutPut($powerInfo['status'], $powerInfo['msg']);
         }
         //判断商品
         $id = $passDataArr[0];
@@ -1686,6 +1719,7 @@ class AjaxController extends Q {
                 'goldPrice' => $info['goldPrice'],
                 'num' => $num,
                 'payAction' => $actionType,
+                'totalPrice' => $totalPrice,
                 'orderStatus' => Orders::PAID_NOTPAID, //未支付
             );
             $orderModel = new Orders();
@@ -1698,8 +1732,30 @@ class AjaxController extends Q {
                                 'paidType' => 'yue',
                                 'orderStatus' => Orders::PAID_PAID,
                             ))) {
+                        //保存商品绑定的道具到用户账上
+                        Props::saveUserProps($this->userInfo, $info, $orderAttr);
+
+                        //记录用户操作及积分
+                        $jsonData = CJSON::encode(array(
+                                    'id' => $info['id'],
+                                    'title' => $info['title'],
+                                    'faceUrl' => $info['faceUrl']
+                        ));
+                        $attr = array(
+                            'uid' => $this->uid,
+                            'logid' => $info['id'],
+                            'classify' => 'goods',
+                            'data' => $jsonData,
+                            'action' => 'buyGoods',
+                            'score' => $powerInfo['msg']['score'],
+                            'display' => 1,
+                        );
+                        if (UserAction::simpleRecord($attr)) {
+                            //判断本操作是否同属任务
+                            $ckTaskStatus = Task::addTaskLog($this->userInfo, 'buyGoods');
+                        }
                         $this->jsonOutPut(1, '恭喜，已兑换成功');
-                    }else{
+                    } else {
                         $this->jsonOutPut(0, '未知错误，请联系客服');
                     }
                 } else {
@@ -1707,7 +1763,7 @@ class AjaxController extends Q {
                     $orderModel->updateByPk($orderModel->id, array('status' => Posts::STATUS_DELED));
                     $this->jsonOutPut(0, '兑换失败，余额不足');
                 }
-            }else{
+            } else {
                 $this->jsonOutPut(0, '下单失败');
             }
         } else {

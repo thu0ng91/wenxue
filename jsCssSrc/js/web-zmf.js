@@ -764,6 +764,8 @@ function rebind() {
                         }
                     });
                 });
+            }else if(result['status'] === 2){
+                dialog({msg: result['msg'], title: '确认兑换？'});
             } else {
                 dialog({msg: result['msg']});
             }
@@ -977,6 +979,7 @@ function getNotice(){
         clearInterval(notice_interval);
     };
     window.onfocus = function() {
+        clearInterval(notice_interval);
         notice_interval=window.setInterval("doGetNotice()",10000);
     }    
 }

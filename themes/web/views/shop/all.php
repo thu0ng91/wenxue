@@ -35,10 +35,6 @@
         padding: 0;
         font-size: inherit
     }
-    .goods-container .thumbnail .price{
-        font-size: 16px;
-        color: #F40;
-    }
     .goods-container .thumbnail .price span+span:before{
         content:"/\00a0";padding:0 5px;color:#ccc
     }

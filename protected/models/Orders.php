@@ -55,7 +55,7 @@ class Orders extends CActiveRecord {
             array('orderId', 'length', 'max' => 32),
             array('uid, gid, num, cTime, paidTime', 'length', 'max' => 10),
             array('title, desc, faceUrl, classify, paidOrderId', 'length', 'max' => 255),
-            array('scorePrice, goldPrice, payAction, paidType', 'length', 'max' => 16),
+            array('scorePrice, goldPrice, payAction, paidType,totalPrice', 'length', 'max' => 16),
             array('content', 'safe'),
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
@@ -97,6 +97,7 @@ class Orders extends CActiveRecord {
             'paidTime' => '支付时间',
             'paidOrderId' => '支付订单号',
             'paidType' => '支付方式',
+            'totalPrice' => '总价',
         );
     }
 

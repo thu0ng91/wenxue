@@ -160,6 +160,13 @@ class UserAction extends CActiveRecord {
                     'delChapter' => '发表章节',
                 ),
             ),
+            'goods' => array(
+                'desc' => '商品相关',
+                'items' => array(
+                    'buyGoods' => '购买商品',
+                    'favoriteGoods' => '收藏商品',
+                ),
+            ),
             'author' => array(
                 'desc' => '作者相关',
                 'items' => array(

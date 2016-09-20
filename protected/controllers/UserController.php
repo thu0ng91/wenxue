@@ -189,6 +189,49 @@ class UserController extends Q {
             'tips' => $tips,
         ));
     }
+    
+    public function actionThreads() {
+        $sql = "SELECT p.id,p.title,p.faceImg,p.uid,p.cTime,p.comments,p.favorites,p.top,p.digest,p.styleStatus,p.aid FROM {{post_threads}} p WHERE p.uid='{$this->toUserInfo['id']}' AND p.status=" . Posts::STATUS_PASSED . " ORDER BY p.top DESC,p.cTime DESC";        
+        Posts::getAll(array('sql' => $sql), $pages, $posts);
+        $data = array(
+            'posts' => $posts,
+            'pages' => $pages,
+        );
+        $this->selectNav = 'threads';
+        $this->pageTitle = $this->userInfo['truename'] . '的文章 - ' . zmf::config('sitename');
+        $this->render('posts', $data);
+    }
+    
+    public function actionOrders() {
+        $sql = "SELECT id,orderId,gid,title,`desc`,faceUrl,classify,totalPrice,num,payAction,orderStatus,paidTime FROM {{orders}}  WHERE uid='{$this->userInfo['id']}' AND status=" . Posts::STATUS_PASSED . " ORDER BY cTime DESC";        
+        Posts::getAll(array('sql' => $sql), $pages, $posts);
+        foreach ($posts as $k=>$val){
+            $posts[$k]['faceUrl']=  zmf::getThumbnailUrl($val['faceUrl'], $this->isMobile ? 'c280' : 'c120', 'goods');
+            $posts[$k]['typeLabel']=$val['payAction']=='score' ? '积分' : '金币';
+        }
+        $data = array(
+            'posts' => $posts,
+            'pages' => $pages,
+        );
+        $this->selectNav = 'orders';
+        $this->pageTitle = '我的订单 - ' . zmf::config('sitename');
+        $this->render('orders', $data);
+    }
+    
+    public function actionProps() {
+        $sql = "SELECT p.id,o.title,o.faceUrl,p.classify,p.action,p.from,p.to,p.num FROM {{orders}} o,{{props}} p WHERE p.uid='{$this->userInfo['id']}' AND o.uid='{$this->userInfo['id']}' AND p.gid=o.gid ORDER BY p.updateTime DESC";        
+        Posts::getAll(array('sql' => $sql), $pages, $posts);
+        foreach ($posts as $k=>$val){
+            $posts[$k]['faceUrl']=  zmf::getThumbnailUrl($val['faceUrl'], 'a120', 'goods');            
+        }
+        $data = array(
+            'posts' => $posts,
+            'pages' => $pages,
+        );
+        $this->selectNav = 'props';
+        $this->pageTitle = '我的背包 - ' . zmf::config('sitename');
+        $this->render('props', $data);
+    }
 
     public function actionFavorite() {
         $arr=array(
@@ -380,18 +423,5 @@ class UserController extends Q {
         );
         $this->pageTitle = '提醒 - ' . zmf::config('sitename');
         $this->render('notice', $data);
-    }
-
-    public function actionPosts() {
-        $this->checkLogin();
-        $sql = "SELECT id,title,status FROM {{posts}} WHERE uid='{$this->uid}' ORDER BY cTime DESC";
-        Posts::getAll(array('sql' => $sql), $pages, $posts);
-        $data = array(
-            'posts' => $posts,
-            'pages' => $pages,
-        );
-        $this->pageTitle = $this->userInfo['truename'] . '的文章 - ' . zmf::config('sitename');
-        $this->render('posts', $data);
-    }
-
+    } 
 }

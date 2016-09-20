@@ -67,11 +67,13 @@ $this->beginContent('/layouts/common');
                     <div class="navbar-collapse collapse">
                         <ul class="nav navbar-nav">
                             <li<?php echo $this->selectNav == 'index' ? ' class="active"' : ''; ?>><?php echo CHtml::link('首页', array('user/index','id'=>$this->toUserInfo['id'])); ?></li>
-                            <li<?php echo $this->selectNav == 'comment' ? ' class="active"' : ''; ?>><?php echo CHtml::link('点评', array('user/comment','id'=>$this->toUserInfo['id'])); ?></li>       
-                            <li<?php echo $this->selectNav == 'favorite' ? ' class="active"' : ''; ?>><?php echo CHtml::link('收藏', array('user/favorite','id'=>$this->toUserInfo['id'])); ?></li>
+                            <li<?php echo $this->selectNav == 'threads' ? ' class="active"' : ''; ?>><?php echo CHtml::link('帖子', array('user/threads','id'=>$this->toUserInfo['id'])); ?></li>
+                            <li<?php echo $this->selectNav == 'comment' ? ' class="active"' : ''; ?>><?php echo CHtml::link('点评', array('user/comment','id'=>$this->toUserInfo['id'])); ?></li>
                             <?php if($this->toUserInfo['id']==$this->uid){?>
+                            <li<?php echo $this->selectNav == 'favorite' ? ' class="active"' : ''; ?>><?php echo CHtml::link('收藏', array('user/favorite','id'=>$this->toUserInfo['id'])); ?></li>
+                            <li<?php echo $this->selectNav == 'orders' ? ' class="active"' : ''; ?>><?php echo CHtml::link('订单', array('user/orders')); ?></li>
+                            <li<?php echo $this->selectNav == 'props' ? ' class="active"' : ''; ?>><?php echo CHtml::link('背包', array('user/props')); ?></li>
                             <li<?php echo $this->selectNav == 'notice' ? ' class="active"' : ''; ?>><?php echo CHtml::link('消息', array('user/notice')); ?></li>
-                            <li<?php echo $this->selectNav == 'gallery' ? ' class="active"' : ''; ?>><?php echo CHtml::link('相册', array('user/gallery')); ?></li>
                             <li role="presentation" class="dropdown <?php echo $this->selectNav == 'setting' ? 'active' : ''; ?>">
                                 <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                                     设置 <span class="caret"></span>
