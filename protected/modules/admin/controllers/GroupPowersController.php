@@ -38,6 +38,7 @@ class GroupPowersController extends Admin {
         if (isset($_POST['GroupPowers'])) {
             $model->attributes = $_POST['GroupPowers'];
             if ($model->save()) {
+                GroupPowers::delActionsCache($model->gid);
                 if (!$id) {
                     Yii::app()->user->setFlash('addGroupPowersSuccess', "保存成功！您可以继续添加。");
                     $this->redirect(array('create'));

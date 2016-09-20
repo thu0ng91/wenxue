@@ -31,7 +31,7 @@
             <div id="comments-postPosts-<?php echo $data['id'];?>-form"></div>
         </div>
         <div class="props-holder" id="props-holder-<?php echo $data['id'];?>-box">
-            <i class="icon-spike" style="display: inline;right:10px"></i>
+            <i class="icon-spike" style="display: inline;right:45px"></i>
             <div id="props-holder-<?php echo $data['id'];?>"></div>
         </div>
     </div>

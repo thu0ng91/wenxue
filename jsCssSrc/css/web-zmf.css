@@ -1287,8 +1287,19 @@ span.required,.errorMessage{
     position: relative
 }
 .post-page .props-holder{
-    width: 558px;
+    width: 100%;
     display: none;
+    border: 1px solid #ddd;
+    box-shadow: 0 1px 1px rgba(0,0,0,.05);
+    clear: both;
+    margin-left: 0;
+    margin-right: 0;    
+    padding: 5px 0
+}
+.post-page .props-holder .loading-holder{
+    margin-bottom: 15px;
+    margin-top: 15px;
+    text-align: center
 }
 .prop-item{
     position: relative;
@@ -1296,6 +1307,9 @@ span.required,.errorMessage{
     height: 108px;
     margin: 0 5px 10px;
     display: inline-block
+}
+.post-page .props-holder .prop-item{
+    margin: 0 3px 6px;
 }
 .prop-item .fixed-badge{
     padding: 2px 5px 2px 8px;
