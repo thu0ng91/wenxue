@@ -127,5 +127,9 @@ class PostPosts extends CActiveRecord {
     public static function model($className = __CLASS__) {
         return parent::model($className);
     }
+    
+    public static function getOne($pk){
+        return self::model()->findByPk($pk);
+    }
 
 }

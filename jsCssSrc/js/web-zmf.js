@@ -437,6 +437,75 @@ function rebind() {
             }
         });
     });
+    $("a[action=getProps]").unbind('click').click(function () {
+        if (!checkLogin()) {
+            //没有登录，判断是否包含fa-heart样式，包含则认为已收藏成功过
+            dialog({msg: '请先登录哦~', modalSize: 'modal-sm'});
+            return false;
+        }
+        var dom = $(this);
+        var acdata = dom.attr("data-id");
+        var t = dom.attr("data-type");        
+        var targetBox = dom.attr('data-target');
+        if (!targetBox) {
+            return false;
+        }
+        var targetDom=$('#' + targetBox+'-box');
+        if(dom.attr('data-loaded')==='1'){
+            if(targetDom.css('display')=='none'){
+                targetDom.show();
+            }else{
+                targetDom.hide();
+            }            
+            //dom.attr('data-loaded',0);
+            return false;            
+        }
+        var loading = '<div class="loading-holder"><a class="btn btn-default btn-sm disabled" href="javascript:;">拼命加载中...</a></div>';
+        $('#' + targetBox).children('.loading-holder').each(function () {
+            $(this).remove();
+        });
+        $('#' + targetBox).append(loading);
+        targetDom.show();
+        $.post(zmf.ajaxUrl, {action:'getProps',type: t, data: acdata, YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
+            ajaxReturn = true;
+            dom.attr('data-loaded', 1);
+            result = $.parseJSON(result);
+            if (result.status === 1) {
+                var data = result.msg;
+                var dataHtml = '';
+                if (data.html !== '') {
+                    dataHtml += data.html;
+                }               
+                $('#' + targetBox + ' .loading-holder').each(function () {
+                    $(this).remove();
+                });  
+                $('#' + targetBox).html(dataHtml);                
+                rebind();
+            } else {
+                dialog({msg: result.msg});
+            }
+        });
+    });
+    $("a[action=useProp]").unbind('click').click(function () {
+        var dom = $(this);
+        var k = dom.attr("action-data");     
+        if (!k) {
+            dialog({msg: '缺少参数'});
+            return false;
+        }
+        if (!checkAjax()) {
+            return false;
+        }
+        $.post(zmf.ajaxUrl, {action:'useProp',k: k,YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
+            ajaxReturn = true;
+            result = eval('(' + result + ')');
+            if (result['status'] == '1') {
+                dialog({msg: result['msg']});
+            } else {
+                dialog({msg: result['msg']});
+            }
+        });
+    });
     $('.tooltip').mouseover(function(){
         $(this).remove();
     });

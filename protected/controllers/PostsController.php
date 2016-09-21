@@ -114,7 +114,7 @@ class PostsController extends Q {
         }
 
         //获取回帖列表
-        $sql = "SELECT p.id,p.uid,u.truename AS username,u.avatar,p.aid,p.cTime,p.updateTime,p.open,p.comments,p.favors,p.content FROM {{post_posts}} p,{{users}} u WHERE p.tid='{$id}' AND p.status=" . Posts::STATUS_PASSED . " AND p.uid=u.id AND u.status=" . Posts::STATUS_PASSED . " ORDER BY p.isFirst DESC,p.cTime ASC";
+        $sql = "SELECT p.id,p.uid,u.truename AS username,u.avatar,p.aid,p.cTime,p.updateTime,p.open,p.comments,p.favors,p.content,'' AS props FROM {{post_posts}} p,{{users}} u WHERE p.tid='{$id}' AND p.status=" . Posts::STATUS_PASSED . " AND p.uid=u.id AND u.status=" . Posts::STATUS_PASSED . " ORDER BY p.isFirst DESC,p.cTime ASC";
         Posts::getAll(array('sql' => $sql, 'pageSize' => $this->pageSize), $pages, $posts);
         $size = 'w600';
         if ($this->isMobile) {
@@ -124,6 +124,7 @@ class PostsController extends Q {
         foreach ($posts as $k => $val) {
             $posts[$k]['avatar'] = zmf::getThumbnailUrl($val['avatar'], 'a120', 'avatar');
             $posts[$k]['content'] = zmf::text(array(), $val['content'], true, $size);
+            $posts[$k]['props'] = Props::getClassifyProps('postPosts', $val['id']);
         }
 
         //$comments = Comments::getCommentsByPage($id, $this->uid, 'posts', 1, $this->pageSize, "c.id,c.uid,u.truename,u.avatar,c.aid,c.logid,c.tocommentid,c.content,c.cTime,c.status,c.favors");

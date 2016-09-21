@@ -287,3 +287,21 @@ CREATE TABLE `pre_props` (
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 alter TABLE pre_orders add totalPrice varchar(16) not null COMMENT '总价';
+
+DROP TABLE IF EXISTS `pre_prop_relation`;
+CREATE TABLE `pre_prop_relation` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `uid` int(10) unsigned NOT NULL COMMENT '用户',
+  `touid` int(10) unsigned NOT NULL COMMENT '接收者',
+  `pid` int(10) unsigned NOT NULL COMMENT '道具ID',
+  `classify` varchar(16) NOT NULL COMMENT '分类，如帖子',
+  `logid` int(10) unsigned NOT NULL COMMENT '对象ID',
+  `num` int(10) unsigned NOT NULL COMMENT '使用数量',
+  `updateTime` int(10) unsigned NOT NULL COMMENT '最近更新时间',
+  PRIMARY KEY (`id`),
+  KEY `zmf` (`uid`,`pid`,`classify`,`logid`),
+  KEY `pid` (`pid`),
+  KEY `uid` (`uid`),
+  KEY `touid` (`touid`),
+  KEY `order` (`num`,`updateTime`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;

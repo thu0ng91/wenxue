@@ -17,7 +17,7 @@ class AjaxController extends Q {
 
     public function actionDo() {
         $action = zmf::val('action', 1);
-        if (!in_array($action, array('addTip', 'saveUploadImg', 'publishBook', 'publishChapter', 'saveDraft', 'report', 'sendSms', 'checkSms', 'setStatus', 'delContent', 'getNotice', 'getContents', 'delBook', 'delChapter', 'finishBook', 'dapipi', 'joinGroup', 'float', 'ajax', 'gotoBuy', 'confirmBuy'))) {
+        if (!in_array($action, array('addTip', 'saveUploadImg', 'publishBook', 'publishChapter', 'saveDraft', 'report', 'sendSms', 'checkSms', 'setStatus', 'delContent', 'getNotice', 'getContents', 'delBook', 'delChapter', 'finishBook', 'dapipi', 'joinGroup', 'float', 'ajax', 'gotoBuy', 'confirmBuy', 'getProps', 'useProp'))) {
             $this->jsonOutPut(0, Yii::t('default', 'forbiddenaction'));
         }
         $this->$action();
@@ -1230,7 +1230,7 @@ class AjaxController extends Q {
         if (!$id || !$type) {
             $this->jsonOutPut(0, '数据不全，请核实');
         }
-        if (!in_array($type, array('tipComments', 'postComments', 'postPosts', 'props'))) {
+        if (!in_array($type, array('tipComments', 'postComments', 'postPosts'))) {
             $this->jsonOutPut(0, '暂不允许的分类');
         }
         if ($page < 1 || !is_numeric($page)) {
@@ -1274,21 +1274,6 @@ class AjaxController extends Q {
                 $from = 'post';
                 $showAvatar = true;
                 break;
-            case 'props':
-                $this->checkLogin();
-                $sql = "SELECT p.id,o.title,o.faceUrl,p.classify,p.action,p.from,p.to,p.num FROM {{orders}} o,{{props}} p WHERE p.uid='{$this->userInfo['id']}' AND o.uid='{$this->userInfo['id']}' AND p.gid=o.gid ORDER BY p.updateTime DESC";
-                $posts = Posts::getByPage(array(
-                            'sql' => $sql,
-                            'page' => $this->page,
-                            'pageSize' => $this->pageSize,
-                ));
-                foreach ($posts as $k => $val) {
-                    $posts[$k]['faceUrl'] = zmf::getThumbnailUrl($val['faceUrl'], 'a120', 'goods');
-                }
-                $view = '/user/_prop';
-                $from = 'post';
-                $showAvatar = true;
-                break;
             default:
                 $posts = array();
                 break;
@@ -1304,6 +1289,104 @@ class AjaxController extends Q {
             'formHtml' => $showFormHtml ? $this->renderPartial('/posts/_addComment', array('type' => $type, 'keyid' => $id, 'authorPanel' => ($this->userInfo['authorId'] > 0 && $bookInfo['aid'] == $this->userInfo['authorId']), 'authorLogin' => Authors::checkLogin($this->userInfo, $this->userInfo['authorId'])), true) : ''
         );
         $this->jsonOutPut(1, $data);
+    }
+
+    private function getProps() {
+        $this->checkLogin();
+        $id = zmf::val('data', 2);
+        $type = zmf::val('type', 1);
+        if (!$id || !$type) {
+            $this->jsonOutPut(0, '数据不全，请核实');
+        }
+        if (!in_array($type, array('postPosts'))) {
+            $this->jsonOutPut(0, '暂不允许的分类');
+        }
+        $sql = "SELECT p.id,o.title,o.faceUrl,p.classify,p.action,p.from,p.to,p.num FROM {{orders}} o,{{props}} p WHERE p.uid='{$this->userInfo['id']}' AND o.uid='{$this->userInfo['id']}' AND p.gid=o.gid ORDER BY p.updateTime DESC";
+        $posts = Posts::getByPage(array(
+                    'sql' => $sql,
+                    'page' => $this->page,
+                    'pageSize' => $this->pageSize,
+        ));
+        foreach ($posts as $k => $val) {
+            $posts[$k]['faceUrl'] = zmf::getThumbnailUrl($val['faceUrl'], 'a120', 'goods');
+        }
+        $now = zmf::now();
+        if (!empty($posts)) {
+            foreach ($posts as $k => $row) {
+                $_passdata = zmf::jiaMi($row['id'] . '#' . $id . '#' . $type . '#' . $now);
+                $longHtml.=$this->renderPartial('/user/_prop', array('data' => $row, 'k' => $k, 'passdata' => $_passdata), true);
+            }
+        }
+        $data = array(
+            'html' => $longHtml,
+        );
+        $this->jsonOutPut(1, $data);
+    }
+
+    private function useProp() {
+        $this->checkLogin();
+        $data = zmf::val('k', 1);
+        if (!$data) {
+            $this->jsonOutPut(0, '缺少参数');
+        }
+        $now = zmf::now();
+        $str = zmf::jieMi($data);
+        $arr = array_filter(explode('#', $str));
+        if (count($arr) != 4 || !is_numeric($arr[0]) || !is_numeric($arr[1]) || !is_numeric($arr[3]) || !in_array($arr[2], array('postPosts'))) {
+            $this->jsonOutPut(0, '参数错误');
+        }
+        $propInfo = Props::getOne($arr[0]);
+        if (!$propInfo) {
+            $this->jsonOutPut(0, '道具不存在');
+        } elseif ($propInfo['uid'] != $this->uid) {
+            $this->jsonOutPut(0, '你无权此操作');
+        } elseif ($propInfo['num'] < 1) {
+            $this->jsonOutPut(0, '此道具已用完');
+        }
+        switch ($arr[2]) {
+            case 'postPosts':
+                $postInfo = PostPosts::getOne($arr[1]);
+                if (!$postInfo || $postInfo['status'] != Posts::STATUS_PASSED) {
+                    $this->jsonOutPut(0, '你所操作的内容不存在或已删除');
+                }
+                break;
+            default:
+                $this->jsonOutPut(0, '参数错误');
+                break;
+        }
+        $_propAttr = array(
+            'uid' => $this->uid,
+            'pid' => $propInfo['id'],
+            'classify' => $arr[2],
+            'logid' => $arr[1]
+        );
+        $_propModel = new PropRelation();
+        $_relationInfo = $_propModel->findByAttributes($_propAttr);
+        if ($_relationInfo) {//之前已经使用过
+            if ($_propModel->updateByPk($_relationInfo['id'], array(
+                        'num' => $_relationInfo['num'] + 1,
+                        'updateTime' => $now,
+                    ))) {
+                //我的背包里该道具数量减少一
+                Props::model()->updateCounters(array('num' => -1), ':id=id', array(':id' => $propInfo['id']));
+                $this->jsonOutPut(1, '已使用');
+            }else{
+                $this->jsonOutPut(0, '系统内部错误');
+            }
+        }else{
+            //我之前没用过，这是第一次用
+            $_propAttr['touid']=$postInfo['uid'];
+            $_propAttr['num']=1;
+            $_propAttr['updateTime']=$now;
+            $_propModel->attributes=$_propAttr;
+            if($_propModel->save()){
+                //我的背包里该道具数量减少一
+                Props::model()->updateCounters(array('num' => -1), ':id=id', array(':id' => $propInfo['id']));
+                $this->jsonOutPut(1, '已使用');
+            }else{
+                $this->jsonOutPut(0, '系统内部错误');
+            }
+        }
     }
 
     private function delContent() {
