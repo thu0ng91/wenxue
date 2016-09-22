@@ -20,38 +20,11 @@
 <!--        <div class="more-awesome">
             <span>打赏榜</span>
         </div>-->
-        <style>
-            .post-props{
-                background: #f8f8f8;
-                padding: 10px 5px;
-            }
-            .post-props p{
-                display: block;
-                box-sizing: border-box
-            }
-            .post-props p:last-child{
-                border: none
-            }
-            .post-props p span{
-                width: 32.8%;
-                display: inline-block
-            }
-        </style>
-        <div class="post-props" id="post-props-<?php echo $data['id'];?>">
-            <?php if(!empty($data['props'])){?>
-            <?php foreach($data['props'] as $prop){?>            
-            <p class="ui-border-b color-grey">
-                <span><?php echo CHtml::link($prop['truename'],array('user/index','id'=>$prop['uid']));?></span>
-                <span class="text-right"><?php echo $prop['title'];?> x<?php echo $prop['num'];?></span>
-                <span class="text-right"><?php echo zmf::formatTime($prop['updateTime']);?></span>
-            </p>
-            <?php }?>
-            <?php }?>
-        </div>
+        <?php $this->renderPartial('/common/props',array('props'=>$data['props'],'keyid'=>$data['id']));?>
         <p>
             <span class="right-actions">
                 <span><?php echo CHtml::link('举报','javascript:;',array('action'=>'report','action-type'=>'post','action-id'=>$data['id'],'action-title'=>$data['title']));?></span>
-                <span><?php echo CHtml::link('打赏'.$data['comments'],'javascript:;',array('action'=>'getProps','data-id'=>$data['id'],'data-type'=>'postPosts','data-target'=>'props-holder-'.$data['id'],'data-loaded'=>0));?></span>
+                <span><?php echo CHtml::link('赞赏'.$data['comments'],'javascript:;',array('action'=>'getProps','data-id'=>$data['id'],'data-type'=>'postPosts','data-target'=>'props-holder-'.$data['id'],'data-loaded'=>0));?></span>
                 <span><?php echo GroupPowers::link('favorPostReply',$this->userInfo,'<i class="fa '.($data['favorited'] ? 'fa-thumbs-up' : 'fa-thumbs-o-up').'"></i> '.$data['favors'],'javascript:;',array('action'=>'favorite','action-data'=>$data['id'],'action-type'=>'postPosts'),true);?></span>
                 <span><?php echo CHtml::link('<i class="fa fa-comment-o"></i> '.$data['comments'],'javascript:;',array('action'=>'getContents','data-id'=>$data['id'],'data-type'=>'postPosts','data-target'=>'comments-postPosts-'.$data['id'],'data-loaded'=>0));?></span>
             </span>

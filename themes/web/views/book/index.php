@@ -11,14 +11,16 @@
 <div class="container">
     <ol class="breadcrumb">
         <li><?php echo CHtml::link(zmf::config('sitename').'首页',  zmf::config('baseurl'));?></li>
+        <?php if(!empty($colInfo)){?>
         <li><?php echo CHtml::link($colInfo['title'],  array('showcase/index','cid'=>$colInfo['id']));?></li>
+        <?php }?>
         <li><?php echo $colInfo['title'].'作品库';?></li>
     </ol>
     <div class="main-part books-category">
         <ul class="nav nav-tabs">
             <li role="presentation" class="active">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                    <?php echo $colInfo['title'];?> <span class="caret"></span>
+                    <?php echo !empty($colInfo) ? $colInfo['title'] : '分类筛选';?> <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu">
                     <?php foreach ($cols as $colid=>$colTitle){?>

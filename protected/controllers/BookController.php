@@ -106,6 +106,8 @@ class BookController extends Q {
         $chapters = Chapters::getByBook($id);
         //作者的其他推荐书
         $otherTops = Authors::otherTops($info['aid'], $id, 10);
+        //该分类的其他作品
+        $otherBooks=  Books::getColBooks($info['colid']);        
         //获取分类
         $colInfo = Column::getSimpleInfo($info['colid']);
         //更新小说数据,10分钟更新一次
@@ -114,6 +116,9 @@ class BookController extends Q {
             Books::updateBookStatInfo($id);
             zmf::setFCache('stat-Books-' . $id, 1, 600);
         }
+        //获取赞赏
+        $props=Props::getClassifyProps('book', $id);   
+        //是否已收藏
         $this->favorited = Favorites::checkFavored($id, 'book');
         //标题
         $this->pageTitle = '【' . $authorInfo['authorName'] . '作品】' . $info['title'] . ' - ' . zmf::config('sitename');
@@ -136,6 +141,8 @@ class BookController extends Q {
             'tips' => $tips,
             'url' => $url,
             'qrcode' => $qrcode,
+            'props' => $props,
+            'otherBooks' => $otherBooks,
         );
         $this->render('view', $data);
     }
@@ -218,6 +225,8 @@ class BookController extends Q {
                 break;
             }
         }
+        //收到的道具
+        $props=Props::getClassifyProps('chapter', $cid);
         //判断我是否已点评过
         $this->tipInfo = Chapters::checkTip($cid, $this->uid);
         //标题
@@ -238,6 +247,7 @@ class BookController extends Q {
             'tips' => $tips,
             'next' => $next,
             'prev' => $prev,
+            'props' => $props,
         );
         $this->render('chapter', $data);
     }

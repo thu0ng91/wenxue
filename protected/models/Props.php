@@ -166,15 +166,28 @@ class Props extends CActiveRecord {
     }
     
     public static function getClassifyProps($classify,$logid){
-        $sql="SELECT g.title,g.faceUrl,pr.uid,u.truename,u.avatar,pr.num,pr.updateTime FROM {{prop_relation}} pr INNER JOIN {{props}} p ON pr.pid=p.id INNER JOIN {{goods}} g ON p.gid=g.id INNER JOIN {{users}} u ON pr.uid=u.id WHERE pr.classify=:classify AND pr.logid=:logid";
-        $res=Yii::app()->db->createCommand($sql);
-        $res->bindValues(array(
-            ':classify'=>$classify,
-            ':logid'=>$logid
-        ));
-        $items=$res->queryAll();
-        return $items;
-                
+        if($classify=='book'){
+            $chapters=  Chapters::getByBook($logid);
+            if(empty($chapters)){
+                return array();
+            }
+            $cids=  join(',',  array_keys(CHtml::listData($chapters, 'id', 'title')));
+            if(!$cids){
+                return array();
+            }
+            $sql="SELECT g.title,g.faceUrl,pr.uid,u.truename,u.avatar,pr.num,pr.updateTime FROM {{prop_relation}} pr INNER JOIN {{props}} p ON pr.pid=p.id INNER JOIN {{goods}} g ON p.gid=g.id INNER JOIN {{users}} u ON pr.uid=u.id WHERE pr.classify='chapter' AND pr.logid IN({$cids}) ORDER BY pr.num DESC,pr.updateTime ASC";
+            $res=Yii::app()->db->createCommand($sql);
+            $items=$res->queryAll();
+        }else{
+            $sql="SELECT g.title,g.faceUrl,pr.uid,u.truename,u.avatar,pr.num,pr.updateTime FROM {{prop_relation}} pr INNER JOIN {{props}} p ON pr.pid=p.id INNER JOIN {{goods}} g ON p.gid=g.id INNER JOIN {{users}} u ON pr.uid=u.id WHERE pr.classify=:classify AND pr.logid=:logid ORDER BY pr.num DESC,pr.updateTime ASC";
+            $res=Yii::app()->db->createCommand($sql);
+            $res->bindValues(array(
+                ':classify'=>$classify,
+                ':logid'=>$logid
+            ));
+            $items=$res->queryAll();
+        }
+        return $items;                
     }
 
 }

@@ -44,7 +44,7 @@ class Chapters extends CActiveRecord {
             array('status', 'default', 'setOnEmpty' => true, 'value' => Posts::STATUS_PASSED),
             array('uid, aid, bid, title, content,chapterNum', 'required'),
             array('status, vip,psPosition,chapterStatus', 'numerical', 'integerOnly' => true),
-            array('uid, aid, bid, words, comments, hits, cTime, updateTime, postTime', 'length', 'max' => 10),
+            array('uid, aid, bid, words, comments, hits, cTime, updateTime, postTime,props', 'length', 'max' => 10),
             array('title', 'length', 'max' => 255),
             array('chapterNum', 'length', 'max' => 6),
             array('postscript', 'length', 'max' => 1024),
@@ -95,6 +95,7 @@ class Chapters extends CActiveRecord {
             'psPosition' => '展示位置',
             'chapterNum' => '章节号',
             'chapterStatus' => '章节状态',
+            'props' => '赞赏数',
         );
     }
 

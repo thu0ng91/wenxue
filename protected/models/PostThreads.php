@@ -49,7 +49,7 @@ class PostThreads extends CActiveRecord {
             array('cTime', 'default', 'setOnEmpty' => true, 'value' => zmf::now()),
             array('fid,uid,title', 'required'),
             array('styleStatus, digest, top, open, display,status', 'numerical', 'integerOnly' => true),
-            array('fid, type, uid,aid, hits, posts, comments, favorites, lastpost, lastposter, cTime', 'length', 'max' => 10),
+            array('fid, type, uid,aid, hits, posts, comments, favorites, lastpost, lastposter, cTime,props', 'length', 'max' => 10),
             array('title', 'length', 'max' => 80),
             array('faceImg', 'length', 'max' => 255),
             // The following rule is used by search().
@@ -93,6 +93,7 @@ class PostThreads extends CActiveRecord {
             'lastposter' => '最后回帖人',
             'cTime' => '发布时间',
             'status' => '帖子状态',
+            'props' => '赞赏数',
         );
     }
 

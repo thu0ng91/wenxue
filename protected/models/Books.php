@@ -52,7 +52,7 @@ class Books extends CActiveRecord {
             array('uid, aid,colid, title,content,desc,iAgree', 'required'),
             array('faceImg', 'checkUrl'),
             array('vip, bookStatus, status,top,shoufa', 'numerical', 'integerOnly' => true),
-            array('uid, aid,colid,favorites, hits, chapters, comments, words,topTime,scorer,score1,score2,score3,score4,score5', 'length', 'max' => 10),
+            array('uid, aid,colid,favorites, hits, chapters, comments, words,topTime,scorer,score1,score2,score3,score4,score5,props', 'length', 'max' => 10),
             array('title, faceImg, desc', 'length', 'max' => 255),
             array('score,iAgree', 'length', 'max' => 3),
             array('content', 'safe'),
@@ -108,6 +108,7 @@ class Books extends CActiveRecord {
             'score5' => '评5分',
             'shoufa' => '首发',
             'iAgree' => '同意协议',
+            'props' => '赞赏数',
         );
     }
 
@@ -319,6 +320,26 @@ class Books extends CActiveRecord {
             return $arr;
         }
         return $arr[$type];
+    }
+    
+    /**
+     * 根据分类获取其他作品
+     * @param type $colid
+     * @param type $limit
+     * @return type
+     */
+    public static function getColBooks($colid,$limit=10){
+        $arr=array(
+            Books::STATUS_PUBLISHED,
+            Books::STATUS_FINISHED
+        );
+        $sql="SELECT id,title,faceImg,`desc` FROM {{books}} WHERE colid=:colid AND status=" . Posts::STATUS_PASSED . " AND bookStatus IN(" . join(',',$arr) . ") ORDER BY hits DESC LIMIT $limit";
+        $res=  Yii::app()->db->createCommand($sql);
+        $res->bindValues(array(
+            ':colid'=>$colid
+        ));
+        $books=$res->queryAll();
+        return $books;
     }
 
 }

@@ -63,6 +63,12 @@
                 </div>
             </div>
         </div>
+        <div class="module" id="props-holder">
+            <div class="module-header">赞赏榜</div>
+            <div class="module-body">
+                <?php $this->renderPartial('/common/props',array('props'=>$props,'keyid'=>$info['id']));?>
+            </div>
+        </div>
         <div class="module">
             <div class="module-header">书评</div>
             <div class="module-body" id="chapter-tips-holder">                
@@ -103,5 +109,21 @@
             </div>
         </div>
         <?php }?>
+        <?php if(!empty($otherBooks)){?>
+        <div class="module">
+            <div class="module-header">其他「<?php echo $colInfo['title'];?>」作品</div>
+            <div class="module-body">
+                <?php foreach ($otherBooks as $top){?>
+                <p><?php echo CHtml::link($top['title'],array('book/view','id'=>$top['id']));?></p>
+                <?php }?>
+            </div>
+        </div>
+        <?php }?>
+        <div class="module">
+            <div class="module-header">手机上阅读</div>
+            <div class="module-body">
+                <img class="media-object lazy" style="width: 258px;height: 258px;opacity: .6" src="<?php echo zmf::lazyImg(); ?>" data-original="<?php echo $qrcode; ?>" alt="<?php echo $info['title']; ?>的二维码" title="<?php echo $info['title']; ?>">
+            </div>
+        </div>
     </div>
 </div>

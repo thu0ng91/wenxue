@@ -1298,7 +1298,7 @@ class AjaxController extends Q {
         if (!$id || !$type) {
             $this->jsonOutPut(0, '数据不全，请核实');
         }
-        if (!in_array($type, array('postPosts'))) {
+        if (!in_array($type, array('postPosts', 'user', 'chapter'))) {
             $this->jsonOutPut(0, '暂不允许的分类');
         }
         $sql = "SELECT p.id,o.title,o.faceUrl,p.classify,p.action,p.from,p.to,p.num FROM {{orders}} o,{{props}} p WHERE p.uid='{$this->userInfo['id']}' AND o.uid='{$this->userInfo['id']}' AND p.gid=o.gid ORDER BY p.updateTime DESC";
@@ -1332,7 +1332,7 @@ class AjaxController extends Q {
         $now = zmf::now();
         $str = zmf::jieMi($data);
         $arr = array_filter(explode('#', $str));
-        if (count($arr) != 4 || !is_numeric($arr[0]) || !is_numeric($arr[1]) || !is_numeric($arr[3]) || !in_array($arr[2], array('postPosts'))) {
+        if (count($arr) != 4 || !is_numeric($arr[0]) || !is_numeric($arr[1]) || !is_numeric($arr[3]) || !in_array($arr[2], array('postPosts', 'chapter'))) {
             $this->jsonOutPut(0, '参数错误');
         }
         $propInfo = Props::getOne($arr[0]);
@@ -1346,6 +1346,12 @@ class AjaxController extends Q {
         switch ($arr[2]) {
             case 'postPosts':
                 $postInfo = PostPosts::getOne($arr[1]);
+                if (!$postInfo || $postInfo['status'] != Posts::STATUS_PASSED) {
+                    $this->jsonOutPut(0, '你所操作的内容不存在或已删除');
+                }
+                break;
+            case 'chapter':
+                $postInfo = Chapters::getOne($arr[1]);
                 if (!$postInfo || $postInfo['status'] != Posts::STATUS_PASSED) {
                     $this->jsonOutPut(0, '你所操作的内容不存在或已删除');
                 }
@@ -1369,21 +1375,45 @@ class AjaxController extends Q {
                     ))) {
                 //我的背包里该道具数量减少一
                 Props::model()->updateCounters(array('num' => -1), ':id=id', array(':id' => $propInfo['id']));
+                //增加统计
+                switch ($arr[2]) {
+                    case 'postPosts':
+                        Posts::updateCount($postInfo['id'], 'PostPosts', 1, 'props');
+                        break;
+                    case 'chapter':
+                        Posts::updateCount($postInfo['id'], 'Chapters', 1, 'props');
+                        Posts::updateCount($postInfo['bid'], 'Books', 1, 'props');
+                        break;
+                    default:
+                        break;
+                }
                 $this->jsonOutPut(1, '已使用');
-            }else{
+            } else {
                 $this->jsonOutPut(0, '系统内部错误');
             }
-        }else{
+        } else {
             //我之前没用过，这是第一次用
-            $_propAttr['touid']=$postInfo['uid'];
-            $_propAttr['num']=1;
-            $_propAttr['updateTime']=$now;
-            $_propModel->attributes=$_propAttr;
-            if($_propModel->save()){
+            $_propAttr['touid'] = $postInfo['uid'];
+            $_propAttr['num'] = 1;
+            $_propAttr['updateTime'] = $now;
+            $_propModel->attributes = $_propAttr;
+            if ($_propModel->save()) {
                 //我的背包里该道具数量减少一
                 Props::model()->updateCounters(array('num' => -1), ':id=id', array(':id' => $propInfo['id']));
+                //增加统计
+                switch ($arr[2]) {
+                    case 'postPosts':
+                        Posts::updateCount($postInfo['id'], 'PostPosts', 1, 'props');
+                        break;
+                    case 'chapter':
+                        Posts::updateCount($postInfo['id'], 'Chapters', 1, 'props');
+                        Posts::updateCount($postInfo['bid'], 'Books', 1, 'props');
+                        break;
+                    default:
+                        break;
+                }
                 $this->jsonOutPut(1, '已使用');
-            }else{
+            } else {
                 $this->jsonOutPut(0, '系统内部错误');
             }
         }

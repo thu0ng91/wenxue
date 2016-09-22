@@ -305,3 +305,12 @@ CREATE TABLE `pre_prop_relation` (
   KEY `touid` (`touid`),
   KEY `order` (`num`,`updateTime`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+alter TABLE pre_post_posts add props int(10) unsigned not null COMMENT '赞赏数';
+alter TABLE pre_post_threads add props int(10) unsigned not null COMMENT '赞赏数';
+alter TABLE pre_tips add props int(10) unsigned not null COMMENT '赞赏数';
+alter TABLE pre_chapters add props int(10) unsigned not null COMMENT '赞赏数';
+alter TABLE pre_books add props int(10) unsigned not null COMMENT '赞赏数';
+
+alter TABLE pre_goods add limitNum int(10) unsigned not null COMMENT '限制每人购买次数';
+alter TABLE pre_goods add totalNum int(10) unsigned not null COMMENT '总数量';

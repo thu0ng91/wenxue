@@ -212,7 +212,7 @@ class Posts extends CActiveRecord {
      * @return boolean
      */
     public static function updateCount($keyid, $type, $num = 1, $field = 'hits') {
-        if (!$keyid || !$type || !in_array($type, array('Books', 'Authors', 'Chapters', 'Tips', 'Users', 'Posts', 'Comments', 'GroupTasks', 'Task'))) {
+        if (!$keyid || !$type || !in_array($type, array('Books', 'Authors', 'Chapters', 'Tips', 'Users', 'Posts', 'Comments', 'GroupTasks', 'Task','PostPosts'))) {
             return false;
         }
         $model = new $type;

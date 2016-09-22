@@ -14,13 +14,13 @@
         <div class="module-header">我的背包</div>
         <div class="module-body props-holder" id="props-holder-box">
             <div id="props-holder">
-                <?php echo CHtml::link('','javascript:;',array('action'=>'getContents','data-id'=>$this->userInfo['id'],'data-type'=>'props','data-target'=>'props-holder'));?>
+                <?php echo CHtml::link('','javascript:;',array('action'=>'getProps','data-id'=>$this->userInfo['id'],'data-type'=>'user','data-target'=>'props-holder','data-loaded'=>0));?>
             </div>
         </div>    
     </div>    
 </div>
 <script>
     $(document).ready(function(){
-        $("a[action=getContents]").click();
+        $("a[action=getProps]").click();
     })
 </script>

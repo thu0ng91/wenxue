@@ -45,7 +45,7 @@ class PostPosts extends CActiveRecord {
             
             array('uid, tid, content', 'required'),
             array('uid, comments, cTime, updateTime, open, status,isFirst,platform', 'numerical', 'integerOnly' => true),
-            array('aid, tid', 'length', 'max' => 10),
+            array('aid, tid,props', 'length', 'max' => 10),
             array('favors', 'length', 'max' => 11),
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
@@ -81,6 +81,7 @@ class PostPosts extends CActiveRecord {
             'status' => '楼层状态',
             'isFirst' => '是否首贴',
             'platform' => '来源',
+            'props' => '赞赏数',
         );
     }
 
