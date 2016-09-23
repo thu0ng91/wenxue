@@ -25,6 +25,13 @@
         </div>
     </div>
     <div class="aside-part">
+        <?php if(!empty($forums)){?>
+        <div class="list-group">
+            <?php foreach ($forums as $forum){?>
+            <?php echo CHtml::link($forum['title'],array('posts/index','forum'=>$forum['id']),array('class'=>'list-group-item'));?>
+            <?php }?>
+        </div>
+        <?php }?>
         <?php $sideAds=$showcases['author']['post'];if(!empty($sideAds)){$_info=$sideAds[0];?>
         <div class="module posts-side-show">
             <a href="<?php echo $_info['url']!='' ? $_info['url'] : 'javascript:;';?>" target="_blank">

@@ -1803,6 +1803,18 @@ class AjaxController extends Q {
         } elseif ($actionType == 'gold') {
             $perPrice = $info['goldPrice'];
             $label = '金币';
+        }elseif($info['limitNum']>0){
+            //判断每人购买的次数
+            $num=  Orders::statUserBuyTimes($this->uid, $info['id']);
+            if($num>=$info['limitNum']){
+                $this->jsonOutPut(0, '你达到限购次数');
+            }
+        }elseif($info['totalNum']>0){
+            //判断总数
+            $num=  Orders::statByGoods($info['id']);
+            if($num>=$info['totalNum']){
+                $this->jsonOutPut(0, '该商品已售罄');
+            }
         }
         if ($passDataArr[2] != $perPrice) {
             $this->jsonOutPut(0, '数据有误，请刷新');

@@ -6,15 +6,16 @@ class PostsController extends Q {
 
     public function actionTypes() {
         $items = PostForums::model()->findAll();
+        $favorites=  PostForums::getUserFavorites($this->uid);
         $this->pageTitle = '关注圈子 - ' . zmf::config('sitename');
         $data = array(
-            'forums' => $items
+            'forums' => $items,
+            'favorites' => $favorites,
         );
         $this->render('forums', $data);
     }
 
     public function actionIndex() {
-        UserAction::userActions();
         $type = zmf::val('type', 1);
         if ($type) {
             $this->redirect(array('posts/types'));
@@ -28,7 +29,7 @@ class PostsController extends Q {
             $this->message(0, '你所查看的版块不存在');
         }
 
-        $sql = "SELECT p.id,p.title,p.faceImg,p.uid,u.truename AS username,p.cTime,p.comments,p.favorites,p.top,p.digest,p.styleStatus,p.aid FROM {{post_threads}} p,{{users}} u WHERE p.status=" . Posts::STATUS_PASSED . " AND p.uid=u.id AND u.status=" . Posts::STATUS_PASSED . " ORDER BY p.top DESC,p.cTime DESC";
+        $sql = "SELECT p.id,p.title,p.faceImg,p.uid,u.truename AS username,p.cTime,p.comments,p.favorites,p.top,p.digest,p.styleStatus,p.aid,p.fid,'' AS forumTitle FROM {{post_threads}} p,{{users}} u WHERE p.status=" . Posts::STATUS_PASSED . " AND p.uid=u.id AND u.status=" . Posts::STATUS_PASSED . " ORDER BY p.top DESC,p.cTime DESC";
 
         Posts::getAll(array('sql' => $sql, 'pageSize' => $this->pageSize), $pages, $posts);
         foreach ($posts as $k => $val) {
@@ -58,6 +59,8 @@ class PostsController extends Q {
         }
         //获取展示
         $showcases = Showcases::getPagePosts('authorQzone', NUll, false, 'c360');
+        //所有版块
+        $forums = PostForums::model()->findAll();
         $this->selectNav = $type . 'Forum';
         $this->showLeftBtn = false;
         $this->pageTitle = $forumInfo['title'] . ' - ' . zmf::config('sitename');
@@ -67,6 +70,7 @@ class PostsController extends Q {
             'pages' => $pages,
             'forumInfo' => $forumInfo,
             'showcases' => $showcases,
+            'forums' => $forums,
         );
         $this->render('index', $data);
     }

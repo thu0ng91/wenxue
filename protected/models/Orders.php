@@ -159,5 +159,18 @@ class Orders extends CActiveRecord {
         $code=$time.(number_format(abs(microtime(true)-$now)*1000,0,'.','')).mt_rand(100, 999);
         return $code;
     }
+    
+    public static function statUserBuyTimes($uid,$gid){
+        return self::model()->count('uid=:uid AND gid=:gid',array(
+            ':uid'=>$uid,
+            ':gid'=>$gid,
+        ));
+    }
+    
+    public static function statByGoods($gid){
+        return self::model()->count('gid=:gid',array(
+            ':gid'=>$gid,
+        ));
+    }
 
 }

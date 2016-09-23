@@ -2,7 +2,7 @@
     <div class="main-part">
         <div class="module">
             <div class="module-body">
-                <?php foreach ($forums as $forum){?>
+                <?php foreach ($forums as $forum){$_favorited=in_array($forum['id'],$favorites);?>
                 <div class="media">
                     <div class="media-left">
                         <img src="<?php echo zmf::lazyImg();?>" class="lazy a64 img-circle" data-original="<?php echo $forum['faceImg'];?>"/>
@@ -13,7 +13,7 @@
                         <p class="color-grey"><?php echo $forum['desc'];?></p>                        
                     </div>
                     <div class="media-right">
-                        <p><?php echo GroupPowers::link('favoriteForum',$this->userInfo,'<i class="fa fa-plus"></i> 关注','javascript:;',array('class'=>'btn btn-default btn-xs'));?></p>
+                        <p><?php echo GroupPowers::link('favoriteForum',$this->userInfo,($_favorited ? '<i class="fa fa-check"></i> 已关注' : '<i class="fa fa-plus"></i> 关注'),'javascript:;',array('class'=>'btn btn-'.($_favorited ? 'default':'success').' btn-xs','action'=>'favorite','action-data'=>$forum['id'],'action-type'=>'forum'));?></p>
                     </div>
                 </div>
                 <?php }?>

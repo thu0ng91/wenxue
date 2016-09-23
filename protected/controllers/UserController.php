@@ -2,8 +2,9 @@
 
 class UserController extends Q {
 
-    public $toUserInfo;    
+    public $toUserInfo;
     public $favorited = false;
+    public $myself = false;
 
     public function init() {
         parent::init();
@@ -18,6 +19,7 @@ class UserController extends Q {
         }
         if ($this->toUserInfo['id'] == $this->uid) {
             $this->adminLogin = Authors::checkLogin($this->userInfo, $this->userInfo['authorId']);
+            $this->myself = true;
         } else {
             Posts::updateCount($id, 'Users', 1, 'hits');
         }
@@ -37,12 +39,35 @@ class UserController extends Q {
     }
 
     public function actionIndex() {
-        $sql = "SELECT classify,`data`,cTime FROM {{user_action}} WHERE uid='{$this->toUserInfo['id']}' ORDER BY cTime DESC";
+        if ($this->myself) {
+            $sql = "SELECT ua.id,ua.uid,ua.classify,ua.`data`,ua.cTime FROM {{user_action}} ua,{{favorites}} f WHERE f.uid='{$this->uid}' AND f.classify='user' AND ua.display=1 AND (f.logid=ua.uid OR ua.uid='{$this->uid}') ORDER BY ua.cTime DESC";
+        } else {
+            $sql = "SELECT classify,`data`,cTime FROM {{user_action}} WHERE uid='{$this->toUserInfo['id']}' AND display=1 ORDER BY cTime DESC";
+        }
         Posts::getAll(array('sql' => $sql), $pages, $posts);
         if (!empty($posts)) {
+            $usersArr = array();
+            if ($this->myself) {
+                $uids = join(',', array_unique(array_keys(CHtml::listData($posts, 'uid', 'id'))));
+                if ($uids != '') {
+                    $sql2 = "SELECT id,truename,avatar FROM {{users}} WHERE id IN($uids)";
+                    $usersArr = Yii::app()->db->createCommand($sql2)->queryAll();
+                }
+            }
             foreach ($posts as $k => $val) {
                 $posts[$k]['data'] = CJSON::decode($val['data']);
                 $posts[$k]['action'] = UserAction::exClassify($val['classify']);
+                if($this->myself && !empty($usersArr)){
+                    foreach ($usersArr as $val2){
+                        if($val2['id']==$val['uid']){
+                            $posts[$k]['truename']=$val2['truename'];
+                            $posts[$k]['avatar']=  zmf::getThumbnailUrl($val2['avatar'],'a120','user');
+                        }
+                    }
+                }else{
+                    $posts[$k]['truename']=$this->toUserInfo['truename'];
+                    $posts[$k]['avatar']=  zmf::getThumbnailUrl($this->toUserInfo['avatar'],'a120','user');
+                }
             }
         }
         $this->selectNav = 'index';
@@ -140,9 +165,9 @@ class UserController extends Q {
         if (!$authorInfo) {
             throw new CHttpException(403, '你尚未成为作者');
         }
-        if($this->isMobile){
-            $this->layout='common';
-            $this->referer=Yii::app()->createUrl('user/index');
+        if ($this->isMobile) {
+            $this->layout = 'common';
+            $this->referer = Yii::app()->createUrl('user/index');
         }
         $model = new Authors;
         if (isset($_POST['Authors'])) {
@@ -189,9 +214,9 @@ class UserController extends Q {
             'tips' => $tips,
         ));
     }
-    
+
     public function actionThreads() {
-        $sql = "SELECT p.id,p.title,p.faceImg,p.uid,p.cTime,p.comments,p.favorites,p.top,p.digest,p.styleStatus,p.aid FROM {{post_threads}} p WHERE p.uid='{$this->toUserInfo['id']}' AND p.status=" . Posts::STATUS_PASSED . " ORDER BY p.top DESC,p.cTime DESC";        
+        $sql = "SELECT p.id,p.title,p.faceImg,p.uid,p.cTime,p.comments,p.favorites,p.top,p.digest,p.styleStatus,p.aid FROM {{post_threads}} p WHERE p.uid='{$this->toUserInfo['id']}' AND p.status=" . Posts::STATUS_PASSED . " ORDER BY p.top DESC,p.cTime DESC";
         Posts::getAll(array('sql' => $sql), $pages, $posts);
         $data = array(
             'posts' => $posts,
@@ -201,13 +226,13 @@ class UserController extends Q {
         $this->pageTitle = $this->userInfo['truename'] . '的文章 - ' . zmf::config('sitename');
         $this->render('posts', $data);
     }
-    
+
     public function actionOrders() {
-        $sql = "SELECT id,orderId,gid,title,`desc`,faceUrl,classify,totalPrice,num,payAction,orderStatus,paidTime FROM {{orders}}  WHERE uid='{$this->userInfo['id']}' AND status=" . Posts::STATUS_PASSED . " ORDER BY cTime DESC";        
+        $sql = "SELECT id,orderId,gid,title,`desc`,faceUrl,classify,totalPrice,num,payAction,orderStatus,paidTime FROM {{orders}}  WHERE uid='{$this->userInfo['id']}' AND status=" . Posts::STATUS_PASSED . " ORDER BY cTime DESC";
         Posts::getAll(array('sql' => $sql), $pages, $posts);
-        foreach ($posts as $k=>$val){
-            $posts[$k]['faceUrl']=  zmf::getThumbnailUrl($val['faceUrl'], $this->isMobile ? 'c280' : 'c120', 'goods');
-            $posts[$k]['typeLabel']=$val['payAction']=='score' ? '积分' : '金币';
+        foreach ($posts as $k => $val) {
+            $posts[$k]['faceUrl'] = zmf::getThumbnailUrl($val['faceUrl'], $this->isMobile ? 'c280' : 'c120', 'goods');
+            $posts[$k]['typeLabel'] = $val['payAction'] == 'score' ? '积分' : '金币';
         }
         $data = array(
             'posts' => $posts,
@@ -217,12 +242,12 @@ class UserController extends Q {
         $this->pageTitle = '我的订单 - ' . zmf::config('sitename');
         $this->render('orders', $data);
     }
-    
+
     public function actionProps() {
-        $sql = "SELECT p.id,o.title,o.faceUrl,p.classify,p.action,p.from,p.to,p.num FROM {{orders}} o,{{props}} p WHERE p.uid='{$this->userInfo['id']}' AND o.uid='{$this->userInfo['id']}' AND p.gid=o.gid ORDER BY p.updateTime DESC";        
+        $sql = "SELECT p.id,o.title,o.faceUrl,p.classify,p.action,p.from,p.to,p.num FROM {{orders}} o,{{props}} p WHERE p.uid='{$this->userInfo['id']}' AND o.uid='{$this->userInfo['id']}' AND p.gid=o.gid ORDER BY p.updateTime DESC";
         Posts::getAll(array('sql' => $sql), $pages, $posts);
-        foreach ($posts as $k=>$val){
-            $posts[$k]['faceUrl']=  zmf::getThumbnailUrl($val['faceUrl'], 'a120', 'goods');            
+        foreach ($posts as $k => $val) {
+            $posts[$k]['faceUrl'] = zmf::getThumbnailUrl($val['faceUrl'], 'a120', 'goods');
         }
         $data = array(
             'posts' => $posts,
@@ -234,11 +259,11 @@ class UserController extends Q {
     }
 
     public function actionFavorite() {
-        $arr=array(
+        $arr = array(
             Books::STATUS_PUBLISHED,
             Books::STATUS_FINISHED
         );
-        $sql = "SELECT b.id,b.aid,b.title,b.faceImg,b.desc,b.words,b.cTime,b.score,b.scorer,b.bookStatus FROM {{favorites}} f,{{books}} b WHERE f.uid='{$this->toUserInfo['id']}' AND f.classify='book' AND f.logid=b.id AND b.status=" . Posts::STATUS_PASSED . " AND b.bookStatus IN(" . join(',',$arr) . ") ORDER BY f.cTime DESC";
+        $sql = "SELECT b.id,b.aid,b.title,b.faceImg,b.desc,b.words,b.cTime,b.score,b.scorer,b.bookStatus FROM {{favorites}} f,{{books}} b WHERE f.uid='{$this->toUserInfo['id']}' AND f.classify='book' AND f.logid=b.id AND b.status=" . Posts::STATUS_PASSED . " AND b.bookStatus IN(" . join(',', $arr) . ") ORDER BY f.cTime DESC";
         Posts::getAll(array('sql' => $sql), $pages, $posts);
         foreach ($posts as $k => $val) {
             $posts[$k]['faceImg'] = zmf::getThumbnailUrl($val['faceImg'], 'w120', 'avatar');
@@ -308,9 +333,9 @@ class UserController extends Q {
         if ($action == 'checkPhone' && $this->userInfo['phoneChecked']) {
             $this->message(0, '你的号码已验证，不需要重复验证');
         }
-        if($action=='passwd' && $this->isMobile){
-            $this->layout='common';
-            $this->referer=Yii::app()->createUrl('user/index',array('id'=>$this->uid));
+        if ($action == 'passwd' && $this->isMobile) {
+            $this->layout = 'common';
+            $this->referer = Yii::app()->createUrl('user/index', array('id' => $this->uid));
         }
         $model = Users::model()->findByPk($this->uid);
         if (isset($_POST['Users'])) {
@@ -375,24 +400,24 @@ class UserController extends Q {
             'action' => $action,
         ));
     }
-    
-    public function actionJoinGroup(){
+
+    public function actionJoinGroup() {
         $this->checkLogin();
-        $this->layout='common';
-        if($this->userInfo['groupid']){
+        $this->layout = 'common';
+        if ($this->userInfo['groupid']) {
             $this->message(0, '你已选择过角色，请勿重复操作');
         }
-        $groups=  Group::model()->findAll(array(
-            'condition'=>'status=1',//推荐
+        $groups = Group::model()->findAll(array(
+            'condition' => 'status=1', //推荐
         ));
-        foreach ($groups as $k=>$val){
-            $groups[$k]['id']=  Posts::encode($val['id'],'group');
+        foreach ($groups as $k => $val) {
+            $groups[$k]['id'] = Posts::encode($val['id'], 'group');
         }
-        $this->pageTitle='角色选择 - '.zmf::config('sitename');
-        $data=array(
-            'groups'=>$groups
+        $this->pageTitle = '角色选择 - ' . zmf::config('sitename');
+        $data = array(
+            'groups' => $groups
         );
-        $this->render('joinGroup',$data);
+        $this->render('joinGroup', $data);
     }
 
     public function actionNotice() {
@@ -407,15 +432,15 @@ class UserController extends Q {
                 'condition' => "id IN({$uids}) AND status=" . Posts::STATUS_PASSED,
                 'select' => 'id,truename,avatar'
             ));
-            foreach ($posts as $k=>$val){
-                foreach ($authors as $val2){
-                    if($val['authorid']==$val2['id']){
-                        $posts[$k]['truename']=$val2['truename'];
-                        $posts[$k]['avatar']=  zmf::getThumbnailUrl($val2['avatar'], 'a120', 'avatar');
+            foreach ($posts as $k => $val) {
+                foreach ($authors as $val2) {
+                    if ($val['authorid'] == $val2['id']) {
+                        $posts[$k]['truename'] = $val2['truename'];
+                        $posts[$k]['avatar'] = zmf::getThumbnailUrl($val2['avatar'], 'a120', 'avatar');
                     }
                 }
             }
-        }        
+        }
         Notification::model()->updateAll(array('new' => 0), 'uid=:uid', array(':uid' => $this->uid));
         $data = array(
             'posts' => $posts,
@@ -423,5 +448,6 @@ class UserController extends Q {
         );
         $this->pageTitle = '提醒 - ' . zmf::config('sitename');
         $this->render('notice', $data);
-    } 
+    }
+
 }

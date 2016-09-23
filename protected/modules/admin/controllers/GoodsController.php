@@ -38,9 +38,13 @@ class GoodsController extends Admin {
             $handleInfo = Posts::handleContent($_POST['Goods']['content'], true);
             $content = $handleInfo['content'];
             $attachids = $handleInfo['attachids'];
+            $now=  zmf::now();
             $_POST['Goods']['content'] = 0;
             $_POST['Goods']['faceimg'] = $attachids[0];
             $_POST['Goods']['faceUrl'] = Attachments::faceImg(array('faceimg' => $attachids[0]), '', 'goods');
+            $_POST['Goods']['content'] = $_POST['Goods']['scorePrice'] <= 1 ? 1 : $_POST['Goods']['scorePrice'];
+            $_POST['Goods']['topTime'] = $_POST['Goods']['topTime'] ? $now : 0;
+            
             //处理商品关联操作
             $actionClassify = zmf::val('actionClassify', 1);
             $fromGroupid = zmf::val('fromGroupid', 2);
@@ -82,12 +86,12 @@ class GoodsController extends Admin {
                         'gid' => $model->id,
                         'classify' => $actionClassifyArr[0],
                         'action' => $actionClassifyArr[1],
-                        'from' => ($actionClassifyArr[2]==1 ? $fromGroupid : ''),
-                        'to' =>  ($actionClassifyArr[2]==1 ? $toGroupid : ''),
+                        'from' => ($actionClassifyArr[2] == 1 ? $fromGroupid : ''),
+                        'to' => ($actionClassifyArr[2] == 1 ? $toGroupid : ''),
                     );
-                    $_goodsActionModel=new GoodsAction;
-                    $_goodsActionModel->attributes=$_goodsActionAttr;
-                    if($_goodsActionModel->save()){
+                    $_goodsActionModel = new GoodsAction;
+                    $_goodsActionModel->attributes = $_goodsActionAttr;
+                    if ($_goodsActionModel->save()) {
                         $model->updateByPk($model->id, array('actionId' => $_goodsActionModel->id));
                     }
                 }

@@ -39,7 +39,7 @@ class Goods extends CActiveRecord {
             array('title', 'length', 'max' => 32),
             array('desc,faceUrl,groupids,actionId', 'length', 'max' => 255),
             array('scorePrice, goldPrice', 'length', 'max' => 16),
-            array('content, classify, comments, hits,faceimg', 'length', 'max' => 10),
+            array('content, classify, comments, hits,faceimg,limitNum,totalNum,topTime', 'length', 'max' => 10),
             array('score', 'length', 'max' => 4),
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
@@ -76,6 +76,9 @@ class Goods extends CActiveRecord {
             'faceimg' => '封面图ID',
             'faceUrl' => '封面图',
             'actionId' => '关联事件ID',
+            'limitNum' => '限制每人购买次数',
+            'totalNum' => '总数量',
+            'topTime' => '推荐',
         );
     }
 

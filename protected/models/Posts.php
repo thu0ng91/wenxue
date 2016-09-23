@@ -212,7 +212,7 @@ class Posts extends CActiveRecord {
      * @return boolean
      */
     public static function updateCount($keyid, $type, $num = 1, $field = 'hits') {
-        if (!$keyid || !$type || !in_array($type, array('Books', 'Authors', 'Chapters', 'Tips', 'Users', 'Posts', 'Comments', 'GroupTasks', 'Task','PostPosts'))) {
+        if (!$keyid || !$type || !in_array($type, array('Books', 'Authors', 'Chapters', 'Tips', 'Users', 'Posts', 'Comments', 'GroupTasks', 'Task','PostPosts','PostForums'))) {
             return false;
         }
         $model = new $type;
@@ -332,7 +332,7 @@ class Posts extends CActiveRecord {
         if (!$code || !$type) {
             return array('status' => 0, 'msg' => '数据不全，请核实');
         }
-        if (!in_array($type, array('book', 'author', 'tip', 'user', 'post', 'comment','postPosts'))) {
+        if (!in_array($type, array('book', 'author', 'tip', 'user', 'post', 'comment','postPosts','forum'))) {
             return array('status' => 0, 'msg' => '暂不允许的分类');
         }
         if (is_numeric($code)) {
@@ -429,9 +429,18 @@ class Posts extends CActiveRecord {
             }
             $noticeUid = $postInfo['uid'];
             $powerAction = 'favorPostReply';
+        } elseif ($type == 'forum') {
+            $postInfo = PostForums::getOne($id);
+            if (!$postInfo) {
+                return array('status' => 0, 'msg' => '你所操作的内容不存在');
+            }
+            $noticeUid = 0;
+            $powerAction = 'favoriteForum';
         }
-        if (!$postInfo || $postInfo['status'] != Posts::STATUS_PASSED) {
-            return array('status' => 0, 'msg' => '你所操作的内容不存在');
+        if ($type != 'forum') {
+            if (!$postInfo || $postInfo['status'] != Posts::STATUS_PASSED) {
+                return array('status' => 0, 'msg' => '你所操作的内容不存在');
+            }
         }
         $powerInfo = GroupPowers::checkPower($userInfo, $powerAction);
         if (!$powerInfo['status']) {
@@ -460,6 +469,8 @@ class Posts extends CActiveRecord {
                     Posts::updateCount($id, 'Posts', -1, 'favorite');
                 } elseif ($type == 'comment') {
                     Posts::updateCount($id, 'Comments', -1, 'favors');
+                } elseif ($type == 'forum') {
+                    Posts::updateCount($id, 'PostForums', -1, 'favors');
                 }
                 //todo，取消的赞应扣除相应积分
                 return array('status' => 1, 'msg' => '取消点赞', 'state' => 3);
@@ -486,6 +497,8 @@ class Posts extends CActiveRecord {
                     Posts::updateCount($id, 'Posts', 1, 'favorite');
                 } elseif ($type == 'comment') {
                     Posts::updateCount($id, 'Comments', 1, 'favors');
+                } elseif ($type == 'forum') {
+                    Posts::updateCount($id, 'PostForums', 1, 'favors');
                 }
                 //点赞后给对方发提醒
                 $_noticedata = array(

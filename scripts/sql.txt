@@ -314,3 +314,4 @@ alter TABLE pre_books add props int(10) unsigned not null COMMENT '赞赏数';
 
 alter TABLE pre_goods add limitNum int(10) unsigned not null COMMENT '限制每人购买次数';
 alter TABLE pre_goods add totalNum int(10) unsigned not null COMMENT '总数量';
+alter TABLE pre_goods add topTime int(10) unsigned not null COMMENT '推荐';

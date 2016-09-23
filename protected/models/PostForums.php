@@ -107,5 +107,13 @@ class PostForums extends CActiveRecord {
     public static function getOne($id) {
         return PostForums::model()->findByPk($id);
     }
+    
+    public static function getUserFavorites($uid){
+        if(!$uid){
+            return array();
+        }
+        $items= Favorites::model()->findAll("uid=:uid AND classify='forum'", array(':uid'=>$uid));
+        return CHtml::listData($items, 'id', 'logid');
+    }
 
 }

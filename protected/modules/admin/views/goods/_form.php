@@ -59,19 +59,45 @@ $uploadurl=Yii::app()->createUrl('/attachments/upload',array('type'=>'goods','im
     <div class="form-group">
         <?php echo $form->labelEx($model,'scorePrice'); ?>        
         <div class="input-group">
-            <?php echo $form->textField($model,'scorePrice',array('class'=>'form-control')); ?>
+            <?php echo $form->numberField($model,'scorePrice',array('class'=>'form-control')); ?>
             <span class="input-group-addon">积分</span>
-        </div>        
+        </div>
+        <p class="help-block">整数，不能是小数</p>
         <?php echo $form->error($model,'scorePrice'); ?>
     </div>
     <div class="form-group">
         <?php echo $form->labelEx($model,'goldPrice'); ?>  
         <div class="input-group">
-            <?php echo $form->textField($model,'goldPrice',array('class'=>'form-control')); ?>
+            <?php echo $form->numberField($model,'goldPrice',array('class'=>'form-control')); ?>
             <span class="input-group-addon">金币</span>
         </div>   
+        <p class="help-block">可以是小数</p>
         <?php echo $form->error($model,'goldPrice'); ?>
     </div>
+    <div class="form-group">
+        <?php echo $form->labelEx($model,'limitNum'); ?>
+        <div class="input-group">
+            <?php echo $form->numberField($model,'limitNum',array('class'=>'form-control')); ?>
+            <span class="input-group-addon">个</span>
+        </div>   
+        <p class="help-block">每人最多能买几个，0表示不限制，大于0表示限制的个数</p>
+        <?php echo $form->error($model,'limitNum'); ?>
+    </div>  
+    <div class="form-group">
+        <?php echo $form->labelEx($model,'totalNum'); ?>      
+        <div class="input-group">
+            <?php echo $form->numberField($model,'totalNum',array('class'=>'form-control')); ?>
+            <span class="input-group-addon">个</span>
+        </div>   
+        <p class="help-block">最多有好多个，0表示不限制，大于0表示最多这么多个</p>
+        <?php echo $form->error($model,'totalNum'); ?>
+    </div>    
+    <div class="form-group">
+        <?php echo $form->labelEx($model,'topTime');?>        
+        <?php echo $form->checkBox($model,'topTime'); ?>
+        <p class="help-block">勾选后将在商城首页显示</p>
+        <?php echo $form->error($model,'topTime'); ?>
+    </div>    
     <div class="form-group">
         <?php echo $form->labelEx($model,'desc'); ?>        
         <?php echo $form->textArea($model,'desc',array('class'=>'form-control')); ?>
