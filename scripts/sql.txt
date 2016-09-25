@@ -315,3 +315,22 @@ alter TABLE pre_books add props int(10) unsigned not null COMMENT '赞赏数';
 alter TABLE pre_goods add limitNum int(10) unsigned not null COMMENT '限制每人购买次数';
 alter TABLE pre_goods add totalNum int(10) unsigned not null COMMENT '总数量';
 alter TABLE pre_goods add topTime int(10) unsigned not null COMMENT '推荐';
+
+alter TABLE pre_group_powers add exp int(10) unsigned not null COMMENT '经验值';
+
+DROP TABLE IF EXISTS `pre_group_levels`;
+CREATE TABLE `pre_group_levels` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `gid` int(10) unsigned NOT NULL COMMENT '商品ID',
+  `minExp` int(10) unsigned NOT NULL COMMENT '用户ID',
+  `maxExp` int(10) unsigned NOT NULL COMMENT '用户ID',  
+  `title` varchar(16) NOT NULL COMMENT '分类，如道具',
+  `desc` varchar(16) NOT NULL COMMENT '操作，如转换卡',
+  `icon` varchar(255) NOT NULL COMMENT '起始值',  
+  PRIMARY KEY (`id`),
+  KEY `gid` (`gid`),
+  KEY `where` (`minExp`,`maxExp`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+alter TABLE pre_users add exp int(10) unsigned not null COMMENT '经验值';
+alter TABLE pre_users add level int(10) unsigned not null COMMENT '经验ID';

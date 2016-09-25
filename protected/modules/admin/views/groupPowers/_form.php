@@ -37,6 +37,12 @@
         <?php echo $form->error($model,'score'); ?>
     </div>
     <div class="form-group">
+        <?php echo $form->labelEx($model,'exp'); ?>        
+        <?php echo $form->textField($model,'exp',array('class'=>'form-control')); ?>
+        <p class="help-block">“0”表示不增加经验，大于“0”表示每次增加的经验值</p>
+        <?php echo $form->error($model,'exp'); ?>
+    </div>
+    <div class="form-group">
         <?php echo CHtml::submitButton($model->isNewRecord ? '新增' : '更新',array('class'=>'btn btn-primary')); ?>
     </div>
 <?php $this->endWidget(); ?>

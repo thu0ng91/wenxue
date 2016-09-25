@@ -32,7 +32,7 @@ class GroupPowers extends CActiveRecord {
         return array(
             array('gid, tid', 'required'),
             array('value, score', 'numerical', 'integerOnly' => true),
-            array('gid, tid', 'length', 'max' => 10),
+            array('gid, tid,exp', 'length', 'max' => 10),
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
             array('id, gid, tid, value, score', 'safe', 'on' => 'search'),
@@ -61,6 +61,7 @@ class GroupPowers extends CActiveRecord {
             'tid' => '权限',
             'value' => '权限值',
             'score' => '积分值',
+            'exp' => '经验值',
         );
     }
 
