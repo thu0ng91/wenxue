@@ -284,7 +284,7 @@ class zmf {
     
     public static function checkFCache($key){
         $info=  self::getFCache($key);
-        return isset($info) && $info!==NULL;
+        return $info;
     }
 
     public static function setCookie($key, $value, $expire = 3600) {

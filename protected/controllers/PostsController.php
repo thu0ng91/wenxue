@@ -5,8 +5,13 @@ class PostsController extends Q {
     public $favorited = false;
 
     public function actionTypes() {
+        //更新版块帖子数
+        PostForums::updatePostsStat();
         $items = PostForums::model()->findAll();
-        $favorites=  PostForums::getUserFavorites($this->uid);
+        foreach ($items as $k=>$val){
+            $items[$k]['faceImg']=  zmf::getThumbnailUrl($val['faceImg'],'a120','faceImg');
+        }
+        $favorites=  $this->uid ? array_keys(CHtml::listData($this->userInfo['favoriteForums'], 'id', 'title')) : array();
         $this->pageTitle = '关注圈子 - ' . zmf::config('sitename');
         $data = array(
             'forums' => $items,

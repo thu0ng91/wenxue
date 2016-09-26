@@ -112,8 +112,21 @@ class PostForums extends CActiveRecord {
         if(!$uid){
             return array();
         }
-        $items= Favorites::model()->findAll("uid=:uid AND classify='forum'", array(':uid'=>$uid));
-        return CHtml::listData($items, 'id', 'logid');
+        $sql="SELECT pf.id,pf.title FROM {{post_forums}} pf,{{favorites}} f WHERE f.uid=:uid AND f.classify='forum' AND f.logid=pf.id ORDER BY f.cTime DESC";
+        $res=  Yii::app()->db->createCommand($sql);
+        $res->bindValue(':uid', $uid);
+        $items= $res->queryAll();
+        return $items;
+    }
+    
+    /**
+     * 更新并统计每个版块的帖子数
+     * @return bool
+     */
+    public static function updatePostsStat(){
+        $sql="UPDATE {{post_forums}} AS pf,(SELECT COUNT(id) AS total,fid FROM {{post_threads}} GROUP BY fid) AS tmp SET pf.posts=tmp.total WHERE pf.id=tmp.fid";
+        $res=  Yii::app()->db->createCommand($sql)->execute();
+        return $res;
     }
 
 }

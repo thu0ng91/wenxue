@@ -56,6 +56,7 @@ class Q extends Controller {
                     $this->redirect(array('user/joinGroup'));
                 }
             }
+            $this->userInfo['favoriteForums']=PostForums::getUserFavorites($this->uid);
         }
     }
 

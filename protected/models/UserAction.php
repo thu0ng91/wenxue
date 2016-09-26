@@ -379,5 +379,18 @@ class UserAction extends CActiveRecord {
             return true;
         }
     }
+    
+    /**
+     * 统计用户的总经验
+     * @param int $uid
+     * @return int
+     */
+    public static function statUserExp($uid){
+        $sql="SELECT SUM(exp) AS total FROM {{user_action}} WHERE uid=:uid";
+        $res=  Yii::app()->db->createCommand($sql);
+        $res->bindValue(':uid', $uid);
+        $info=$res->queryRow();
+        return $info['total'];
+    }
 
 }

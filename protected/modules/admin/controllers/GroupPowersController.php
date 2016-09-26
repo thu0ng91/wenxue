@@ -78,7 +78,7 @@ class GroupPowersController extends Admin {
      * Lists all models.
      */
     public function actionIndex() {
-        $select = "id,gid,tid,value,score";
+        $select = "id,gid,tid,value,score,exp";
         $model = new GroupPowers;
         $criteria = new CDbCriteria();
         $criteria->select = $select;

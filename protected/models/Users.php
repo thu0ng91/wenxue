@@ -113,10 +113,20 @@ class Users extends CActiveRecord {
             self::updateUserExp($info);
             zmf::setFCache($cacheKey, 1, 3600);
         }
-        if($info['level']>0){
-            $level=  GroupLevels::getOne($info['level']);
-            $info['levelTitle']=$level['title'];
-            $info['levelIcon']=$level['icon'];
+        $cacheKey2="updateUserScore-".$id;
+        if(!zmf::checkFCache($cacheKey2)){
+            $totalScore=ScoreLogs::statUserScore($id);
+            $info['score']=$totalScore;
+            Users::updateInfo($id, 'score', $totalScore);
+            zmf::setFCache($cacheKey2, 1, 3600);
+        }
+        $cacheKey3="updateUserExp-".$id;
+        $val3=  zmf::getFCache($cacheKey3);
+        if(!$val3){
+            $totalExp=  UserAction::statUserExp($id);
+            $info['exp']=$totalExp;
+            Users::updateInfo($id, 'exp', $totalExp);
+            zmf::setFCache($cacheKey3, 1, 3600);
         }
         return $info;
     }
@@ -187,7 +197,7 @@ class Users extends CActiveRecord {
         if (!$uid || !$field) {
             return false;
         }
-        if (!in_array($field, array('password', 'groupid','level'))) {
+        if (!in_array($field, array('password', 'groupid','level','score','exp'))) {
             return false;
         }
         $attr[$field] = $value;

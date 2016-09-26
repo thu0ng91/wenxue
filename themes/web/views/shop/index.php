@@ -70,7 +70,7 @@
     }
 </style>
 <div class="container">
-    <div class="goods-header">
+    <div class="goods-header" id="goods-header">
         <div class="goods-classify" id="goods-classify">
             <?php foreach ($navbars as $navbar){?>
             <?php echo CHtml::link($navbar['title'].'<i class="fa fa-angle-right pull-right"></i>','javascript:;',array('class'=>'goods-nav-item','data-id'=>$navbar['id']));?>  
@@ -117,6 +117,16 @@
             dom.addClass('active');
             var _id=dom.attr('data-id');
             $('#classify-holder-'+_id).show();
+        });
+        $('#goods-header').mouseleave(function(){
+            $('#goods-classify>a').each(function(){
+                $(this).removeClass('active');
+            });
+            $('#goods-classify-holder>div').each(function(){
+                $(this).hide();
+            })
         })
+        
+        
     })
 </script>
