@@ -15,38 +15,32 @@
 )); ?>
 <?php echo $form->errorSummary($model); ?>
     <div class="form-group">
-        <?php echo $form->labelEx($model,'gid'); ?>
-        
-        <?php echo $form->textField($model,'gid',array('class'=>'form-control')); ?>
+        <?php echo $form->labelEx($model,'gid'); ?>        
+        <?php echo $form->dropDownlist($model,'gid',  Group::listAll(),array('class'=>'form-control','empty'=>'--请选择--')); ?>
         <?php echo $form->error($model,'gid'); ?>
     </div>
     <div class="form-group">
-        <?php echo $form->labelEx($model,'minExp'); ?>
-        
-        <?php echo $form->textField($model,'minExp',array('class'=>'form-control')); ?>
+        <?php echo $form->labelEx($model,'minExp'); ?>        
+        <?php echo $form->numberField($model,'minExp',array('class'=>'form-control')); ?>
         <?php echo $form->error($model,'minExp'); ?>
     </div>
     <div class="form-group">
-        <?php echo $form->labelEx($model,'maxExp'); ?>
-        
-        <?php echo $form->textField($model,'maxExp',array('class'=>'form-control')); ?>
+        <?php echo $form->labelEx($model,'maxExp'); ?>        
+        <?php echo $form->numberField($model,'maxExp',array('class'=>'form-control')); ?>
         <?php echo $form->error($model,'maxExp'); ?>
     </div>
     <div class="form-group">
-        <?php echo $form->labelEx($model,'title'); ?>
-        
+        <?php echo $form->labelEx($model,'title'); ?>        
         <?php echo $form->textField($model,'title',array('class'=>'form-control')); ?>
         <?php echo $form->error($model,'title'); ?>
     </div>
     <div class="form-group">
-        <?php echo $form->labelEx($model,'desc'); ?>
-        
+        <?php echo $form->labelEx($model,'desc'); ?>        
         <?php echo $form->textField($model,'desc',array('class'=>'form-control')); ?>
         <?php echo $form->error($model,'desc'); ?>
     </div>
     <div class="form-group">
-        <?php echo $form->labelEx($model,'icon'); ?>
-        
+        <?php echo $form->labelEx($model,'icon'); ?>        
         <?php echo $form->textField($model,'icon',array('class'=>'form-control')); ?>
         <?php echo $form->error($model,'icon'); ?>
     </div>

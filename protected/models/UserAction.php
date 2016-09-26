@@ -40,7 +40,7 @@ class UserAction extends CActiveRecord {
             array('ip', 'default', 'setOnEmpty' => true, 'value' => ip2long(Yii::app()->request->userHostAddress)),
             array('uid, logid, classify, data', 'required'),
             array('display', 'numerical', 'integerOnly' => true),
-            array('uid, logid,score', 'length', 'max' => 10),
+            array('uid, logid,score,exp', 'length', 'max' => 10),
             array('classify', 'length', 'max' => 32),
             array('action', 'length', 'max' => 16),
             array('cTime, ip', 'length', 'max' => 11),
@@ -75,6 +75,7 @@ class UserAction extends CActiveRecord {
             'action' => '操作',
             'score' => '积分',
             'display' => '是否显示为动态',
+            'exp' => '经验值',
         );
     }
 

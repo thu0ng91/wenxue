@@ -334,3 +334,7 @@ CREATE TABLE `pre_group_levels` (
 
 alter TABLE pre_users add exp int(10) unsigned not null COMMENT '经验值';
 alter TABLE pre_users add level int(10) unsigned not null COMMENT '经验ID';
+
+alter TABLE pre_user_action add exp int(10) unsigned not null COMMENT '经验值';
+alter TABLE pre_users add levelTitle varchar(16) not null COMMENT '等级';
+alter TABLE pre_users add levelIcon varchar(255) not null COMMENT '等级图标';

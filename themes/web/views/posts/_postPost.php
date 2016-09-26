@@ -11,8 +11,7 @@
 <div class="media" id="reply-<?php echo $data['id'];?>">
     <div class="media-left text-center">
         <?php echo CHtml::link(CHtml::image(zmf::lazyImg(), $data['username'], array('data-original' => $data['avatar'], 'class' => 'lazy img-circle a48 media-object')), $data['authorUrl']); ?>
-        <p><a class="btn btn-block btn-xs btn-default">等级标识</a></p>
-       
+        <p><?php echo CHtml::link($data['levelTitle'],array('site/level','id'=>$data['level']),array('class'=>'btn btn-block btn-xs btn-default'));?></p>
     </div>
     <div class="media-body">
         <p class="help-block"><?php echo CHtml::link($data['username'],array());?>发布于<?php echo zmf::formatTime($data['cTime']);?></p>

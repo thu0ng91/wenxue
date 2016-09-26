@@ -73,7 +73,7 @@ class GroupLevelsController extends Admin {
      * Lists all models.
      */
     public function actionIndex() {
-        $select = "id,gid,minExp,maxExp,title,desc,icon";
+        $select = "id,gid,minExp,maxExp,title,`desc`,icon";
         $model = new GroupLevels;
         $criteria = new CDbCriteria();
         $criteria->select = $select;

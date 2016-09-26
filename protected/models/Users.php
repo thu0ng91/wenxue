@@ -38,11 +38,11 @@ class Users extends CActiveRecord {
             array('status', 'default', 'setOnEmpty' => true, 'value' => Posts::STATUS_PASSED),
             array('ip', 'default', 'setOnEmpty' => true, 'value' => ip2long(Yii::app()->request->userHostAddress)),
             array('hits, sex, isAdmin, status,phoneChecked', 'numerical', 'integerOnly' => true),
-            array('truename,ip,score,gold', 'length', 'max' => 16),
-            array('cTime,authorId,favors,favord,favorAuthors,exp,level', 'length', 'max' => 10),
+            array('truename,ip,score,gold,levelTitle', 'length', 'max' => 16),
+            array('cTime,authorId,favors,favord,favorAuthors,exp,level,groupid', 'length', 'max' => 10),
             array('phone', 'length', 'max' => 11),
             array('password', 'length', 'max' => 32),
-            array('contact,avatar,email', 'length', 'max' => 255),
+            array('contact,avatar,email,levelIcon', 'length', 'max' => 255),
             array('email', 'email'),
             array('content', 'safe'),
         );
@@ -87,6 +87,9 @@ class Users extends CActiveRecord {
             'gold' => '总金币',
             'exp' => '总经验',
             'level' => '用户等级',
+            'levelTitle' => '等级',
+            'levelIcon' => '等级图标',
+            'groupid' => '用户组',
         );
     }
 
@@ -100,12 +103,26 @@ class Users extends CActiveRecord {
         return parent::model($className);
     }
 
-    public static function getOne($id) {
-        return Users::model()->findByPk($id);
+    public static function getOne($id) {        
+        $sql="SELECT u.* FROM {{users}} u WHERE id=:id";
+        $res=Yii::app()->db->createCommand($sql);
+        $res->bindValue(':id', $id);
+        $info=$res->queryRow();
+        $cacheKey="updateUserLevel-".$id;
+        if(!zmf::checkFCache($cacheKey)){
+            self::updateUserExp($info);
+            zmf::setFCache($cacheKey, 1, 3600);
+        }
+        if($info['level']>0){
+            $level=  GroupLevels::getOne($info['level']);
+            $info['levelTitle']=$level['title'];
+            $info['levelIcon']=$level['icon'];
+        }
+        return $info;
     }
 
     public static function getUsername($id) {
-        $info = Users::model()->findByPk($id);
+        $info = self::getOne($id);
         return $info ? $info['truename'] : '';
     }
 
@@ -170,7 +187,7 @@ class Users extends CActiveRecord {
         if (!$uid || !$field) {
             return false;
         }
-        if (!in_array($field, array('password', 'groupid'))) {
+        if (!in_array($field, array('password', 'groupid','level'))) {
             return false;
         }
         $attr[$field] = $value;
@@ -210,6 +227,25 @@ class Users extends CActiveRecord {
             $totalWealth = 0;
         }
         return false;
+    }
+    
+    public static function updateUserExp($userInfo){
+        if(!$userInfo['groupid']){
+            return false;
+        }
+        $info=  GroupLevels::model()->find('gid=:gid AND (minExp<=:exp AND maxExp>=:exp)',array(
+            ':gid'=>$userInfo['groupid'],
+            ':exp'=>$userInfo['exp'],
+        ));
+        if(!$info){
+            return false;
+        }
+        //如果找到了，则认为该用户是这个等级的        
+        return Users::model()->updateByPk($userInfo['id'], array(
+            'level'=>$info['id'],
+            'levelTitle'=>$info['title'],
+            'levelIcon'=>$info['icon'],
+        ));
     }
 
 }

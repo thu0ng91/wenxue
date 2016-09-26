@@ -15,25 +15,20 @@ $this->renderPartial('_nav');
         <th><?php echo $model->getAttributeLabel("minExp"); ?></th>
         <th><?php echo $model->getAttributeLabel("maxExp"); ?></th>
         <th><?php echo $model->getAttributeLabel("title"); ?></th>
-        <th><?php echo $model->getAttributeLabel("desc"); ?></th>
-        <th><?php echo $model->getAttributeLabel("icon"); ?></th>
         <th>操作</th>
     </tr>
-
     <?php foreach ($posts as $data): ?> 
         <tr>
             <td><?php echo $data->id; ?></td>
-            <td><?php echo $data->gid; ?></td>
+            <td><?php echo $data->groupInfo->title; ?></td>
             <td><?php echo $data->minExp; ?></td>
             <td><?php echo $data->maxExp; ?></td>
             <td><?php echo $data->title; ?></td>
-            <td><?php echo $data->desc; ?></td>
-            <td><?php echo $data->icon; ?></td>
             <td>
                 <?php echo CHtml::link('编辑', array('update', 'id' => $data->id)); ?>        
                 <?php echo CHtml::link('删除', array('delete', 'id' => $data->id)); ?>
             </td>
-        </tr>    
+        </tr>
     <?php endforeach; ?>
 </table>
 <?php $this->renderPartial('/common/pager', array('pages' => $pages)); ?>

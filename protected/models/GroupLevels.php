@@ -49,6 +49,7 @@ class GroupLevels extends CActiveRecord {
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
+            'groupInfo' => array(self::BELONGS_TO, 'Group', 'gid'),
         );
     }
 
@@ -58,12 +59,12 @@ class GroupLevels extends CActiveRecord {
     public function attributeLabels() {
         return array(
             'id' => 'ID',
-            'gid' => '商品ID',
-            'minExp' => '用户ID',
-            'maxExp' => '用户ID',
-            'title' => '分类，如道具',
-            'desc' => '操作，如转换卡',
-            'icon' => '起始值',
+            'gid' => '团队ID',
+            'minExp' => '起始经验值',
+            'maxExp' => '结束经验值',
+            'title' => '等级名称',
+            'desc' => '等级描述',
+            'icon' => '图标',
         );
     }
 
@@ -105,6 +106,28 @@ class GroupLevels extends CActiveRecord {
      */
     public static function model($className = __CLASS__) {
         return parent::model($className);
+    }
+    
+    public static function getOne($id){
+        return self::model()->findByPk($id);
+    }
+    
+    public static function getByIds($idstr){
+        if(!$idstr || $idstr==''){
+            return array();
+        }
+        $items=  self::model()->findAll("id IN({$idstr})");
+        $arr=array();
+        foreach ($items as $val){
+            $arr[$val['id']]=array(
+                'id'=>$val['id'],
+                'gid'=>$val['gid'],
+                'title'=>$val['title'],
+                'desc'=>$val['desc'],
+                'icon'=>$val['icon'],
+            );
+        }
+        return $arr;
     }
 
 }

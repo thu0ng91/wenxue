@@ -281,6 +281,11 @@ class zmf {
     public static function delFCache($key) {
         Yii::app()->filecache->delete($key);
     }
+    
+    public static function checkFCache($key){
+        $info=  self::getFCache($key);
+        return isset($info) && $info!==NULL;
+    }
 
     public static function setCookie($key, $value, $expire = 3600) {
         $key = md5($key);

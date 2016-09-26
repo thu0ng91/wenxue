@@ -83,7 +83,7 @@ class GroupController extends Admin {
         $pager->applyLimit($criteria);
         $groups = $model->findAll($criteria);
         //取出所有权限列表
-        $sql="SELECT t.id,t.gid,t.tid,t.value,t.score,gt.key,gt.desc FROM {{group_powers}} t,{{group_power_types}} gt WHERE t.tid=gt.id";
+        $sql="SELECT t.id,t.gid,t.tid,t.value,t.score,t.exp,gt.key,gt.desc FROM {{group_powers}} t,{{group_power_types}} gt WHERE t.tid=gt.id";
         $powers= Yii::app()->db->createCommand($sql)->queryAll();
         $powersArr=array();
         $powersType=array();

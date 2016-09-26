@@ -118,7 +118,7 @@ class PostsController extends Q {
         }
 
         //获取回帖列表
-        $sql = "SELECT p.id,p.uid,u.truename AS username,u.avatar,p.aid,p.cTime,p.updateTime,p.open,p.comments,p.favors,p.content,'' AS props FROM {{post_posts}} p,{{users}} u WHERE p.tid='{$id}' AND p.status=" . Posts::STATUS_PASSED . " AND p.uid=u.id AND u.status=" . Posts::STATUS_PASSED . " ORDER BY p.isFirst DESC,p.cTime ASC";
+        $sql = "SELECT p.id,p.uid,u.truename AS username,u.avatar,u.level,u.levelTitle,u.levelIcon,p.aid,p.cTime,p.updateTime,p.open,p.comments,p.favors,p.content,'' AS props FROM {{post_posts}} p,{{users}} u WHERE p.tid='{$id}' AND p.status=" . Posts::STATUS_PASSED . " AND p.uid=u.id AND u.status=" . Posts::STATUS_PASSED . " ORDER BY p.isFirst DESC,p.cTime ASC";
         Posts::getAll(array('sql' => $sql, 'pageSize' => $this->pageSize), $pages, $posts);
         $size = 'w600';
         if ($this->isMobile) {
@@ -246,6 +246,7 @@ class PostsController extends Q {
                     'data' => $jsonData,
                     'action' => 'addPost',
                     'score' => $powerInfo['msg']['score'],
+                    'exp' => $powerInfo['msg']['exp'],
                     'display' => 1,
                 );
                 if (UserAction::simpleRecord($attr)) {

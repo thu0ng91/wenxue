@@ -110,7 +110,7 @@ class GroupPowers extends CActiveRecord {
                 'msg' => '缺少参数',
             );
         }
-        $sql = "SELECT gt.key,gt.desc,gp.value,gp.score FROM {{group_power_types}} gt,{{group_powers}} gp WHERE gt.key=:key AND gp.gid=:gid AND gp.tid=gt.id";
+        $sql = "SELECT gt.key,gt.desc,gp.value,gp.score,gp.exp FROM {{group_power_types}} gt,{{group_powers}} gp WHERE gt.key=:key AND gp.gid=:gid AND gp.tid=gt.id";
         $res = Yii::app()->db->createCommand($sql);
         $res->bindValues(array(
             ':key' => $action,

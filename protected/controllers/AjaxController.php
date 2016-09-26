@@ -163,6 +163,7 @@ class AjaxController extends Q {
                     'data' => $jsonData,
                     'action' => $powerAction,
                     'score' => $powerInfo['msg']['score'],
+                    'exp' => $powerInfo['msg']['exp'],
                     'display' => 1,
                 );
                 if (UserAction::simpleRecord($attr)) {
@@ -300,6 +301,7 @@ class AjaxController extends Q {
                 'data' => $jsonData,
                 'action' => $powerAction,
                 'score' => $powerInfo['msg']['score'],
+                'exp' => $powerInfo['msg']['exp'],
                 'display' => 0,
             );
             if (UserAction::simpleRecord($attr)) {
@@ -376,6 +378,7 @@ class AjaxController extends Q {
                 'data' => $jsonData,
                 'action' => $powerAction,
                 'score' => $powerInfo['msg']['score'],
+                'exp' => $powerInfo['msg']['exp'],
                 'display' => 0,
             );
             if (UserAction::simpleRecord($attr)) {
@@ -444,6 +447,7 @@ class AjaxController extends Q {
                 'data' => $jsonData,
                 'action' => $powerAction,
                 'score' => $powerInfo['msg']['score'],
+                'exp' => $powerInfo['msg']['exp'],
                 'display' => 0,
             );
             if (UserAction::simpleRecord($attr)) {
@@ -512,6 +516,7 @@ class AjaxController extends Q {
                 'data' => $jsonData,
                 'action' => $powerAction,
                 'score' => $powerInfo['msg']['score'],
+                'exp' => $powerInfo['msg']['exp'],
                 'display' => 0,
             );
             if (UserAction::simpleRecord($attr)) {
@@ -574,6 +579,7 @@ class AjaxController extends Q {
                 'data' => $jsonData,
                 'action' => $powerAction,
                 'score' => $powerInfo['msg']['score'],
+                'exp' => $powerInfo['msg']['exp'],
                 'display' => 0,
             );
             if (UserAction::simpleRecord($attr)) {
@@ -676,6 +682,7 @@ class AjaxController extends Q {
                     'data' => $jsonData,
                     'action' => $powerAction,
                     'score' => $powerInfo['msg']['score'],
+                    'exp' => $powerInfo['msg']['exp'],
                     'display' => 0,
                 );
                 if (UserAction::simpleRecord($attr)) {
@@ -708,6 +715,7 @@ class AjaxController extends Q {
                     'data' => $jsonData,
                     'action' => $powerAction,
                     'score' => $powerInfo['msg']['score'],
+                    'exp' => $powerInfo['msg']['exp'],
                     'display' => 0,
                 );
                 if (UserAction::simpleRecord($attr)) {
@@ -1022,6 +1030,7 @@ class AjaxController extends Q {
                         'data' => $jsonData,
                         'action' => $powerAction,
                         'score' => $powerInfo['msg']['score'],
+                        'exp' => $powerInfo['msg']['exp'],
                         'display' => 0,
                     );
                     if (UserAction::simpleRecord($attr)) {
@@ -1208,6 +1217,7 @@ class AjaxController extends Q {
                     'data' => $jsonData,
                     'action' => $powerAction,
                     'score' => $powerInfo['msg']['score'],
+                    'exp' => $powerInfo['msg']['exp'],
                     'display' => 0,
                 );
                 if (UserAction::simpleRecord($attr)) {
@@ -1679,6 +1689,7 @@ class AjaxController extends Q {
                 'data' => $jsonData,
                 'action' => $powerAction,
                 'score' => $powerInfo['msg']['score'],
+                'exp' => $powerInfo['msg']['exp'],
                 'display' => 0,
             );
             if (UserAction::simpleRecord($attr)) {
@@ -1873,6 +1884,7 @@ class AjaxController extends Q {
                             'data' => $jsonData,
                             'action' => 'buyGoods',
                             'score' => $powerInfo['msg']['score'],
+                            'exp' => $powerInfo['msg']['exp'],
                             'display' => 1,
                         );
                         if (UserAction::simpleRecord($attr)) {
