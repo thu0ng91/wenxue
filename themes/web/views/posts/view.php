@@ -6,7 +6,7 @@ $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
     .post-page .main-part .module .module-body{
         padding-left: 0;
         padding-right: 0
-    }
+    }    
     .post-header{
         border-bottom: 1px solid #e4e4e4;
         padding-left: 20px;
@@ -29,13 +29,41 @@ $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
     .post-content .media .comments-list{
         position: relative
     }
+    .post-page .first-blood .media .media-body{
+        padding:0 30px;
+    }
+    .post-side-authorInfo{
+        text-align: center;        
+    }
+    .post-side-authorInfo .title{
+        margin-top: 15px;
+    }
+    .post-side-authorInfo ul{
+        margin: 15px 0;
+        padding: 0;
+    }
+    .post-side-authorInfo ul li{
+        display: inline-block;
+        width: 63px;
+        margin: 0;
+        padding: 0;
+    }
 </style>
-<div class="container post-page">
-    <ol class="breadcrumb">
-        <li><?php echo CHtml::link(zmf::config('sitename').'首页',  zmf::config('baseurl'));?></li>        
-        <li><?php echo CHtml::link($forumInfo['title'],array('posts/index','forum'=>$forumInfo['id']));?></li>        
-        <li class="active"><?php echo $info['title']; ?></li>
-    </ol>
+<div class="container post-page">    
+    <div class="module">
+        <div class="module-body">
+            <div class="media">
+                <div class="media-body">
+                    <p><?php echo CHtml::link($forumInfo['title'],array('posts/index','forum'=>$forumInfo['id']));?><?php echo GroupPowers::link('favoriteForum',$this->userInfo,($_favorited ? '<i class="fa fa-check"></i> 已关注' : '<i class="fa fa-plus"></i> 关注'),'javascript:;',array('action'=>'favorite','action-data'=>$forumInfo['id'],'action-type'=>'forum'));?></p>
+                </div>
+                <div class="media-right">
+                    <div class="" style="width: 80px">                        
+                        <p><?php echo GroupPowers::link('addPost',$this->userInfo,'<i class="fa fa-plus"></i> 发表新帖',array('posts/create','forum'=>$forumInfo['id']),array('class'=>'btn btn-default btn-xs btn-block'));?></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="main-part">
         <div class="module">
             <div class="module-body">
@@ -77,14 +105,10 @@ $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
                             <?php echo GroupPowers::link('addPostReply',$this->userInfo,'回复',array('posts/reply','tid'=>$info['id']),array('class'=>'btn btn-xs btn-default'));?>
                         </p>
                     </div>
+                </div>                
+                <div class="first-blood post-content">
+                    <?php $this->renderPartial('/posts/_firstPost',array('data'=>$info['content']));?>
                 </div>
-                <div class="post-content">
-                    <?php foreach ($posts as $post){?>
-                    <?php $this->renderPartial('/posts/_postPost',array('data'=>$post));?>                    
-                    <?php }?>
-                </div>
-                
-                
                 <?php if($info['open']==Posts::STATUS_OPEN){?>
                     <?php if($this->favorited){?>
                     <p class="text-center"><?php echo CHtml::link('<i class="fa fa-thumbs-up"></i> 已赞','javascript:;',array('class'=>'btn btn-default btn-sm','action'=>'favorite','action-data'=>$info['id'],'action-type'=>'post'));?></p>
@@ -94,39 +118,43 @@ $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
                 <?php }?> 
             </div>
         </div>
-        
-    </div>
-    <div class="aside-part">
         <div class="module">
-            <div class="module-header">分享</div>
-            <div class="module-body">
-                <?php $this->renderPartial('/common/share');?>
-            </div>
-        </div>
-        
-        <?php if(!empty($tags)){?>
-        <div class="module">
-            <div class="module-header">文章标签</div>
-            <div class="module-body">
-                <?php foreach ($tags as $tag){?>
-                <p><?php echo CHtml::link('<i class="fa fa-tag"></i> '.$tag['title'],array('posts/index','type'=>Posts::exType($info['classify']),'tagid'=>$tag['id']));?></p>
+            <div class="module-header">最新跟帖</div>
+            <div class="module-body post-content">
+                <?php foreach ($posts as $post){?>
+                <?php $this->renderPartial('/posts/_postPost',array('data'=>$post));?>                    
                 <?php }?>
             </div>
         </div>
-        <?php }?>
-        <?php if(!empty($relatePosts)){?>
+    </div>
+    <div class="aside-part">
         <div class="module">
-            <div class="module-header">相关文章</div>
+            <div class="module-body post-side-authorInfo">
+                <?php echo CHtml::link(CHtml::image(zmf::lazyImg(), $authorInfo['truename'], array('data-original' => $authorInfo['avatar'], 'class' => 'lazy img-circle a108')), array('user/index','id'=>$authorInfo['id'])); ?>
+                <p class="title"><?php echo CHtml::link($authorInfo['truename'],array('user/index','id'=>$authorInfo['id'])); ?></p>
+                <p class="color-grey"><?php echo CHtml::link($authorInfo['levelTitle'],array('site/level','id'=>$authorInfo['level'])); ?></p>
+                <ul class="color-grey">
+                    <li><?php echo $authorInfo['exp'];?><br/>经验</li>
+                    <li><?php echo $authorInfo['favors'];?><br/>粉丝</li>
+                    <li><?php echo $authorInfo['favord'];?><br/>关注</li>
+                </ul>
+                <p>
+                   <?php echo CHtml::link('TA的主页',array('user/index','id'=>$authorInfo['id']),array('class'=>'btn btn-xs btn-success')); ?> 
+                   <?php echo CHtml::link('关注TA',array('user/index','id'=>$authorInfo['id']),array('class'=>'btn btn-xs btn-danger')); ?> 
+                </p>
+            </div>
+            <?php if(!empty($relatePosts)){?>
+            <div class="module-header">最近发表</div>
             <div class="module-body">
                 <?php foreach ($relatePosts as $relatePost){?>
                 <p class="ui-nowrap"><?php echo CHtml::link($relatePost['title'],array('posts/view','id'=>$relatePost['id']));?></p>
                 <?php }?>
             </div>
+            <?php }?>
         </div>
-        <?php }?>
         <?php if(!empty($topsPosts)){?>
         <div class="module">
-            <div class="module-header">热门文章</div>
+            <div class="module-header">版块热门</div>
             <div class="module-body">
                 <?php foreach ($topsPosts as $topsPost){?>
                 <p class="ui-nowrap"><?php echo CHtml::link($topsPost['title'],array('posts/view','id'=>$topsPost['id']));?></p>
@@ -134,5 +162,11 @@ $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
             </div>
         </div>
         <?php }?>
+        <div class="module">
+            <div class="module-header">分享</div>
+            <div class="module-body">
+                <?php $this->renderPartial('/common/share');?>
+            </div>
+        </div>        
     </div>
 </div>

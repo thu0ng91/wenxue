@@ -8,10 +8,10 @@ class PostsController extends Q {
         //更新版块帖子数
         PostForums::updatePostsStat();
         $items = PostForums::model()->findAll();
-        foreach ($items as $k=>$val){
-            $items[$k]['faceImg']=  zmf::getThumbnailUrl($val['faceImg'],'a120','faceImg');
+        foreach ($items as $k => $val) {
+            $items[$k]['faceImg'] = zmf::getThumbnailUrl($val['faceImg'], 'a120', 'faceImg');
         }
-        $favorites=  $this->uid ? array_keys(CHtml::listData($this->userInfo['favoriteForums'], 'id', 'title')) : array();
+        $favorites = $this->uid ? array_keys(CHtml::listData($this->userInfo['favoriteForums'], 'id', 'title')) : array();
         $this->pageTitle = '关注圈子 - ' . zmf::config('sitename');
         $data = array(
             'forums' => $items,
@@ -33,7 +33,7 @@ class PostsController extends Q {
         if (!$forumInfo) {
             $this->message(0, '你所查看的版块不存在');
         }
-
+        $forumInfo['faceImg'] = zmf::getThumbnailUrl($forumInfo['faceImg'], 'a120', 'faceImg');
         $sql = "SELECT p.id,p.title,p.faceImg,p.uid,u.truename AS username,p.cTime,p.comments,p.favorites,p.top,p.digest,p.styleStatus,p.aid,p.fid,'' AS forumTitle FROM {{post_threads}} p,{{users}} u WHERE p.status=" . Posts::STATUS_PASSED . " AND p.uid=u.id AND u.status=" . Posts::STATUS_PASSED . " ORDER BY p.top DESC,p.cTime DESC";
 
         Posts::getAll(array('sql' => $sql, 'pageSize' => $this->pageSize), $pages, $posts);
@@ -93,49 +93,36 @@ class PostsController extends Q {
         }
 
         //作者信息
-        $authorInfo = array();
-        //$info['aid']
-        if (false) {
-            $author = Authors::getOne($info['aid'], 'd120');
-            if (!$author) {
-                throw new CHttpException(404, '所属作者不存在');
-            }
-            $authorInfo = array(
-                'title' => $author['authorName'],
-                'url' => array('author/view', 'id' => $info['aid']),
-                'avatar' => $author['avatar'],
-            );
-            $this->selectNav = 'authorForum';
-        } else {
-            $user = Users::getOne($info['uid']);
-            if (!$user) {
-                throw new CHttpException(404, '所属用户不存在');
-            }
-            $authorInfo = array(
-                'title' => $user['truename'],
-                'url' => array('user/index', 'id' => $info['uid']),
-                'avatar' => zmf::getThumbnailUrl($user['avatar'], 'd120', 'user'),
-            );
-            $this->selectNav = 'readerForum';
+        $authorInfo = Users::getOne($info['uid']);
+        if (!$authorInfo) {
+            throw new CHttpException(404, '所属用户不存在');
         }
+        $authorInfo['avatar']=  zmf::getThumbnailUrl($authorInfo['avatar'],'a120','user');
+        $this->selectNav = 'readerForum';
+
         if (!zmf::actionLimit('visit-Posts', $id, 5, 60)) {
             Posts::updateCount($id, 'Posts', 1, 'hits');
         }
-
-        //获取回帖列表
-        $sql = "SELECT p.id,p.uid,u.truename AS username,u.avatar,u.level,u.levelTitle,u.levelIcon,p.aid,p.cTime,p.updateTime,p.open,p.comments,p.favors,p.content,'' AS props FROM {{post_posts}} p,{{users}} u WHERE p.tid='{$id}' AND p.status=" . Posts::STATUS_PASSED . " AND p.uid=u.id AND u.status=" . Posts::STATUS_PASSED . " ORDER BY p.isFirst DESC,p.cTime ASC";
-        Posts::getAll(array('sql' => $sql, 'pageSize' => $this->pageSize), $pages, $posts);
         $size = 'w600';
         if ($this->isMobile) {
             $size = 'w650';
             $this->layout = 'post';
         }
+        //取楼主发的第一层
+        $sqlContent = "SELECT p.id,p.uid,p.aid,p.cTime,p.updateTime,p.open,p.comments,p.favors,p.content,'' AS props FROM {{post_posts}} p WHERE p.tid='{$id}' AND p.isFirst=1 AND p.status=" . Posts::STATUS_PASSED;
+        $firstContent = Yii::app()->db->createCommand($sqlContent)->queryRow();
+        $firstContent['content'] = zmf::text(array(), $firstContent['content'], true, $size);
+        $firstContent['props'] = Props::getClassifyProps('postPosts', $firstContent['id']);
+        $info['content'] = $firstContent;
+        //获取回帖列表
+        $sql = "SELECT p.id,p.uid,u.truename AS username,u.avatar,u.level,u.levelTitle,u.levelIcon,p.aid,p.cTime,p.updateTime,p.open,p.comments,p.favors,p.content,'' AS props FROM {{post_posts}} p,{{users}} u WHERE p.tid='{$id}' AND p.isFirst=0 AND p.status=" . Posts::STATUS_PASSED . " AND p.uid=u.id AND u.status=" . Posts::STATUS_PASSED . " ORDER BY p.cTime ASC";
+        Posts::getAll(array('sql' => $sql, 'pageSize' => $this->pageSize), $pages, $posts);
+
         foreach ($posts as $k => $val) {
             $posts[$k]['avatar'] = zmf::getThumbnailUrl($val['avatar'], 'a120', 'avatar');
-            $posts[$k]['content'] = zmf::text(array(), $val['content'], true, $size);
-            $posts[$k]['props'] = Props::getClassifyProps('postPosts', $val['id']);
+            //$posts[$k]['content'] = zmf::text(array(), $val['content'], true, $size);
+            //$posts[$k]['props'] = Props::getClassifyProps('postPosts', $val['id']);
         }
-
         //$comments = Comments::getCommentsByPage($id, $this->uid, 'posts', 1, $this->pageSize, "c.id,c.uid,u.truename,u.avatar,c.aid,c.logid,c.tocommentid,c.content,c.cTime,c.status,c.favors");
         //$tags = Tags::getByIds($info['tagids']);
         //$relatePosts = Posts::getRelations($id, 5);
@@ -146,8 +133,6 @@ class PostsController extends Q {
             'posts' => $posts,
             'pages' => $pages,
             'authorInfo' => $authorInfo,
-            'comments' => $comments,
-            'tags' => $tags,
             'relatePosts' => $relatePosts,
             'topsPosts' => $topsPosts,
         );

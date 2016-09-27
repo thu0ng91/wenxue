@@ -32,6 +32,10 @@ class GroupPowerTypesController extends Admin {
         // Uncomment the following line if AJAX validation is needed
         // $this->performAjaxValidation($model);
         if (isset($_POST['GroupPowerTypes'])) {
+            if(!$_POST['GroupPowerTypes']['desc']){
+                $_arr=UserAction::userActions('admin');
+                $_POST['GroupPowerTypes']['desc']=$_arr[$_POST['GroupPowerTypes']['key']];
+            }            
             $model->attributes = $_POST['GroupPowerTypes'];
             if ($model->save()) {
                 if (!$id) {
