@@ -93,7 +93,8 @@ p{
     border-top: 65px solid transparent;
 }
 button, input, select, textarea,.form-control,.btn{
-    border-radius: 0
+    border-radius: 0;
+    resize: none
 }
 .container{
     width: 960px;
@@ -209,15 +210,14 @@ button, input, select, textarea,.form-control,.btn{
 .module{
     background: #fff;
     padding: 0;
-    box-shadow: 0 1px 3px rgba(34,25,25,.4);
     margin-bottom: 20px;
     position: relative;
     word-break: break-all;
-    border: 1px solid #f2f2f2
+    border: 1px solid #e4e4e4
 }
 .module .module-header{
     padding: 10px 20px;
-    border-bottom: 1px solid #e6e6e6;
+    border-bottom: 1px solid #e4e4e4;
     font-weight: 700;    
 }
 .main-tops .module{
@@ -1162,6 +1162,59 @@ span.required,.errorMessage{
 .post-page .post-content .media .right-actions span{
     margin-right: 8px
 }
+.post-page .main-part .module .module-body{
+    padding-left: 0;
+    padding-right: 0
+}   
+.post-page .main-part .module .fast-reply{
+    padding-left: 20px;
+    padding-right: 20px;
+}
+.post-page .main-part .module .fast-reply .btn{
+    width: 120px;
+    margin-bottom: 15px;
+}
+.post-header{
+    border-bottom: 1px solid #e4e4e4;
+    padding-left: 20px;
+    padding-right: 20px;
+
+}
+.post-title-right{
+    width: 140px;
+    display: inline-block;
+    text-align: right;
+}
+.post-content .media .media-left{
+    padding-left: 20px;
+}
+.post-content .media .media-body{
+    padding-left: 0;
+    padding-right: 20px;
+    font-size: 13px
+}
+.post-content .media .comments-list{
+    position: relative
+}
+.post-page .first-blood .media .media-body{
+    padding:0 30px;
+}
+.post-side-authorInfo{
+    text-align: center;        
+}
+.post-side-authorInfo .title{
+    margin-top: 15px;
+}
+.post-side-authorInfo ul{
+    margin: 15px 0;
+    padding: 0;
+}
+.post-side-authorInfo ul li{
+    display: inline-block;
+    width: 63px;
+    margin: 0;
+    padding: 0;
+}
 
 .post-comments{
     margin-bottom: 15px;
@@ -1177,6 +1230,9 @@ span.required,.errorMessage{
     text-align: center;
 }
 /*帖子列表*/
+.forum-page .main-part .module{
+    border-top: none
+}
 .forum-page .main-part .module-body{
     padding-bottom: 0;
 }
@@ -1201,6 +1257,9 @@ span.required,.errorMessage{
 .forum-page .posts-side-show img{
     width: 300px;
     height: 225px;
+}
+.forum-page .nav-posts{
+
 }
 .yiiPager{
     clear: both;

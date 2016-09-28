@@ -34,7 +34,7 @@ class PostsController extends Q {
             $this->message(0, '你所查看的版块不存在');
         }
         $forumInfo['faceImg'] = zmf::getThumbnailUrl($forumInfo['faceImg'], 'a120', 'faceImg');
-        $sql = "SELECT p.id,p.title,p.faceImg,p.uid,u.truename AS username,p.cTime,p.comments,p.favorites,p.top,p.digest,p.styleStatus,p.aid,p.fid,'' AS forumTitle FROM {{post_threads}} p,{{users}} u WHERE p.status=" . Posts::STATUS_PASSED . " AND p.uid=u.id AND u.status=" . Posts::STATUS_PASSED . " ORDER BY p.top DESC,p.cTime DESC";
+        $sql = "SELECT p.id,p.title,p.faceImg,p.uid,u.truename AS username,p.cTime,p.posts,p.hits,p.top,p.digest,p.styleStatus,p.aid,p.fid,'' AS forumTitle FROM {{post_threads}} p,{{users}} u WHERE p.status=" . Posts::STATUS_PASSED . " AND p.uid=u.id AND u.status=" . Posts::STATUS_PASSED . " ORDER BY p.top DESC,p.cTime DESC";
 
         Posts::getAll(array('sql' => $sql, 'pageSize' => $this->pageSize), $pages, $posts);
         foreach ($posts as $k => $val) {
@@ -100,8 +100,8 @@ class PostsController extends Q {
         $authorInfo['avatar']=  zmf::getThumbnailUrl($authorInfo['avatar'],'a120','user');
         $this->selectNav = 'readerForum';
 
-        if (!zmf::actionLimit('visit-Posts', $id, 5, 60)) {
-            Posts::updateCount($id, 'Posts', 1, 'hits');
+        if (!zmf::actionLimit('visit-Threads', $id, 5, 60)) {
+            Posts::updateCount($id, 'PostThreads', 1, 'hits');
         }
         $size = 'w600';
         if ($this->isMobile) {
@@ -127,6 +127,10 @@ class PostsController extends Q {
         //$tags = Tags::getByIds($info['tagids']);
         //$relatePosts = Posts::getRelations($id, 5);
         //$topsPosts = Posts::getTops($info['id'], $info['classify'], 10);
+        
+        //初始化快速评论框
+        $model = new PostPosts;
+        
         $data = array(
             'info' => $info,
             'forumInfo' => $forumInfo,
@@ -135,6 +139,7 @@ class PostsController extends Q {
             'authorInfo' => $authorInfo,
             'relatePosts' => $relatePosts,
             'topsPosts' => $topsPosts,
+            'model' => $model,
         );
         $this->favorited = Favorites::checkFavored($id, 'thread');
         $this->pageTitle = $info['title'] . ' - ' . zmf::config('sitename');
@@ -307,6 +312,8 @@ class PostsController extends Q {
                         Attachments::model()->updateAll(array('status' => Posts::STATUS_PASSED, 'logid' => $model->id), 'id IN(' . $attstr . ')');
                     }
                 }
+                //更新帖子的楼层数
+                PostThreads::updateStat($model->tid);
                 $this->redirect(array('posts/view', 'id' => $model->tid));
             }
         }

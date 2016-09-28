@@ -151,5 +151,23 @@ class PostThreads extends CActiveRecord {
     public static function getOne($id){
         return self::model()->findByPk($id);
     }
+    
+    /**
+     * 更新帖子的统计
+     * @param int $id
+     * @return boolean
+     */
+    public static function updateStat($id){
+        if(!$id){
+            return false;
+        }
+        $posts=  PostPosts::model()->count('tid=:tid AND isFirst=0',array(
+            ':tid'=>$id
+        ));
+        $attr=array(
+            'posts'=>$posts
+        );
+        return self::model()->updateByPk($id, $attr);
+    }
 
 }

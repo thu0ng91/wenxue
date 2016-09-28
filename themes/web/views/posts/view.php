@@ -2,53 +2,6 @@
 $url=zmf::config('domain').Yii::app()->createUrl('posts/view',array('id'=>$info['id']));
 $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
 ?>
-<style>
-    .post-page .main-part .module .module-body{
-        padding-left: 0;
-        padding-right: 0
-    }    
-    .post-header{
-        border-bottom: 1px solid #e4e4e4;
-        padding-left: 20px;
-        padding-right: 20px;
-        
-    }
-    .post-title-right{
-        width: 140px;
-        display: inline-block;
-        text-align: right;
-    }
-    .post-content .media .media-left{
-        padding-left: 20px;
-    }
-    .post-content .media .media-body{
-        padding-left: 0;
-        padding-right: 20px;
-        font-size: 13px
-    }
-    .post-content .media .comments-list{
-        position: relative
-    }
-    .post-page .first-blood .media .media-body{
-        padding:0 30px;
-    }
-    .post-side-authorInfo{
-        text-align: center;        
-    }
-    .post-side-authorInfo .title{
-        margin-top: 15px;
-    }
-    .post-side-authorInfo ul{
-        margin: 15px 0;
-        padding: 0;
-    }
-    .post-side-authorInfo ul li{
-        display: inline-block;
-        width: 63px;
-        margin: 0;
-        padding: 0;
-    }
-</style>
 <div class="container post-page">    
     <div class="module">
         <div class="module-body">
@@ -119,12 +72,36 @@ $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
             </div>
         </div>
         <div class="module">
-            <div class="module-header">最新跟帖</div>
-            <div class="module-body post-content">
+            <?php if(!empty($posts)){?>
+            <div class="module-header">最新跟帖</div>            
+            <div class="module-body post-content">                
                 <?php foreach ($posts as $post){?>
                 <?php $this->renderPartial('/posts/_postPost',array('data'=>$post));?>                    
-                <?php }?>
+                <?php }?>                
             </div>
+            <?php }?>
+            <div class="module-header">快速回复</div>
+            <div class="module-body fast-reply">
+                <?php $form=$this->beginWidget('CActiveForm', array(
+                    'id'=>'fast-reply-form',
+                    'action'=>  Yii::app()->createUrl('posts/reply',array('tid'=>$info['id'])),
+                    'enableAjaxValidation'=>false,
+                )); ?>
+                <div class="media">
+                    <div class="media-left">
+                        <?php echo CHtml::link(CHtml::image(zmf::lazyImg(), $this->userInfo['truename'], array('data-original' => zmf::getThumbnailUrl($this->userInfo['avatar'],'a120','user'), 'class' => 'lazy img-circle a48')), array('user/index','id'=>$this->userInfo['id'])); ?>
+                    </div>                    
+                    <div class="media-body form-group">
+                        <?php echo $form->textArea($model,'content',array('class'=>'form-control','rows'=>3,'placeholder'=>'说说你的看法'));?>
+                    </div>
+                    <div class="media-right">
+                        <?php echo CHtml::submitButton($model->isNewRecord ? '回帖' : '更新',array('class'=>'btn btn-success','id'=>'add-post-btn')); ?>
+                        <?php echo GroupPowers::link('addPostReply',$this->userInfo,'高级回复',array('posts/reply','tid'=>$info['id']),array('target'=>'_blank'));?>
+                    </div>
+                </div>
+                <?php $this->endWidget(); ?>
+            </div>
+            
         </div>
     </div>
     <div class="aside-part">

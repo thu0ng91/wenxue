@@ -31,8 +31,22 @@
             </div>
         </div>
     </div>
-    <div class="main-part">        
-        <div class="module">
+    <div class="main-part">  
+        <ul class="nav nav-tabs nav-posts" role="tablist">
+            <li role="presentation" class="active"><a href="#">最新</a></li>
+            <li role="presentation"><a href="#">精华</a></li>
+            <li role="presentation" class="dropdown pull-right">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                    排序 <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu" role="menu">
+                    <li role="presentation"><a href="#">默认</a></li>
+                    <li role="presentation"><a href="#">点击</a></li>
+                    <li role="presentation"><a href="#">赞赏</a></li>
+                </ul>
+            </li>
+        </ul>
+        <div class="module">            
             <div class="module-body">
                 <?php foreach ($posts as $k=>$_post){?>
                 <?php $this->renderPartial('/posts/_item',array('data'=>$_post,'posts'=>$posts,'k'=>$k));?>

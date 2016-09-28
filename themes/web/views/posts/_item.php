@@ -12,7 +12,7 @@
             <?php if($data['top']){?>
             <span style="color:red" title="置顶"><i class="fa fa-bookmark"></i></span>
             <?php }?>
-            <?php if($data['styleStatus']){?>
+            <?php if($data['digest']){?>
             <span style="color:red" title="加精"><i class="fa fa-flag"></i></span>
             <?php }?>
             <?php if($data['classify']==Posts::CLASSIFY_AUTHOR && $data['aid']){?>
@@ -20,9 +20,11 @@
             <?php }else{?>
             <span><?php echo CHtml::link($data['username'],array('user/index','id'=>$data['uid']));?></span>  
             <?php }?>
-            <span><?php echo zmf::formatTime($data['cTime']);?></span>                            
-            <span><?php echo $data['comments'];?>评论</span>                            
-            <span><?php echo $data['favorites'];?>赞</span>                            
+            <span><?php echo zmf::formatTime($data['cTime']);?></span>   
+            <span class="pull-right">
+                <span><i class="fa fa-eye"></i> <?php echo $data['hits'];?></span>
+                <span><i class="fa fa-comments"></i> <?php echo $data['posts'];?></span>
+            </span>
         </p>
     </div>
 </div>
