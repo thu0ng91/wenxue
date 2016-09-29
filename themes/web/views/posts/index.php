@@ -25,24 +25,22 @@
                         <p><?php echo GroupPowers::link('favoriteForum',$this->userInfo,($_favorited ? '<i class="fa fa-check"></i> 已关注' : '<i class="fa fa-plus"></i> 关注'),'javascript:;',array('class'=>'btn btn-'.($_favorited ? 'default':'success').' btn-xs btn-block','action'=>'favorite','action-data'=>$forumInfo['id'],'action-type'=>'forum'));?></p>
                         <p><?php echo GroupPowers::link('addPost',$this->userInfo,'<i class="fa fa-plus"></i> 发表新帖',array('posts/create','forum'=>$forumInfo['id']),array('class'=>'btn btn-default btn-xs btn-block'));?></p>
                     </div>
-                    
-                    
                 </div>
             </div>
         </div>
     </div>
     <div class="main-part">  
         <ul class="nav nav-tabs nav-posts" role="tablist">
-            <li role="presentation" class="active"><a href="#">最新</a></li>
-            <li role="presentation"><a href="#">精华</a></li>
+            <li role="presentation" <?php echo $filter=='zmf' ? 'class="active"': '';?>><?php echo zmf::urls('最新','posts/index',array('key'=>'filter','value'=>''));?></li>
+            <li role="presentation" <?php echo $filter=='digest' ? 'class="active"': '';?>><?php echo zmf::urls('精华','posts/index',array('key'=>'filter','value'=>'digest'));?></li>
             <li role="presentation" class="dropdown pull-right">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                     排序 <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu" role="menu">
-                    <li role="presentation"><a href="#">默认</a></li>
-                    <li role="presentation"><a href="#">点击</a></li>
-                    <li role="presentation"><a href="#">赞赏</a></li>
+                    <li role="presentation" <?php echo $order=='zmf' ? 'class="active"': '';?>><?php echo zmf::urls('默认','posts/index',array('key'=>'order','value'=>''));?></li>
+                    <li role="presentation" <?php echo $order=='hits' ? 'class="active"': '';?>><?php echo zmf::urls('点击','posts/index',array('key'=>'order','value'=>'hits'));?></li>
+                    <li role="presentation" <?php echo $order=='props' ? 'class="active"': '';?>><?php echo zmf::urls('赞赏','posts/index',array('key'=>'order','value'=>'props'));?></li>
                 </ul>
             </li>
         </ul>

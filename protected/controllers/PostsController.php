@@ -29,13 +29,34 @@ class PostsController extends Q {
         if (!$forumId) {
             $this->redirect(array('posts/types'));
         }
+        $filter=  zmf::val('filter',1);
+        $order=  zmf::val('order',1);
+        if(!in_array($filter, array('digest'))){
+            $filter='zmf';
+        }
+        if(!in_array($order, array('hits','props'))){
+            $order='zmf';
+        }
         $forumInfo = PostForums::getOne($forumId);
         if (!$forumInfo) {
             $this->message(0, '你所查看的版块不存在');
         }
         $forumInfo['faceImg'] = zmf::getThumbnailUrl($forumInfo['faceImg'], 'a120', 'faceImg');
-        $sql = "SELECT p.id,p.title,p.faceImg,p.uid,u.truename AS username,p.cTime,p.posts,p.hits,p.top,p.digest,p.styleStatus,p.aid,p.fid,'' AS forumTitle FROM {{post_threads}} p,{{users}} u WHERE p.status=" . Posts::STATUS_PASSED . " AND p.uid=u.id AND u.status=" . Posts::STATUS_PASSED . " ORDER BY p.top DESC,p.cTime DESC";
-
+        //拼装where条件
+        $where="p.fid={$forumId}";
+        if($filter=='digest'){
+            $where.=" AND p.digest=1";
+        }
+        $where.=" AND p.status=" . Posts::STATUS_PASSED . " AND p.uid=u.id AND u.status=" . Posts::STATUS_PASSED;
+        //按需排序
+        $orderBy='cTime';
+        if($order=='hits'){
+            $orderBy='hits';
+        }elseif($order=='props'){
+            $orderBy='props';
+        }
+        //SQL
+        $sql = "SELECT p.id,p.title,p.faceImg,p.uid,u.truename AS username,p.cTime,p.posts,p.hits,p.top,p.digest,p.styleStatus,p.aid,p.fid,'' AS forumTitle FROM {{post_threads}} p,{{users}} u WHERE {$where} ORDER BY p.top DESC,p.{$orderBy} DESC";
         Posts::getAll(array('sql' => $sql, 'pageSize' => $this->pageSize), $pages, $posts);
         foreach ($posts as $k => $val) {
             $posts[$k]['faceImg'] = zmf::getThumbnailUrl($val['faceImg'], $this->isMobile ? 'c280' : 'c120', 'posts');
@@ -76,6 +97,8 @@ class PostsController extends Q {
             'forumInfo' => $forumInfo,
             'showcases' => $showcases,
             'forums' => $forums,
+            'filter' => $filter,
+            'order' => $order,
         );
         $this->render('index', $data);
     }

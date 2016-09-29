@@ -1077,5 +1077,49 @@ class zmf {
         }
         return preg_match('#^13[\d]{9}$|^14[5,7]{1}\d{8}$|^15[^4]{1}\d{8}$|^17[0,6,7,8]{1}\d{8}$|^18[\d]{9}$#', $mobile) ? true : false;
     }
+    
+    public static function urls($title,$main,$param,$opt=array()){
+        $key = $param['key'];
+        $value = $param['value'];     
+        if($main=='posts/index'){
+            $attr=array(
+                $main,
+                'forum'=>  zmf::val('forum',2),
+                'filter'=>  zmf::val('filter',1),
+                'order'=>  zmf::val('order',1),
+            );
+        }elseif($main=='book/index'){
+            $attr=array(
+                $main,
+                'colid'=>  zmf::val('colid',2),
+                'order'=>  zmf::val('order',1),
+            );
+        }
+        $attr[$key]=$value;
+        $data = array_filter($attr);
+        $opt = array_filter($opt);
+        return CHtml::link($title, $data, $opt);
+    }
+    
+    public static function href($main,$param){
+        $key = $param['key'];
+        $value = $param['value'];     
+        if($main=='wedding/index'){
+            $attr=array(                
+                'color'=>  zmf::val('color',2),
+                'style'=>  zmf::val('style',2),
+            );
+        }else{
+            $attr=array(                
+                'area'=>  zmf::val('area',2),
+                'classify'=>  zmf::val('classify',2),
+                'desk'=>  zmf::val('desk',2),
+                'price'=>  zmf::val('price',2),
+            );
+        }
+        $attr[$key]=$value;
+        $data = array_filter($attr);        
+        return Yii::app()->createUrl($main, $data);
+    }
 
 }

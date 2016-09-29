@@ -24,7 +24,7 @@
                 </a>
                 <ul class="dropdown-menu">
                     <?php foreach ($cols as $colid=>$colTitle){?>
-                    <li><?php echo CHtml::link($colTitle, array('book/index','colid'=>$colid,'order'=>$order)); ?></li>
+                    <li><?php echo zmf::urls($colTitle,'book/index',array('key'=>'colid','value'=>$colid));?></li>
                     <?php }?>
                 </ul>
             </li>
@@ -34,7 +34,7 @@
                 </a>
                 <ul class="dropdown-menu">
                     <?php $orders=  Books::orderConditions('admin');foreach ($orders as $orderBy=>$orderTitle){?>
-                    <li><?php echo CHtml::link($orderTitle, array('book/index','colid'=>$colInfo['id'],'order'=>$orderBy)); ?></li>
+                    <li><?php echo zmf::urls($orderTitle,'book/index',array('key'=>'order','value'=>$orderBy));?></li>
                     <?php }?>
                 </ul>
             </li>
