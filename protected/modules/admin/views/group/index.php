@@ -12,13 +12,31 @@ $this->renderPartial('_nav');
     <tr>
         <th class="text-right">角色</th>
         <?php foreach($groups as $group){?>
-        <th colspan="4" class="text-center"><?php echo $group['title'];?></th>
+        <th colspan="4" class="text-center"><?php echo $group['title'];?><?php echo CHtml::link('<i class="fa fa-edit"></i>',array('group/update','id'=>$group['id']));?></th>
+        <?php }?>
+    </tr>
+    <tr>
+        <td class="text-right"></td>
+        <?php foreach($groups as $group){?>
+        <td colspan="4" class="text-center"><img src="<?php echo $group['faceImg'];?>" alt="修改头像" id="user-avatar" style="width: 120px;height: 120px;" class="img-circle"></td>
         <?php }?>
     </tr>
     <tr>
         <td class="text-right">描述</td>
         <?php foreach($groups as $group){?>
         <td colspan="4"><?php echo $group['desc'];?></td>
+        <?php }?>
+    </tr>
+    <tr>
+        <td class="text-right">初始化积分</td>
+        <?php foreach($groups as $group){?>
+        <td colspan="4" class="text-center"><?php echo $group['initScore'];?></td>
+        <?php }?>
+    </tr>
+    <tr>
+        <td class="text-right">初始化经验</td>
+        <?php foreach($groups as $group){?>
+        <td colspan="4" class="text-center"><?php echo $group['initExp'];?></td>
         <?php }?>
     </tr>
     <tr>

@@ -20,8 +20,10 @@
         <?php echo $form->error($model,'title'); ?>
     </div>
     <div class="form-group">
-        <?php echo $form->labelEx($model,'faceImg'); ?>        
-        <?php echo $form->textField($model,'faceImg',array('class'=>'form-control')); ?>
+        <?php echo $form->labelEx($model,'faceImg'); ?>     
+        <p><img src="<?php echo zmf::getThumbnailUrl($model->faceImg, 'a120', 'faceImg');?>" alt="修改头像" id="user-avatar" style="width: 120px;height: 120px;"></p>
+        <?php $this->renderPartial('/common/_singleUpload',array('model'=>$model,'fieldName'=>'faceImg','type'=>'faceImg','fileholder'=>'filedata','targetHolder'=>'user-avatar','imgsize'=>'a120','progress'=>true));?>
+        <?php echo $form->hiddenField($model,'faceImg',array('class'=>'form-control')); ?>
         <?php echo $form->error($model,'faceImg'); ?>
     </div>
     <div class="form-group">

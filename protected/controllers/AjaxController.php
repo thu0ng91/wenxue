@@ -1602,6 +1602,24 @@ class AjaxController extends Q {
             $this->jsonOutPut(0, '暂不能选择该角色');
         }
         if (Users::updateInfo($this->uid, 'groupid', $gid)) {
+            //保存记录
+            $jsonData = CJSON::encode(array(
+                        'id' => $ginfo['id'],
+                        'title' => $ginfo['title'],
+                        'faceimg' => $ginfo['faceImg']
+            ));
+            $attr = array(
+                'uid' => $this->uid,
+                'logid' => $ginfo['id'],
+                'classify' => 'group',
+                'data' => $jsonData,
+                'action' => 'joinGroup',
+                'score' => $ginfo['initScore'],
+                'exp' => $ginfo['initExp'],
+                'display' => 0,
+            );
+            UserAction::simpleRecord($attr);
+            //todo，用户组初始化赠送的物品
             $url = Yii::app()->createUrl('user/index');
             $this->jsonOutPut(1, $url);
         } else {
@@ -1814,16 +1832,16 @@ class AjaxController extends Q {
         } elseif ($actionType == 'gold') {
             $perPrice = $info['goldPrice'];
             $label = '金币';
-        }elseif($info['limitNum']>0){
+        } elseif ($info['limitNum'] > 0) {
             //判断每人购买的次数
-            $num=  Orders::statUserBuyTimes($this->uid, $info['id']);
-            if($num>=$info['limitNum']){
+            $num = Orders::statUserBuyTimes($this->uid, $info['id']);
+            if ($num >= $info['limitNum']) {
                 $this->jsonOutPut(0, '你达到限购次数');
             }
-        }elseif($info['totalNum']>0){
+        } elseif ($info['totalNum'] > 0) {
             //判断总数
-            $num=  Orders::statByGoods($info['id']);
-            if($num>=$info['totalNum']){
+            $num = Orders::statByGoods($info['id']);
+            if ($num >= $info['totalNum']) {
                 $this->jsonOutPut(0, '该商品已售罄');
             }
         }

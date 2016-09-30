@@ -73,7 +73,7 @@ class GroupController extends Admin {
      * Lists all models.
      */
     public function actionIndex() {
-        $select = "id,title,faceImg,tasks,members,status,cTime";
+        $select = "id,title,faceImg,tasks,members,status,cTime,initScore,initExp";
         $model = new Group;
         $criteria = new CDbCriteria();
         $criteria->select = $select;
@@ -82,6 +82,9 @@ class GroupController extends Admin {
         $pager->pageSize = 30;
         $pager->applyLimit($criteria);
         $groups = $model->findAll($criteria);
+        foreach ($groups as $k=>$group){
+            $groups[$k]['faceImg']=  zmf::getThumbnailUrl($group['faceImg'], 'a120', 'faceImg');
+        }
         //取出所有权限列表
         $sql="SELECT t.id,t.gid,t.tid,t.value,t.score,t.exp,gt.key,gt.desc FROM {{group_powers}} t,{{group_power_types}} gt WHERE t.tid=gt.id";
         $powers= Yii::app()->db->createCommand($sql)->queryAll();

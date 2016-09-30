@@ -38,7 +38,7 @@ class Group extends CActiveRecord {
             array('status', 'numerical', 'integerOnly' => true),
             array('title', 'length', 'max' => 50),
             array('faceImg, desc', 'length', 'max' => 255),
-            array('tasks, members, cTime', 'length', 'max' => 10),
+            array('tasks, members, cTime,initScore,initExp', 'length', 'max' => 10),
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
             array('id, title, faceImg, desc, tasks, members, status, cTime', 'safe', 'on' => 'search'),
@@ -68,6 +68,8 @@ class Group extends CActiveRecord {
             'members' => '成员数',
             'status' => '推荐',
             'cTime' => '创建时间',
+            'initScore' => '初始化积分',
+            'initExp' => '初始化经验',
         );
     }
 
