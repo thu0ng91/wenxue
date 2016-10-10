@@ -6,11 +6,16 @@ $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
     <div class="module">
         <div class="module-body">
             <div class="media">
+                <div class="media-left">
+                    <?php echo CHtml::link(CHtml::image(zmf::lazyImg(), $forumInfo['title'], array('data-original' => $forumInfo['faceImg'], 'class' => 'lazy img-circle a48 media-object')), array('posts/index','forum'=>$forumInfo['id'])); ?>
+                </div>
                 <div class="media-body">
-                    <p><?php echo CHtml::link($forumInfo['title'],array('posts/index','forum'=>$forumInfo['id']));?><?php echo GroupPowers::link('favoriteForum',$this->userInfo,($_favorited ? '<i class="fa fa-check"></i> 已关注' : '<i class="fa fa-plus"></i> 关注'),'javascript:;',array('action'=>'favorite','action-data'=>$forumInfo['id'],'action-type'=>'forum'));?></p>
+                    <p class="title"><?php echo CHtml::link($forumInfo['title'],array('posts/index','forum'=>$forumInfo['id']));?></p>
+                    <p><?php echo $forumInfo['desc'];?></p>
                 </div>
                 <div class="media-right">
-                    <div class="" style="width: 80px">                        
+                    <div class="" style="width: 80px">
+                        <p><?php echo GroupPowers::link('favoriteForum',$this->userInfo,($_favorited ? '<i class="fa fa-check"></i> 已关注' : '<i class="fa fa-plus"></i> 关注'),'javascript:;',array('class'=>'btn btn-'.($_favorited ? 'default':'success').' btn-xs btn-block','action'=>'favorite','action-data'=>$forumInfo['id'],'action-type'=>'forum'));?></p>
                         <p><?php echo GroupPowers::link('addPost',$this->userInfo,'<i class="fa fa-plus"></i> 发表新帖',array('posts/create','forum'=>$forumInfo['id']),array('class'=>'btn btn-default btn-xs btn-block'));?></p>
                     </div>
                 </div>
@@ -22,35 +27,8 @@ $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
             <div class="module-body">
                 <div class="media post-header">
                     <div class="media-body">
-                        <h1><?php echo $info['title'];?></h1>
-<!--                        <p class="color-grey tips">
-                            <?php if($info['top']){?>
-                            <span style="color:red" title="置顶"><i class="fa fa-bookmark"></i></span>
-                            <?php }?>
-                            <?php if($info['styleStatus']){?>
-                            <span style="color:red" title="加精"><i class="fa fa-flag"></i></span>
-                            <?php }?>
-                        
-                            <?php if($this->uid && $this->userInfo['isAdmin']){?>
-                            <span><?php echo CHtml::link($info['top'] ? '已置顶' : '置顶','javascript:;',array('action'=>'setStatus','data-type'=>'post','data-action'=>'top','data-id'=>$info['id']));?></span>
-                            <span><?php echo CHtml::link($info['styleStatus']==Posts::STATUS_BOLD ? '已加粗' : '加粗','javascript:;',array('action'=>'setStatus','data-type'=>'post','data-action'=>'bold','data-id'=>$info['id']));?></span>
-                            <span><?php echo CHtml::link($info['styleStatus']==Posts::STATUS_RED ? '已标红' : '标红','javascript:;',array('action'=>'setStatus','data-type'=>'post','data-action'=>'red','data-id'=>$info['id']));?></span>
-                            <span><?php echo CHtml::link($info['styleStatus']==Posts::STATUS_BOLDRED ? '已加粗标红' : '加粗标红','javascript:;',array('action'=>'setStatus','data-type'=>'post','data-action'=>'boldAndRed','data-id'=>$info['id']));?></span>
-                            <span>|</span>
-                            <span><?php echo CHtml::link($info['open']==Posts::STATUS_OPEN ? '锁定' : '已锁定','javascript:;',array('action'=>'setStatus','data-type'=>'post','data-action'=>'lock','data-id'=>$info['id']));?></span>
-                            <?php if($info['uid']!=$this->uid){?>
-                            <span><?php echo CHtml::link('编辑',array('posts/create','id'=>$info['id']));?></span>
-                            <span><?php echo CHtml::link('删除','javascript:;',array('action'=>'delContent','data-type'=>'post','data-id'=>$info['id'],'data-confirm'=>1,'data-redirect'=>Yii::app()->createUrl('posts/index',array('type'=>$type))));?></span>
-                            <?php }?>                        
-                            <?php }?>
-                            <?php if($info['uid']==$this->uid && $this->uid){?>
-                            <span><?php echo CHtml::link('编辑',array('posts/create','id'=>$info['id']));?></span>
-                            <span><?php echo CHtml::link('删除','javascript:;',array('action'=>'delContent','data-type'=>'post','data-id'=>$info['id'],'data-confirm'=>1,'data-redirect'=>Yii::app()->createUrl('posts/index',array('type'=>$type))));?></span>
-                            <?php }else{?>
-                            <span><?php echo CHtml::link('举报','javascript:;',array('action'=>'report','action-type'=>'post','action-id'=>$info['id'],'action-title'=>$info['title']));?></span>
-                            <?php }?>
-                        </p>-->
-                    </div>                    
+                        <h1><?php if($info['top']){?><span style="color:red" title="置顶"><i class="fa fa-bookmark"></i></span><?php }?><?php if($info['styleStatus']){?><span style="color:red" title="加精"><i class="fa fa-flag"></i></span><?php }?><?php echo $info['title'];?></h1>
+                    </div>
                     <div class="media-right">
                         <p class="post-title-right">
                             <?php echo CHtml::link('只看楼主',array('posts/view','id'=>$info['id'],'see_lz'=>1),array('class'=>'btn btn-xs btn-default'));?>
@@ -60,15 +38,8 @@ $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
                     </div>
                 </div>                
                 <div class="first-blood post-content">
-                    <?php $this->renderPartial('/posts/_firstPost',array('data'=>$info['content']));?>
-                </div>
-                <?php if($info['open']==Posts::STATUS_OPEN){?>
-                    <?php if($this->favorited){?>
-                    <p class="text-center"><?php echo CHtml::link('<i class="fa fa-thumbs-up"></i> 已赞','javascript:;',array('class'=>'btn btn-default btn-sm','action'=>'favorite','action-data'=>$info['id'],'action-type'=>'post'));?></p>
-                    <?php }else{?>
-                    <p class="text-center"><?php echo CHtml::link('<i class="fa fa-thumbs-o-up"></i> 赞','javascript:;',array('class'=>'btn btn-danger btn-sm','action'=>'favorite','action-data'=>$info['id'],'action-type'=>'post'));?></p>
-                    <?php }?>
-                <?php }?> 
+                    <?php $this->renderPartial('/posts/_firstPost',array('data'=>$info['content'],'info'=>$info));?>
+                </div>                
             </div>
         </div>
         <div class="module">
@@ -82,6 +53,8 @@ $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
             <?php }?>
             <div class="module-header">快速回复</div>
             <div class="module-body fast-reply">
+                <?php if($this->uid){?>
+                <?php if(GroupPowers::checkAction($this->userInfo, 'addPostReply')){?>
                 <?php $form=$this->beginWidget('CActiveForm', array(
                     'id'=>'fast-reply-form',
                     'action'=>  Yii::app()->createUrl('posts/reply',array('tid'=>$info['id'])),
@@ -96,12 +69,17 @@ $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
                     </div>
                     <div class="media-right">
                         <?php echo CHtml::submitButton($model->isNewRecord ? '回帖' : '更新',array('class'=>'btn btn-success','id'=>'add-post-btn')); ?>
-                        <?php echo GroupPowers::link('addPostReply',$this->userInfo,'高级回复',array('posts/reply','tid'=>$info['id']),array('target'=>'_blank'));?>
+                        <?php echo CHtml::link('高级回复',array('posts/reply','tid'=>$info['id']),array('target'=>'_blank'));?>
                     </div>
                 </div>
                 <?php $this->endWidget(); ?>
-            </div>
-            
+                <?php }else{?>
+                <p class="help-block">你所在用户组暂不能进行本操作。</p>
+                <?php }?>
+                <?php }else{?>
+                <p class="help-block">登录后享有更多功能，<?php echo CHtml::link('立即登录',array('site/login'));?>或<?php echo CHtml::link('注册',array('site/reg'));?>。</p>
+                <?php }?>
+            </div>            
         </div>
     </div>
     <div class="aside-part">

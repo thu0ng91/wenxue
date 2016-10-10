@@ -131,10 +131,11 @@
             <h1><?php echo $info['title'];?></h1>
             <p><?php echo $info['desc'];?></p>
             <div class="price-holder">
-                <p>
-                    积分价格：<span class="price"><?php echo $info['scorePrice'];?> <i class="fa fa-rmb"></i></span>                    
-                </p>
+                <?php if($info['scorePrice']!=0){?>
+                <p>积分价格：<span class="price"><?php echo $info['scorePrice'];?> <i class="fa fa-rmb"></i></span></p>
+                <?php }if($info['goldPrice']!=0){?>
                 <p>金币价格：<span class="price"><?php echo $info['goldPrice'];?> <i class="fa fa-diamond"></i></span></p>
+                <?php }?>
             </div>
             <p>用途：道具，从纯读者转换成任务作者</p>            
             <dl class="tb-amount tm-clear">
@@ -151,8 +152,8 @@
             </dl>
             <div class="buy-btns">
                 <?php echo GroupPowers::link('favoriteGoods',$this->userInfo,'收藏商品','javascript:;',array('class'=>'btn btn-default','action'=>'favorite','action-data'=>$info['id'],'action-type'=>'goods'));?>
-                <?php echo GroupPowers::link('buyGoods',$this->userInfo,'积分兑换','javascript:;',array('action'=>'gotoBuy','action-data'=> Posts::encode($info['id'].'@score','goToBuy'),'title'=>'积分兑换','class'=>'btn btn-danger'));?>
-                <?php echo GroupPowers::link('buyGoods',$this->userInfo,'金币兑换','javascript:;',array('action'=>'gotoBuy','action-data'=> Posts::encode($info['id'].'@gold','goToBuy'),'title'=>'金币兑换','class'=>'btn btn-danger'));?>
+                <?php echo $info['scorePrice']!=0 ? GroupPowers::link('buyGoods',$this->userInfo,'积分兑换','javascript:;',array('action'=>'gotoBuy','action-data'=> Posts::encode($info['id'].'@score','goToBuy'),'title'=>'积分兑换','class'=>'btn btn-danger')) : '';?>
+                <?php echo $info['goldPrice']!=0 ? GroupPowers::link('buyGoods',$this->userInfo,'金币兑换','javascript:;',array('action'=>'gotoBuy','action-data'=> Posts::encode($info['id'].'@gold','goToBuy'),'title'=>'金币兑换','class'=>'btn btn-danger')) : '';?>
             </div>
         </div>
     </div>

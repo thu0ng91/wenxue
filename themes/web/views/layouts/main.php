@@ -39,6 +39,7 @@ $this->beginContent('/layouts/common');
 
 <div class="navbar navbar-default" role="navigation">
     <div class="container">
+        <?php echo CHtml::link(zmf::config('sitename'),  zmf::config('baseurl'),array('class'=>'navbar-brand'));?>
         <div class="navbar-collapse collapse">
             <?php $this->renderPartial('/layouts/_nav');?>
         </div>

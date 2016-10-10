@@ -10,44 +10,55 @@
  */
 ?>
 <style>
-    .goods-container{
-        margin-left: -10px;
-        margin-right: -10px;
-    }
-    .goods-container .thumbnail{
-        width: 210px;
-        display: inline-block;
-        padding: 0;
-        margin: 0 10px 20px;
-        border: 1px solid #F2f2f2;
-        border-top: none;
-        border-radius: 0
-    }
-    .goods-container .thumbnail:hover{
-        border-color:#F40;
-    }
-    .goods-container .thumbnail img{
-        width: 208px;
-        height: 208px;
-    }
-    .goods-container .thumbnail h3{
-        margin: 0 0 5px;
-        padding: 0;
-        font-size: inherit
-    }
-    .goods-container .thumbnail .price span+span:before{
-        content:"/\00a0";padding:0 5px;color:#ccc
-    }
-    .goods-container .thumbnail .price .fa{
-        font-size: 13px
-    }
-    .goods-container .thumbnail .desc{
-        height: 36px;
-        overflow: hidden
-    }
+    .tags-holder {
+    padding: 20px 0 20px 20px;
+    border-bottom: 1px solid #e4e4e4;
+}
+.tags-holder .tags-label {
+    float: left;
+}
+.tags-holder .tags-items {
+    padding-left: 80px;
+}
+.tags-holder .tags-items .active {
+    color: #FF6666;
+}
+.tags-holder .tags-items .tags-item {
+    min-width: 60px;
+    display: inline-block;
+    color: #999;
+    cursor: pointer;
+    padding-right: 10px;
+    margin-right: 5px;
+}
+
+.tags-holder .tags-items .active a {
+    color: #ff6666;
+    text-decoration: none;
+}
+
+
 </style>
 <div class="container">
+    <ol class="breadcrumb">
+        <li><?php echo CHtml::link(zmf::config('sitename').'首页',  zmf::config('baseurl'));?></li>
+        <li><?php echo CHtml::link('商城',  array('shop/index'));?></li>
+        <?php foreach($belongs as $_nav){?>
+        <li><?php echo CHtml::link($_nav['title'],array('shop/all','id'=>$_nav['id']));?></li>        
+        <?php }?>
+    </ol>
     <div class="module">
+        <?php foreach ($navbars as $navbar){$seconds=$navbar['items'];?>
+        <div class="tags-holder">
+            <div class="tags-label"><?php echo $navbar['title'];?>：</div>
+            <div class="tags-items">                
+                <?php foreach($seconds as $second){?>
+                <span class="tags-item"><?php echo CHtml::link($second['title'],array('shop/all','id'=>$second['id']));?></span>
+                <?php }?>   
+            </div>
+        </div>
+        <?php }?>
+        
         <div class="module-body goods-container">
             <?php foreach ($posts as $post){?>
             <?php $this->renderPartial('_item',array('data'=>$post));?>

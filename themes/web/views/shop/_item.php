@@ -10,9 +10,17 @@
  */
 ?>
 <div class="thumbnail">
-    <img src="<?php echo zmf::lazyImg();?>" class="lazy" data-original="<?php echo $data['faceUrl'];?>"/>
+    <a href="<?php echo Yii::app()->createUrl('shop/detail',array('id'=>$data['id']));?>">
+        <img src="<?php echo zmf::lazyImg();?>" class="lazy" data-original="<?php echo $data['faceUrl'];?>" alt="<?php echo $data['title'];?>"/>
+    </a>
     <div class="caption">
-        <p class="price"><span><i class="fa fa-rmb"></i><?php echo $data['scorePrice'];?></span><span><i class="fa fa-diamond"></i><?php echo $data['goldPrice'];?></span></p>
+        <p class="price">
+            <?php if($data['scorePrice']!=0){?>
+            <span><i class="fa fa-rmb"></i><?php echo $data['scorePrice'];?></span>
+            <?php }if($data['goldPrice']!=0){?>
+            <span><i class="fa fa-diamond"></i><?php echo $data['goldPrice'];?></span>
+            <?php }?>
+        </p>
         <h3><?php echo CHtml::link($data['title'],array('shop/detail','id'=>$data['id']));?></h3>
         <p class="desc ui-nowrap-multi color-grey"><?php echo $data['desc'];?></p>
     </div>

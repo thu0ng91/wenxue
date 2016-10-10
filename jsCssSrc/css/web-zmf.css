@@ -5,6 +5,11 @@ body{
     background: #faefc2;    
     position: relative
 }
+h1{
+    font-size: 18px;
+    margin-top: 10px;
+    font-weight: 700;
+}
 h2,h3,h4,h5,h6{
     font-size: 14px;
     font-weight: 700;
@@ -1146,7 +1151,8 @@ span.required,.errorMessage{
     margin-top: 10px;
     margin-bottom: 15px;
     font-size: 14px;
-    line-height: 1.75
+    line-height: 1.75;
+    padding-bottom: 0
 }
 .post-page .post-content .media{
     border-bottom: 1px solid #f2f2f2;
@@ -1195,6 +1201,9 @@ span.required,.errorMessage{
 }
 .post-content .media .comments-list{
     position: relative
+}
+.post-page .first-blood .media{
+    border-bottom: none
 }
 .post-page .first-blood .media .media-body{
     padding:0 30px;
@@ -1338,6 +1347,122 @@ span.required,.errorMessage{
 .column-min .module-body .item .dot{
     margin-right: 5px
 }
+/*商城*/
+.goods-header{
+    position: relative;
+}
+.goods-classify{
+    width: 220px;
+    float: left;
+    height: 454px;        
+    background: #93ba5f;
+    border: 1px solid #93ba5f;
+    color: #fff
+}
+.goods-classify a.goods-nav-item{
+    color: #fff;
+    height: 31px;
+    line-height: 31px;
+    padding: 0 15px;
+    width: 220px;
+    display: block;
+    font-weight: 700
+}
+.goods-classify a.goods-nav-item:hover,.goods-classify a.active{
+    background: #fff;
+    color: #93ba5f;
+    text-decoration: none;
+    width: 220px; 
+}
+.goods-classify a .fa{
+    padding-top: 10px
+}
+.goods-classify a.goods-nav-item:hover .fa,.goods-classify a.active:hover .fa{
+    color: #fff
+}
+.goods-classify-holder{
+    width: 740px;
+    min-height: 454px;
+    position: absolute;
+    left: 220px;
+    top: 0;
+    background: #fff;
+    z-index: 99;
+    border: 1px solid #93ba5f;
+    border-left: none;
+    box-sizing: border-box;
+    display: none
+}
+.goods-classify-holder .items-holder{
+    line-height: 31px;
+    display: block;
+    clear: both
+}
+.goods-classify-holder .items-holder .items-label{
+    float: left;
+    width: 80px;
+    text-align: right;
+    font-weight: 700
+}    
+.goods-classify-holder .items-holder .items-label a{
+    color: #666
+}
+.goods-classify-holder .items-holder .items{
+    padding-left: 90px
+}
+.goods-classify-holder .items-holder .items a{
+    color: #666
+}
+.goods-classify-holder .items-holder a:hover,.goods-classify-holder .items-holder .items a:hover{
+    color: #93ba5f;
+    text-decoration: none
+}
+.goods-carousel{
+    width: 730px;
+    height: 454px;
+    float: right
+}
+.goods-carousel .item img{
+    width: 730px;
+    height: 454px;
+}
+
+.goods-container{
+    margin-left: -10px;
+    margin-right: -10px;
+}
+.goods-container .thumbnail{
+    width: 210px;
+    display: inline-block;
+    padding: 0;
+    margin: 0 10px 20px;
+    border: 1px solid #F2f2f2;
+    border-top: none;
+    border-radius: 0
+}
+.goods-container .thumbnail:hover{
+    border-color:#F40;
+}
+.goods-container .thumbnail img{
+    width: 208px;
+    height: 208px;
+}
+.goods-container .thumbnail h3{
+    margin: 0 0 5px;
+    padding: 0;
+    font-size: inherit
+}
+.goods-container .thumbnail .price span+span:before{
+    content:"/\00a0";padding:0 5px;color:#ccc
+}
+.goods-container .thumbnail .price .fa{
+    font-size: 13px
+}
+.goods-container .thumbnail .desc{
+    height: 36px;
+    overflow: hidden
+}
+    
 /*背包*/
 .props-holder{
     margin-left: -5px;

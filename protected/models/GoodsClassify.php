@@ -131,7 +131,7 @@ class GoodsClassify extends CActiveRecord {
         return $arr;
     }
 
-    public static function getNavbar() {
+    public static function getNavbar($foreach = false) {
         $items = GoodsClassify::model()->findAll(array(
             'order' => '`order` DESC'
         ));
@@ -163,7 +163,39 @@ class GoodsClassify extends CActiveRecord {
                 );
             }
         }
+        if ($foreach) {
+            foreach ($navbar as $k1 => $v1) {
+                if (empty($v1['items'])) {
+                    unset($navbar[$k1]);
+                    continue;
+                }
+                foreach ($v1['items'] as $k2 => $v2) {
+                    if (empty($v2['items'])) {
+                        unset($navbar[$k1]['items'][$k2]);
+                        continue;
+                    }
+                }
+            }
+            foreach ($navbar as $k1 => $v1) {
+                if (empty($v1['items'])) {
+                    unset($navbar[$k1]);
+                    continue;
+                }
+            }
+        }
         return $navbar;
+    }
+
+    public static function getChildren($id) {
+        $navbars = self::getNavbar(TRUE);
+        $children=array();
+        foreach ($navbars as $k1 => $v1) {
+            if($id==$k1){
+                $children=$v1['items'];
+                break;
+            }
+        }
+        return $children;
     }
 
 }

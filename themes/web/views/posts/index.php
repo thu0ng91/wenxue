@@ -14,7 +14,7 @@
         <div class="module-body">
             <div class="media">
                 <div class="media-left">
-                    <?php echo CHtml::link(CHtml::image(zmf::lazyImg(), $forumInfo['title'], array('data-original' => $forumInfo['faceImg'], 'class' => 'lazy img-circle a108 media-object')), array('posts/index','forum'=>$forumInfo['id'])); ?>
+                    <?php echo CHtml::link(CHtml::image(zmf::lazyImg(), $forumInfo['title'], array('data-original' => $forumInfo['faceImg'], 'class' => 'lazy img-circle a64 media-object')), array('posts/index','forum'=>$forumInfo['id'])); ?>
                 </div>
                 <div class="media-body">
                     <h1><?php echo $forumInfo['title'];?></h1>

@@ -1,74 +1,3 @@
-<style>
-    .goods-header{
-        position: relative;
-    }
-    .goods-classify{
-        width: 220px;
-        float: left;
-        height: 454px;        
-        background: #93ba5f;
-        border: 1px solid #93ba5f;
-        color: #fff
-    }
-    .goods-classify a.goods-nav-item{
-        color: #fff;
-        height: 31px;
-        line-height: 31px;
-        padding: 0 15px;
-        width: 220px;
-        display: block;
-        font-weight: 700
-    }
-    .goods-classify a.goods-nav-item:hover,.goods-classify a.active{
-        background: #fff;
-        color: #93ba5f;
-        text-decoration: none;
-        width: 220px; 
-    }
-    .goods-classify a .fa{
-        padding-top: 10px
-    }
-    .goods-classify a.goods-nav-item:hover .fa,.goods-classify a.active:hover .fa{
-        color: #fff
-    }
-    .goods-classify-holder{
-        width: 740px;
-        min-height: 454px;
-        position: absolute;
-        left: 220px;
-        top: 0;
-        background: #fff;
-        z-index: 99;
-        border: 1px solid #93ba5f;
-        border-left: none;
-        box-sizing: border-box;
-        display: none
-    }
-    .goods-classify-holder .items-holder{
-        line-height: 31px;
-    }
-    .goods-classify-holder .items-holder .items-label{
-        float: left;
-        width: 80px;
-        text-align: right;
-        font-weight: 700
-    }
-    .goods-classify-holder .items-holder .items-label a{
-        color: #333
-    }
-    .goods-classify-holder .items-holder .items{
-        padding-left: 90px
-    }
-    .goods-carousel{
-        width: 730px;
-        height: 454px;
-        float: right
-    }
-    .goods-carousel .item img{
-        width: 730px;
-        height: 454px;
-    }
-</style>
 <div class="container">
     <div class="goods-header" id="goods-header">
         <div class="goods-classify" id="goods-classify">
@@ -95,14 +24,18 @@
         <div class="goods-carousel">
             <?php $this->renderPartial('/site/login-carousel');?>
         </div>
-    </div>
+    </div>    
+    <?php if(!empty($posts)){?>
     <div class="clearfix"></div>
     <div class="module" style="margin-top:20px">
         <div class="module-header">推荐</div>
-        <div class="module-body">
-            
+        <div class="module-body goods-container">
+            <?php foreach ($posts as $post){?>
+            <?php $this->renderPartial('_item',array('data'=>$post));?>
+            <?php }?>
         </div>
     </div>
+    <?php }?>
 </div>
 <script>
     $(document).ready(function(){
@@ -126,7 +59,5 @@
                 $(this).hide();
             })
         })
-        
-        
     })
 </script>
