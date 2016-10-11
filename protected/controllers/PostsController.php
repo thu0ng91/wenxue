@@ -29,13 +29,13 @@ class PostsController extends Q {
         if (!$forumId) {
             $this->redirect(array('posts/types'));
         }
-        $filter=  zmf::val('filter',1);
-        $order=  zmf::val('order',1);
-        if(!in_array($filter, array('digest'))){
-            $filter='zmf';
+        $filter = zmf::val('filter', 1);
+        $order = zmf::val('order', 1);
+        if (!in_array($filter, array('digest'))) {
+            $filter = 'zmf';
         }
-        if(!in_array($order, array('hits','props'))){
-            $order='zmf';
+        if (!in_array($order, array('hits', 'props'))) {
+            $order = 'zmf';
         }
         $forumInfo = PostForums::getOne($forumId);
         if (!$forumInfo) {
@@ -43,17 +43,17 @@ class PostsController extends Q {
         }
         $forumInfo['faceImg'] = zmf::getThumbnailUrl($forumInfo['faceImg'], 'a120', 'faceImg');
         //拼装where条件
-        $where="p.fid={$forumId}";
-        if($filter=='digest'){
+        $where = "p.fid={$forumId}";
+        if ($filter == 'digest') {
             $where.=" AND p.digest=1";
         }
         $where.=" AND p.status=" . Posts::STATUS_PASSED . " AND p.uid=u.id AND u.status=" . Posts::STATUS_PASSED;
         //按需排序
-        $orderBy='cTime';
-        if($order=='hits'){
-            $orderBy='hits';
-        }elseif($order=='props'){
-            $orderBy='props';
+        $orderBy = 'cTime';
+        if ($order == 'hits') {
+            $orderBy = 'hits';
+        } elseif ($order == 'props') {
+            $orderBy = 'props';
         }
         //SQL
         $sql = "SELECT p.id,p.title,p.faceImg,p.uid,u.truename AS username,p.cTime,p.posts,p.hits,p.top,p.digest,p.styleStatus,p.aid,p.fid,'' AS forumTitle FROM {{post_threads}} p,{{users}} u WHERE {$where} ORDER BY p.top DESC,p.{$orderBy} DESC";
@@ -120,7 +120,7 @@ class PostsController extends Q {
         if (!$authorInfo) {
             throw new CHttpException(404, '所属用户不存在');
         }
-        $authorInfo['avatar']=  zmf::getThumbnailUrl($authorInfo['avatar'],'a120','user');
+        $authorInfo['avatar'] = zmf::getThumbnailUrl($authorInfo['avatar'], 'a120', 'user');
         $this->selectNav = 'readerForum';
 
         if (!zmf::actionLimit('visit-Threads', $id, 5, 60)) {
@@ -148,12 +148,14 @@ class PostsController extends Q {
         }
         //$comments = Comments::getCommentsByPage($id, $this->uid, 'posts', 1, $this->pageSize, "c.id,c.uid,u.truename,u.avatar,c.aid,c.logid,c.tocommentid,c.content,c.cTime,c.status,c.favors");
         //$tags = Tags::getByIds($info['tagids']);
-        //$relatePosts = Posts::getRelations($id, 5);
-        //$topsPosts = Posts::getTops($info['id'], $info['classify'], 10);
-        
+        //取作者的其他帖子        
+        $relatePosts = PostThreads::getUserOtherPosts($info['uid'], $info['id'], $info['fid']);
+        //获取板块热门帖子
+        $topsPosts = PostThreads::getForumTops($info['fid'], $info['id']);
+
         //初始化快速评论框
         $model = new PostPosts;
-        
+
         $data = array(
             'info' => $info,
             'forumInfo' => $forumInfo,
@@ -175,22 +177,36 @@ class PostsController extends Q {
             $this->redirect(array('site/login'));
         }
         $this->checkUserStatus();
-        $forumId = zmf::val('forum', 2);
-        if (!$forumId) {
-            $this->redirect(array('posts/types'));
-        }
-        $forumInfo = PostForums::getOne($forumId);
-        if (!$forumInfo) {
-            $this->message(0, '你所查看的版块不存在');
-        }
-        //获取用户组的权限
-        $powerInfo = GroupPowers::checkPower($this->userInfo, 'addPost');
-        if (!$powerInfo['status']) {
-            $this->message($powerInfo['status'], $powerInfo['msg']);
-        }
-        $model = new PostThreads;
-        $model->fid = $forumId;
-        $isNew = true;
+        $id = zmf::val('id', 2);
+        if ($id) {
+            $model = $this->loadModel($id);
+            if (!$model) {
+                throw new CHttpException(404, '你所编辑的内容不存在');
+            }
+            //获取用户组的权限
+            $powerInfo = GroupPowers::checkPower($this->userInfo, 'addPost');
+            if (!$powerInfo['status']) {
+                $this->message($powerInfo['status'], $powerInfo['msg']);
+            }
+            $isNew = false;
+        } else {
+            $forumId = zmf::val('forum', 2);
+            if (!$forumId) {
+                $this->redirect(array('posts/types'));
+            }
+            $forumInfo = PostForums::getOne($forumId);
+            if (!$forumInfo) {
+                $this->message(0, '你所查看的版块不存在');
+            }
+            //获取用户组的权限
+            $powerInfo = GroupPowers::checkPower($this->userInfo, 'addPost');
+            if (!$powerInfo['status']) {
+                $this->message($powerInfo['status'], $powerInfo['msg']);
+            }
+            $model = new PostThreads;
+            $model->fid = $forumId;
+            $isNew = true;
+        }        
         if (isset($_POST['PostThreads'])) {
             //处理文本
             $filterTitle = Posts::handleContent($_POST['PostThreads']['title'], FALSE);
@@ -208,8 +224,7 @@ class PostsController extends Q {
                 }
             } else {
                 $attr['faceImg'] = ''; //否则将封面图置为空(有可能编辑后没有图片了)
-            }
-            $tagids = array_unique(array_filter($_POST['tags']));
+            }            
             //如果标题包含敏感词则直接标记为未通过
             $attr['status'] = $filterTitle['status'] == Posts::STATUS_PASSED ? $filterContent['status'] : $filterTitle['status'];
             $attr['open'] = ($_POST['PostThreads']['open'] == Posts::STATUS_OPEN) ? 1 : 0;
@@ -237,20 +252,7 @@ class PostsController extends Q {
                     if ($attstr != '') {
                         Attachments::model()->updateAll(array('status' => Posts::STATUS_PASSED, 'logid' => $model->id), 'id IN(' . $attstr . ')');
                     }
-                }
-                //处理标签
-                $intoTags = array();
-                if (!empty($tagids)) {
-                    foreach ($tagids as $tagid) {
-                        $_info = Tags::addRelation($tagid, $model->id, 'thread');
-                        if ($_info) {
-                            $intoTags[] = $tagid;
-                        }
-                    }
-                }
-                if (!$isNew || !empty($intoTags)) {
-                    Posts::model()->updateByPk($model->id, array('tagids' => join(',', $intoTags)));
-                }
+                }                             
                 //记录用户操作及积分
                 $jsonData = CJSON::encode(array(
                             'id' => $model->id,

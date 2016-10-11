@@ -106,17 +106,15 @@ $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
                 <?php }?>
             </div>
             <?php }?>
-        </div>
-        <?php if(!empty($topsPosts)){?>
-        <div class="module">
-            <div class="module-header">版块热门</div>
+            <?php if(!empty($topsPosts)){?>        
+            <div class="module-header"><?php echo $forumInfo['title'];?>热门</div>
             <div class="module-body">
                 <?php foreach ($topsPosts as $topsPost){?>
                 <p class="ui-nowrap"><?php echo CHtml::link($topsPost['title'],array('posts/view','id'=>$topsPost['id']));?></p>
                 <?php }?>
-            </div>
-        </div>
-        <?php }?>
+            </div>        
+            <?php }?>
+        </div>        
         <div class="module">
             <div class="module-header">分享</div>
             <div class="module-body">
