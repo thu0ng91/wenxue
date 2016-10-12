@@ -87,6 +87,12 @@ class PostsController extends Q {
         $showcases = Showcases::getPagePosts('authorQzone', NUll, false, 'c360');
         //所有版块
         $forums = PostForums::model()->findAll();
+        //本板块活跃用户
+        $topUsers=  PostForums::getActivityUsers($forumId,12);
+        foreach ($topUsers as $k=>$v){
+            $topUsers[$k]['avatar']= zmf::getThumbnailUrl($v['avatar'],'a36', 'avatar');
+        }
+        
         $this->selectNav = $type . 'Forum';
         $this->showLeftBtn = false;
         $this->pageTitle = $forumInfo['title'] . ' - ' . zmf::config('sitename');
@@ -99,6 +105,7 @@ class PostsController extends Q {
             'forums' => $forums,
             'filter' => $filter,
             'order' => $order,
+            'topUsers' => $topUsers,
         );
         $this->render('index', $data);
     }

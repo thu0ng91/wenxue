@@ -73,18 +73,22 @@
             </div>
         </div>
         <?php }?>
-        <div class="module">
+        <div class="module" style="display: none">
             <div class="module-header">打赏榜</div>
             <div class="module-body">
                       
             </div>
         </div>
+        <?php if(!empty($topUsers)){?>
         <div class="module">
             <div class="module-header">活跃用户</div>
-            <div class="module-body">
-                      
+            <div class="module-body activeUsers">
+                <?php foreach ($topUsers as $topUser){?>
+                 <?php echo CHtml::link(CHtml::image(zmf::lazyImg(), $topUser['truename'], array('data-original' => $topUser['avatar'], 'class' => 'lazy a36 media-object')), array('user/index','id'=>$topUser['id']),array('title'=>$topUser['truename'])); ?> 
+                <?php }?>
             </div>
         </div>
+        <?php }?>
         <?php if(!empty($forums)){?>
         <div class="list-group">
             <?php foreach ($forums as $forum){?>

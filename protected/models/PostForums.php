@@ -128,5 +128,25 @@ class PostForums extends CActiveRecord {
         $res=  Yii::app()->db->createCommand($sql)->execute();
         return $res;
     }
+    
+    /**
+     * 获取板块下近24小时最活跃用户
+     * @param int $fid
+     * @param int $limit
+     * @return array
+     */
+    public static function getActivityUsers($fid,$limit=12){
+        //过去24小时
+        $now=  zmf::now();
+        $time=$now-86400;
+        $sql="SELECT u.id,u.truename,u.avatar,count(pp.id) AS total FROM {{users}} u INNER JOIN {{post_posts}} pp ON pp.uid=u.id INNER JOIN {{post_threads}} pt ON pp.tid=pt.id WHERE pt.fid=:fid AND pp.cTime>=:time GROUP BY pp.uid ORDER BY total DESC LIMIT $limit";
+        $res=  Yii::app()->db->createCommand($sql);
+        $res->bindValues(array(
+            ':fid'=>$fid,
+            ':time'=>$time            
+        ));
+        $items=$res->queryAll();
+        return $items;        
+    }
 
 }

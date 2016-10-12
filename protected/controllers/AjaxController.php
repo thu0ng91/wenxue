@@ -1631,7 +1631,7 @@ class AjaxController extends Q {
         $this->checkLogin();
         $this->checkUserStatus();
         $now = zmf::now();
-        $sql = "SELECT t.id,t.title,t.faceImg FROM {{task}} t,{{group_tasks}} gt WHERE ((gt.startTime=0 OR gt.startTime<=:cTime) AND (gt.endTime=0 OR gt.endTime>=:cTime)) AND gt.gid=:gid AND gt.tid=t.id LIMIT 10";
+        $sql = "SELECT t.id,t.title,t.faceImg,gt.type,gt.continuous,gt.days,gt.num,gt.score,gt.endTime FROM {{task}} t,{{group_tasks}} gt WHERE ((gt.startTime=0 OR gt.startTime<=:cTime) AND (gt.endTime=0 OR gt.endTime>=:cTime)) AND gt.gid=:gid AND gt.tid=t.id LIMIT 10";
         $res = Yii::app()->db->createCommand($sql);
         $res->bindValues(array(
             ':gid' => $this->userInfo['groupid'],
@@ -1645,16 +1645,19 @@ class AjaxController extends Q {
             'params' => array(
                 ':uid' => $this->uid
             ),
-            'select' => 'id,tid'
-        ));
-        $logsArr = CHtml::listData($logs, 'id', 'tid');
+            'select' => 'id,tid,status'
+        ));        
         foreach ($tasks as $k => $val) {
             $tasks[$k]['action'] = Posts::encode($val['id'], 'joinTask');
-            $receive = false; //是否已领取
-            if (in_array($val['id'], $logsArr)) {
-                $receive = true;
+            foreach ($logs as $log){
+                if($log['tid']==$val['id']){
+                    if($log['status']==TaskLogs::STATUS_REACHED){
+                        unset($tasks[$k]);
+                    }else{
+                        $tasks[$k]['receive'] = true;
+                    }
+                }
             }
-            $tasks[$k]['receive'] = $receive;
         }
         $html = $this->renderPartial('/user/tasks', array('tasks' => $tasks), true);
         $this->jsonOutPut(1, $html);

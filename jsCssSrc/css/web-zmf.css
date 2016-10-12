@@ -85,6 +85,10 @@ p{
     width: 48px;
     height: 48px;
 }
+.a36{
+    width: 36px;
+    height: 36px;
+}
 .a64{
     width: 64px;
     height: 64px;
@@ -1267,8 +1271,9 @@ span.required,.errorMessage{
     width: 300px;
     height: 225px;
 }
-.forum-page .nav-posts{
-
+.forum-page .activeUsers img{
+    display: inline-block;
+    margin-bottom: 5px;
 }
 .yiiPager{
     clear: both;
