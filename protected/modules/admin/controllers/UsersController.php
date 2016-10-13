@@ -46,7 +46,7 @@ class UsersController extends Admin {
         if (isset($_POST['Users'])) {
             if ($isNew) {
                 $_POST['Users']['password'] = md5($_POST['Users']['password']);
-            }elseif($_POST['Users']['password'] != $model->password){
+            } elseif ($_POST['Users']['password'] != $model->password) {
                 $_POST['Users']['password'] = md5($_POST['Users']['password']);
             }
             $model->attributes = $_POST['Users'];
@@ -127,6 +127,28 @@ class UsersController extends Admin {
         Admins::model()->deleteAll('uid=:uid', array(':uid' => $id));
         Users::model()->updateByPk($id, array('isAdmin' => 0));
         $this->redirect(array('users/admins'));
+    }
+
+    public function actionUpdateStat() {
+        $users = Users::model()->findAll();
+        foreach ($users as $info) {
+            $cacheKey = "updateUserLevel-" . $info['id'];
+            Users::updateUserExp($info);
+            zmf::setFCache($cacheKey, 1, 3600);
+
+            $cacheKey2 = "updateUserScore-" . $info['id'];
+            $totalScore = ScoreLogs::statUserScore($info['id']);
+            $info['score'] = $totalScore;
+            Users::updateInfo($info['id'], 'score', $totalScore);
+            zmf::setFCache($cacheKey2, 1, 3600);
+
+            $cacheKey3 = "updateUserExp-" . $info['id'];
+            $totalExp = UserAction::statUserExp($info['id']);
+            $info['exp'] = $totalExp;
+            Users::updateInfo($info['id'], 'exp', $totalExp);
+            zmf::setFCache($cacheKey3, 1, 3600);
+        }
+        exit('well done');
     }
 
 }

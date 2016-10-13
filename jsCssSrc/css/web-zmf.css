@@ -1172,6 +1172,11 @@ span.required,.errorMessage{
 .post-page .post-content .media .right-actions span{
     margin-right: 8px
 }
+.post-page .post-content .post-content-item{
+    margin-bottom: 15px;
+    font-size: 14px;
+    line-height: 1.75
+}
 .post-page .main-part .module .module-body{
     padding-left: 0;
     padding-right: 0

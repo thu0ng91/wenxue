@@ -14,13 +14,14 @@
         <p><?php echo CHtml::link($data['levelTitle'],array('site/level','id'=>$data['level']),array('class'=>'btn btn-block btn-xs btn-default'));?></p>
     </div>
     <div class="media-body">
-        <p class="help-block"><?php echo CHtml::link($data['username'],array());?>发布于<?php echo zmf::formatTime($data['cTime']);?></p>
+        <p class="help-block title"><?php echo CHtml::link($data['username'],array());?></p>
         <div class="post-content-item"><?php echo $data['content'];?></div>
 <!--        <div class="more-awesome">
             <span>打赏榜</span>
         </div>-->
         <?php $this->renderPartial('/common/props',array('props'=>$data['props'],'keyid'=>$data['id']));?>
         <p>
+            <span class="color-grey"><?php echo zmf::formatTime($data['cTime']);?></span>
             <span class="right-actions">
                 <span><?php echo CHtml::link('举报','javascript:;',array('action'=>'report','action-type'=>'post','action-id'=>$data['id'],'action-title'=>$data['title']));?></span>
                 <span><?php echo CHtml::link('赞赏'.$data['comments'],'javascript:;',array('action'=>'getProps','data-id'=>$data['id'],'data-type'=>'postPosts','data-target'=>'props-holder-'.$data['id'],'data-loaded'=>0));?></span>

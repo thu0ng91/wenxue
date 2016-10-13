@@ -128,4 +128,50 @@ class PostThreadsController extends Admin {
         }
     }
 
+    public function actionIntoPosts() {
+        $posts = Posts::model()->findAll();
+        foreach ($posts as $item) {
+            $_title = mysql_escape_string($item['title']);
+            $_faceImg=  Attachments::faceImg(array('faceimg'=>$item['faceimg']),'');
+            $sqlStr = "INSERT INTO pre_post_threads SET id='{$item['id']}',fid=1,uid='{$item['uid']}',aid='{$item['aid']}',title='{$_title}',faceImg='{$_faceImg}',hits='{$item['hits']}',comments='{$item['comments']}',favorites='{$item['favorite']}',styleStatus='{$item['styleStatus']}',`top`='{$item['top']}',`open`='{$item['open']}',cTime='{$item['cTime']}',status='{$item['status']}';";
+            if (Yii::app()->db->createCommand($sqlStr)->execute()) {
+                $_first = array(
+                    'uid' => $item['uid'],
+                    'aid' => $item['aid'],
+                    'tid' => $item['id'],
+                    'content' => $item['content'],
+                    'cTime' => $item['cTime'],
+                    'updateTime' => $item['cTime'],
+                    'open' => $item['open'],
+                    'status' => $item['status'],
+                    'isFirst' => 1,
+                );
+                $_model = new PostPosts;
+                $_model->attributes = $_first;
+                if (!$_model->save()) {
+                    PostThreads::model()->deleteByPk($item['id']);
+                    continue;
+                }
+                $comments = Comments::model()->findAll("logid=:logid AND classify='posts'", array(':logid' => $item['id']));
+                foreach ($comments as $comment) {
+                    $_attr = array(
+                        'uid' => $comment['uid'],
+                        'aid' => $comment['aid'],
+                        'tid' => $item['id'],
+                        'content' => $comment['content'],
+                        'cTime' => $comment['cTime'],
+                        'updateTime' => $comment['cTime'],
+                        'open' => $item['open'],
+                        'status' => $comment['status'],
+                        'isFirst' => 0,
+                    );
+                    $_model = new PostPosts;
+                    $_model->attributes = $_attr;
+                    $_model->save();
+                }
+            }
+        }
+        exit('well done');
+    }
+
 }
