@@ -92,6 +92,11 @@ class PostsController extends Q {
         foreach ($topUsers as $k=>$v){
             $topUsers[$k]['avatar']= zmf::getThumbnailUrl($v['avatar'],'a36', 'avatar');
         }
+        //判断是否收藏
+        $favorited=false;
+        if ($this->uid) {
+            $favorited = Favorites::checkFavored($forumId, 'forum');
+        }
         
         $this->selectNav = $type . 'Forum';
         $this->showLeftBtn = false;
@@ -106,6 +111,7 @@ class PostsController extends Q {
             'filter' => $filter,
             'order' => $order,
             'topUsers' => $topUsers,
+            'favorited' => $favorited,
         );
         $this->render('index', $data);
     }
@@ -162,6 +168,11 @@ class PostsController extends Q {
 
         //初始化快速评论框
         $model = new PostPosts;
+        //判断是否收藏
+        $favoritedForum=false;
+        if ($this->uid) {
+            $favoritedForum = Favorites::checkFavored($info['fid'], 'forum');
+        }
 
         $data = array(
             'info' => $info,
@@ -172,6 +183,7 @@ class PostsController extends Q {
             'relatePosts' => $relatePosts,
             'topsPosts' => $topsPosts,
             'model' => $model,
+            'favoritedForum' => $favoritedForum,
         );
         $this->favorited = Favorites::checkFavored($id, 'thread');
         $this->pageTitle = $info['title'] . ' - ' . zmf::config('sitename');

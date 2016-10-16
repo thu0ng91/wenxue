@@ -81,7 +81,7 @@ class Favorites extends CActiveRecord {
         if (!is_numeric($logid)) {
             return false;
         }
-        if (!isset($type) || !in_array($type, array('author','book','post','user'))) {
+        if (!isset($type) || !in_array($type, array('author','book','post','user','forum'))) {
             return false;
         }
         $attr = array(

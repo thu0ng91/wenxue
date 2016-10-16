@@ -924,6 +924,12 @@ function favorite(dom) {
         }else{
             dom.html('<i class="fa fa-thumbs-up"></i> '+(++num));
         }
+    }else if(t==='forum'){
+        if(dom.hasClass('btn-success')){
+            dom.removeClass('btn-success').addClass('btn-default').html('<i class="fa fa-check"></i> 已关注');
+        }else{
+            dom.removeClass('btn-default').addClass('btn-success').html('<i class="fa fa-plus"></i> 关注');
+        }
     }
     $.post(zmf.favoriteUrl, {type: t, data: acdata, YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
         ajaxReturn = true;

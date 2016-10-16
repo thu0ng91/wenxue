@@ -15,7 +15,7 @@ $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
                 </div>
                 <div class="media-right">
                     <div class="" style="width: 80px">
-                        <p><?php echo GroupPowers::link('favoriteForum',$this->userInfo,($_favorited ? '<i class="fa fa-check"></i> 已关注' : '<i class="fa fa-plus"></i> 关注'),'javascript:;',array('class'=>'btn btn-'.($_favorited ? 'default':'success').' btn-xs btn-block','action'=>'favorite','action-data'=>$forumInfo['id'],'action-type'=>'forum'));?></p>
+                        <p><?php echo !$favoritedForum ? GroupPowers::link('favoriteForum',$this->userInfo,'<i class="fa fa-plus"></i> 关注','javascript:;',array('class'=>'btn btn-'.'success'.' btn-xs btn-block','action'=>'favorite','action-data'=>$forumInfo['id'],'action-type'=>'forum')) : '';?></p>
                         <p><?php echo GroupPowers::link('addPost',$this->userInfo,'<i class="fa fa-plus"></i> 发表新帖',array('posts/create','forum'=>$forumInfo['id']),array('class'=>'btn btn-default btn-xs btn-block'));?></p>
                     </div>
                 </div>

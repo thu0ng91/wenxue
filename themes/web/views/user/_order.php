@@ -11,7 +11,7 @@
 <div class="media ui-border-b">
     <p class="color-grey">
         <span>订单号：<?php echo $data['orderId']; ?></span>
-        <span><?php echo zmf::time($data['paidTime']); ?></span>
+        <span class="pull-right"><?php echo zmf::time($data['paidTime']); ?></span>
     </p>
     <div class="media-left">
         <a href="<?php echo Yii::app()->createUrl('shop/detail', array('id' => $data['gid'])); ?>">
