@@ -42,6 +42,10 @@ a{
     width: 50px;
     height: 50px;
 }
+.a36{
+    width: 36px;
+    height: 36px;
+}
 .hidden{
     display: none
 }
@@ -474,7 +478,7 @@ a{
 }
 /*帖子*/
 .forum-page{
-    margin-top: 90px
+    
 }
 .forum-page .ui-list-img{
     width: 100px;
@@ -529,6 +533,10 @@ a{
 }
 .post-content img{
     width: 100%;
+}
+.post-page .post-replys .media{
+    border-bottom: 1px solid #f8f8f8;
+    padding-bottom: 15px
 }
 /*发布帖子*/
 .tags-body .tag-item{
