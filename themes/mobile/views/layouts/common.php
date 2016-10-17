@@ -2,8 +2,8 @@
 <html>  
   <head>    
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
-    <meta name="viewport" content="initial-scale=1.0,user-scalable=no,maximum-scale=1">
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,user-scalable=0">
+    <meta name="viewport" content="initial-scale=1.0,user-scalable=no,maximum-scale=1,user-scalable=0">
     <meta content="yes" name="apple-mobile-web-app-capable" />
     <meta content="black" name="apple-mobile-web-app-status-bar-style"  />
     <meta name="apple-touch-fullscreen" content="yes">

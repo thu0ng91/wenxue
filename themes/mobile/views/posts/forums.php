@@ -1,6 +1,6 @@
 <div class="module">
     <div class="module-body">
-        <ul class="ui-list ui-list-link ui-border-tb">
+        <ul class="ui-list ui-list-link">
         <?php foreach ($forums as $forum){$_favorited=in_array($forum['id'],$favorites);?>
             <li class="ui-border-t" data-href="<?php echo Yii::app()->createUrl('posts/index',array('forum'=>$forum['id']));?>">
                 <?php if($forum['faceImg']){?>

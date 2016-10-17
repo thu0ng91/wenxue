@@ -44,7 +44,7 @@
     <div class="module">
         <div class="module-header">目录</div>
         <div class="module-body book-chapters">
-            <ul class="ui-list ui-list-text ui-border-t">
+            <ul class="ui-list ui-list-text">
             <?php foreach ($chapters as $chapter){?>
                 <li class="ui-border-t"><p><?php echo CHtml::link($chapter['title'],array('book/chapter','cid'=>$chapter['id']),array('class'=>'list-group-item'));?></p></li>
             <?php }?>

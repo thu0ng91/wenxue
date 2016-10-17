@@ -99,7 +99,7 @@ $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
                 </p>
             </div>
             <?php if(!empty($relatePosts)){?>
-            <div class="module-header">最近发表</div>
+            <div class="module-header">「<?php echo $authorInfo['truename'];?>」近期发表</div>
             <div class="module-body">
                 <?php foreach ($relatePosts as $relatePost){?>
                 <p class="ui-nowrap"><?php echo CHtml::link($relatePost['title'],array('posts/view','id'=>$relatePost['id']));?></p>
@@ -107,7 +107,7 @@ $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
             </div>
             <?php }?>
             <?php if(!empty($topsPosts)){?>        
-            <div class="module-header"><?php echo $forumInfo['title'];?>热门</div>
+            <div class="module-header">「<?php echo $forumInfo['title'];?>」近期热门</div>
             <div class="module-body">
                 <?php foreach ($topsPosts as $topsPost){?>
                 <p class="ui-nowrap"><?php echo CHtml::link($topsPost['title'],array('posts/view','id'=>$topsPost['id']));?></p>

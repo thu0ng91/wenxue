@@ -13,7 +13,7 @@
     <ul class="ui-tiled">
         <li data-href="<?php echo zmf::config('baseurl'); ?>" class="<?php echo $this->selectNav == 'indexPage' ? 'active' : ''; ?>"><i class="fa fa-home"></i>首页</li>
         <li data-href="<?php echo Yii::app()->createUrl('book/index'); ?>" class="<?php echo (strpos($this->selectNav, 'column')!==false || $this->selectNav == 'book') ? 'active' : ''; ?>"><i class="fa fa-book"></i>作品</li>
-        <li data-href="<?php echo Yii::app()->createUrl('posts/index', array('type' => 'author')); ?>" class="<?php echo $this->selectNav == 'authorForum' ? 'active' : ''; ?>"><i class="fa fa-coffee"></i>论坛</li>
+        <li data-href="<?php echo Yii::app()->createUrl('posts/index', array('type' => 'author')); ?>" class="<?php echo $this->selectNav == 'forum' ? 'active' : ''; ?>"><i class="fa fa-coffee"></i>论坛</li>
         <?php if (!$this->uid) { ?>
             <li data-href="<?php echo Yii::app()->createUrl('site/login'); ?>"><i class="fa fa-user"></i>我的</li>
         <?php } else { ?>

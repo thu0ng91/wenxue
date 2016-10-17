@@ -10,14 +10,14 @@
  */
 ?>
 <div class="media" id="reply-<?php echo $data['id'];?>">
-    <ul class="ui-list author-info">
+    <ul class="ui-list">
         <li class="ui-border-t">
             <div class="ui-avatar a36">
                 <img class="lazy a36" src="<?php echo zmf::lazyImg();?>" data-original="<?php echo $data['avatar'];?>" alt="<?php echo $data['username'];?>">        
             </div>
             <div class="ui-list-info">
-                <h4 class="ui-nowrap"><?php echo CHtml::link($data['username'],$data['authorUrl']);?></h4>
-                <p class="color-grey"><?php echo zmf::formatTime($data['cTime']);?></p>
+                <p class="ui-nowrap"><?php echo CHtml::link($data['username'],$data['authorUrl']);?></p>
+                <p class="color-grey">发表于<?php echo zmf::formatTime($data['cTime']);?></p>
             </div>
         </li>
     </ul>

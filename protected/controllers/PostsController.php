@@ -13,6 +13,7 @@ class PostsController extends Q {
         }
         $favorites = $this->uid ? array_keys(CHtml::listData($this->userInfo['favoriteForums'], 'id', 'title')) : array();
         $this->pageTitle = '关注圈子 - ' . zmf::config('sitename');
+        $this->mobileTitle='关注圈子';
         $data = array(
             'forums' => $items,
             'favorites' => $favorites,
@@ -98,8 +99,9 @@ class PostsController extends Q {
             $favorited = Favorites::checkFavored($forumId, 'forum');
         }
         
-        $this->selectNav = $type . 'Forum';
-        $this->showLeftBtn = false;
+        $this->selectNav =  'forum';
+        $this->showLeftBtn = true;
+        $this->returnUrl=  Yii::app()->createUrl('posts/types');
         $this->pageTitle = $forumInfo['title'] . ' - ' . zmf::config('sitename');
         $this->mobileTitle = $forumInfo['title'];
         $data = array(
@@ -142,7 +144,7 @@ class PostsController extends Q {
         $size = 'w600';
         if ($this->isMobile) {
             $size = 'w650';
-            $this->layout = 'post';
+            //$this->layout = 'post';
         }
         //取楼主发的第一层
         $sqlContent = "SELECT p.id,p.uid,p.aid,p.cTime,p.updateTime,p.open,p.comments,p.favors,p.content,'' AS props FROM {{post_posts}} p WHERE p.tid='{$id}' AND p.isFirst=1 AND p.status=" . Posts::STATUS_PASSED;
@@ -185,6 +187,7 @@ class PostsController extends Q {
             'model' => $model,
             'favoritedForum' => $favoritedForum,
         );
+        $this->selectNav =  'forum';
         $this->favorited = Favorites::checkFavored($id, 'thread');
         $this->pageTitle = $info['title'] . ' - ' . zmf::config('sitename');
         $this->mobileTitle = '帖子详情';
