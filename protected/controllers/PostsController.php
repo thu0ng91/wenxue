@@ -11,6 +11,7 @@ class PostsController extends Q {
         foreach ($items as $k => $val) {
             $items[$k]['faceImg'] = zmf::getThumbnailUrl($val['faceImg'], 'a120', 'faceImg');
         }
+        $this->showLeftBtn = false;
         $favorites = $this->uid ? array_keys(CHtml::listData($this->userInfo['favoriteForums'], 'id', 'title')) : array();
         $this->pageTitle = '关注圈子 - ' . zmf::config('sitename');
         $this->mobileTitle='关注圈子';

@@ -19,21 +19,14 @@
                     </div>
                     <div class="ui-list-info">
                         <p class="ui-nowrap title"><?php echo $forumInfo['title'];?></p>
-                        <p class="ui-nowrap">
-                            <?php echo $forumInfo['desc'];?>
-                        </p>
+                        <p class="ui-nowrap-multi color-grey"><?php echo $forumInfo['desc'];?></p>
                         <div class="ui-btn-wrap">
-                            <button class="ui-btn ui-btn-primary">
-                                发表新帖
-                            </button>
-                            <button class="ui-btn ui-btn-danger">
-                                关注
-                            </button>
+                            <?php echo GroupPowers::link('addPost',$this->userInfo,'<i class="fa fa-plus"></i> 发表新帖',array('posts/create','forum'=>$forumInfo['id']),array('class'=>'ui-btn ui-btn-primary'));?>
+                            <?php echo !$favorited ? GroupPowers::link('favoriteForum',$this->userInfo,('<i class="fa fa-plus"></i> 关注'),'javascript:;',array('class'=>'ui-btn ui-btn-danger','action'=>'favorite','action-data'=>$forumInfo['id'],'action-type'=>'forum')) : '';?>
                         </div>
-                    </div>                    
+                    </div>
                 </li>
             </ul>
-            
         </div>
     </div>
     <div class="module">

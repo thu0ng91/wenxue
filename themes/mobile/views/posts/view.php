@@ -12,13 +12,11 @@ $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
                     </div>
                     <div class="ui-list-info">
                         <p class="ui-nowrap title"><?php echo $forumInfo['title'];?></p>
-                        <p class="ui-nowrap">
-                            <?php echo $forumInfo['desc'];?>
-                        </p>
+                        <p class="ui-nowrap-multi color-grey"><?php echo $forumInfo['desc'];?></p>
                     </div>
-                    <?php echo CHtml::link('发表新帖',array('posts/create','forum'=>$forumInfo['id']),array('class'=>'ui-btn'));?>
+                    <?php echo GroupPowers::link('addPost',$this->userInfo,'发表新帖',array('posts/create','forum'=>$forumInfo['id']),array('class'=>'ui-btn ui-btn-primary'));?>
                 </li>
-            </ul>         
+            </ul>
         </div>
     </div>
     <div class="module">

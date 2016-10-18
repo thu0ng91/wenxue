@@ -18,8 +18,11 @@ a{
 .clearfix:after{
     clear: both
 }
-.help-block,.color-grey,.color-grey a{
+.help-block,.color-grey{
     color: #ccc !important
+}
+.color-grey a{
+    color: #999
 }
 .star-color{
     color: #FFAC2D
@@ -52,8 +55,14 @@ a{
 .header-hack{
     margin-top: 0 !important
 }
+.title{
+    font-weight: 700
+}
 .ui-list-info p{
     color: #333
+}
+.ui-list-info .ui-btn-wrap{
+    padding: 5px 0 0;
 }
 .module{
     background: #fff;
