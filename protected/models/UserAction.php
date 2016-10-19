@@ -283,8 +283,22 @@ class UserAction extends CActiveRecord {
         }
     }
 
+    
+    /**
+     * 统计某个用户某天某操作的次数
+     * @param int $uid
+     * @param string $action
+     * @return int
+     */
     public static function statAction($uid, $action) {
-        $num = UserAction::model()->count('uid=:uid AND action=:action', array(':uid' => $uid, ':action' => $action));
+        $now = zmf::now();
+        $_time = strtotime(zmf::time($now, 'Y-m-d'), $now);
+        $params = array(
+            ':uid' => $uid,
+            ':action' => $action,
+            ':startTime' => $_time
+        );
+        $num = UserAction::model()->count('uid=:uid AND action=:action AND cTime>=:startTime', $params);
         return $num;
     }
 

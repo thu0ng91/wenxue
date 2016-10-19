@@ -49,7 +49,9 @@
                             <span style="color:red" title="加精"><i class="fa fa-flag"></i></span>
                             <?php }?>
                             <span><?php echo $_post['username'];?></span>
-                            <span><?php echo zmf::formatTime($_post['cTime']);?></span>                            
+                            <?php if(!$_post['faceImg']){?>
+                            <span><?php echo zmf::formatTime($_post['cTime']);?></span>   
+                            <?php }?>
                             <span class="pull-right">
                                 <i class="fa fa-eye"></i> <?php echo $_post['hits'];?>
                                 <i class="fa fa-comment"></i> <?php echo $_post['posts'];?>
@@ -58,7 +60,8 @@
                     </div>
                 </li>
             <?php }?>
-            </ul>                
+            </ul>  
+            <?php $this->renderPartial('/common/pager',array('pages'=>$pages));?>  
         </div>
     </div>
 </div>

@@ -17,7 +17,7 @@
         <?php if (!$this->uid) { ?>
             <li data-href="<?php echo Yii::app()->createUrl('site/login'); ?>"><i class="fa fa-user"></i>我的</li>
         <?php } else { ?>
-            <li onclick="showUserSide()"><i class="fa fa-user"></i>我的</li>
+            <li onclick="showUserSide()" class="<?php echo (in_array($this->selectNav, array('notice','tasks','setting'))) ? 'active' : ''; ?>"><i class="fa fa-user"></i>我的</li>
         <?php } ?>
     </ul>
 </footer>
@@ -53,6 +53,9 @@
         <?php }?>          
         <li class="ui-border-t" data-href="<?php echo Yii::app()->createUrl('user/notice');?>">
             <div class="ui-list-info"><p class="ui-nowrap"><i class="fa fa-bell"></i> 消息</p></div>
+        </li>
+        <li class="ui-border-t" data-href="<?php echo Yii::app()->createUrl('user/tasks');?>">
+            <div class="ui-list-info"><p class="ui-nowrap"><i class="fa fa-tasks"></i> 任务</p></div>
         </li>
         <li class="ui-border-t" data-href="<?php echo Yii::app()->createUrl('user/setting');?>">
             <div class="ui-list-info"><p class="ui-nowrap"><i class="fa fa-info-circle"></i> 修改资料</p></div>

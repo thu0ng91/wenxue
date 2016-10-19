@@ -15,8 +15,10 @@ $this->beginContent('/layouts/common');
         <?php echo CHtml::link('<i class="fa fa-search"></i>',array('search/do'));?>
         <?php if (!$this->uid) { ?>
         <?php echo CHtml::link('<i class="fa fa-bell-o"></i>',array('site/login'));?>
+        <?php echo CHtml::link('<i class="fa fa-tasks"></i>',array('site/login'));?>
         <?php } else {?>
         <?php echo CHtml::link('<i class="fa fa-bell-o"></i><span id="top-nav-count" class="top-nav-count">0</span>',array('user/notice'),array('class'=>'top-notices'));?>
+        <?php echo CHtml::link('<i class="fa fa-tasks"></i><span id="top-task-count" class="top-nav-count">0</span>',array('user/tasks'),array('class'=>'top-notices'));?>
         <?php } ?>
     </div>
 </header>

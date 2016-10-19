@@ -412,6 +412,7 @@ class UserController extends Q {
         ));
         foreach ($groups as $k => $val) {
             $groups[$k]['id'] = Posts::encode($val['id'], 'group');
+            $groups[$k]['faceImg'] = zmf::getThumbnailUrl($val['faceImg'],  $this->isMobile ? 'c640' : '', 'group');
         }
         $this->pageTitle = '角色选择 - ' . zmf::config('sitename');
         $data = array(
@@ -448,6 +449,17 @@ class UserController extends Q {
         );
         $this->pageTitle = '提醒 - ' . zmf::config('sitename');
         $this->render('notice', $data);
+    }
+    
+    public function actionTasks(){
+        $this->checkLogin();
+        $tasks = Task::getUserTasks($this->userInfo);
+        $data=array(
+            'tasks'=>$tasks
+        );
+        $this->selectNav = 'tasks';
+        $this->pageTitle = '任务 - ' . zmf::config('sitename');
+        $this->render('/user/tasks', $data);
     }
 
 }

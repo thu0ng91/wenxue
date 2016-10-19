@@ -41,13 +41,15 @@ $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
         <div class="module-body post-replys">            
             <?php foreach ($posts as $post){?>
             <?php $this->renderPartial('/posts/_postPost',array('data'=>$post));?>                    
-            <?php }?>             
+            <?php }?> 
+            <?php $this->renderPartial('/common/pager',array('pages'=>$pages));?>  
         </div>
-        <div class="module-header">快速回复</div>
         <?php }else{?>
         <div class="module-body padding-body"><p class="help-block">还没有人回复，快来抢沙发。</p></div>
         <?php }?>
-        
+    </div>    
+    <div class="module">
+        <div class="module-header">快速回复</div>
         <div class="module-body padding-body">
         <?php if($this->uid){?>
             <?php if(GroupPowers::checkAction($this->userInfo, 'addPostReply')){?>

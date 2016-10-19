@@ -25,24 +25,9 @@
             <div class="form-group">
                 <label>帖子正文</label>
                 <?php echo $form->textArea($model,'content',array('rows'=>6,'class'=>'form-control','placeholder'=>'请输入帖子正文')); ?>
-            </div>
+            </div> 
             
-            <?php if(!empty($tags)){?>
-            <div class="form-group">
-                <label>选择标签</label>
-                <div class="tags-body">
-                    <?php foreach ($tags as $tagid=>$tag){?>
-                    <span class="tag-item">
-                        <?php echo $tag;?>
-                        <input type="checkbox" name="tags[]" value="<?php echo $tagid;?>"/>
-                    </span>
-                    <?php }?>
-                </div>
-            </div>
-            <?php }?>
-            
-            <div class="form-group">
-                <label>文章设置</label>
+            <div class="form-group">                
                 <div class="checkbox">
                     <label><?php echo CHtml::activeCheckBox($model, 'open');?> 开放评论和点赞</label>
                 </div>

@@ -12,9 +12,13 @@
 <div class="module">
     <div class="module-header">他的收藏</div>
     <div class="module-body">
-        <?php if(!empty($posts)){foreach ($posts as $post){
+        <?php if(!empty($posts)){?>
+        <ul class="ui-list ui-list-link ui-border-t">
+            <?php foreach ($posts as $post){
             $this->renderPartial('/book/_item',array('data'=>$post,'adminLogin'=>false));
-        }}else{?>
+        }?>
+        </ul>
+        <?php }else{?>
         <p class="help-block text-center">暂无记录</p>
         <?php }?>
     </div>

@@ -164,12 +164,12 @@ class Task extends CActiveRecord {
         }
         //当天该操作的总次数如果大于任务规定数，则不做后续判断
         $todayNum = UserAction::statTodayAction($userInfo, $info);
-        if($todayNum>=$info['num']){
+        if ($todayNum >= $info['num']) {
             return array(
                 'status' => 0,
                 'msg' => '今日该操作已达上限'
             );
-        }        
+        }
         //处理任务
         $finished = false;
         if ($info['type'] == GroupTasks::TYPE_ONETIME) {//如果是一次性任务
@@ -205,6 +205,54 @@ class Task extends CActiveRecord {
                 'msg' => $info
             );
         }
+    }
+
+    /**
+     * 获取用户的所有任务列表
+     * @param array $userInfo
+     */
+    public static function getUserTasks($userInfo) {
+        if (!$userInfo['id'] || !$userInfo['groupid']) {
+            return array();
+        }
+        $now = zmf::now();
+        $sql = "SELECT t.id,t.title,t.faceImg,gt.type,gt.continuous,gt.days,gt.num,gt.score,gt.endTime,'' AS extraDesc FROM {{task}} t,{{group_tasks}} gt WHERE ((gt.startTime=0 OR gt.startTime<=:cTime) AND (gt.endTime=0 OR gt.endTime>=:cTime)) AND gt.gid=:gid AND gt.tid=t.id LIMIT 10";
+        $res = Yii::app()->db->createCommand($sql);
+        $res->bindValues(array(
+            ':gid' => $userInfo['groupid'],
+            ':cTime' => $now,
+        ));
+        $tasks = $res->queryAll();
+        //取出已经参与的任务
+        //todo，排除已完成的任务
+        $logs = TaskLogs::model()->findAll(array(
+            'condition' => 'uid=:uid',
+            'params' => array(
+                ':uid' => $userInfo['id']
+            ),
+            'select' => 'id,tid,status'
+        ));
+        foreach ($tasks as $k => $val) {
+            $tasks[$k]['action'] = Posts::encode($val['id'], 'joinTask');            
+            foreach ($logs as $log) {
+                if ($log['tid'] == $val['id']) {
+                    if ($log['status'] == TaskLogs::STATUS_REACHED) {
+                        unset($tasks[$k]);
+                        break;
+                    } else {
+                        $tasks[$k]['receive'] = true;
+                    }
+                }
+            }
+            if ($tasks[$k]) {
+                if ($val['type'] == 1) {//一次性任务
+                    $tasks[$k]['extraDesc'] = '一天内进行' . $val['num'] . '次，奖励' . $val['score'] . '积分' . ($val['endTime'] > 0 ? '，' . zmf::time($val['endTime'], 'm/d H:i:s') . '结束' : '');
+                } else {
+                    
+                }
+            }
+        }
+        return $tasks;
     }
 
 }

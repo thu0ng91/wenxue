@@ -12,6 +12,7 @@ class PostsController extends Q {
             $items[$k]['faceImg'] = zmf::getThumbnailUrl($val['faceImg'], 'a120', 'faceImg');
         }
         $this->showLeftBtn = false;
+        $this->selectNav =  'forum';
         $favorites = $this->uid ? array_keys(CHtml::listData($this->userInfo['favoriteForums'], 'id', 'title')) : array();
         $this->pageTitle = '关注圈子 - ' . zmf::config('sitename');
         $this->mobileTitle='关注圈子';
@@ -299,13 +300,13 @@ class PostsController extends Q {
                 $this->redirect(array('posts/view', 'id' => $model->id));
             }
         }
-        $tags = Tags::getClassifyTags('thread');
+        //$tags = Tags::getClassifyTags('thread');
         $this->pageTitle = '【' . $forumInfo['title'] . '】发布文章 - ' . zmf::config('sitename');
         $this->selectNav = 'authorForum';
         $this->mobileTitle = '发布帖子';
         $this->render('create', array(
             'model' => $model,
-            'tags' => $tags,
+            //'tags' => $tags,
         ));
     }
 

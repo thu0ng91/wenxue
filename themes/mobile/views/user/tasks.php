@@ -1,20 +1,17 @@
-<?php
-foreach ($tasks as $task){
-    if($task['type']==1){//一次性任务
-        $desc='一天内进行'.$task['num'].'次，奖励'.$task['score'].'积分'.($task['endTime']>0 ? '，'.zmf::time($task['endTime'], 'm/d H:i:s').'结束' : '');
-    }else{
-        
-    }
-?>
-<div class="media">
-    <div class="media-left">
-        
+<div class="module">
+    <div class="module-header">任务列表</div>
+    <?php if(!empty($tasks)){?>
+    <div class="module-body">
+        <ul class="ui-list ui-list-function">
+        <?php foreach ($tasks as $task): ?> 
+        <?php echo $this->renderPartial('_task',array('data'=>$task));?>
+        <?php endforeach; ?>     
+        </ul>
+        <?php $this->renderPartial('/common/pager', array('pages' => $pages)); ?>
     </div>
-    <div class="media-body">
-        <p><?php echo $task['title'];?><br/><span class="color-grey"><?php echo $desc;?></span></p>
+    <?php }else{?>
+    <div class="module-body padding-body">
+        <p class="help-block text-center">暂无任务</p> 
     </div>
-    <div class="media-right">
-        <p><?php echo $task['receive'] ? CHtml::link('进行中','javascript:;',array('class'=>'btn btn-xs btn-default disabled')) : CHtml::link('领取','javascript:;',array('class'=>'btn btn-xs btn-default','action'=>'ajax','action-data'=>$task['action']));?></p>
-    </div>
+    <?php }?>
 </div>
-<?php }

@@ -736,7 +736,10 @@ function rebind() {
         $.post(zmf.ajaxUrl, {action: 'float', data: data,YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
             result = eval('(' + result + ')');
             if (result['status'] === 1) {
-                $('#float-content').html(result['msg']);
+                $('#float-content').html(result['msg']['html']);
+                if(result['msg']['url']!=''){
+                    $('#float-link').attr('href',result['msg']['url']);
+                }
                 rebind();
             } else {
                 dialog({msg: result['msg']});

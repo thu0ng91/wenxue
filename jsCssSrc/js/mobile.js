@@ -649,6 +649,40 @@ function rebind() {
             }
         });
     });
+    //ajax请求
+    $("a[action=ajax]").unbind('click').click(function () {
+        var dom=$(this);
+        var data=dom.attr('action-data');
+        var input=dom.attr('action-input');
+        if(!data){
+            alert('缺少参数');
+            return false;
+        }
+        var passData = {
+            YII_CSRF_TOKEN: zmf.csrfToken,
+            action: 'ajax',
+            data: data
+        };
+        if(input){
+            var inputDom=$('#'+input);
+            var inputVal=inputDom.val();
+            if(!inputVal || parseInt(inputVal)<1){
+                simpleDialog({content: '请完善输入'});
+                inputDom.focus();
+                return false;
+            }else{
+                passData.extra=inputVal;
+            }
+        }
+        $.post(zmf.ajaxUrl, passData, function (result) {
+            result = eval('(' + result + ')');
+            if (result['status'] === 1) {
+                dialog({msg: result['msg']});
+            } else {
+                dialog({msg: result['msg']});
+            }
+        });
+    });
     bindLink();    
 }
 function bindLink(){

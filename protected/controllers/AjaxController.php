@@ -1630,37 +1630,18 @@ class AjaxController extends Q {
     private function userTasks() {
         $this->checkLogin();
         $this->checkUserStatus();
-        $now = zmf::now();
-        $sql = "SELECT t.id,t.title,t.faceImg,gt.type,gt.continuous,gt.days,gt.num,gt.score,gt.endTime FROM {{task}} t,{{group_tasks}} gt WHERE ((gt.startTime=0 OR gt.startTime<=:cTime) AND (gt.endTime=0 OR gt.endTime>=:cTime)) AND gt.gid=:gid AND gt.tid=t.id LIMIT 10";
-        $res = Yii::app()->db->createCommand($sql);
-        $res->bindValues(array(
-            ':gid' => $this->userInfo['groupid'],
-            ':cTime' => $now,
-        ));
-        $tasks = $res->queryAll();
-        //取出已经参与的任务
-        //todo，排除已完成的任务
-        $logs = TaskLogs::model()->findAll(array(
-            'condition' => 'uid=:uid',
-            'params' => array(
-                ':uid' => $this->uid
-            ),
-            'select' => 'id,tid,status'
-        ));        
-        foreach ($tasks as $k => $val) {
-            $tasks[$k]['action'] = Posts::encode($val['id'], 'joinTask');
-            foreach ($logs as $log){
-                if($log['tid']==$val['id']){
-                    if($log['status']==TaskLogs::STATUS_REACHED){
-                        unset($tasks[$k]);
-                    }else{
-                        $tasks[$k]['receive'] = true;
-                    }
-                }
-            }
+        $tasks = Task::getUserTasks($this->userInfo);
+        $html='';
+        if(!empty($tasks)){foreach ($tasks as $data){
+            $html.= $this->renderPartial('/user/_task', array('data' => $data), true);
+        }}else{
+            $html='<p class="help-block text-center">暂无任务</p>';
         }
-        $html = $this->renderPartial('/user/tasks', array('tasks' => $tasks), true);
-        $this->jsonOutPut(1, $html);
+        $data=array(
+            'html'=>$html,
+            'url'=>  Yii::app()->createUrl('user/tasks'),
+        );
+        $this->jsonOutPut(1, $data);
     }
 
     private function joinTask($arr) {

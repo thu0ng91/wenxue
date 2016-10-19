@@ -119,7 +119,7 @@
             </div>
             <div class="float-footer">
                 <ul>
-                    <li><a href="">查看全部</a></li>
+                    <li><a href="javascript:;" id="float-link">查看全部</a></li>
                     <li><a href="javascript:;" onclick="$('#float-holder').hide()">关闭</a></li>
                 </ul>
             </div>
