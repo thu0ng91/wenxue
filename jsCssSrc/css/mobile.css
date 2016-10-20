@@ -780,6 +780,21 @@ a{
     text-align: center;
     color: #999
 }
+/*更多*/
+.more-awesome {
+    color: #999;
+    font-size: 14px;
+    text-align: center;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 15px;
+    margin-top: 15px;
+}
+.more-awesome span {
+    position: relative;
+    top: 13px;
+    background-color: #fff;
+    padding: 0 20px;
+} 
 /*简单提示*/
 .simpleDialog{
     background: #FF677D;

@@ -341,3 +341,14 @@ alter TABLE pre_users add levelIcon varchar(255) not null COMMENT '等级图标'
 
 alter TABLE pre_group add initScore int(10) unsigned not null COMMENT '初始化积分';
 alter TABLE pre_group add initExp int(10) unsigned not null COMMENT '初始化经验';
+
+DROP TABLE IF EXISTS `pre_group_gifts`;
+CREATE TABLE `pre_group_gifts` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `groupid` int(10) unsigned NOT NULL COMMENT '用户组ID',
+  `goodsid` int(10) unsigned NOT NULL COMMENT '商品ID',
+  `num` smallint(8) unsigned NOT NULL COMMENT '赠送数量',  
+  PRIMARY KEY (`id`),
+  KEY `groupid` (`groupid`),
+  KEY `goodsid` (`goodsid`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;

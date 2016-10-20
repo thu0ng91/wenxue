@@ -31,16 +31,37 @@
         display: none;
         z-index: 999
     }
+    .groups-holder .thumbnail .caption{
+        padding: 5px 10px 15px
+    }
+    .groups-holder .thumbnail .caption .task-samples{
+        border-left: 4px solid #efefef;
+        padding-left: 5px;
+    }
+    .groups-holder .thumbnail .caption .level-info span{
+        margin-right: 15px;
+    }
 </style>
 <div class="container groups-container">
     <div class="groups-holder" id="groups-holder">
         <?php foreach($groups as $group){?>        
         <div class="thumbnail" data-id="<?php echo $group['id'];?>">
             <i class="fa fa-check fixed-icon"></i>
-            <img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9InllcyI/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMjQyIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDI0MiAyMDAiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjxkZWZzLz48cmVjdCB3aWR0aD0iMjQyIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI0VFRUVFRSIvPjxnPjx0ZXh0IHg9IjkzIiB5PSIxMDAiIHN0eWxlPSJmaWxsOiNBQUFBQUE7Zm9udC13ZWlnaHQ6Ym9sZDtmb250LWZhbWlseTpBcmlhbCwgSGVsdmV0aWNhLCBPcGVuIFNhbnMsIHNhbnMtc2VyaWYsIG1vbm9zcGFjZTtmb250LXNpemU6MTFwdDtkb21pbmFudC1iYXNlbGluZTpjZW50cmFsIj4yNDJ4MjAwPC90ZXh0PjwvZz48L3N2Zz4=" alt="...">
+            <img src="<?php echo zmf::lazyImg();?>" class="lazy" data-original="<?php echo $group['faceImg'];?>" alt="<?php echo $group['title'];?>">
             <div class="caption">
                 <p class="title"><?php echo $group['title'];?></p>
-                <p><?php echo $group['desc'];?></p>                    
+                <p><?php echo $group['desc'];?></p>
+                <p class="color-grey level-info"><span>成长路线</span><span>成员：<?php echo $group['members'];?></span></p>
+                <?php if(!empty($group['levels'])){?>
+                <div class="task-samples">
+                    <?php foreach ($group['levels'] as $level){?>
+                    <p class="ui-nowrap color-grey"><?php echo $level['title'];?></p>
+                    <?php }?>
+                    <?php if(count($group['levels'])==5){?>
+                    <p class="ui-nowrap color-grey">……更多</p>
+                    <?php }?>
+                </div>
+                <?php }?>
             </div>
         </div>        
         <?php }?>

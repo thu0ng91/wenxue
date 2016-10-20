@@ -33,6 +33,16 @@ $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
             <div class="post-content">
                 <?php echo $info['content']['content'];?>
             </div>
+            <?php if(!empty($info['content']['props'])){$props=$info['content']['props'];?>
+            <div class="post-props" id="post-props-<?php echo $info['id'];?>">
+                <div class="more-awesome"><span>赞赏榜</span></div>
+                <ul class="ui-list ui-list-one">
+                <?php foreach($props as $prop){?>   
+                    <li class="ui-border-b"><div class="ui-list-info ui-border-t"><h4 class="ui-nowrap"><?php echo CHtml::link($prop['truename'],array('user/index','id'=>$prop['uid']));?></h4><div class="ui-txt-info"><?php echo $prop['title'];?> x<?php echo $prop['num'];?></div></div></li>
+                <?php }?>  
+                </ul>
+            </div>
+            <?php }?>
         </div>
     </div>
     <div class="module">

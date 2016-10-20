@@ -1619,7 +1619,10 @@ class AjaxController extends Q {
                 'display' => 0,
             );
             UserAction::simpleRecord($attr);
-            //todo，用户组初始化赠送的物品
+            //更新团队的成员数
+            Group::updateMemberCount($ginfo['id']);            
+            //用户组初始化赠送的物品
+            GroupGifts::groupGiftsForUser($ginfo['id'], $this->userInfo);            
             $url = Yii::app()->createUrl('user/index');
             $this->jsonOutPut(1, $url);
         } else {

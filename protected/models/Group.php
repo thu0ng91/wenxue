@@ -122,5 +122,30 @@ class Group extends CActiveRecord {
     public static function getOne($id){
         return Group::model()->findByPk($id);
     }
+    
+    /**
+     * 更新团队的成员数
+     * @param int $gid
+     * @return bool
+     */
+    public static function updateMemberCount($gid){
+        $count=  Users::model()->count('groupid=:gid',array(':gid'=>$gid));
+        return self::model()->updateByPk($gid, array(
+            'members'=>$count
+        ));
+    }
+    
+    /**
+     * 更新团队的任务数
+     * @param int $gid
+     * @return bool
+     */
+    public static function updateTaskCount($gid){
+        $now=  zmf::now();
+        $count= GroupTasks::model()->count('gid=:gid AND ((startTime=0 OR startTime<=:cTime) AND (endTime=0 OR endTime>=:cTime))',array(':gid'=>$gid,':cTime'=>$now));
+        return self::model()->updateByPk($gid, array(
+            'tasks'=>$count
+        ));
+    }
 
 }

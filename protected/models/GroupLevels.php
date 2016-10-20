@@ -129,5 +129,22 @@ class GroupLevels extends CActiveRecord {
         }
         return $arr;
     }
+    
+    /**
+     * 根据团队ID获取成长等级
+     * @param int $gid
+     * @return array $items
+     */
+    public static function getByGroupid($gid,$limit=10){
+        $items=  self::model()->findAll(array(
+            'condition'=>'gid=:gid',
+            'params'=>array(
+                ':gid'=>$gid
+            ),
+            'order'=>'id ASC',
+            'limit'=>$limit
+        ));
+        return $items;
+    }
 
 }

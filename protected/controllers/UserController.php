@@ -57,16 +57,16 @@ class UserController extends Q {
             foreach ($posts as $k => $val) {
                 $posts[$k]['data'] = CJSON::decode($val['data']);
                 $posts[$k]['action'] = UserAction::exClassify($val['classify']);
-                if($this->myself && !empty($usersArr)){
-                    foreach ($usersArr as $val2){
-                        if($val2['id']==$val['uid']){
-                            $posts[$k]['truename']=$val2['truename'];
-                            $posts[$k]['avatar']=  zmf::getThumbnailUrl($val2['avatar'],'a120','user');
+                if ($this->myself && !empty($usersArr)) {
+                    foreach ($usersArr as $val2) {
+                        if ($val2['id'] == $val['uid']) {
+                            $posts[$k]['truename'] = $val2['truename'];
+                            $posts[$k]['avatar'] = zmf::getThumbnailUrl($val2['avatar'], 'a120', 'user');
                         }
                     }
-                }else{
-                    $posts[$k]['truename']=$this->toUserInfo['truename'];
-                    $posts[$k]['avatar']=  zmf::getThumbnailUrl($this->toUserInfo['avatar'],'a120','user');
+                } else {
+                    $posts[$k]['truename'] = $this->toUserInfo['truename'];
+                    $posts[$k]['avatar'] = zmf::getThumbnailUrl($this->toUserInfo['avatar'], 'a120', 'user');
                 }
             }
         }
@@ -407,12 +407,13 @@ class UserController extends Q {
         if ($this->userInfo['groupid']) {
             $this->message(0, '你已选择过角色，请勿重复操作');
         }
-        $groups = Group::model()->findAll(array(
-            'condition' => 'status=1', //推荐
-        ));
+        //status=1为推荐
+        $sql = "SELECT id,title,faceImg,`desc`,members,'' AS levels FROM {{group}} WHERE status=1";
+        $groups = Yii::app()->db->createCommand($sql)->queryAll();
         foreach ($groups as $k => $val) {
             $groups[$k]['id'] = Posts::encode($val['id'], 'group');
-            $groups[$k]['faceImg'] = zmf::getThumbnailUrl($val['faceImg'],  $this->isMobile ? 'c640' : '', 'group');
+            $groups[$k]['faceImg'] = zmf::getThumbnailUrl($val['faceImg'], $this->isMobile ? 'c640' : '', 'group');
+            $groups[$k]['levels'] = GroupLevels::getByGroupid($val['id'],5);
         }
         $this->pageTitle = '角色选择 - ' . zmf::config('sitename');
         $data = array(
@@ -450,12 +451,12 @@ class UserController extends Q {
         $this->pageTitle = '提醒 - ' . zmf::config('sitename');
         $this->render('notice', $data);
     }
-    
-    public function actionTasks(){
+
+    public function actionTasks() {
         $this->checkLogin();
         $tasks = Task::getUserTasks($this->userInfo);
-        $data=array(
-            'tasks'=>$tasks
+        $data = array(
+            'tasks' => $tasks
         );
         $this->selectNav = 'tasks';
         $this->pageTitle = '任务 - ' . zmf::config('sitename');

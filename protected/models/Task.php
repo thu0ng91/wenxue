@@ -223,8 +223,7 @@ class Task extends CActiveRecord {
             ':cTime' => $now,
         ));
         $tasks = $res->queryAll();
-        //取出已经参与的任务
-        //todo，排除已完成的任务
+        //取出已经参与的任务        
         $logs = TaskLogs::model()->findAll(array(
             'condition' => 'uid=:uid',
             'params' => array(
@@ -236,6 +235,7 @@ class Task extends CActiveRecord {
             $tasks[$k]['action'] = Posts::encode($val['id'], 'joinTask');            
             foreach ($logs as $log) {
                 if ($log['tid'] == $val['id']) {
+                    //排除已完成的任务
                     if ($log['status'] == TaskLogs::STATUS_REACHED) {
                         unset($tasks[$k]);
                         break;

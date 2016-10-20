@@ -118,6 +118,13 @@ class Props extends CActiveRecord {
         return self::model()->findByPk($id);
     }
 
+    /**
+     * 为用户保存道具数据
+     * @param object $userInfo
+     * @param object $goodsInfo
+     * @param object $orderInfo
+     * @return boolean
+     */
     public static function saveUserProps($userInfo, $goodsInfo, $orderInfo) {
         if (empty($userInfo) || empty($goodsInfo) || empty($orderInfo)) {
             return false;
