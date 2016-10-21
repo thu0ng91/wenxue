@@ -73,7 +73,7 @@ class TaskController extends Admin {
      * Lists all models.
      */
     public function actionIndex() {
-        $select = "id,title,faceImg,`desc`,action,times,cTime";
+        $select = "id,title,faceImg,`desc`,action,times";
         $model = new Task;
         $criteria = new CDbCriteria();
         $criteria->select = $select;

@@ -20,16 +20,17 @@ $this->renderPartial('_nav');
 
     <?php foreach ($posts as $data): ?> 
         <tr>
-
             <td><?php echo $data->id; ?></td>
             <td><?php echo $data->title; ?></td>
             <td><?php echo $data->posts; ?></td>
             <td><?php echo $data->favors; ?></td>
             <td>
-                <?php echo CHtml::link('编辑', array('update', 'id' => $data->id)); ?>        
+                <?php echo CHtml::link('版主', array('forumAdmins/index', 'id' => $data->id)); ?>
+                <?php echo CHtml::link('预览', array('/posts/index', 'forum' => $data->id)); ?>
+                <?php echo CHtml::link('编辑', array('update', 'id' => $data->id)); ?>
                 <?php echo CHtml::link('删除', array('delete', 'id' => $data->id)); ?>
             </td>
-        </tr>    
+        </tr>
     <?php endforeach; ?>
 </table>
 <?php $this->renderPartial('/common/pager', array('pages' => $pages)); ?>

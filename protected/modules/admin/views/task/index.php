@@ -14,7 +14,6 @@ $this->renderPartial('_nav');
         <th><?php echo $model->getAttributeLabel("title"); ?></th>
         <th><?php echo $model->getAttributeLabel("action"); ?></th>        
         <th><?php echo $model->getAttributeLabel("times"); ?></th>
-        <th><?php echo $model->getAttributeLabel("cTime"); ?></th>
         <th>操作</th>
     </tr>
 
@@ -24,7 +23,6 @@ $this->renderPartial('_nav');
             <td><?php echo $data->title; ?></td>
             <td><?php echo $data->action; ?></td>            
             <td><?php echo $data->times; ?></td>
-            <td><?php echo $data->cTime; ?></td>
             <td>
                 <?php echo CHtml::link('编辑', array('update', 'id' => $data->id)); ?>        
                 <?php echo CHtml::link('删除', array('delete', 'id' => $data->id)); ?>

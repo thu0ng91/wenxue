@@ -70,6 +70,12 @@
     .float-holder .float-content .module .module-body{
         padding:15px 10px 10px;
     }
+    .float-holder .float-content .media{
+        border-bottom:1px solid #f8f8f8;
+    }
+    .float-holder .float-content .media:last-child{
+        border-bottom:none
+    }
     .float-holder .float-content .media .media-body p{
         line-height:22px;
     }

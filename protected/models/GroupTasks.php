@@ -39,7 +39,7 @@ class GroupTasks extends CActiveRecord {
         return array(
             array('gid, tid,days,num,action,startTime, endTime', 'required'),
             array('type,continuous, num', 'numerical', 'integerOnly' => true),
-            array('gid, tid, score, startTime, endTime, times,days', 'length', 'max' => 10),
+            array('gid, tid, score,exp, startTime, endTime, times,days', 'length', 'max' => 10),
             array('action', 'length', 'max' => 16),
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
@@ -73,6 +73,7 @@ class GroupTasks extends CActiveRecord {
             'days' => '总天数',
             'num' => '每天次数',
             'score' => '奖励积分',
+            'exp' => '奖励经验',
             'startTime' => '开始时间',
             'endTime' => '结束时间',
             'times' => '参与人数',
@@ -157,6 +158,7 @@ class GroupTasks extends CActiveRecord {
             'continuous' => $reinfo['continuous'],
             'num' => $reinfo['num'],
             'score' => $reinfo['score'],
+            'exp' => $reinfo['exp'],
             'startTime' => $reinfo['startTime'],
             'endTime' => $reinfo['endTime'],
             'times' => $reinfo['times'],

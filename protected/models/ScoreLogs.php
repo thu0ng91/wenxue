@@ -35,7 +35,7 @@ class ScoreLogs extends CActiveRecord {
             array('cTime', 'default', 'setOnEmpty' => true, 'value' => zmf::now()),
             array('uid,classify,score', 'required'),
             array('score', 'numerical', 'integerOnly' => true),
-            array('uid, logid, cTime', 'length', 'max' => 10),
+            array('uid, logid, cTime,exp', 'length', 'max' => 10),
             array('classify', 'length', 'max' => 16),
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
@@ -63,6 +63,7 @@ class ScoreLogs extends CActiveRecord {
             'classify' => '分类',
             'logid' => '对象ID',
             'score' => '积分',
+            'exp' => '经验',
             'cTime' => '参与时间',
         );
     }

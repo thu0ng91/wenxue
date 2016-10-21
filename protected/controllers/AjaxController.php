@@ -1672,6 +1672,7 @@ class AjaxController extends Q {
             'times' => 0,
             'status' => 0,
             'score' => $taskInfo['score'],
+            'exp' => $taskInfo['exp'],
         );
         $model = new TaskLogs;
         $model->attributes = $attr;

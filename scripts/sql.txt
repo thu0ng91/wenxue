@@ -352,3 +352,19 @@ CREATE TABLE `pre_group_gifts` (
   KEY `groupid` (`groupid`),
   KEY `goodsid` (`goodsid`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+alter TABLE pre_group_tasks add exp int(10) unsigned not null COMMENT '经验奖励';
+alter TABLE pre_task_logs add exp int(10) unsigned not null COMMENT '经验奖励';
+alter TABLE pre_score_logs add exp int(10) unsigned not null COMMENT '经验奖励';
+
+DROP TABLE IF EXISTS `pre_forum_admins`;
+CREATE TABLE `pre_forum_admins` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `fid` int(10) unsigned NOT NULL COMMENT '版块ID',
+  `uid` int(10) unsigned NOT NULL COMMENT '用户ID',
+  `num` smallint(8) unsigned NOT NULL COMMENT '发帖数量',
+  `powers` MEDIUMTEXT NOT NULL COMMENT '版主权限',
+  PRIMARY KEY (`id`),
+  KEY `fid` (`fid`),
+  KEY `uid` (`uid`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;

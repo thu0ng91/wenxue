@@ -38,7 +38,7 @@ class TaskLogs extends CActiveRecord {
             array('cTime', 'default', 'setOnEmpty' => true, 'value' => zmf::now()),
             array('uid, tid', 'required'),
             array('times, status', 'numerical', 'integerOnly' => true),
-            array('uid, tid, cTime, score,finishTime', 'length', 'max' => 10),
+            array('uid, tid, cTime, score,exp,finishTime', 'length', 'max' => 10),
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
             array('id, uid, tid, times, cTime, status, score', 'safe', 'on' => 'search'),
@@ -68,6 +68,7 @@ class TaskLogs extends CActiveRecord {
             'finishTime' => '完成时间',
             'status' => '状态，是否已达成',
             'score' => '奖励积分',
+            'exp' => '奖励经验',
         );
     }
 
@@ -129,7 +130,8 @@ class TaskLogs extends CActiveRecord {
                 'uid' => $userInfo['id'],
                 'classify' => 'task',
                 'logid' => $taskInfo['id'],
-                'score' => $taskInfo['score']
+                'score' => $taskInfo['score'],
+                'exp' => $taskInfo['exp'],
             );
             $_scoreLogModel = new ScoreLogs;
             $_scoreLogModel->attributes = $_attr;

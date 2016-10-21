@@ -129,7 +129,7 @@ class UserAction extends CActiveRecord {
         return $arr[$type];
     }
 
-    public static function userActions() {
+    public static function userActions($type='admin') {
         $arr = array(
             'post' => array(
                 'desc' => '论坛相关',
@@ -211,8 +211,12 @@ class UserAction extends CActiveRecord {
             ),
         );
         $tmpArr = array();
-        foreach ($arr as $type => $detail) {
-            $tmpArr = array_merge($tmpArr, $detail['items']);
+        if($type=='admin'){            
+            foreach ($arr as $detail) {
+                $tmpArr = array_merge($tmpArr, $detail['items']);
+            }
+        }else{
+            $tmpArr=$arr[$type]['items'];
         }
         return $tmpArr;
     }
@@ -322,14 +326,19 @@ class UserAction extends CActiveRecord {
     public static function statTodayAction($userInfo, $taskInfo) {
         //取出用户领取任务到任务结束时间内该操作的所有时间
         $now = zmf::now();
-        $_time = strtotime(zmf::time($now, 'Y-m-d'), $now);
+        //如果用户接受任务的时间在任务开始之后        
+        $_time = strtotime(zmf::time($now, 'Y-m-d'), $now);        
         $params = array(
             ':uid' => $userInfo['id'],
             ':action' => $taskInfo['action'],
             ':startTime' => $taskInfo['userStartTime'],
             ':endTime' => ($_time + 86400),
         );
-        $params[':endTime'] = $taskInfo['endTime'];
+        if($taskInfo['endTime']>0){
+            $params[':endTime'] = $taskInfo['endTime'];
+        }else{
+            //unset($params[':endTime']);
+        }
         $num = UserAction::model()->count(array(
             'condition' => 'uid=:uid AND action=:action AND cTime>=:startTime AND cTime<=:endTime',
             'params' => $params

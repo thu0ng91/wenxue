@@ -1,13 +1,13 @@
 <?php
 
 /**
- * @filename GroupTasksController.php 
+ * @filename ForumAdminsController.php 
  * @Description
  * @author 阿年飞少 <ph7pal@qq.com> 
  * @link http://www.newsoul.cn 
  * @copyright Copyright©2016 阿年飞少 
- * @datetime 2016-09-02 11:21:04 */
-class GroupTasksController extends Admin {
+ * @datetime 2016-10-21 09:25:32 */
+class ForumAdminsController extends Admin {
 
     /**
      * Displays a particular model.
@@ -26,47 +26,53 @@ class GroupTasksController extends Admin {
     public function actionCreate($id = '') {
         if ($id) {
             $model = $this->loadModel($id);
+            $model->powers = explode(',', $model->powers);
         } else {
-            $model = new GroupTasks;
+            $model = new ForumAdmins;
         }
         // Uncomment the following line if AJAX validation is needed
         // $this->performAjaxValidation($model);
-        if (isset($_POST['GroupTasks'])) {
-            $_gtaskInfo = false;
-            if (!$id) {
-                $_gtaskInfo = GroupTasks::model()->find('gid=:gid AND tid=:tid', array(':gid' => $_POST['GroupTasks']['gid'], ':tid' => $_POST['GroupTasks']['tid']));
-            }
-            if ($_gtaskInfo) {
-                $model->attributes = $_POST['GroupTasks'];
-                $model->addError('tid', '每个用户组只能领取一次同一任务');
+        if (isset($_POST['ForumAdmins'])) {
+            $model->attributes = $_POST['ForumAdmins'];
+            $fidArr = is_array($_POST['ForumAdmins']['fid']) ? array_filter(array_unique($_POST['ForumAdmins']['fid'])):array(0=>$_POST['ForumAdmins']['fid']);
+
+            if (empty($fidArr)) {
+                $model->addError('fid', '请选择版块');
+            } elseif (!$_POST['ForumAdmins']['uid']) {
+                $model->addError('fid', '请选择用户');
             } else {
-                if ($_POST['GroupTasks']['tid']) {
-                    $taskInfo = Task::getOne($_POST['GroupTasks']['tid']);
-                    if ($taskInfo) {
-                        $_POST['GroupTasks']['action'] = $taskInfo['action'];
-                    } else {
-                        unset($_POST['GroupTasks']['tid']);
+                $powers = join(',', array_filter(array_unique($_POST['ForumAdmins']['powers'])));
+                foreach ($fidArr as $fid) {
+                    //如果用户已经是该版块的版主
+                    if ($model->fid != $fid) {
+                        if (ForumAdmins::getOne($_POST['ForumAdmins']['uid'], $fid)) {
+                            continue;
+                        }
+                        $_attr = array(
+                            'fid' => $fid,
+                            'uid' => $_POST['ForumAdmins']['uid'],
+                            'num' => zmf::filterInput($_POST['ForumAdmins']['num'], 2),
+                            'powers' => $powers
+                        );
+                        $model = new ForumAdmins;
+                        $model->attributes = $_attr;
+                        $model->save();
+                    }else{
+                        $_attr = array(
+                            'fid' => $fid,
+                            'uid' => $_POST['ForumAdmins']['uid'],
+                            'num' => zmf::filterInput($_POST['ForumAdmins']['num'], 2),
+                            'powers' => $powers
+                        );
+                        $model->attributes = $_attr;
+                        $model->save();
                     }
                 }
-                if ($_POST['GroupTasks']['type'] == GroupTasks::TYPE_ONETIME) {
-                    $_POST['GroupTasks']['days'] = 1;
-                    $_POST['GroupTasks']['continuous'] = 0;
-                }
-                $now=  zmf::now();
-                if (isset($_POST['GroupTasks']['startTime'])) {
-                    $_POST['GroupTasks']['startTime'] = strtotime($_POST['GroupTasks']['startTime'],$now);
-                }
-                if (isset($_POST['GroupTasks']['endTime'])) {
-                    $_POST['GroupTasks']['endTime'] = strtotime($_POST['GroupTasks']['endTime'],$now);
-                }
-                $model->attributes = $_POST['GroupTasks'];
-                if ($model->save()) {
-                    if (!$id) {
-                        Yii::app()->user->setFlash('addGroupTasksSuccess', "保存成功！您可以继续添加。");
-                        $this->redirect(array('create'));
-                    } else {
-                        $this->redirect(array('index'));
-                    }
+                if (!$id) {
+                    Yii::app()->user->setFlash('addForumAdminsSuccess', "保存成功！您可以继续添加。");
+                    $this->redirect(array('create'));
+                } else {
+                    $this->redirect(array('index'));
                 }
             }
         }
@@ -91,7 +97,6 @@ class GroupTasksController extends Admin {
      */
     public function actionDelete($id) {
         $this->loadModel($id)->delete();
-
         // if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
         if (!isset($_GET['ajax']))
             $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('index'));
@@ -101,8 +106,8 @@ class GroupTasksController extends Admin {
      * Lists all models.
      */
     public function actionIndex() {
-        $select = "id,gid,tid,action,type,days,num,score,exp,startTime,endTime,times";
-        $model = new GroupTasks;
+        $select = "id,fid,uid,num,powers";
+        $model = new ForumAdmins;
         $criteria = new CDbCriteria();
         $criteria->select = $select;
         $count = $model->count($criteria);
@@ -121,10 +126,10 @@ class GroupTasksController extends Admin {
      * Manages all models.
      */
     public function actionAdmin() {
-        $model = new GroupTasks('search');
+        $model = new ForumAdmins('search');
         $model->unsetAttributes();  // clear any default values
-        if (isset($_GET['GroupTasks']))
-            $model->attributes = $_GET['GroupTasks'];
+        if (isset($_GET['ForumAdmins']))
+            $model->attributes = $_GET['ForumAdmins'];
 
         $this->render('admin', array(
             'model' => $model,
@@ -135,11 +140,11 @@ class GroupTasksController extends Admin {
      * Returns the data model based on the primary key given in the GET variable.
      * If the data model is not found, an HTTP exception will be raised.
      * @param integer $id the ID of the model to be loaded
-     * @return GroupTasks the loaded model
+     * @return ForumAdmins the loaded model
      * @throws CHttpException
      */
     public function loadModel($id) {
-        $model = GroupTasks::model()->findByPk($id);
+        $model = ForumAdmins::model()->findByPk($id);
         if ($model === null)
             throw new CHttpException(404, 'The requested page does not exist.');
         return $model;
@@ -147,10 +152,10 @@ class GroupTasksController extends Admin {
 
     /**
      * Performs the AJAX validation.
-     * @param GroupTasks $model the model to be validated
+     * @param ForumAdmins $model the model to be validated
      */
     protected function performAjaxValidation($model) {
-        if (isset($_POST['ajax']) && $_POST['ajax'] === 'group-tasks-form') {
+        if (isset($_POST['ajax']) && $_POST['ajax'] === 'forum-admins-form') {
             echo CActiveForm::validate($model);
             Yii::app()->end();
         }

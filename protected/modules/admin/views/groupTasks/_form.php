@@ -54,16 +54,53 @@
     <div class="form-group">
         <?php echo $form->labelEx($model,'score'); ?>        
         <?php echo $form->textField($model,'score',array('class'=>'form-control')); ?>
+        <p class="help-block">完成任务后获得的积分数，为空则不奖励</p>
         <?php echo $form->error($model,'score'); ?>
     </div>
     <div class="form-group">
-        <?php echo $form->labelEx($model,'startTime'); ?>        
-        <?php echo $form->textField($model,'startTime',array('class'=>'form-control')); ?>
-        <?php echo $form->error($model,'startTime'); ?>
+        <?php echo $form->labelEx($model,'exp'); ?>        
+        <?php echo $form->textField($model,'exp',array('class'=>'form-control')); ?>
+        <p class="help-block">完成任务后获得的经验值，为空则不奖励</p>
+        <?php echo $form->error($model,'exp'); ?>
     </div>
     <div class="form-group">
-        <?php echo $form->labelEx($model,'endTime'); ?>        
-        <?php echo $form->textField($model,'endTime',array('class'=>'form-control')); ?>
+        <?php echo $form->labelEx($model,'startTime'); ?>
+        <?php 
+        $this->widget('zii.widgets.jui.CJuiDatePicker', array(
+        'model'=>$model,
+        'attribute'=>'startTime',
+        'language'=>'zh-cn',
+        'value'=>date('Y/m/d',$model->startTime),			    
+                    'options'=>array(
+                        'showAnim'=>'fadeIn',
+                    ),	
+                    'htmlOptions'=>array(
+                        'readonly'=>'readonly',
+                        'class'=>'form-control',
+                        'value'=>date('Y/m/d',($model->startTime) ? $model->startTime :'')
+                ),		    
+                ));
+        ?>
+        <?php echo $form->error($model,'startTime'); ?>
+    </div>    
+    <div class="form-group">
+        <?php echo $form->labelEx($model,'endTime'); ?>
+        <?php 
+        $this->widget('zii.widgets.jui.CJuiDatePicker', array(
+        'model'=>$model,
+        'attribute'=>'endTime',
+        'language'=>'zh-cn',
+        'value'=>date('Y/m/d',$model->endTime),			    
+                    'options'=>array(
+                        'showAnim'=>'fadeIn',
+                    ),	
+                    'htmlOptions'=>array(
+                        'readonly'=>'readonly',
+                        'class'=>'form-control',
+                        'value'=>date('Y/m/d',($model->endTime) ? $model->endTime :'')
+                ),		    
+        ));
+        ?>
         <?php echo $form->error($model,'endTime'); ?>
     </div>
     <div class="form-group">

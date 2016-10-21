@@ -131,7 +131,7 @@ class Task extends CActiveRecord {
                 'msg' => '缺少参数'
             );
         }
-        $sql = "SELECT t.id,gt.id AS groupTaskId,tl.id AS taskLogId,t.title AS taskTitle,t.faceImg AS taskFaceImg,t.desc AS taskDesc,tl.status AS taskStatus,tl.score,tl.times,tl.cTime AS userStartTime,gt.action,gt.type,gt.continuous,gt.num,gt.startTime,gt.endTime FROM {{task}} t INNER JOIN {{task_logs}} tl ON t.id=tl.tid INNER JOIN {{group_tasks}} gt ON t.id=gt.tid WHERE tl.uid=:uid AND gt.gid=:gid AND gt.action=:action AND tl.status=0";
+        $sql = "SELECT t.id,gt.id AS groupTaskId,tl.id AS taskLogId,t.title AS taskTitle,t.faceImg AS taskFaceImg,t.desc AS taskDesc,tl.status AS taskStatus,tl.score,tl.exp,tl.times,tl.cTime AS userStartTime,gt.action,gt.type,gt.continuous,gt.num,gt.startTime,gt.endTime FROM {{task}} t INNER JOIN {{task_logs}} tl ON t.id=tl.tid INNER JOIN {{group_tasks}} gt ON t.id=gt.tid WHERE tl.uid=:uid AND gt.gid=:gid AND gt.action=:action AND tl.status=0";
         $res = Yii::app()->db->createCommand($sql);
         $res->bindValues(array(
             ':uid' => $userInfo['id'],
@@ -162,9 +162,10 @@ class Task extends CActiveRecord {
                 'msg' => '任务已达成'
             );
         }
-        //当天该操作的总次数如果大于任务规定数，则不做后续判断
+        //自从接受任务开始，当天该操作的总次数如果大于任务规定数，则不做后续判断
+        //必须是大于而不是大于等于，是因为用户操作记录总是在本判断之前
         $todayNum = UserAction::statTodayAction($userInfo, $info);
-        if ($todayNum >= $info['num']) {
+        if ($todayNum > $info['num']) {
             return array(
                 'status' => 0,
                 'msg' => '今日该操作已达上限'
@@ -216,7 +217,7 @@ class Task extends CActiveRecord {
             return array();
         }
         $now = zmf::now();
-        $sql = "SELECT t.id,t.title,t.faceImg,gt.type,gt.continuous,gt.days,gt.num,gt.score,gt.endTime,'' AS extraDesc FROM {{task}} t,{{group_tasks}} gt WHERE ((gt.startTime=0 OR gt.startTime<=:cTime) AND (gt.endTime=0 OR gt.endTime>=:cTime)) AND gt.gid=:gid AND gt.tid=t.id LIMIT 10";
+        $sql = "SELECT t.id,t.title,t.faceImg,gt.type,gt.continuous,gt.days,gt.num,gt.score,gt.exp,gt.endTime,'' AS extraDesc FROM {{task}} t,{{group_tasks}} gt WHERE ((gt.startTime=0 OR gt.startTime<=:cTime) AND (gt.endTime=0 OR gt.endTime>=:cTime)) AND gt.gid=:gid AND gt.tid=t.id LIMIT 10";
         $res = Yii::app()->db->createCommand($sql);
         $res->bindValues(array(
             ':gid' => $userInfo['groupid'],
@@ -246,7 +247,16 @@ class Task extends CActiveRecord {
             }
             if ($tasks[$k]) {
                 if ($val['type'] == 1) {//一次性任务
-                    $tasks[$k]['extraDesc'] = '一天内进行' . $val['num'] . '次，奖励' . $val['score'] . '积分' . ($val['endTime'] > 0 ? '，' . zmf::time($val['endTime'], 'm/d H:i:s') . '结束' : '');
+                    if($val['score']>0 || $val['exp']>0){
+                        $_txt='奖励';
+                        $_txtArr=array();
+                        $_txtArr[]=$val['score']>0 ? $val['score'] . '积分':'';
+                        $_txtArr[]=$val['exp']>0 ? $val['exp'] . '经验':'';
+                        $_txt.=join('、',array_filter($_txtArr));
+                    }else{
+                        $_txt='';
+                    }                    
+                    $tasks[$k]['extraDesc'] = '一天内进行' . $val['num'] . '次，'.$_txt . ($val['endTime'] > 0 ? '，' . zmf::time($val['endTime'], 'm月d日') . '结束' : '');
                 } else {
                     
                 }

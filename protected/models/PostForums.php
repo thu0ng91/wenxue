@@ -148,5 +148,10 @@ class PostForums extends CActiveRecord {
         $items=$res->queryAll();
         return $items;        
     }
+    
+    public static function listAll(){
+        $items=  self::model()->findAll();
+        return CHtml::listData($items, 'id', 'title');
+    }
 
 }

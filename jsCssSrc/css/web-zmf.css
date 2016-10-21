@@ -1165,11 +1165,11 @@ span.required,.errorMessage{
 .post-page .post-content .media img.media-object{
     margin: 0 auto 10px
 }
-.post-page .post-content .media .right-actions{
+.right-actions{
     float: right;
     font-size: 12px;    
 }
-.post-page .post-content .media .right-actions span{
+.right-actions span{
     margin-right: 8px
 }
 .post-page .post-content .post-content-item{
@@ -1211,10 +1211,7 @@ span.required,.errorMessage{
 .post-content .media .comments-list{
     position: relative
 }
-.post-page .first-blood .media{
-    border-bottom: none
-}
-.post-page .first-blood .media .media-body{
+.post-page .first-blood .first-floor{
     padding:0 30px;
 }
 .post-side-authorInfo{

@@ -18,6 +18,7 @@ $this->renderPartial('_nav');
         <th><?php echo $model->getAttributeLabel("days"); ?></th>
         <th><?php echo $model->getAttributeLabel("num"); ?></th>
         <th><?php echo $model->getAttributeLabel("score"); ?></th>
+        <th><?php echo $model->getAttributeLabel("exp"); ?></th>
         <th><?php echo $model->getAttributeLabel("startTime"); ?></th>
         <th><?php echo $model->getAttributeLabel("endTime"); ?></th>
         <th><?php echo $model->getAttributeLabel("times"); ?></th>
@@ -33,14 +34,15 @@ $this->renderPartial('_nav');
             <td><?php echo $data->days; ?></td>
             <td><?php echo $data->num; ?></td>
             <td><?php echo $data->score; ?></td>
-            <td><?php echo $data->startTime; ?></td>
-            <td><?php echo $data->endTime; ?></td>
+            <td><?php echo $data->exp; ?></td>
+            <td><?php echo $data->startTime ? zmf::time($data->startTime) : ''; ?></td>
+            <td><?php echo $data->endTime ? zmf::time($data->endTime) : ''; ?></td>
             <td><?php echo $data->times; ?></td>
             <td>
                 <?php echo CHtml::link('编辑', array('update', 'id' => $data->id)); ?>        
                 <?php echo CHtml::link('删除', array('delete', 'id' => $data->id)); ?>
             </td>
-        </tr>    
+        </tr>
     <?php endforeach; ?>
 </table>
 <?php $this->renderPartial('/common/pager', array('pages' => $pages)); ?>

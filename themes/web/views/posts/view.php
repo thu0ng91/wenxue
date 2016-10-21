@@ -39,7 +39,7 @@ $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
                 </div>                
                 <div class="first-blood post-content">
                     <?php $this->renderPartial('/posts/_firstPost',array('data'=>$info['content'],'info'=>$info));?>
-                </div>                
+                </div>
             </div>
         </div>
         <div class="module">

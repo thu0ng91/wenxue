@@ -12,10 +12,10 @@ class PostsController extends Q {
             $items[$k]['faceImg'] = zmf::getThumbnailUrl($val['faceImg'], 'a120', 'faceImg');
         }
         $this->showLeftBtn = false;
-        $this->selectNav =  'forum';
+        $this->selectNav = 'forum';
         $favorites = $this->uid ? array_keys(CHtml::listData($this->userInfo['favoriteForums'], 'id', 'title')) : array();
         $this->pageTitle = '关注圈子 - ' . zmf::config('sitename');
-        $this->mobileTitle='关注圈子';
+        $this->mobileTitle = '关注圈子';
         $data = array(
             'forums' => $items,
             'favorites' => $favorites,
@@ -91,19 +91,19 @@ class PostsController extends Q {
         //所有版块
         $forums = PostForums::model()->findAll();
         //本板块活跃用户
-        $topUsers=  PostForums::getActivityUsers($forumId,12);
-        foreach ($topUsers as $k=>$v){
-            $topUsers[$k]['avatar']= zmf::getThumbnailUrl($v['avatar'],'a36', 'avatar');
+        $topUsers = PostForums::getActivityUsers($forumId, 12);
+        foreach ($topUsers as $k => $v) {
+            $topUsers[$k]['avatar'] = zmf::getThumbnailUrl($v['avatar'], 'a36', 'avatar');
         }
         //判断是否收藏
-        $favorited=false;
+        $favorited = false;
         if ($this->uid) {
             $favorited = Favorites::checkFavored($forumId, 'forum');
         }
-        
-        $this->selectNav =  'forum';
+
+        $this->selectNav = 'forum';
         $this->showLeftBtn = true;
-        $this->returnUrl=  Yii::app()->createUrl('posts/types');
+        $this->returnUrl = Yii::app()->createUrl('posts/types');
         $this->pageTitle = $forumInfo['title'] . ' - ' . zmf::config('sitename');
         $this->mobileTitle = $forumInfo['title'];
         $data = array(
@@ -173,7 +173,7 @@ class PostsController extends Q {
         //初始化快速评论框
         $model = new PostPosts;
         //判断是否收藏
-        $favoritedForum=false;
+        $favoritedForum = false;
         if ($this->uid) {
             $favoritedForum = Favorites::checkFavored($info['fid'], 'forum');
         }
@@ -189,7 +189,7 @@ class PostsController extends Q {
             'model' => $model,
             'favoritedForum' => $favoritedForum,
         );
-        $this->selectNav =  'forum';
+        $this->selectNav = 'forum';
         $this->favorited = Favorites::checkFavored($id, 'thread');
         $this->pageTitle = $info['title'] . ' - ' . zmf::config('sitename');
         $this->mobileTitle = '帖子详情';
@@ -202,6 +202,7 @@ class PostsController extends Q {
         }
         $this->checkUserStatus();
         $id = zmf::val('id', 2);
+        $addScoreExp = true;
         if ($id) {
             $model = $this->loadModel($id);
             if (!$model) {
@@ -211,6 +212,10 @@ class PostsController extends Q {
             $powerInfo = GroupPowers::checkPower($this->userInfo, 'addPost');
             if (!$powerInfo['status']) {
                 $this->message($powerInfo['status'], $powerInfo['msg']);
+            }
+            $forumInfo = PostForums::getOne($model->fid);
+            if (!$forumInfo) {
+                $this->message(0, '所属版块不存在');
             }
             $isNew = false;
         } else {
@@ -225,12 +230,17 @@ class PostsController extends Q {
             //获取用户组的权限
             $powerInfo = GroupPowers::checkPower($this->userInfo, 'addPost');
             if (!$powerInfo['status']) {
-                $this->message($powerInfo['status'], $powerInfo['msg']);
+                //用户本身的权限已用完，再判断对方是否是版主
+                if (!ForumAdmins::checkForumPower($this->uid, $forumId, 'addPost', true)) {
+                    $this->message($powerInfo['status'], $powerInfo['msg']);
+                } else {
+                    $addScoreExp = false;
+                }
             }
             $model = new PostThreads;
             $model->fid = $forumId;
             $isNew = true;
-        }        
+        }
         if (isset($_POST['PostThreads'])) {
             //处理文本
             $filterTitle = Posts::handleContent($_POST['PostThreads']['title'], FALSE);
@@ -244,11 +254,11 @@ class PostsController extends Q {
             if (!empty($filterContent['attachids'])) {
                 $attkeys = array_filter(array_unique($filterContent['attachids']));
                 if (!empty($attkeys)) {
-                    $attr['faceImg'] = $attkeys[0]; //默认将文章中的第一张图作为封面图
+                    $attr['faceImg'] = Attachments::faceImg(array('faceimg' => $attkeys[0]), '', 'faceImg'); //默认将文章中的第一张图作为封面图
                 }
             } else {
                 $attr['faceImg'] = ''; //否则将封面图置为空(有可能编辑后没有图片了)
-            }            
+            }
             //如果标题包含敏感词则直接标记为未通过
             $attr['status'] = $filterTitle['status'] == Posts::STATUS_PASSED ? $filterContent['status'] : $filterTitle['status'];
             $attr['open'] = ($_POST['PostThreads']['open'] == Posts::STATUS_OPEN) ? 1 : 0;
@@ -276,7 +286,7 @@ class PostsController extends Q {
                     if ($attstr != '') {
                         Attachments::model()->updateAll(array('status' => Posts::STATUS_PASSED, 'logid' => $model->id), 'id IN(' . $attstr . ')');
                     }
-                }                             
+                }
                 //记录用户操作及积分
                 $jsonData = CJSON::encode(array(
                             'id' => $model->id,
@@ -289,8 +299,8 @@ class PostsController extends Q {
                     'classify' => 'post',
                     'data' => $jsonData,
                     'action' => 'addPost',
-                    'score' => $powerInfo['msg']['score'],
-                    'exp' => $powerInfo['msg']['exp'],
+                    'score' => $addScoreExp ? $powerInfo['msg']['score'] : 0,
+                    'exp' => $addScoreExp ? $powerInfo['msg']['exp'] : 0,
                     'display' => 1,
                 );
                 if (UserAction::simpleRecord($attr)) {
@@ -306,7 +316,8 @@ class PostsController extends Q {
         $this->mobileTitle = '发布帖子';
         $this->render('create', array(
             'model' => $model,
-            //'tags' => $tags,
+            'forumInfo' => $forumInfo,
+                //'tags' => $tags,
         ));
     }
 
@@ -320,11 +331,7 @@ class PostsController extends Q {
         if (!$tid) {
             throw new CHttpException(404, '该页面不存在或已被删除！');
         }
-        //获取用户组的权限
-        $powerInfo = GroupPowers::checkPower($this->userInfo, 'addPostReply');
-        if (!$powerInfo['status']) {
-            $this->message($powerInfo['status'], $powerInfo['msg']);
-        }
+        $addScoreExp=true;
         $threadInfo = $this->loadModel($tid);
         if ($pid) {
             $model = PostPosts::model()->findByPk($pid);
@@ -334,6 +341,16 @@ class PostsController extends Q {
         } else {
             $model = new PostPosts;
             $model->tid = $tid;
+        }
+        //获取用户组的权限
+        $powerInfo = GroupPowers::checkPower($this->userInfo, 'addPostReply');
+        if (!$powerInfo['status']) {
+            //用户本身的权限已用完，再判断对方是否是版主
+            if (!ForumAdmins::checkForumPower($this->uid, $threadInfo['fid'], 'addPostReply', true)) {
+                $this->message($powerInfo['status'], $powerInfo['msg']);
+            }else{
+                $addScoreExp=false;
+            }
         }
         if (isset($_POST['PostPosts'])) {
             //处理文本
@@ -363,6 +380,26 @@ class PostsController extends Q {
                 }
                 //更新帖子的楼层数
                 PostThreads::updateStat($model->tid);
+                //记录用户操作及积分
+                $jsonData = CJSON::encode(array(
+                            'id' => $threadInfo['id'],
+                            'title' => $threadInfo['title'],
+                            'faceimg' => $threadInfo['faceImg']
+                ));
+                $attr = array(
+                    'uid' => $this->uid,
+                    'logid' => $model->id,
+                    'classify' => 'post',
+                    'data' => $jsonData,
+                    'action' => 'addPostReply',
+                    'score' => $addScoreExp ? $powerInfo['msg']['score'] : 0,
+                    'exp' => $addScoreExp ? $powerInfo['msg']['exp'] : 0,
+                    'display' => 1,
+                );
+                if (UserAction::simpleRecord($attr)) {
+                    //判断本操作是否同属任务
+                    $ckTaskStatus = Task::addTaskLog($this->userInfo, 'addPostReply');
+                }
                 $this->redirect(array('posts/view', 'id' => $model->tid));
             }
         }
