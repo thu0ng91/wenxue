@@ -29,6 +29,7 @@ class GroupPowerTypes extends CActiveRecord {
         // will receive user inputs.
         return array(
             array('key', 'required'),
+            array('key', 'unique'),
             array('key', 'length', 'max' => 16),
             array('desc', 'length', 'max' => 255),
             // The following rule is used by search().
@@ -102,6 +103,15 @@ class GroupPowerTypes extends CActiveRecord {
     public static function listKeys(){
         $items= GroupPowerTypes::model()->findAll();
         return CHtml::listData($items, 'key', 'desc');
+    }
+    
+    /**
+     * 根据KEY取信息
+     * @param string $key
+     * @return object
+     */
+    public static function findByKey($key){
+        return self::model()->find('`key`=:key',array(':key'=>$key));
     }
 
 }

@@ -41,6 +41,8 @@
                     <li role="presentation"><?php echo CHtml::link($info['styleStatus']==Posts::STATUS_BOLDRED ? '已加粗标红' : '加粗标红','javascript:;',array('action'=>'setStatus','data-type'=>'post','data-action'=>'boldAndRed','data-id'=>$info['id'],'role'=>'menuitem'));?></li>
                     <li role="presentation"><?php echo CHtml::link($info['open']==Posts::STATUS_OPEN ? '锁定' : '已锁定','javascript:;',array('action'=>'setStatus','data-type'=>'post','data-action'=>'lock','data-id'=>$info['id'],'role'=>'menuitem'));?></li>
                     <li role="presentation" class="divider"></li>
+                    <li role="presentation"><?php echo CHtml::link('移动','javascript:;',array('action'=>'changeForum','data-id'=>$info['id'],'role'=>'menuitem'));?></li>
+                    <li role="presentation" class="divider"></li>
                     <?php }?>
                     
                     <?php if($info['uid']==$this->uid || $this->userInfo['isAdmin']){?>

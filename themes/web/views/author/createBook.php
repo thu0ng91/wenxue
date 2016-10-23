@@ -28,7 +28,6 @@
                         <p class="text-center" style="margin-top: 5px"><a href="javascript:;" class="btn btn-default btn-block openGallery" role="button"  data-holder="book-faceImg" data-field="<?php echo CHtml::activeId($model, 'faceImg');?>">从相册选</a></p>
                     </div>
                 </div>
-                <?php echo $form->error($model,'faceImg'); ?>
             </div>
         </div>
         <div class="col-xs-9">

@@ -42,6 +42,11 @@
         <?php echo $form->error($model,'initExp'); ?>
     </div>
     <div class="form-group">
+        <?php echo $form->labelEx($model,'isAuthor'); ?>        
+        <?php echo $form->dropDownlist($model,'isAuthor',  zmf::yesOrNo('admin'),array('class'=>'form-control')); ?>
+        <?php echo $form->error($model,'isAuthor'); ?>
+    </div>
+    <div class="form-group">
         <?php echo $form->labelEx($model,'status'); ?>        
         <?php echo $form->dropDownlist($model,'status',  zmf::yesOrNo('admin'),array('class'=>'form-control')); ?>
         <?php echo $form->error($model,'status'); ?>

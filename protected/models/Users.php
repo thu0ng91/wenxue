@@ -103,11 +103,14 @@ class Users extends CActiveRecord {
         return parent::model($className);
     }
 
-    public static function getOne($id) {        
-        $sql="SELECT u.* FROM {{users}} u WHERE id=:id";
+    public static function getOne($id) {
+        $sql="SELECT * FROM {{users}} WHERE id=:id";
         $res=Yii::app()->db->createCommand($sql);
         $res->bindValue(':id', $id);
         $info=$res->queryRow();
+        if($info['groupid']>0){
+            $info['groupName']=  Group::getTitle($info['groupid']);
+        }
         $cacheKey="updateUserLevel-".$id;
         if(!zmf::checkFCache($cacheKey)){
             self::updateUserExp($info);

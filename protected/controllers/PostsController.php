@@ -155,12 +155,12 @@ class PostsController extends Q {
         $firstContent['props'] = Props::getClassifyProps('postPosts', $firstContent['id']);
         $info['content'] = $firstContent;
         //获取回帖列表
-        $sql = "SELECT p.id,p.uid,u.truename AS username,u.avatar,u.level,u.levelTitle,u.levelIcon,p.aid,p.cTime,p.updateTime,p.open,p.comments,p.favors,p.content,'' AS props FROM {{post_posts}} p,{{users}} u WHERE p.tid='{$id}' AND p.isFirst=0 AND p.status=" . Posts::STATUS_PASSED . " AND p.uid=u.id AND u.status=" . Posts::STATUS_PASSED . " ORDER BY p.cTime ASC";
+        $sql = "SELECT p.id,p.tid,p.uid,u.truename AS username,u.avatar,u.level,u.levelTitle,u.levelIcon,p.aid,p.cTime,p.updateTime,p.open,p.comments,p.favors,p.content,'' AS props FROM {{post_posts}} p,{{users}} u WHERE p.tid='{$id}' AND p.isFirst=0 AND p.status=" . Posts::STATUS_PASSED . " AND p.uid=u.id AND u.status=" . Posts::STATUS_PASSED . " ORDER BY p.cTime ASC";
         Posts::getAll(array('sql' => $sql, 'pageSize' => $this->pageSize), $pages, $posts);
 
         foreach ($posts as $k => $val) {
             $posts[$k]['avatar'] = zmf::getThumbnailUrl($val['avatar'], 'a120', 'avatar');
-            //$posts[$k]['content'] = zmf::text(array(), $val['content'], true, $size);
+            $posts[$k]['content'] = zmf::text(array(), $val['content'], true, $size);
             //$posts[$k]['props'] = Props::getClassifyProps('postPosts', $val['id']);
         }
         //$comments = Comments::getCommentsByPage($id, $this->uid, 'posts', 1, $this->pageSize, "c.id,c.uid,u.truename,u.avatar,c.aid,c.logid,c.tocommentid,c.content,c.cTime,c.status,c.favors");
@@ -203,13 +203,14 @@ class PostsController extends Q {
         $this->checkUserStatus();
         $id = zmf::val('id', 2);
         $addScoreExp = true;
+        $firstContent=array();
         if ($id) {
             $model = $this->loadModel($id);
             if (!$model) {
                 throw new CHttpException(404, '你所编辑的内容不存在');
             }
             //获取用户组的权限
-            $powerInfo = GroupPowers::checkPower($this->userInfo, 'addPost');
+            $powerInfo = GroupPowers::checkPower($this->userInfo, 'editPost');
             if (!$powerInfo['status']) {
                 $this->message($powerInfo['status'], $powerInfo['msg']);
             }
@@ -217,7 +218,23 @@ class PostsController extends Q {
             if (!$forumInfo) {
                 $this->message(0, '所属版块不存在');
             }
-            $isNew = false;
+            $isNew = false;            
+            //取内容
+            $firstContent=  PostPosts::model()->find(array(
+                'condition'=>'tid=:tid AND isFirst=1',
+                'params'=>array(
+                    ':tid'=>$id
+                )
+            ));
+            if(!$firstContent || $firstContent['status']!=Posts::STATUS_PASSED){
+                $this->message(0, '此帖数据有误，请重新发布');
+            }elseif($model['uid']!=$firstContent['uid'] || $firstContent['uid']!=$this->uid){
+                //如果不相等，则表示有可能是版主
+                if(!ForumAdmins::checkForumPower($this->uid, $model['fid'], 'editPost')){
+                    $this->message(0, '你无权此操作');
+                }
+            }
+            $model->content=zmf::text(array('action'=>'edit'), $firstContent['content'], false, 'w600');
         } else {
             $forumId = zmf::val('forum', 2);
             if (!$forumId) {
@@ -266,13 +283,17 @@ class PostsController extends Q {
             $model->attributes = $attr;
             if ($model->save()) {
                 //保存第一楼内容
+                if($firstContent){
+                    $modelPost=$firstContent;
+                }else{
+                    $modelPost = new PostPosts;
+                }
                 $postAttr = array(
                     'tid' => $model->id,
                     'content' => $content,
                     'isFirst' => 1, //首层
-                );
-                $modelPost = new PostPosts;
-                $modelPost->attributes = $postAttr;
+                );                
+                $modelPost->attributes = $postAttr;                
                 if (!$modelPost->save()) {
                     //如果第一楼没写入成功，则删除原来的帖子
                     $model->updateByPk($model->id, array('status' => Posts::STATUS_DELED));
@@ -301,7 +322,7 @@ class PostsController extends Q {
                     'action' => 'addPost',
                     'score' => $addScoreExp ? $powerInfo['msg']['score'] : 0,
                     'exp' => $addScoreExp ? $powerInfo['msg']['exp'] : 0,
-                    'display' => 1,
+                    'display' => $powerInfo['msg']['display'],
                 );
                 if (UserAction::simpleRecord($attr)) {
                     //判断本操作是否同属任务
@@ -309,7 +330,7 @@ class PostsController extends Q {
                 }
                 $this->redirect(array('posts/view', 'id' => $model->id));
             }
-        }
+        }        
         //$tags = Tags::getClassifyTags('thread');
         $this->pageTitle = '【' . $forumInfo['title'] . '】发布文章 - ' . zmf::config('sitename');
         $this->selectNav = 'authorForum';
@@ -337,7 +358,12 @@ class PostsController extends Q {
             $model = PostPosts::model()->findByPk($pid);
             if (!$model || $model->uid != $this->uid) {
                 throw new CHttpException(404, '你编辑的页面不存在或已被删除！');
+            }elseif($model->tid!=$tid){
+                throw new CHttpException(404, '数据有误，请核实！');
+            }elseif($model->isFirst){//不能编辑首层
+                $this->redirect(array('posts/create','id'=>$model->tid));
             }
+            $model->content=zmf::text(array(), $model['content'], true, 'w600');
         } else {
             $model = new PostPosts;
             $model->tid = $tid;
@@ -394,7 +420,7 @@ class PostsController extends Q {
                     'action' => 'addPostReply',
                     'score' => $addScoreExp ? $powerInfo['msg']['score'] : 0,
                     'exp' => $addScoreExp ? $powerInfo['msg']['exp'] : 0,
-                    'display' => 1,
+                    'display' => $powerInfo['msg']['display'],
                 );
                 if (UserAction::simpleRecord($attr)) {
                     //判断本操作是否同属任务

@@ -98,7 +98,7 @@
                     if (result.status === 1) {
                         window.location.href = result.msg;
                     }else{
-                        alert(result.msg);
+                        dialog({msg:result.msg});
                     }
                 })
             }

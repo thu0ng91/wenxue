@@ -35,7 +35,7 @@ class Group extends CActiveRecord {
         return array(
             array('cTime', 'default', 'setOnEmpty' => true, 'value' => zmf::now()),
             array('title', 'required'),
-            array('status', 'numerical', 'integerOnly' => true),
+            array('status,isAuthor', 'numerical', 'integerOnly' => true),
             array('title', 'length', 'max' => 50),
             array('faceImg, desc', 'length', 'max' => 255),
             array('tasks, members, cTime,initScore,initExp', 'length', 'max' => 10),
@@ -70,6 +70,7 @@ class Group extends CActiveRecord {
             'cTime' => '创建时间',
             'initScore' => '初始化积分',
             'initExp' => '初始化经验',
+            'isAuthor' => '必须为作者',
         );
     }
 
@@ -121,6 +122,16 @@ class Group extends CActiveRecord {
     
     public static function getOne($id){
         return Group::model()->findByPk($id);
+    }
+    
+    /**
+     * 获取所属用户组的名称
+     * @param type $id
+     * @return type
+     */
+    public static function getTitle($id){
+        $info=  self::getOne($id);
+        return $info['title'];
     }
     
     /**

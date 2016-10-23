@@ -31,7 +31,7 @@ class GroupPowers extends CActiveRecord {
         // will receive user inputs.
         return array(
             array('gid, tid', 'required'),
-            array('value, score', 'numerical', 'integerOnly' => true),
+            array('value, score,totalLimit,display', 'numerical', 'integerOnly' => true),
             array('gid, tid,exp', 'length', 'max' => 10),
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
@@ -62,6 +62,8 @@ class GroupPowers extends CActiveRecord {
             'value' => '权限值',
             'score' => '积分值',
             'exp' => '经验值',
+            'totalLimit' => '总数限制',
+            'totalLimit' => '是否在动态里显示',
         );
     }
 
@@ -110,7 +112,7 @@ class GroupPowers extends CActiveRecord {
                 'msg' => '缺少参数',
             );
         }
-        $sql = "SELECT gt.key,gt.desc,gp.value,gp.score,gp.exp FROM {{group_power_types}} gt,{{group_powers}} gp WHERE gt.key=:key AND gp.gid=:gid AND gp.tid=gt.id";
+        $sql = "SELECT gt.key,gt.desc,gp.value,gp.score,gp.exp,gp.totalLimit,gp.display FROM {{group_power_types}} gt,{{group_powers}} gp WHERE gt.key=:key AND gp.gid=:gid AND gp.tid=gt.id";
         $res = Yii::app()->db->createCommand($sql);
         $res->bindValues(array(
             ':key' => $action,
@@ -118,24 +120,31 @@ class GroupPowers extends CActiveRecord {
         ));
         $info = $res->queryRow();
         //没有记录或者记录值为0，则表示不允许
-        if (!$info || !$info['value']) {
+        if (!$info || (!$info['value'] && $info['totalLimit'])) {
             return array(
                 'status' => 0,
                 'msg' => '你所在用户组不能完成此操作',
             );
         }
-        //在用户操作记录表中查询今天该操作的记录数
-        $num = UserAction::statAction($userInfo['id'], $action);
-        if ($num >= $info['value']) {
+        if($info['totalLimit']){
+            //在用户操作记录表中查询今天该操作的记录数
+            $num = UserAction::statAction($userInfo['id'], $action);
+            if ($num >= $info['value']) {
+                return array(
+                    'status' => 0,
+                    'msg' => '你今日' . $info['desc'] . '已达上限',
+                );
+            }
             return array(
-                'status' => 0,
-                'msg' => '你今日' . $info['desc'] . '已达上限',
+                'status' => 1,
+                'msg' => $info,
+            );
+        }else{
+            return array(
+                'status' => 1,
+                'msg' => $info,
             );
         }
-        return array(
-            'status' => 1,
-            'msg' => $info,
-        );
     }
 
     private function _getGroupActions($groupid) {

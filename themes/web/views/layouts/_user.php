@@ -9,9 +9,9 @@
 </ul>
 <?php } else {?>
 <ul class="nav navbar-nav navbar-right">
-    <?php if(!$this->userInfo['authorId']){?>
+    <?php if(!$this->userInfo['authorId']){if(GroupPowers::checkAction($this->userInfo, 'createAuthor')){?>
     <li class="color-warning"><?php echo GroupPowers::link('createAuthor',$this->userInfo,'<i class="fa fa-exclamation-circle"></i> 成为作者', array('user/author'), array('role' => 'menuitem')); ?></li>
-    <?php }?>
+    <?php }}?>    
     <li><?php echo CHtml::link('<i class="fa fa-bell-o unread-bell"></i><span class="top-nav-count" id="top-nav-count">100</span>', array('user/notice'), array('role' => 'menuitem','title'=>'提醒')); ?></li>
     <li><?php echo CHtml::link('<i class="fa fa-tasks"></i>', 'javascript:;', array('role' => 'menuitem','action'=>'float','action-data'=> Posts::encode($this->uid,'tasks'),'title'=>'任务')); ?></li>
     <li><?php echo CHtml::link('<i class="fa fa-magic"></i>', array('user/props'), array('role' => 'menuitem','title'=>'背包')); ?></li>

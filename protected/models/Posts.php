@@ -45,6 +45,7 @@ class Posts extends CActiveRecord {
     const PLATFORM_MOBILE = 2;
     const PLATFORM_ANDROID = 3;
     const PLATFORM_IOS = 4;
+    const PLATFORM_WEAPP = 5;//微信小程序
 
     /**
      * @return string the associated database table name

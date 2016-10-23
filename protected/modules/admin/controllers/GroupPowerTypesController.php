@@ -23,7 +23,34 @@ class GroupPowerTypesController extends Admin {
      * Creates a new model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      */
-    public function actionCreate($id = '') {
+    public function actionCreate() {
+        $model = new GroupPowerTypes;
+        if (isset($_POST['GroupPowerTypes'])) {
+            $items = $_POST['GroupPowerTypes']['key'];
+            $_arr = UserAction::userActions('admin');
+            foreach ($items as $item) {
+                $_attr = array(
+                    'key' => $item,
+                    'desc' => $_arr[$item],
+                );
+                $_model = new GroupPowerTypes;
+                $_model->attributes = $_attr;
+                $_model->save();
+            }
+            Yii::app()->user->setFlash('addGroupPowerTypesSuccess', "保存成功！您可以继续添加。");
+            $this->redirect(array('create'));
+        }
+        $this->render('create', array(
+            'model' => $model,
+        ));
+    }
+
+    /**
+     * Updates a particular model.
+     * If update is successful, the browser will be redirected to the 'view' page.
+     * @param integer $id the ID of the model to be updated
+     */
+    public function actionUpdate($id) {
         if ($id) {
             $model = $this->loadModel($id);
         } else {
@@ -32,10 +59,10 @@ class GroupPowerTypesController extends Admin {
         // Uncomment the following line if AJAX validation is needed
         // $this->performAjaxValidation($model);
         if (isset($_POST['GroupPowerTypes'])) {
-            if(!$_POST['GroupPowerTypes']['desc']){
-                $_arr=UserAction::userActions('admin');
-                $_POST['GroupPowerTypes']['desc']=$_arr[$_POST['GroupPowerTypes']['key']];
-            }            
+            if (!$_POST['GroupPowerTypes']['desc']) {
+                $_arr = UserAction::userActions('admin');
+                $_POST['GroupPowerTypes']['desc'] = $_arr[$_POST['GroupPowerTypes']['key']];
+            }
             $model->attributes = $_POST['GroupPowerTypes'];
             if ($model->save()) {
                 if (!$id) {
@@ -49,15 +76,6 @@ class GroupPowerTypesController extends Admin {
         $this->render('create', array(
             'model' => $model,
         ));
-    }
-
-    /**
-     * Updates a particular model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id the ID of the model to be updated
-     */
-    public function actionUpdate($id) {
-        $this->actionCreate($id);
     }
 
     /**

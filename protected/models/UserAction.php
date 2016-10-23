@@ -135,14 +135,17 @@ class UserAction extends CActiveRecord {
                 'desc' => '论坛相关',
                 'items' => array(
                     'addPost' => '发表帖子',
+                    'editPost' => '编辑帖子',
                     'addPostReply' => '回复帖子',
+                    'editPostReply' => '编辑帖子楼层',
                     'favorPost' => '赞帖子',
                     'favoritePost' => '收藏帖子',
                     'favorPostReply' => '赞楼层',
                     'rewardPostReply' => '打赏帖子',
                     'delPost' => '删除帖子',
                     'delPostReply' => '删除楼层',
-                    'favoriteForum' => '关注版块'
+                    'favoriteForum' => '关注版块',
+                    'changeForum' => '修改所属版块',
                 ),
             ),
             'book' => array(
@@ -158,7 +161,7 @@ class UserAction extends CActiveRecord {
                     'delBook' => '删除作品',
                     'addChapter' => '新增章节',
                     'publishChapter' => '发表章节',
-                    'delChapter' => '发表章节',
+                    'delChapter' => '删除章节',
                 ),
             ),
             'goods' => array(

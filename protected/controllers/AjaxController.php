@@ -164,7 +164,7 @@ class AjaxController extends Q {
                     'action' => $powerAction,
                     'score' => $powerInfo['msg']['score'],
                     'exp' => $powerInfo['msg']['exp'],
-                    'display' => 1,
+                    'display' => $powerInfo['msg']['display'],
                 );
                 if (UserAction::simpleRecord($attr)) {
                     //判断本操作是否同属任务
@@ -277,6 +277,14 @@ class AjaxController extends Q {
         if (!$authorInfo || $authorInfo['status'] != Posts::STATUS_PASSED) {
             $this->jsonOutPut(0, '你无权本操作');
         }
+        //统计待完结的作品数
+        $booksLimitNum=  zmf::config('booksLimitNum');
+        if($booksLimitNum>0){
+            $booksNum=Books::model()->count('uid=:uid AND bookStatus=:status',array(':uid'=>  $this->uid,':status'=>  Books::STATUS_PUBLISHED));
+            if($booksNum>=$booksLimitNum){
+                $this->jsonOutPut(0, '你有太多未完结作品，请先完结');
+            }
+        }
         //统计已发表的章节
         $chapters = Chapters::model()->count('uid=:uid AND aid=:aid AND bid=:bid AND status=' . Posts::STATUS_PASSED . ' AND chapterStatus=' . Books::STATUS_PUBLISHED, array(':uid' => $this->uid, ':aid' => $this->userInfo['authorId'], ':bid' => $id));
         if ($chapters < 1) {
@@ -302,7 +310,7 @@ class AjaxController extends Q {
                 'action' => $powerAction,
                 'score' => $powerInfo['msg']['score'],
                 'exp' => $powerInfo['msg']['exp'],
-                'display' => 0,
+                'display' => $powerInfo['msg']['display'],
             );
             if (UserAction::simpleRecord($attr)) {
                 //判断本操作是否同属任务
@@ -379,7 +387,7 @@ class AjaxController extends Q {
                 'action' => $powerAction,
                 'score' => $powerInfo['msg']['score'],
                 'exp' => $powerInfo['msg']['exp'],
-                'display' => 0,
+                'display' => $powerInfo['msg']['display'],
             );
             if (UserAction::simpleRecord($attr)) {
                 //判断本操作是否同属任务
@@ -448,7 +456,7 @@ class AjaxController extends Q {
                 'action' => $powerAction,
                 'score' => $powerInfo['msg']['score'],
                 'exp' => $powerInfo['msg']['exp'],
-                'display' => 0,
+                'display' => $powerInfo['msg']['display'],
             );
             if (UserAction::simpleRecord($attr)) {
                 //判断本操作是否同属任务
@@ -517,7 +525,7 @@ class AjaxController extends Q {
                 'action' => $powerAction,
                 'score' => $powerInfo['msg']['score'],
                 'exp' => $powerInfo['msg']['exp'],
-                'display' => 0,
+                'display' => $powerInfo['msg']['display'],
             );
             if (UserAction::simpleRecord($attr)) {
                 //判断本操作是否同属任务
@@ -580,7 +588,7 @@ class AjaxController extends Q {
                 'action' => $powerAction,
                 'score' => $powerInfo['msg']['score'],
                 'exp' => $powerInfo['msg']['exp'],
-                'display' => 0,
+                'display' => $powerInfo['msg']['display'],
             );
             if (UserAction::simpleRecord($attr)) {
                 //判断本操作是否同属任务
@@ -683,7 +691,7 @@ class AjaxController extends Q {
                     'action' => $powerAction,
                     'score' => $powerInfo['msg']['score'],
                     'exp' => $powerInfo['msg']['exp'],
-                    'display' => 0,
+                    'display' => $powerInfo['msg']['display'],
                 );
                 if (UserAction::simpleRecord($attr)) {
                     //判断本操作是否同属任务
@@ -716,7 +724,7 @@ class AjaxController extends Q {
                     'action' => $powerAction,
                     'score' => $powerInfo['msg']['score'],
                     'exp' => $powerInfo['msg']['exp'],
-                    'display' => 0,
+                    'display' => $powerInfo['msg']['display'],
                 );
                 if (UserAction::simpleRecord($attr)) {
                     //判断本操作是否同属任务
@@ -1031,7 +1039,7 @@ class AjaxController extends Q {
                         'action' => $powerAction,
                         'score' => $powerInfo['msg']['score'],
                         'exp' => $powerInfo['msg']['exp'],
-                        'display' => 0,
+                        'display' => $powerInfo['msg']['display'],
                     );
                     if (UserAction::simpleRecord($attr)) {
                         //判断本操作是否同属任务
@@ -1218,7 +1226,7 @@ class AjaxController extends Q {
                     'action' => $powerAction,
                     'score' => $powerInfo['msg']['score'],
                     'exp' => $powerInfo['msg']['exp'],
-                    'display' => 0,
+                    'display' => $powerInfo['msg']['display'],
                 );
                 if (UserAction::simpleRecord($attr)) {
                     //判断本操作是否同属任务
@@ -1600,6 +1608,8 @@ class AjaxController extends Q {
         $ginfo = Group::getOne($gid);
         if (!$ginfo || $ginfo['status'] != 1) {
             $this->jsonOutPut(0, '暂不能选择该角色');
+        }elseif(!$ginfo['isAuthor'] && $this->userInfo['authorId']>0){
+            $this->jsonOutPut(0, '你已有作者信息，不能选择该角色');
         }
         if (Users::updateInfo($this->uid, 'groupid', $gid)) {
             //保存记录
@@ -1622,8 +1632,16 @@ class AjaxController extends Q {
             //更新团队的成员数
             Group::updateMemberCount($ginfo['id']);            
             //用户组初始化赠送的物品
-            GroupGifts::groupGiftsForUser($ginfo['id'], $this->userInfo);            
-            $url = Yii::app()->createUrl('user/index');
+            GroupGifts::groupGiftsForUser($ginfo['id'], $this->userInfo);     
+            if($ginfo['isAuthor']){
+                if($this->userInfo['authorId']>0){
+                    $url = Yii::app()->createUrl('user/index');
+                }else{
+                    $url = Yii::app()->createUrl('user/author');
+                }
+            }else{
+                $url = Yii::app()->createUrl('user/index');
+            }
             $this->jsonOutPut(1, $url);
         } else {
             $this->jsonOutPut(0, '未知错误，请稍后重试');
@@ -1696,7 +1714,7 @@ class AjaxController extends Q {
                 'action' => $powerAction,
                 'score' => $powerInfo['msg']['score'],
                 'exp' => $powerInfo['msg']['exp'],
-                'display' => 0,
+                'display' => $powerInfo['msg']['display'],
             );
             if (UserAction::simpleRecord($attr)) {
                 //判断本操作是否同属任务
@@ -1891,7 +1909,7 @@ class AjaxController extends Q {
                             'action' => 'buyGoods',
                             'score' => $powerInfo['msg']['score'],
                             'exp' => $powerInfo['msg']['exp'],
-                            'display' => 1,
+                            'display' => $powerInfo['msg']['display'],
                         );
                         if (UserAction::simpleRecord($attr)) {
                             //判断本操作是否同属任务

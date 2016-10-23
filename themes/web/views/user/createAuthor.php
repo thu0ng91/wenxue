@@ -38,6 +38,7 @@
     <div class="form-group">
         <?php echo $form->labelEx($model,'password'); ?>
         <?php echo $form->passwordField($model,'password',array('size'=>32,'maxlength'=>32,'class'=>'form-control')); ?>
+        <p class="help-block">区别于账户密码，将用于积分兑换等</p>
         <?php echo $form->error($model,'password'); ?>
     </div>
     <div class="form-group">

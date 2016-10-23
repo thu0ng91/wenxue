@@ -335,7 +335,7 @@ CREATE TABLE `pre_group_levels` (
 alter TABLE pre_users add exp int(10) unsigned not null COMMENT '经验值';
 alter TABLE pre_users add level int(10) unsigned not null COMMENT '经验ID';
 
-alter TABLE pre_user_action add exp int(10) unsigned not null COMMENT '经验值';
+alter TABLE pre_user_action add exp int(10) not null COMMENT '经验值';
 alter TABLE pre_users add levelTitle varchar(16) not null COMMENT '等级';
 alter TABLE pre_users add levelIcon varchar(255) not null COMMENT '等级图标';
 
@@ -368,3 +368,8 @@ CREATE TABLE `pre_forum_admins` (
   KEY `fid` (`fid`),
   KEY `uid` (`uid`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+alter TABLE pre_group_powers add totalLimit tinyint(1) unsigned not null COMMENT '总数限制';
+alter TABLE pre_group_powers add display tinyint(1) unsigned not null COMMENT '是否在动态里显示';
+
+alter TABLE pre_group add isAuthor tinyint(1) unsigned not null COMMENT '是否必须注册为作者';

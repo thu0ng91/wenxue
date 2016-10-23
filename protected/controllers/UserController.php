@@ -216,7 +216,7 @@ class UserController extends Q {
     }
 
     public function actionThreads() {
-        $sql = "SELECT p.id,p.title,p.faceImg,p.uid,p.cTime,p.comments,p.favorites,p.top,p.digest,p.styleStatus,p.aid FROM {{post_threads}} p WHERE p.uid='{$this->toUserInfo['id']}' AND p.status=" . Posts::STATUS_PASSED . " ORDER BY p.top DESC,p.cTime DESC";
+        $sql = "SELECT p.id,p.title,p.faceImg,p.uid,p.cTime,p.posts,p.hits,p.top,p.digest,p.styleStatus,p.aid FROM {{post_threads}} p WHERE p.uid='{$this->toUserInfo['id']}' AND p.status=" . Posts::STATUS_PASSED . " ORDER BY p.top DESC,p.cTime DESC";
         Posts::getAll(array('sql' => $sql), $pages, $posts);
         $data = array(
             'posts' => $posts,
@@ -412,7 +412,7 @@ class UserController extends Q {
         $groups = Yii::app()->db->createCommand($sql)->queryAll();
         foreach ($groups as $k => $val) {
             $groups[$k]['id'] = Posts::encode($val['id'], 'group');
-            $groups[$k]['faceImg'] = zmf::getThumbnailUrl($val['faceImg'], $this->isMobile ? 'c640' : '', 'group');
+            $groups[$k]['faceImg'] = zmf::getThumbnailUrl($val['faceImg'], $this->isMobile ? 'c640' : 'c280', 'group');
             $groups[$k]['levels'] = GroupLevels::getByGroupid($val['id'],5);
         }
         $this->pageTitle = '角色选择 - ' . zmf::config('sitename');

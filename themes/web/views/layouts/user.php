@@ -21,7 +21,10 @@ $this->beginContent('/layouts/common');
                         <div class="fixed-btn"><?php echo CHtml::link('更改头像',array('user/setting','action'=>'skin'));?></div>
                     </div>
                     <div class="media-body">
-                        <p><span class="uinfo-label">性别</span><span class="uinfo-txt"><?php echo Users::userSex($this->toUserInfo['sex']);?></span></p>
+                        <?php if($this->toUserInfo['id']==$this->uid){?> 
+                        <p><span class="uinfo-label">用户组</span><span class="uinfo-txt"><?php echo $this->toUserInfo['groupName'];?></span></p>
+                        <?php }?>
+                        <p><span class="uinfo-label">性别</span><span class="uinfo-txt"><?php echo Users::userSex($this->toUserInfo['sex']);?></span></p>                        
                         <p><span class="uinfo-label">简介</span><span class="uinfo-txt"><?php echo $this->toUserInfo['content']!='' ? CHtml::encode(nl2br($this->toUserInfo['content'])) : '未设置';?></span></p>
                     </div>
                 </div>

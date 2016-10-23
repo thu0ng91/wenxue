@@ -164,9 +164,13 @@ class SiteController extends Q {
 
     public function actionInfo() {
         $code = zmf::val('code', 1);
+        
         $_title = SiteInfo::exTypes($code);
+        zmf::test($code);
+        zmf::test($_title);
+        exit();
         if (!$_title) {
-            throw new CHttpException(404, '你所查看的页面不存在');
+            throw new CHttpException(404, '你所查看的页面不存在2');
         }
         $info = SiteInfo::model()->find('code=:code', array(':code' => $code));
         if (!$info) {

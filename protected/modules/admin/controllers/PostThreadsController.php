@@ -169,6 +169,8 @@ class PostThreadsController extends Admin {
                     $_model->attributes = $_attr;
                     $_model->save();
                 }
+                //更新帖子的楼层数
+                PostThreads::model()->updateByPk($item['id'], array('posts'=>  count($comments)));                
             }
         }
         exit('well done');
