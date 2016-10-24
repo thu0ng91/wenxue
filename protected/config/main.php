@@ -30,6 +30,10 @@ return array(
             'class' => 'application.modules.admin.AdminModule',
             'defaultController' => 'index'
         ),
+        'weapp' => array(
+            'class' => 'application.modules.weapp.WeappModule',
+            'defaultController' => 'index'
+        ),
     ),
     'defaultController' => 'index',
     'components' => array(

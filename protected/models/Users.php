@@ -111,26 +111,7 @@ class Users extends CActiveRecord {
         if($info['groupid']>0){
             $info['groupName']=  Group::getTitle($info['groupid']);
         }
-        $cacheKey="updateUserLevel-".$id;
-        if(!zmf::checkFCache($cacheKey)){
-            self::updateUserExp($info);
-            zmf::setFCache($cacheKey, 1, 3600);
-        }
-        $cacheKey2="updateUserScore-".$id;
-        if(!zmf::checkFCache($cacheKey2)){
-            $totalScore=ScoreLogs::statUserScore($id);
-            $info['score']=$totalScore;
-            Users::updateInfo($id, 'score', $totalScore);
-            zmf::setFCache($cacheKey2, 1, 3600);
-        }
-        $cacheKey3="updateUserExp-".$id;
-        $val3=  zmf::getFCache($cacheKey3);
-        if(!$val3){
-            $totalExp=  UserAction::statUserExp($id);
-            $info['exp']=$totalExp;
-            Users::updateInfo($id, 'exp', $totalExp);
-            zmf::setFCache($cacheKey3, 1, 3600);
-        }
+        $info=  self::updateUserStat($info);
         return $info;
     }
 
@@ -237,11 +218,42 @@ class Users extends CActiveRecord {
             $_scoreLogModel->attributes = $_attr;
             return $_scoreLogModel->save();
         } elseif ($actionType == 'gold') {
+            //todo
             $totalWealth = 0;
         }
         return false;
     }
     
+    /**
+     * 更新用户的统计数据
+     * @param array $info
+     * @return array $info
+     */
+    public static function updateUserStat($info){
+        $cacheKey2="updateUserScore-".$info['id'];
+        if(!zmf::checkFCache($cacheKey2)){
+            $totalScore=ScoreLogs::statUserScore($info['id']);
+            $info['score']=$totalScore;
+            Users::updateInfo($info['id'], 'score', $totalScore);
+            zmf::setFCache($cacheKey2, 1, 3600);
+        }
+        $cacheKey3="updateUserExp-".$info['id'];
+        $val3=  zmf::getFCache($cacheKey3);
+        if(!$val3){
+            $totalExp=  UserAction::statUserExp($info['id']);
+            $info['exp']=$totalExp;
+            Users::updateInfo($info['id'], 'exp', $totalExp);
+            zmf::setFCache($cacheKey3, 1, 3600);
+        }
+        $cacheKey="updateUserLevel-".$info['id'];
+        if(!zmf::checkFCache($cacheKey)){
+            self::updateUserExp($info);
+            zmf::setFCache($cacheKey, 1, 3600);
+        }
+        return $info;
+    }
+
+
     public static function updateUserExp($userInfo){
         if(!$userInfo['groupid']){
             return false;

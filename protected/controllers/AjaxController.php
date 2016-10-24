@@ -645,7 +645,7 @@ class AjaxController extends Q {
         $desc = zmf::val('reason', 1);
         $contact = zmf::val('contact', 1);
         $url = zmf::val('url', 1);
-        $allowType = array('book', 'chapter', 'tip', 'comment', 'post', 'user', 'author');
+        $allowType = array('book', 'chapter', 'tip', 'comment', 'post', 'user', 'author','postPosts');
         if (!in_array($type, $allowType)) {
             $this->jsonOutPut(0, '暂不允许的分类');
         }
@@ -656,12 +656,7 @@ class AjaxController extends Q {
         if (zmf::actionLimit('report', $type . '-' . $logid, 3, 3600)) {
             $this->jsonOutPut(0, '我们已收到你的举报，请勿频繁操作');
         }
-        //获取用户组的权限
-        $powerAction = 'addReport';
-        $powerInfo = GroupPowers::checkPower($this->userInfo, $powerAction);
-        if (!$powerInfo['status']) {
-            $this->jsonOutPut(0, $powerInfo['msg']);
-        }
+        
         $data['logid'] = $logid;
         $data['classify'] = $type;
         $info = false;
@@ -675,28 +670,7 @@ class AjaxController extends Q {
             $data['status'] = Posts::STATUS_STAYCHECK;
             $data['times'] = $info['times'] + 1;
             $data['cTime'] = zmf::now();
-            if (Reports::model()->updateByPk($info['id'], $data)) {
-                //记录用户操作
-                $jsonData = CJSON::encode(array(
-                            'logid' => $logid,
-                            'classify' => $type,
-                            'desc' => $data['desc'],
-                            'contact' => $data['contact'],
-                ));
-                $attr = array(
-                    'uid' => $this->uid,
-                    'logid' => $info['id'],
-                    'classify' => $powerAction,
-                    'data' => $jsonData,
-                    'action' => $powerAction,
-                    'score' => $powerInfo['msg']['score'],
-                    'exp' => $powerInfo['msg']['exp'],
-                    'display' => $powerInfo['msg']['display'],
-                );
-                if (UserAction::simpleRecord($attr)) {
-                    //判断本操作是否同属任务
-                    Task::addTaskLog($this->userInfo, $powerAction);
-                }
+            if (Reports::model()->updateByPk($info['id'], $data)) {                
                 $this->jsonOutPut(1, '感谢你的举报');
             }
             $this->jsonOutPut(1, '感谢你的举报');
@@ -709,27 +683,6 @@ class AjaxController extends Q {
             $fm = new Reports();
             $fm->attributes = $data;
             if ($fm->save()) {
-                //记录用户操作
-                $jsonData = CJSON::encode(array(
-                            'logid' => $logid,
-                            'classify' => $type,
-                            'desc' => $data['desc'],
-                            'contact' => $data['contact'],
-                ));
-                $attr = array(
-                    'uid' => $this->uid,
-                    'logid' => $info['id'],
-                    'classify' => $powerAction,
-                    'data' => $jsonData,
-                    'action' => $powerAction,
-                    'score' => $powerInfo['msg']['score'],
-                    'exp' => $powerInfo['msg']['exp'],
-                    'display' => $powerInfo['msg']['display'],
-                );
-                if (UserAction::simpleRecord($attr)) {
-                    //判断本操作是否同属任务
-                    Task::addTaskLog($this->userInfo, $powerAction);
-                }
                 $this->jsonOutPut(1, '感谢你的举报');
             } else {
                 $this->jsonOutPut(0, '举报失败，请稍后重试');
@@ -1444,7 +1397,7 @@ class AjaxController extends Q {
         if (!$data || !$type) {
             $this->jsonOutPut(0, '数据不全，请核实');
         }
-        if (!in_array($type, array('comment', 'post', 'notice', 'tag', 'img', 'tip'))) {
+        if (!in_array($type, array('comment', 'post', 'notice', 'tag', 'img', 'tip','postPosts'))) {
             $this->jsonOutPut(0, '暂不允许的分类');
         }
         $status = Posts::STATUS_DELED;
@@ -1534,6 +1487,29 @@ class AjaxController extends Q {
                 }
                 $this->jsonOutPut(1, '已删除');
                 break;
+            case 'postPosts':
+                if (!$data || !is_numeric($data)) {
+                    $this->jsonOutPut(0, '你所操作的内容不存在');
+                }
+                $info=  PostPosts::getOne($data);
+                if (!$info || $info['status']!=Posts::STATUS_PASSED) {
+                    $this->jsonOutPut(0, '你所操作的内容不存在');
+                }
+                $threadInfo=  PostThreads::getOne($info['tid']);
+                if($info['uid']!=$this->uid){
+                    //不是本人，判断是否是版主                    
+                    if (!ForumAdmins::checkForumPower($this->uid, $threadInfo['fid'], 'delPostReply', true)) {
+                        //todo，后台管理员
+                        $this->jsonOutPut(0, '你无权本操作');
+                    }
+                }                
+                if (PostPosts::model()->updateByPk($data, array('status' => Posts::STATUS_DELED))) {
+                    if($info['isFirst']){//如果删除的是首层，则认为是删除帖子
+                        PostThreads::model()->updateByPk($info['tid'], array('status' => Posts::STATUS_DELED));                            
+                    }
+                }
+                $this->jsonOutPut(1, '已删除');
+                break;
             default:
                 $this->jsonOutPut(0, '操作有误');
                 break;
@@ -1554,18 +1530,19 @@ class AjaxController extends Q {
         if (!$type || !$id) {
             $this->jsonOutPut(0, '缺少参数');
         }
-        if (!in_array($type, array('post'))) {
+        if (!in_array($type, array('postPosts'))) {
             $this->jsonOutPut(0, '不被允许的分类');
         }
         if (!in_array($action, array('top', 'red', 'bold', 'boldAndRed', 'lock'))) {
             $this->jsonOutPut(0, '不被允许的操作');
         }
-        if (!$this->userInfo['isAdmin']) {
-            $this->jsonOutPut(0, '无权本操作');
-        }
-        $postInfo = Posts::getOne($id);
+        $postInfo = PostThreads::getOne($id);
         if (!$postInfo || $postInfo['status'] != Posts::STATUS_PASSED) {
             $this->jsonOutPut(0, '操作的内容不存在');
+        }
+        if (!ForumAdmins::checkForumPower($this->uid, $postInfo['fid'], 'setThreadStatus', true)) {
+            //todo，后台管理员
+            $this->jsonOutPut(0, '你无权本操作');
         }
         if ($action == 'top') {
             $status = $postInfo['top'] > 0 ? 0 : 1;
@@ -1584,7 +1561,7 @@ class AjaxController extends Q {
             $filed = 'open';
             $status = $postInfo['open'] > 0 ? 0 : 1;
         }
-        if (Posts::model()->updateByPk($id, array($filed => $status))) {
+        if (PostThreads::model()->updateByPk($id, array($filed => $status))) {
             $this->jsonOutPut(1, '已设置');
         } else {
             $this->jsonOutPut(0, '操作失败，请重试');

@@ -3,6 +3,7 @@ $this->beginContent('/layouts/common');
 ?>
 <div class="navbar navbar-default" role="navigation">
     <div class="container">
+        <?php echo CHtml::link(zmf::config('sitename'),  zmf::config('baseurl'),array('class'=>'navbar-brand'));?>
         <div class="navbar-collapse collapse">
             <?php $this->renderPartial('/layouts/_nav');?>
             <?php $this->renderPartial('/layouts/_user');?>
@@ -24,13 +25,15 @@ $this->beginContent('/layouts/common');
                         <?php if($this->toUserInfo['id']==$this->uid){?> 
                         <p><span class="uinfo-label">用户组</span><span class="uinfo-txt"><?php echo $this->toUserInfo['groupName'];?></span></p>
                         <?php }?>
+                        <?php if($this->toUserInfo['levelTitle']){?>
+                        <p><span class="uinfo-label">等级</span><span class="uinfo-txt"><?php echo $this->toUserInfo['levelTitle'];?></span></p>
+                        <?php }?>
                         <p><span class="uinfo-label">性别</span><span class="uinfo-txt"><?php echo Users::userSex($this->toUserInfo['sex']);?></span></p>                        
                         <p><span class="uinfo-label">简介</span><span class="uinfo-txt"><?php echo $this->toUserInfo['content']!='' ? CHtml::encode(nl2br($this->toUserInfo['content'])) : '未设置';?></span></p>
                     </div>
                 </div>
             </div>
             <div class="user-achiever">
-<!--                <span class="color-grey">获得 <i class="fa fa-thumbs-up"></i> 0赞同</span>-->
                 <div class="pull-right">
                     <?php if($this->toUserInfo['id']==$this->uid){?>                
                     <div class="btn-group" role="group">

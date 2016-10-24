@@ -138,8 +138,6 @@ class PostsController extends Q {
             throw new CHttpException(404, '所属用户不存在');
         }
         $authorInfo['avatar'] = zmf::getThumbnailUrl($authorInfo['avatar'], 'a120', 'user');
-        $this->selectNav = 'readerForum';
-
         if (!zmf::actionLimit('visit-Threads', $id, 5, 60)) {
             Posts::updateCount($id, 'PostThreads', 1, 'hits');
         }
@@ -154,8 +152,14 @@ class PostsController extends Q {
         $firstContent['content'] = zmf::text(array(), $firstContent['content'], true, $size);
         $firstContent['props'] = Props::getClassifyProps('postPosts', $firstContent['id']);
         $info['content'] = $firstContent;
+        
+        $seeLz=  zmf::val('see_lz',2);
         //获取回帖列表
-        $sql = "SELECT p.id,p.tid,p.uid,u.truename AS username,u.avatar,u.level,u.levelTitle,u.levelIcon,p.aid,p.cTime,p.updateTime,p.open,p.comments,p.favors,p.content,'' AS props FROM {{post_posts}} p,{{users}} u WHERE p.tid='{$id}' AND p.isFirst=0 AND p.status=" . Posts::STATUS_PASSED . " AND p.uid=u.id AND u.status=" . Posts::STATUS_PASSED . " ORDER BY p.cTime ASC";
+        $where='';
+        if($seeLz==1){
+            $where=' AND p.uid='.$info['uid'];
+        }
+        $sql = "SELECT p.id,p.tid,p.uid,u.truename AS username,u.avatar,u.level,u.levelTitle,u.levelIcon,p.aid,p.cTime,p.updateTime,p.open,p.comments,p.favors,p.content,'' AS props FROM {{post_posts}} p,{{users}} u WHERE p.tid='{$id}' AND p.isFirst=0{$where} AND p.status=" . Posts::STATUS_PASSED . " AND p.uid=u.id AND u.status=" . Posts::STATUS_PASSED . " ORDER BY p.cTime ASC";
         Posts::getAll(array('sql' => $sql, 'pageSize' => $this->pageSize), $pages, $posts);
 
         foreach ($posts as $k => $val) {
@@ -203,7 +207,7 @@ class PostsController extends Q {
         $this->checkUserStatus();
         $id = zmf::val('id', 2);
         $addScoreExp = true;
-        $firstContent=array();
+        $firstContent = array();
         if ($id) {
             $model = $this->loadModel($id);
             if (!$model) {
@@ -218,23 +222,24 @@ class PostsController extends Q {
             if (!$forumInfo) {
                 $this->message(0, '所属版块不存在');
             }
-            $isNew = false;            
+            $isNew = false;
+            $addScoreExp = false;
             //取内容
-            $firstContent=  PostPosts::model()->find(array(
-                'condition'=>'tid=:tid AND isFirst=1',
-                'params'=>array(
-                    ':tid'=>$id
+            $firstContent = PostPosts::model()->find(array(
+                'condition' => 'tid=:tid AND isFirst=1',
+                'params' => array(
+                    ':tid' => $id
                 )
             ));
-            if(!$firstContent || $firstContent['status']!=Posts::STATUS_PASSED){
+            if (!$firstContent || $firstContent['status'] != Posts::STATUS_PASSED) {
                 $this->message(0, '此帖数据有误，请重新发布');
-            }elseif($model['uid']!=$firstContent['uid'] || $firstContent['uid']!=$this->uid){
+            } elseif ($model['uid'] != $firstContent['uid'] || $firstContent['uid'] != $this->uid) {
                 //如果不相等，则表示有可能是版主
-                if(!ForumAdmins::checkForumPower($this->uid, $model['fid'], 'editPost')){
+                if (!ForumAdmins::checkForumPower($this->uid, $model['fid'], 'editPost')) {
                     $this->message(0, '你无权此操作');
                 }
             }
-            $model->content=zmf::text(array('action'=>'edit'), $firstContent['content'], false, 'w600');
+            $model->content = zmf::text(array('action' => 'edit'), $firstContent['content'], false, 'w600');            
         } else {
             $forumId = zmf::val('forum', 2);
             if (!$forumId) {
@@ -283,17 +288,17 @@ class PostsController extends Q {
             $model->attributes = $attr;
             if ($model->save()) {
                 //保存第一楼内容
-                if($firstContent){
-                    $modelPost=$firstContent;
-                }else{
+                if ($firstContent) {
+                    $modelPost = $firstContent;
+                } else {
                     $modelPost = new PostPosts;
                 }
                 $postAttr = array(
                     'tid' => $model->id,
                     'content' => $content,
                     'isFirst' => 1, //首层
-                );                
-                $modelPost->attributes = $postAttr;                
+                );
+                $modelPost->attributes = $postAttr;
                 if (!$modelPost->save()) {
                     //如果第一楼没写入成功，则删除原来的帖子
                     $model->updateByPk($model->id, array('status' => Posts::STATUS_DELED));
@@ -330,10 +335,10 @@ class PostsController extends Q {
                 }
                 $this->redirect(array('posts/view', 'id' => $model->id));
             }
-        }        
+        }
         //$tags = Tags::getClassifyTags('thread');
         $this->pageTitle = '【' . $forumInfo['title'] . '】发布文章 - ' . zmf::config('sitename');
-        $this->selectNav = 'authorForum';
+        $this->selectNav = 'forum';
         $this->mobileTitle = '发布帖子';
         $this->render('create', array(
             'model' => $model,
@@ -352,18 +357,18 @@ class PostsController extends Q {
         if (!$tid) {
             throw new CHttpException(404, '该页面不存在或已被删除！');
         }
-        $addScoreExp=true;
+        $addScoreExp = true;
         $threadInfo = $this->loadModel($tid);
         if ($pid) {
             $model = PostPosts::model()->findByPk($pid);
             if (!$model || $model->uid != $this->uid) {
                 throw new CHttpException(404, '你编辑的页面不存在或已被删除！');
-            }elseif($model->tid!=$tid){
+            } elseif ($model->tid != $tid) {
                 throw new CHttpException(404, '数据有误，请核实！');
-            }elseif($model->isFirst){//不能编辑首层
-                $this->redirect(array('posts/create','id'=>$model->tid));
+            } elseif ($model->isFirst) {//不能编辑首层
+                $this->redirect(array('posts/create', 'id' => $model->tid));
             }
-            $model->content=zmf::text(array(), $model['content'], true, 'w600');
+            $model->content = zmf::text(array(), $model['content'], true, 'w600');
         } else {
             $model = new PostPosts;
             $model->tid = $tid;
@@ -374,8 +379,8 @@ class PostsController extends Q {
             //用户本身的权限已用完，再判断对方是否是版主
             if (!ForumAdmins::checkForumPower($this->uid, $threadInfo['fid'], 'addPostReply', true)) {
                 $this->message($powerInfo['status'], $powerInfo['msg']);
-            }else{
-                $addScoreExp=false;
+            } else {
+                $addScoreExp = false;
             }
         }
         if (isset($_POST['PostPosts'])) {
@@ -429,6 +434,7 @@ class PostsController extends Q {
                 $this->redirect(array('posts/view', 'id' => $model->tid));
             }
         }
+        $this->selectNav = 'forum';
         $this->pageTitle = '回帖 - ' . zmf::config('sitename');
         $this->render('reply', array(
             'model' => $model,

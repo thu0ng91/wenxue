@@ -63,12 +63,14 @@
                 </div>
             </div>
         </div>
+        <?php if(!empty($props)){?>
         <div class="module" id="props-holder">
             <div class="module-header">赞赏榜</div>
             <div class="module-body">
                 <?php $this->renderPartial('/common/props',array('props'=>$props,'keyid'=>$info['id']));?>
             </div>
         </div>
+        <?php }?>
         <div class="module">
             <div class="module-header">书评</div>
             <div class="module-body" id="chapter-tips-holder">                

@@ -31,7 +31,7 @@ class BookController extends Q {
             $posts[$k]['faceImg'] = zmf::getThumbnailUrl($val['faceImg'], 'w120', 'book');
         }
         $cols=  Column::allCols();
-        $this->selectNav = 'column' . $colid;
+        $this->selectNav = 'book';
         $this->showLeftBtn=false;
         $this->pageTitle = ($colInfo['title'] ? $colInfo['title'] : '作品集') . ' - ' . zmf::config('sitename');
         $this->mobileTitle='作品集';
@@ -234,7 +234,7 @@ class BookController extends Q {
 
         $this->keywords = $bookInfo['title'] . '、' . $bookInfo['title'] . '小说阅读、' . $bookInfo['title'] . '最新章节';
         $this->pageDescription = "{$bookInfo['title']}：{$chapterInfo['title']}。{$colInfo['title']}{$bookInfo['title']}由作家{$authorInfo['authorName']}创作," . zmf::config('sitename') . "提供{$bookInfo['title']}最新章节及章节列表,{$bookInfo['title']}最新更新尽在" . zmf::config('sitename') . "。";
-        $this->selectNav = 'column' . $bookInfo['colid'];
+        $this->selectNav = 'book';
         if($this->isMobile){
             $this->layout='common';
         }

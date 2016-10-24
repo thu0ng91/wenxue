@@ -39,6 +39,7 @@
                 <?php }?>
             </div>            
         </div>
+        <?php if(!empty($props)){?>
         <div class="module" id="props-holder">
             <div class="module-header">赞赏榜</div>
             <div class="module-body">
@@ -50,6 +51,7 @@
                 </div>
             </div>
         </div>
+        <?php }?>
         <div class="module chapter-tips-module">
             <div class="module-header">点评</div>
             <div class="module-body" id="comments-chapter-<?php echo $chapterInfo['id'];?>">                

@@ -146,6 +146,7 @@ class UserAction extends CActiveRecord {
                     'delPostReply' => '删除楼层',
                     'favoriteForum' => '关注版块',
                     'changeForum' => '修改所属版块',
+                    'setThreadStatus' => '置顶帖子',
                 ),
             ),
             'book' => array(
@@ -412,11 +413,18 @@ class UserAction extends CActiveRecord {
      * @return int
      */
     public static function statUserExp($uid){
+        //日常操作的经验奖励
         $sql="SELECT SUM(exp) AS total FROM {{user_action}} WHERE uid=:uid";
         $res=  Yii::app()->db->createCommand($sql);
         $res->bindValue(':uid', $uid);
         $info=$res->queryRow();
-        return $info['total'];
+        //完成任务的奖励
+        $sql2="SELECT SUM(exp) AS total FROM {{score_logs}} WHERE uid=:uid";
+        $res2=  Yii::app()->db->createCommand($sql2);
+        $res2->bindValue(':uid', $uid);
+        $info2=$res2->queryRow();
+        
+        return $info['total']+$info2['total'];
     }
 
 }

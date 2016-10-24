@@ -15,10 +15,10 @@
     <?php foreach ($cols as $colid=>$colTitle){?>
     <li<?php echo $this->selectNav == 'column'.$colid ? ' class="active"' : ''; ?>><?php echo CHtml::link($colTitle, array('showcase/index','cid'=>$colid)); ?></li>
     <?php }?>
-    <li<?php echo $this->selectNav == 'shop' ? ' class="active"' : ''; ?>><?php echo CHtml::link('书城', array('book/index')); ?></li>
-    <li<?php echo $this->selectNav == 'shop' ? ' class="active"' : ''; ?>><?php echo CHtml::link('商城', array('shop/index')); ?></li>
+    <li<?php echo $this->selectNav == 'book' ? ' class="active"' : ''; ?>><?php echo CHtml::link('书城', array('book/index')); ?></li>
+<!--    <li<?php echo $this->selectNav == 'shop' ? ' class="active"' : ''; ?>><?php echo CHtml::link('商城', array('shop/index')); ?></li>-->
     <?php if(!$this->uid || empty($this->userInfo['favoriteForums'])){?>
-    <li<?php echo $this->selectNav == 'authorForum' ? ' class="active"' : ''; ?>><?php echo CHtml::link('基地', array('posts/types')); ?></li>
+    <li<?php echo $this->selectNav == 'forum' ? ' class="active"' : ''; ?>><?php echo CHtml::link('基地', array('posts/types')); ?></li>
     <?php }else{?>
     <li class="dropdown">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown">基地 <span class="caret"></span></a>               
