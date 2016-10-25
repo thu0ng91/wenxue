@@ -309,8 +309,8 @@ class Posts extends CActiveRecord {
         $pageSize = (is_numeric($params['pageSize']) && $params['pageSize'] > 0) ? $params['pageSize'] : 30;
         $page = (is_numeric($params['page']) && $params['page'] > 1) ? $params['page'] : 1;
         $bindValues = !empty($params['bindValues']) ? $params['bindValues'] : array();
-        $bindValues[':offset'] = ($page - 1) * $pageSize;
-        $bindValues[':limit'] = $pageSize;
+        $bindValues[':offset'] = intval(($page - 1) * $pageSize);
+        $bindValues[':limit'] = intval($pageSize);
         $com = Yii::app()->db->createCommand($sql . " LIMIT :offset,:limit");
         $com->bindValues($bindValues);
         $posts = $com->queryAll();

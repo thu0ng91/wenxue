@@ -1,0 +1,57 @@
+<loading hidden="{{loading}}">
+  加载中...
+</loading>
+<view class="weui-panel">   
+    <text class="h1">{{data.info.title}}</text>
+    <view class="weui-media-box weui-media-box_appmsg">        
+        <view class="weui-media-box__hd">
+            <image class="weui-media-box__thumb" src="{{data.info.faceImg}}"></image>
+        </view>
+        <view class="weui-media-box__bd">
+            <view class="weui-media-box__desc">作者：{{data.authorInfo.authorName}}</view>
+            <view class="weui-media-box__desc">分类：{{data.colInfo.title}}</view>
+            <view class="weui-media-box__desc">字数：{{data.info.words}}</view>
+            <view class="weui-media-box__desc">状态：{{data.info.bookStatus}}</view>
+        </view>
+    </view> 
+    <view class="weui-panel__hd">介绍</view> 
+    <view class="weui-panel__bd book-content">
+        <text>{{data.info.content}}</text>
+    </view>
+</view>    
+<view class="weui-panel">    
+    <view class="weui-panel__hd">目录</view> 
+    <view class="weui-panel__bd">        
+        <view class="weui-media-box weui-media-box_small-appmsg">
+            <view class="weui-cells">
+                <block wx:for="{{data.chapters}}">
+                <view class="weui-cell weui-cell_access" bindtap="chapterTap" data-cid="{{item.id}}">                    
+                    <view class="weui-cell__bd weui-cell_primary">{{item.title}}</view>
+                </view>
+                </block>
+            </view>
+        </view>        
+    </view>
+</view>
+<view class="weui-panel">        
+    <view class="weui-panel__hd">点评</view>    
+    <view class="weui-panel__bd">
+        <block wx:for="{{data.tips}}">
+        <view class="weui-media-box weui-media-box_text">
+            <text class="weui-media-box__title">点评 {{item.chapterTitle}}</text>
+            <view class="weui-media-box__desc">{{item.content}}</view>
+            <view class="weui-media-box__info">
+                <view class="weui-media-box__info__meta">{{item.truename}}</view>
+                <view class="weui-media-box__info__meta">{{item.cTime}}</view>
+            </view>
+        </view>
+        </block>
+    </view>
+</view>
+<view class="weui-footer">
+    <view class="weui-footer__links">
+        <text class="weui-footer__link">底部链接</text>
+        <text class="weui-footer__link">底部链接</text>
+    </view>
+    <view class="weui-footer__text">Copyright © 2008-2016 weui.io</view>
+</view>

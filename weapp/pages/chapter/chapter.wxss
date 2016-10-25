@@ -1,0 +1,6 @@
+.weui-article{
+    background: #fff
+}
+.weui-article .h1{
+    text-align: center
+}

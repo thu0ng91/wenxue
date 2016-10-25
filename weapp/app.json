@@ -1,6 +1,9 @@
 {
   "pages":[
-    "pages/book/book"
+    "pages/book/book",
+    "pages/bDetail/bDetail",
+    "pages/chapter/chapter",
+    "pages/posts/posts"
   ],
   "window":{
     "backgroundTextStyle":"light",
@@ -14,7 +17,7 @@
     "borderStyle": "white",
     "backgroundColor": "#ffffff",
     "list": [{
-      "pagePath": "pages/index/index",
+      "pagePath": "pages/book/book",
       "iconPath": "images/icons/star0.png",
       "selectedIconPath": "images/icons/star.png",
       "text": "书城"
@@ -24,7 +27,7 @@
       "selectedIconPath": "images/icons/image.png",
       "text": "基地"
     }, {
-      "pagePath": "pages/index/index",
+      "pagePath": "pages/book/book",
       "iconPath": "images/icons/user0.png",
       "selectedIconPath": "images/icons/user.png",
       "text": "我的"

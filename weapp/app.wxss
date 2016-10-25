@@ -6,6 +6,7 @@
 page {
   line-height: 1.6;
   font-family: -apple-system-font, 'Helvetica Neue', Helvetica, 'Microsoft YaHei', sans-serif;
+  background: #faefc2
 }
 .weui-btn {
   position: relative;
@@ -882,7 +883,7 @@ button.weui-form-preview__btn {
   padding: 20px 15px;
   font-size: 15px;
 }
-.weui-article section {
+.weui-article .section {
   margin-bottom: 1.5em;
 }
 .weui-article .h1 {
@@ -1313,6 +1314,7 @@ i.weui-tabbar__icon,
   color: #999999;
   font-size: 14px;
   text-align: center;
+  padding: 20px 0
 }
 .weui-footer a {
   color: #586C94;

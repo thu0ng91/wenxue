@@ -2,14 +2,14 @@
   加载中...
 </loading>
 <scroll-view class="weui-panel weui-panel_access" style="height: {{windowHeight}}px; width: {{windowWidth}}px; " scroll-y="true" bindscrolltoupper="pullDownRefresh" bindscrolltolower="pullUpLoad">    
-    <block wx:for="{{list}}">
+    <block wx:for="{{data.posts}}">
         <view class="weui-media-box weui-media-box_appmsg" bindtap="bindViewTap" data-bid="{{item.id}}">
-            <view class="weui-media-box__hd">
+            <view class="weui-media-box__hd" wx:if="{{item.faceImg}}">
                 <image class="weui-media-box__thumb" src="{{item.faceImg}}"></image>
             </view>
             <view class="weui-media-box__bd">
                 <view class="weui-media-box__title">{{item.title}}</view>
-                <view class="weui-media-box__desc">{{item.desc}}</view>
+                <view class="weui-media-box__desc">{{item.username}}</view>
             </view>
         </view>
     </block>

@@ -1,0 +1,12 @@
+.h1{
+    display: block;
+    padding: 15px;
+}
+.book-content{
+    font-size: 14px;
+    padding: 15px;
+}
+.weui-media-box_appmsg .weui-media-box__thumb{
+    width: 78px !important;
+    height: 104px !important;
+}

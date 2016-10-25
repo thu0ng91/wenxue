@@ -43,8 +43,8 @@ function _request(action,requestData,callback){
     wx.request({
       url: _url( obj ),
 	  data:{},
-      header: {
-        'Content-Type': 'application/json'
+      header: {  
+        "Content-Type": "application/x-www-form-urlencoded"  
       },
       success: function( res ) {
         result = _data(res.data);

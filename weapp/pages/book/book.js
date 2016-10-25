@@ -6,7 +6,7 @@ const api = require( '../../utils/api.js' )
 Page( {
   data: {
     list: [],
-    loading: false,
+    loading: true,
     windowHeight: 0,
     windowWidth: 0,
     imgHeight:0,
@@ -60,7 +60,7 @@ Page( {
   },
   bindViewTap:function(options){
     wx.navigateTo({
-      url: '../detail/detail?bid='+options.bid
+      url: '../bDetail/bDetail?bid='+options.currentTarget.dataset.bid
     })
   }
 })
