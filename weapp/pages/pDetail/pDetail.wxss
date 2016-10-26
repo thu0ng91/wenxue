@@ -1,0 +1,4 @@
+@import "../../wxParse/wxParse.wxss";
+.weui-article{
+    background: #fff
+}

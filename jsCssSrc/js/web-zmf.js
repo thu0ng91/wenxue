@@ -15,22 +15,22 @@ $(window).scroll(function () {
 $(document).keydown(function (b) {
     if (b.keyCode == 37) {
         //$("a[action=preChapter]").click();
-    } else if (b.keyCode == 39) {        
+    } else if (b.keyCode == 39) {
         //$("a[action=nextChapter]").click();        
     }
 });
 function rebind() {
     $("img.lazy").lazyload({
-        threshold:600
+        threshold: 600
     });
     /**
-    * 获取内容
-    * @param {type} dom
-    * @param {type} t 类型
-    * @param {type} k keyid
-    * @param {type} p 页码
-    * @returns {Boolean}
-    */
+     * 获取内容
+     * @param {type} dom
+     * @param {type} t 类型
+     * @param {type} k keyid
+     * @param {type} p 页码
+     * @returns {Boolean}
+     */
     $("a[action=getContents]").unbind('click').click(function () {
         var dom = $(this);
         var acdata = dom.attr("data-id");
@@ -40,9 +40,9 @@ function rebind() {
         if (!targetBox) {
             return false;
         }
-        if(dom.attr('data-loaded')==='1'){
-            $('#' + targetBox+'-box').hide();
-            dom.attr('data-loaded',0);
+        if (dom.attr('data-loaded') === '1') {
+            $('#' + targetBox + '-box').hide();
+            dom.attr('data-loaded', 0);
             return false;
         }
         if (!p) {
@@ -53,8 +53,8 @@ function rebind() {
             $(this).remove();
         });
         $('#' + targetBox).append(loading);
-        $('#' + targetBox+'-box').show();
-        $.post(zmf.ajaxUrl, {action:'getContents',type: t, page: p, data: acdata, YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
+        $('#' + targetBox + '-box').show();
+        $.post(zmf.ajaxUrl, {action: 'getContents', type: t, page: p, data: acdata, YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
             ajaxReturn = true;
             dom.attr('data-loaded', 1);
             result = $.parseJSON(result);
@@ -68,25 +68,25 @@ function rebind() {
                     var _p = parseInt(p) + 1;
                     pageHtml += '<div class="loading-holder"><a class="btn btn-default btn-sm"  href="javascript:;" action="getContents" data-type="' + t + '" data-id="' + acdata + '" data-page="' + _p + '" data-target="' + targetBox + '">加载更多</a></div>';
                 } else {
-                    if(data.html==='' && p===1){
+                    if (data.html === '' && p === 1) {
                         pageHtml += '';
-                    }else{
+                    } else {
                         pageHtml += '<div class="loading-holder"><a class="btn btn-default btn-sm disabled" href="javascript:;">已全部加载</a></div>';
                     }
-                }                
+                }
                 $('#' + targetBox + ' .loading-holder').each(function () {
                     $(this).remove();
-                });                
+                });
                 if (p > 1) {
                     $('#' + targetBox).append(dataHtml);
                 } else {
-                    if(data.html === ''){
-                        dataHtml='<div class="help-block text-center">暂无内容</div>';
+                    if (data.html === '') {
+                        dataHtml = '<div class="help-block text-center">暂无内容</div>';
                     }
                     $('#' + targetBox).html(dataHtml);
                 }
                 $('#' + targetBox).append(pageHtml);
-                if(p===1){
+                if (p === 1) {
                     $('#' + targetBox + '-form').html(data.formHtml);
                 }
                 rebind();
@@ -119,7 +119,7 @@ function rebind() {
         if (!checkAjax()) {
             return false;
         }
-        $.post(zmf.ajaxUrl, {action:'delContent',type: t, data: acdata, YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
+        $.post(zmf.ajaxUrl, {action: 'delContent', type: t, data: acdata, YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
             ajaxReturn = true;
             result = $.parseJSON(result);
             if (result.status === 1) {
@@ -139,7 +139,7 @@ function rebind() {
     $("a[action=delBook]").unbind('click').click(function () {
         var bid = $(this).attr("data-id");
         var rurl = $(this).attr('data-redirect');
-        if(!bid){
+        if (!bid) {
             dialog({msg: '请选择小说'});
             return false;
         }
@@ -147,19 +147,19 @@ function rebind() {
         dialog({msg: html, title: '确定删除小说？', action: 'confirmDelBook'});
         $("button[action=confirmDelBook]").unbind('click').click(function () {
             var passwd = $('#author-passwd').val();
-            if(!passwd){
+            if (!passwd) {
                 alert('请输入密码');
                 return false;
-            }            
-            $.post(zmf.ajaxUrl, {action:'delBook',bid: bid,passwd:passwd,YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {                
+            }
+            $.post(zmf.ajaxUrl, {action: 'delBook', bid: bid, passwd: passwd, YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
                 result = $.parseJSON(result);
                 if (result.status === 1) {
                     alert(result.msg);
                     window.location.href = rurl;
-                    return false;              
+                    return false;
                 } else {
                     alert(result.msg);
-                    return false;    
+                    return false;
                 }
                 return false;
             });
@@ -167,7 +167,7 @@ function rebind() {
     });
     $("a[action=delChapter]").unbind('click').click(function () {
         var cid = $(this).attr("data-id");
-        if(!cid){
+        if (!cid) {
             dialog({msg: '请选择小说章节'});
             return false;
         }
@@ -175,19 +175,19 @@ function rebind() {
         dialog({msg: html, title: '确定删除本章节？', action: 'confirmDelChapter'});
         $("button[action=confirmDelChapter]").unbind('click').click(function () {
             var passwd = $('#author-passwd').val();
-            if(!passwd){
+            if (!passwd) {
                 alert('请输入密码');
                 return false;
-            }            
-            $.post(zmf.ajaxUrl, {action:'delChapter',cid: cid,passwd:passwd,YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {                
+            }
+            $.post(zmf.ajaxUrl, {action: 'delChapter', cid: cid, passwd: passwd, YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
                 result = $.parseJSON(result);
                 if (result.status === 1) {
                     alert(result.msg);
                     window.location.reload();
-                    return false;              
+                    return false;
                 } else {
                     alert(result.msg);
-                    return false;    
+                    return false;
                 }
                 return false;
             });
@@ -195,7 +195,7 @@ function rebind() {
     });
     $("a[action=finishBook]").unbind('click').click(function () {
         var bid = $(this).attr("data-id");
-        if(!bid){
+        if (!bid) {
             dialog({msg: '请选择小说'});
             return false;
         }
@@ -203,19 +203,19 @@ function rebind() {
         dialog({msg: html, title: '确定完结本小说？', action: 'confirmFinishBook'});
         $("button[action=confirmFinishBook]").unbind('click').click(function () {
             var passwd = $('#author-passwd').val();
-            if(!passwd){
+            if (!passwd) {
                 alert('请输入密码');
                 return false;
             }
-            $.post(zmf.ajaxUrl, {action:'finishBook',bid: bid,passwd:passwd,YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {                
+            $.post(zmf.ajaxUrl, {action: 'finishBook', bid: bid, passwd: passwd, YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
                 result = $.parseJSON(result);
                 if (result.status === 1) {
                     alert(result.msg);
                     window.location.reload();
-                    return false;              
+                    return false;
                 } else {
                     alert(result.msg);
-                    return false;    
+                    return false;
                 }
                 return false;
             });
@@ -227,12 +227,12 @@ function rebind() {
     });
     $(".tag-item").unbind('click').click(function () {
         var dom = $(this);
-        if(dom.hasClass('active')){
+        if (dom.hasClass('active')) {
             dom.removeClass('active');
             dom.children('input').removeAttr('checked');
-        }else{
+        } else {
             dom.addClass('active');
-            dom.children('input').attr('checked','checked');
+            dom.children('input').attr('checked', 'checked');
         }
     });
     $(".comment-textarea").unbind('click').click(function () {
@@ -251,26 +251,26 @@ function rebind() {
         var k = dom.attr("action-data");
         var t = dom.attr("action-type");
         var c = $('#content-' + t + '-' + k).val();
-        var score=parseInt($('#add-tips-score input[name="score"]:checked ').val());        
+        var score = parseInt($('#add-tips-score input[name="score"]:checked ').val());
         if (!k || !t || !c) {
             dialog({msg: '请填写内容'});
             return false;
         }
-        if(c.length<20){
+        if (c.length < 20) {
             dialog({msg: '点评内容不小于20字'});
             return false;
         }
         if (!score) {
             score = 0;
         }
-        if((!score || (score<1 || score>5)) && to===0){
+        if ((!score || (score < 1 || score > 5)) && to === 0) {
             dialog({msg: '请打一个分吧'});
             return false;
         }
         if (!checkAjax()) {
             return false;
         }
-        $.post(zmf.ajaxUrl, {action:'addTip',k: k, t: t, c: c,score:score, YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
+        $.post(zmf.ajaxUrl, {action: 'addTip', k: k, t: t, c: c, score: score, YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
             ajaxReturn = true;
             result = eval('(' + result + ')');
             if (result['status'] == '1') {
@@ -299,58 +299,58 @@ function rebind() {
     });
     $("a[action=setStatus]").unbind('click').click(function () {
         var dom = $(this);
-        var id=parseInt(dom.attr('data-id'));
-        if(!id){
+        var id = parseInt(dom.attr('data-id'));
+        if (!id) {
             alert('缺少参数');
             return false;
         }
-        var type=dom.attr('data-type');
-        if(!type){
+        var type = dom.attr('data-type');
+        if (!type) {
             alert('缺少参数');
             return false;
         }
-        var action=dom.attr('data-action');
-        if(!action){
+        var action = dom.attr('data-action');
+        if (!action) {
             alert('缺少参数');
             return false;
         }
-        if(confirm('确定该操作？')){
-            $.post(zmf.ajaxUrl, {action:'setStatus',type:type,id:id,actype:action,YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {                
+        if (confirm('确定该操作？')) {
+            $.post(zmf.ajaxUrl, {action: 'setStatus', type: type, id: id, actype: action, YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
                 result = eval('(' + result + ')');
                 if (result['status'] == '1') {
-                    window.location.reload();                    
+                    window.location.reload();
                 } else {
-                    dialog({msg:result['msg']});
+                    dialog({msg: result['msg']});
                     return false;
                 }
             });
         }
     });
-    
+
     $("a[action=publishBook]").unbind('click').click(function () {
         var dom = $(this);
-        var id=parseInt(dom.attr('data-id'));
-        var type=parseInt(dom.attr('data-action'));
-        if(!id){
+        var id = parseInt(dom.attr('data-id'));
+        var type = parseInt(dom.attr('data-action'));
+        if (!id) {
             alert('缺少参数');
             return false;
         }
-        if(!type){
-            type='publish';
+        if (!type) {
+            type = 'publish';
         }
-        var msg='';
-        if(type==='publish'){
-            msg='确定立即发表作品么？';
-        }else if(type==='finish'){
-            msg='确定标记为已完结么，标记后将不能再续写新章节？';
+        var msg = '';
+        if (type === 'publish') {
+            msg = '确定立即发表作品么？';
+        } else if (type === 'finish') {
+            msg = '确定标记为已完结么，标记后将不能再续写新章节？';
         }
-        if(confirm(msg)){
-            $.post(zmf.ajaxUrl, {action:'publishBook',id:id,type:type,YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {                
+        if (confirm(msg)) {
+            $.post(zmf.ajaxUrl, {action: 'publishBook', id: id, type: type, YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
                 result = eval('(' + result + ')');
                 if (result['status'] == '1') {
                     window.location.reload();
                 } else {
-                    dialog({msg:result['msg']});
+                    dialog({msg: result['msg']});
                     return false;
                 }
             });
@@ -358,37 +358,37 @@ function rebind() {
     });
     $("a[action=publishChapter]").unbind('click').click(function () {
         var dom = $(this);
-        var id=parseInt(dom.attr('data-id'));
-        if(!id){
+        var id = parseInt(dom.attr('data-id'));
+        if (!id) {
             alert('缺少参数');
             return false;
         }
-        if(confirm('确定立即发表本章节么？')){
-            $.post(zmf.ajaxUrl, {action:'publishChapter',id:id,YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {                
+        if (confirm('确定立即发表本章节么？')) {
+            $.post(zmf.ajaxUrl, {action: 'publishChapter', id: id, YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
                 result = eval('(' + result + ')');
                 if (result['status'] == '1') {
                     window.location.reload();
                 } else {
-                    dialog({msg:result['msg']});
+                    dialog({msg: result['msg']});
                     return false;
                 }
             });
         }
     });
-    
+
     $('#add-post-btn').unbind('click').click(function () {
         $(window).unbind('beforeunload');
     });
     $('[data-toggle="tooltip"]').tooltip({
         container: 'body'
     });
-    
+
     $("a[action=showChapters]").unbind('click').click(function () {
-        var dom=$(this);
-        if(dom.hasClass('active')){
+        var dom = $(this);
+        if (dom.hasClass('active')) {
             dom.removeClass('active');
             $('#fixed-chapters').hide();
-        }else{
+        } else {
             dom.addClass('active');
             $('#fixed-chapters').show();
         }
@@ -419,7 +419,7 @@ function rebind() {
     });
     $("a[action=dapipi]").unbind('click').click(function () {
         var dom = $(this);
-        var k = dom.attr("action-data");     
+        var k = dom.attr("action-data");
         if (!k) {
             dialog({msg: '缺少参数'});
             return false;
@@ -427,7 +427,7 @@ function rebind() {
         if (!checkAjax()) {
             return false;
         }
-        $.post(zmf.ajaxUrl, {action:'dapipi',k: k,YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
+        $.post(zmf.ajaxUrl, {action: 'dapipi', k: k, YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
             ajaxReturn = true;
             result = eval('(' + result + ')');
             if (result['status'] == '1') {
@@ -445,20 +445,20 @@ function rebind() {
         }
         var dom = $(this);
         var acdata = dom.attr("data-id");
-        var t = dom.attr("data-type");        
+        var t = dom.attr("data-type");
         var targetBox = dom.attr('data-target');
         if (!targetBox) {
             return false;
         }
-        var targetDom=$('#' + targetBox+'-box');
-        if(dom.attr('data-loaded')==='1'){
-            if(targetDom.css('display')=='none'){
+        var targetDom = $('#' + targetBox + '-box');
+        if (dom.attr('data-loaded') === '1') {
+            if (targetDom.css('display') == 'none') {
                 targetDom.show();
-            }else{
+            } else {
                 targetDom.hide();
-            }            
+            }
             //dom.attr('data-loaded',0);
-            return false;            
+            return false;
         }
         var loading = '<div class="loading-holder"><a class="btn btn-default btn-sm disabled" href="javascript:;">拼命加载中...</a></div>';
         $('#' + targetBox).children('.loading-holder').each(function () {
@@ -466,7 +466,7 @@ function rebind() {
         });
         $('#' + targetBox).append(loading);
         targetDom.show();
-        $.post(zmf.ajaxUrl, {action:'getProps',type: t, data: acdata, YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
+        $.post(zmf.ajaxUrl, {action: 'getProps', type: t, data: acdata, YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
             ajaxReturn = true;
             dom.attr('data-loaded', 1);
             result = $.parseJSON(result);
@@ -475,11 +475,11 @@ function rebind() {
                 var dataHtml = '';
                 if (data.html !== '') {
                     dataHtml += data.html;
-                }               
+                }
                 $('#' + targetBox + ' .loading-holder').each(function () {
                     $(this).remove();
-                });  
-                $('#' + targetBox).html(dataHtml);                
+                });
+                $('#' + targetBox).html(dataHtml);
                 rebind();
             } else {
                 dialog({msg: result.msg});
@@ -488,7 +488,7 @@ function rebind() {
     });
     $("a[action=useProp]").unbind('click').click(function () {
         var dom = $(this);
-        var k = dom.attr("action-data");     
+        var k = dom.attr("action-data");
         if (!k) {
             dialog({msg: '缺少参数'});
             return false;
@@ -496,7 +496,7 @@ function rebind() {
         if (!checkAjax()) {
             return false;
         }
-        $.post(zmf.ajaxUrl, {action:'useProp',k: k,YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
+        $.post(zmf.ajaxUrl, {action: 'useProp', k: k, YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
             ajaxReturn = true;
             result = eval('(' + result + ')');
             if (result['status'] == '1') {
@@ -506,7 +506,7 @@ function rebind() {
             }
         });
     });
-    $('.tooltip').mouseover(function(){
+    $('.tooltip').mouseover(function () {
         $(this).remove();
     });
     //输入框自动变大
@@ -519,83 +519,115 @@ function rebind() {
             feedback();
         });
     });
+    $("a[action=changeForum]").unbind('click').click(function () {
+        var dom = $(this);
+        var id = dom.attr('data-id');
+        $.post(zmf.ajaxUrl, {action: 'getForums', id: id, YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
+            ajaxReturn = true;
+            result = eval('(' + result + ')');
+            if (result['status'] == '1') {
+                dialog({msg: result['msg'], title: '更改所属版块', action: 'doChangeForum'});
+                $("button[action=doChangeForum]").unbind('click').click(function () {
+                    if (!id) {
+                        alert('缺少参数');
+                        return false;
+                    }
+                    var fid = $('#float-forumid').val();
+                    if (!fid) {
+                        alert('请选择版块');
+                        return false;
+                    }
+                    $.post(zmf.ajaxUrl, {action: 'doChangeForum', id: id, fid: fid, YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
+                        result = eval('(' + result + ')');
+                        if (result['status'] == '1') {
+                            dialog({msg: result['msg']});
+                        } else {
+                            dialog({msg: result['msg']});
+                        }
+                    });
+                });
+            } else {
+                dialog({msg: result['msg']});
+            }
+        });
+    });
     //举报
     $("a[action=report]").unbind('click').click(function () {
-        var dom=$(this);
-        var type=dom.attr('action-type');
-        var id=dom.attr('action-id');
-        var title=dom.attr('action-title');
-        if(!type){
+        var dom = $(this);
+        var type = dom.attr('action-type');
+        var id = dom.attr('action-id');
+        var title = dom.attr('action-title');
+        if (!type) {
             alert('缺少参数');
             return false;
         }
-        var html='<div class="form-group"><label>举报对象</label><p class="help-block ui-nowarp">'+title+'</p><input type="hidden" name="report-id" id="report-id" value="'+id+'"/></div>';
-        if(type==='book' || type==='chapter'){
-            html+= '<div class="form-group"><label for="feedback-reason">举报原因</label><select name="report-reason" id="report-reason" class="form-control"><option value="色情低俗">色情低俗</option><option value="暴力血腥">暴力血腥</option><option value="涉政违规">涉政违规</option><option value="欺诈广告">欺诈广告</option><option value="抄袭侵权">抄袭侵权</option><option value="">其他原因</option></select></div>';
-        }else if(type==='tip' || type==='book' || type==='comment' || type==='post' || type==='user' || type==='author' || type=='postPosts'){
-            html+= '<div class="form-group"><label for="feedback-reason">举报原因</label><select name="report-reason" id="report-reason" class="form-control"><option value="恶意攻击">恶意攻击</option><option value="色情低俗">色情低俗</option><option value="暴力血腥">暴力血腥</option><option value="涉政违规">涉政违规</option><option value="欺诈广告">欺诈广告</option><option value="抄袭侵权">抄袭侵权</option><option value="">其他原因</option></select></div>';
-        }else{
+        var html = '<div class="form-group"><label>举报对象</label><p class="help-block ui-nowarp">' + title + '</p><input type="hidden" name="report-id" id="report-id" value="' + id + '"/></div>';
+        if (type === 'book' || type === 'chapter') {
+            html += '<div class="form-group"><label for="feedback-reason">举报原因</label><select name="report-reason" id="report-reason" class="form-control"><option value="色情低俗">色情低俗</option><option value="暴力血腥">暴力血腥</option><option value="涉政违规">涉政违规</option><option value="欺诈广告">欺诈广告</option><option value="抄袭侵权">抄袭侵权</option><option value="">其他原因</option></select></div>';
+        } else if (type === 'tip' || type === 'book' || type === 'comment' || type === 'post' || type === 'user' || type === 'author' || type == 'postPosts') {
+            html += '<div class="form-group"><label for="feedback-reason">举报原因</label><select name="report-reason" id="report-reason" class="form-control"><option value="恶意攻击">恶意攻击</option><option value="色情低俗">色情低俗</option><option value="暴力血腥">暴力血腥</option><option value="涉政违规">涉政违规</option><option value="欺诈广告">欺诈广告</option><option value="抄袭侵权">抄袭侵权</option><option value="">其他原因</option></select></div>';
+        } else {
             alert('暂不支持该分类');
             return false;
         }
-        html+='<div class="form-group displayNone" id="report-content-holder"><label for="report-content">其他原因</label><textarea id="report-content" class="form-control" max-lenght="255" placeholder="请描述你的举报原因"></textarea></div>';
-        if(!checkLogin()){
-            html+='<div class="form-group"><label for="report-contact">联系方式</label><input type="text" id="report-contact" class="form-control" placeholder="常用联系方式(邮箱、QQ、微信等)，便于告知处理进度(可选)"/></div>';
+        html += '<div class="form-group displayNone" id="report-content-holder"><label for="report-content">其他原因</label><textarea id="report-content" class="form-control" max-lenght="255" placeholder="请描述你的举报原因"></textarea></div>';
+        if (!checkLogin()) {
+            html += '<div class="form-group"><label for="report-contact">联系方式</label><input type="text" id="report-contact" class="form-control" placeholder="常用联系方式(邮箱、QQ、微信等)，便于告知处理进度(可选)"/></div>';
         }
         dialog({msg: html, title: '举报', action: 'doReport'});
-        $('#report-reason').on('change',function(){
-            var reason=$(this).val();
-            if(!reason){
+        $('#report-reason').on('change', function () {
+            var reason = $(this).val();
+            if (!reason) {
                 $('#report-content-holder').show();
-            }else{
+            } else {
                 $('#report-content-holder').hide();
             }
         });
         $("button[action=doReport]").unbind('click').click(function () {
-            var logid=$('#report-id').val();            
-            var reason=$('#report-reason').val();
-            var content=$('#report-content').val();
-            var contact=$('#report-contact').val();
-            if(!logid){
-              alert('缺少参数');
-              return false;
-            }
-            if(!reason && !content){
-                simpleDialog({content:'请填写举报原因'});
+            var logid = $('#report-id').val();
+            var reason = $('#report-reason').val();
+            var content = $('#report-content').val();
+            var contact = $('#report-contact').val();
+            if (!logid) {
+                alert('缺少参数');
                 return false;
-            }else{
-                if(!reason){
-                    reason=content;
+            }
+            if (!reason && !content) {
+                simpleDialog({content: '请填写举报原因'});
+                return false;
+            } else {
+                if (!reason) {
+                    reason = content;
                 }
             }
-            if(!contact){
-                contact='';
+            if (!contact) {
+                contact = '';
             }
-            $.post(zmf.ajaxUrl, {action:'report',logid:logid,type:type,reason:reason,contact:contact,url:window.location.href,YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {                
+            $.post(zmf.ajaxUrl, {action: 'report', logid: logid, type: type, reason: reason, contact: contact, url: window.location.href, YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
                 result = eval('(' + result + ')');
                 if (result['status'] == '1') {
-                    simpleDialog({content:result['msg']});
+                    simpleDialog({content: result['msg']});
                     closeDialog();
                     return false;
                 } else {
-                    simpleDialog({content:result['msg']});
+                    simpleDialog({content: result['msg']});
                     return false;
                 }
             });
         });
     });
-    $('.openGallery').unbind('click').click(function(){
-        var dom=$(this);
-        var holder=dom.attr('data-holder');
-        var field=dom.attr('data-field');
-        dialog({msg: '<div id="gallery-select-modal" class="gallery-body"></div>','title':'选择图片'});
-        $.post(zmf.userGalleryUrl, {from:'selectImg',YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {                
+    $('.openGallery').unbind('click').click(function () {
+        var dom = $(this);
+        var holder = dom.attr('data-holder');
+        var field = dom.attr('data-field');
+        dialog({msg: '<div id="gallery-select-modal" class="gallery-body"></div>', 'title': '选择图片'});
+        $.post(zmf.userGalleryUrl, {from: 'selectImg', YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
             result = eval('(' + result + ')');
             if (result['status'] == '1') {
-                $("#gallery-select-modal").html(result['msg']['html']);   
-                $('.select-gallery-img').unbind('click').click(function(){
-                    var _dom=$(this);
-                    selectThisImg(_dom,holder,field);
+                $("#gallery-select-modal").html(result['msg']['html']);
+                $('.select-gallery-img').unbind('click').click(function () {
+                    var _dom = $(this);
+                    selectThisImg(_dom, holder, field);
                 });
                 rebind();
             } else {
@@ -623,13 +655,13 @@ function rebind() {
         $.post(zmf.ajaxUrl, {action: 'sendSms', type: type, phone: phone, YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
             result = eval('(' + result + ')');
             if (result['status'] === 1) {
-                var totalTime=60,times=0;
-                dom.text('重新发送 '+totalTime+'s').attr('disabled','disabled');                
-                var interval = setInterval(function(){
-                    times+=1;
-                    var time = totalTime-times;
-                    dom.text('重新发送 '+time+'s');
-                    if(time <= 0) {
+                var totalTime = 60, times = 0;
+                dom.text('重新发送 ' + totalTime + 's').attr('disabled', 'disabled');
+                var interval = setInterval(function () {
+                    times += 1;
+                    var time = totalTime - times;
+                    dom.text('重新发送 ' + time + 's');
+                    if (time <= 0) {
                         clearInterval(interval);
                         dom.removeAttr('disabled').text('重新发送');
                     }
@@ -669,46 +701,46 @@ function rebind() {
         if (hasError) {
             return false;
         }
-        var passData={
-            action:'checkSms',
-            type: type, 
-            phone: phone, 
-            code: vcode, 
+        var passData = {
+            action: 'checkSms',
+            type: type,
+            phone: phone,
+            code: vcode,
             YII_CSRF_TOKEN: zmf.csrfToken
         };
-        var passwd='';
-        if(type==='forget' || type==='authorPass'){
-            if(phone.length!==11){
+        var passwd = '';
+        if (type === 'forget' || type === 'authorPass') {
+            if (phone.length !== 11) {
                 dialog({msg: '请输入有效的11位手机号码'});
                 return false;
-            }            
-            passwd=$('#password').val();
-            if(!passwd || passwd.length<6){
+            }
+            passwd = $('#password').val();
+            if (!passwd || passwd.length < 6) {
                 dialog({msg: '请输入长度不小于6位的有效密码'});
                 return false;
             }
-            passData.password=passwd;
+            passData.password = passwd;
         }
         $.post(zmf.ajaxUrl, passData, function (result) {
             result = eval('(' + result + ')');
             if (result.status === 1) {
-                if(type==='exphone'){
+                if (type === 'exphone') {
                     dialog({msg: '手机号修改成功'});
                     window.location.href = result.msg;
-                }else if(type==='checkPhone'){
+                } else if (type === 'checkPhone') {
                     dialog({msg: '手机号已验证'});
-                    window.location.href = result.msg;   
-                }else if(type==='forget'){
+                    window.location.href = result.msg;
+                } else if (type === 'forget') {
                     dialog({msg: result.msg});
-                    setTimeout(function(){
-                        location.href=zmf.loginUrl;
-                    },1000);
-                }else if(type==='authorPass'){
+                    setTimeout(function () {
+                        location.href = zmf.loginUrl;
+                    }, 1000);
+                } else if (type === 'authorPass') {
                     dialog({msg: '密码修改成功，正在跳转至登录页面'});
-                    setTimeout(function(){
-                        location.href=result.msg;
-                    },1000);    
-                }else{
+                    setTimeout(function () {
+                        location.href = result.msg;
+                    }, 1000);
+                } else {
                     $('#hashCode').val(result.msg);
                     $('#send-sms-form').submit();
                 }
@@ -719,26 +751,26 @@ function rebind() {
     });
     //弹出浮框
     $("a[action=float]").unbind('click').click(function () {
-        var dom=$(this);
-        var data=dom.attr('action-data');
-        if(!data){
+        var dom = $(this);
+        var data = dom.attr('action-data');
+        if (!data) {
             return false;
         }
-        var width=dom.outerWidth();
-        var height=dom.outerHeight();
-        var domTop=dom.offset().top;
-        var leftDom=dom.offset().left;
-        var widthWindow=$(window).width();
-        var widthBody=960;
-        var w=(widthBody/2)-(leftDom-widthWindow/2)-width/2-7;
-        $('#float-triangle').css({right:w+'px'});
-        $('#float-holder').css({top:(domTop+height)+'px'}).show();
-        $.post(zmf.ajaxUrl, {action: 'float', data: data,YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
+        var width = dom.outerWidth();
+        var height = dom.outerHeight();
+        var domTop = dom.offset().top;
+        var leftDom = dom.offset().left;
+        var widthWindow = $(window).width();
+        var widthBody = 960;
+        var w = (widthBody / 2) - (leftDom - widthWindow / 2) - width / 2 - 7;
+        $('#float-triangle').css({right: w + 'px'});
+        $('#float-holder').css({top: (domTop + height) + 'px'}).show();
+        $.post(zmf.ajaxUrl, {action: 'float', data: data, YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
             result = eval('(' + result + ')');
             if (result['status'] === 1) {
                 $('#float-content').html(result['msg']['html']);
-                if(result['msg']['url']!=''){
-                    $('#float-link').attr('href',result['msg']['url']);
+                if (result['msg']['url'] != '') {
+                    $('#float-link').attr('href', result['msg']['url']);
                 }
                 rebind();
             } else {
@@ -748,10 +780,10 @@ function rebind() {
     });
     //ajax请求
     $("a[action=ajax]").unbind('click').click(function () {
-        var dom=$(this);
-        var data=dom.attr('action-data');
-        var input=dom.attr('action-input');
-        if(!data){
+        var dom = $(this);
+        var data = dom.attr('action-data');
+        var input = dom.attr('action-input');
+        if (!data) {
             alert('缺少参数');
             return false;
         }
@@ -760,15 +792,15 @@ function rebind() {
             action: 'ajax',
             data: data
         };
-        if(input){
-            var inputDom=$('#'+input);
-            var inputVal=inputDom.val();
-            if(!inputVal || parseInt(inputVal)<1){
+        if (input) {
+            var inputDom = $('#' + input);
+            var inputVal = inputDom.val();
+            if (!inputVal || parseInt(inputVal) < 1) {
                 simpleDialog({content: '请完善输入'});
                 inputDom.focus();
                 return false;
-            }else{
-                passData.extra=inputVal;
+            } else {
+                passData.extra = inputVal;
             }
         }
         $.post(zmf.ajaxUrl, passData, function (result) {
@@ -781,9 +813,9 @@ function rebind() {
         });
     });
     $("a[action=gotoBuy]").unbind('click').click(function () {
-        var dom=$(this);
-        var data=dom.attr('action-data');
-        if(!data){
+        var dom = $(this);
+        var data = dom.attr('action-data');
+        if (!data) {
             alert('缺少参数');
             return false;
         }
@@ -792,58 +824,58 @@ function rebind() {
             action: 'gotoBuy',
             data: data
         };
-        
-        var inputDom=$('#amount-input');
-        var inputVal=inputDom.val();
-        if(!inputVal || parseInt(inputVal)<1){
+
+        var inputDom = $('#amount-input');
+        var inputVal = inputDom.val();
+        if (!inputVal || parseInt(inputVal) < 1) {
             simpleDialog({content: '请选择兑换数量'});
             inputDom.focus();
             return false;
-        }else{
-            passData.num=inputVal;
+        } else {
+            passData.num = inputVal;
         }
-        
+
         $.post(zmf.ajaxUrl, passData, function (result) {
             result = eval('(' + result + ')');
             if (result['status'] === 1) {
                 dialog({msg: result['msg'], title: '确认兑换？', action: 'confirmBuy'});
                 $("button[action=confirmBuy]").unbind('click').click(function () {
-                    var data=$('#confirm-buy-data').val();     
-                    var passDom=$('#user-password');
-                    var pass=passDom.val();
-                    if(!data){
-                        simpleDialog({content:'缺少参数'});
+                    var data = $('#confirm-buy-data').val();
+                    var passDom = $('#user-password');
+                    var pass = passDom.val();
+                    if (!data) {
+                        simpleDialog({content: '缺少参数'});
                         return false;
                     }
-                    if(!pass){
-                        simpleDialog({content:'请输入密码'});
+                    if (!pass) {
+                        simpleDialog({content: '请输入密码'});
                         passDom.focus();
                         return false;
                     }
-                    passData.data=data;
-                    passData.action='confirmBuy';
-                    passData.password=pass;
-                    
+                    passData.data = data;
+                    passData.action = 'confirmBuy';
+                    passData.password = pass;
+
                     $.post(zmf.ajaxUrl, passData, function (result) {
                         result = eval('(' + result + ')');
                         if (result['status'] == '1') {
-                            simpleDialog({content:result['msg']});
+                            simpleDialog({content: result['msg']});
                             closeDialog();
                             return false;
                         } else {
-                            simpleDialog({content:result['msg']});
+                            simpleDialog({content: result['msg']});
                             return false;
                         }
                     });
                 });
-            }else if(result['status'] === 2){
+            } else if (result['status'] === 2) {
                 dialog({msg: result['msg'], title: '确认兑换？'});
             } else {
                 dialog({msg: result['msg']});
             }
         });
     });
-    
+
     //调用复制
     var clipboard = new Clipboard('.btn-copy');
     clipboard.on('success', function (e) {
@@ -853,25 +885,25 @@ function rebind() {
         dialog({msg: '复制失败，请手动复制浏览器链接'});
     });
 }
-function searchType(type,title){
-    if(!type || !title){
+function searchType(type, title) {
+    if (!type || !title) {
         return false;
     }
-    $('#searchTypeBtn').html(title+' <span class="caret"></span>');
+    $('#searchTypeBtn').html(title + ' <span class="caret"></span>');
     $('#search-type').val(type);
 }
 
-function selectThisImg(dom,holder,field){
-    var _origin=dom.attr('data-original');
-    if(!_origin){
+function selectThisImg(dom, holder, field) {
+    var _origin = dom.attr('data-original');
+    if (!_origin) {
         alert('获取图片地址失败');
         return false;
     }
-    if(holder){
-        $('#'+holder).attr('src',_origin);
+    if (holder) {
+        $('#' + holder).attr('src', _origin);
     }
-    if(field){
-        $('#'+field).val(_origin);
+    if (field) {
+        $('#' + field).val(_origin);
     }
 }
 function favorite(dom) {
@@ -890,47 +922,47 @@ function favorite(dom) {
     if (!checkAjax()) {
         return false;
     }
-    var childDom=dom.children('i');
-    if(t==='tip'){
-        if(childDom.hasClass('fa-thumbs-up')){
-            dom.html('<i class="fa fa-thumbs-o-up"></i> '+(--num));
-        }else{
-            dom.html('<i class="fa fa-thumbs-up"></i> '+(++num));
+    var childDom = dom.children('i');
+    if (t === 'tip') {
+        if (childDom.hasClass('fa-thumbs-up')) {
+            dom.html('<i class="fa fa-thumbs-o-up"></i> ' + (--num));
+        } else {
+            dom.html('<i class="fa fa-thumbs-up"></i> ' + (++num));
         }
-    }else if(t==='author'){
-        if(dom.hasClass('btn-default')){
+    } else if (t === 'author') {
+        if (dom.hasClass('btn-default')) {
             dom.removeClass('btn-default').addClass('btn-danger').html('<i class="fa fa-plus"></i> 关注');
-        }else{
+        } else {
             dom.removeClass('btn-danger').addClass('btn-default').html('<i class="fa fa-check"></i> 已关注');
         }
-    }else if(t==='book'){
-        if(dom.hasClass('btn-default')){
+    } else if (t === 'book') {
+        if (dom.hasClass('btn-default')) {
             dom.removeClass('btn-default').addClass('btn-danger').html('<i class="fa fa-heart-o"></i> 收藏');
-        }else{
+        } else {
             dom.removeClass('btn-danger').addClass('btn-default').html('<i class="fa fa-heart"></i> 已收藏');
         }
-    }else if(t==='post'){
-        if(dom.hasClass('btn-default')){
+    } else if (t === 'post') {
+        if (dom.hasClass('btn-default')) {
             dom.removeClass('btn-default').addClass('btn-danger').html('<i class="fa fa-thumbs-o-up"></i> 赞');
-        }else{
+        } else {
             dom.removeClass('btn-danger').addClass('btn-default').html('<i class="fa fa-thumbs-up"></i> 已赞');
         }
-    }else if(t==='user'){
-        if(dom.hasClass('btn-default')){
+    } else if (t === 'user') {
+        if (dom.hasClass('btn-default')) {
             dom.removeClass('btn-default').addClass('btn-danger').html('<i class="fa fa-star-o"></i> 赞');
-        }else{
+        } else {
             dom.removeClass('btn-danger').addClass('btn-default').html('<i class="fa fa-star"></i> 已赞');
         }
-    }else if(t==='comment'){
-        if(childDom.hasClass('fa-thumbs-up')){
-            dom.html('<i class="fa fa-thumbs-o-up"></i> '+(--num));
-        }else{
-            dom.html('<i class="fa fa-thumbs-up"></i> '+(++num));
+    } else if (t === 'comment') {
+        if (childDom.hasClass('fa-thumbs-up')) {
+            dom.html('<i class="fa fa-thumbs-o-up"></i> ' + (--num));
+        } else {
+            dom.html('<i class="fa fa-thumbs-up"></i> ' + (++num));
         }
-    }else if(t==='forum'){
-        if(dom.hasClass('btn-success')){
+    } else if (t === 'forum') {
+        if (dom.hasClass('btn-success')) {
             dom.removeClass('btn-success').addClass('btn-default').html('<i class="fa fa-check"></i> 已关注');
-        }else{
+        } else {
             dom.removeClass('btn-default').addClass('btn-success').html('<i class="fa fa-plus"></i> 关注');
         }
     }
@@ -938,12 +970,12 @@ function favorite(dom) {
         ajaxReturn = true;
         result = $.parseJSON(result);
         if (result.status === 1) {//收藏成功            
-            
+
         } else if (result.status === 2) {//收藏失败
             dom.html(tmp);
             dialog({msg: result.msg});
         } else if (result.status === 3) {//取消成功
-            
+
         } else if (result.status === 4) {//取消失败
             dom.html(tmp);
             dialog({msg: result.msg});
@@ -958,7 +990,7 @@ function addComment(dom) {
     var k = dom.attr("action-data");
     var t = dom.attr("action-type");
     var to = parseInt($('#replyoneHolder-' + k).attr('tocommentid'));
-    var isAuthor = parseInt($('#isAuthor-' + t + "-" + k+':checked').val());
+    var isAuthor = parseInt($('#isAuthor-' + t + "-" + k + ':checked').val());
     var c = $('#content-' + t + '-' + k).val();
     if (!k || !t || !c) {
         dialog({msg: '请填写内容'});
@@ -967,27 +999,27 @@ function addComment(dom) {
     if (!to) {
         to = 0;
     }
-    if(!isAuthor){
-        isAuthor=0;
+    if (!isAuthor) {
+        isAuthor = 0;
     }
     if (!checkAjax()) {
         return false;
     }
-    var targetBox="comments-" + t + "-" + k;
-    $.post(zmf.addCommentUrl, {k: k, t: t, c: c, to: to,isAuthor:isAuthor, YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
+    var targetBox = "comments-" + t + "-" + k;
+    $.post(zmf.addCommentUrl, {k: k, t: t, c: c, to: to, isAuthor: isAuthor, YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
         ajaxReturn = true;
         result = eval('(' + result + ')');
         if (result['status'] == '1') {
-            $('#content-' + t + '-' + k).val('');  
-            var loadingDom=$('#' + targetBox + ' .loading-holder');
-            var loadingHtml=loadingDom.html();
-            if(!loadingHtml){
-                loadingHtml='';
-            }else{
-                loadingHtml='<p class="loading-holder">'+loadingHtml+'</p>';
+            $('#content-' + t + '-' + k).val('');
+            var loadingDom = $('#' + targetBox + ' .loading-holder');
+            var loadingHtml = loadingDom.html();
+            if (!loadingHtml) {
+                loadingHtml = '';
+            } else {
+                loadingHtml = '<p class="loading-holder">' + loadingHtml + '</p>';
             }
             loadingDom.remove();
-            $("#comments-" + t + "-" + k).append(result['msg']+loadingHtml);
+            $("#comments-" + t + "-" + k).append(result['msg'] + loadingHtml);
             cancelReplyOne(k);
             rebind();
         } else {
@@ -1025,61 +1057,62 @@ function setStatus(a, b, c) {
     });
 }
 // 使用message对象封装消息  
-var flashTitle = {  
-    time: 0,  
-    title: document.title,  
-    timer: null,  
+var flashTitle = {
+    time: 0,
+    title: document.title,
+    timer: null,
     // 显示新消息提示  
-    show: function () {  
-        var title = flashTitle.title.replace("【　　　】", "").replace("【新消息】", "");  
+    show: function () {
+        var title = flashTitle.title.replace("【　　　】", "").replace("【新消息】", "");
         // 定时器，设置消息切换频率闪烁效果就此产生  
-        flashTitle.timer = setTimeout(function () {  
-            flashTitle.time++;  
-            flashTitle.show();  
-            if (flashTitle.time % 2 == 0) {  
-                document.title = "【新消息】" + title  
-            } else {  
-                document.title = "【　　　】" + title  
-            };  
-        }, 600);  
-        return [flashTitle.timer, flashTitle.title];  
-    },  
+        flashTitle.timer = setTimeout(function () {
+            flashTitle.time++;
+            flashTitle.show();
+            if (flashTitle.time % 2 == 0) {
+                document.title = "【新消息】" + title
+            } else {
+                document.title = "【　　　】" + title
+            }
+            ;
+        }, 600);
+        return [flashTitle.timer, flashTitle.title];
+    },
     // 取消新消息提示  
-    clear: function () {  
-        clearTimeout(flashTitle.timer);  
-        document.title = flashTitle.title;  
-    }  
-};  
-var notice_interval=null;
-function getNotice(){
+    clear: function () {
+        clearTimeout(flashTitle.timer);
+        document.title = flashTitle.title;
+    }
+};
+var notice_interval = null;
+function getNotice() {
     doGetNotice();
-    window.onblur = function() {
+    window.onblur = function () {
         clearInterval(notice_interval);
     };
-    window.onfocus = function() {
+    window.onfocus = function () {
         clearInterval(notice_interval);
-        notice_interval=window.setInterval("doGetNotice()",10000);
-    }    
+        notice_interval = window.setInterval("doGetNotice()", 10000);
+    }
 }
-function doGetNotice(){
-    if(!checkLogin()){
+function doGetNotice() {
+    if (!checkLogin()) {
         return false;
     }
-    $.post(zmf.ajaxUrl, {action:'getNotice',YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
+    $.post(zmf.ajaxUrl, {action: 'getNotice', YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
         result = $.parseJSON(result);
         if (result.status === 1) {
-            var _num=parseInt(result.msg);
-            if(_num>0){
-                $('#top-nav-count').html(_num).css('display','inline-block');
-                if(flashTitle.timer===null){
+            var _num = parseInt(result.msg);
+            if (_num > 0) {
+                $('#top-nav-count').html(_num).css('display', 'inline-block');
+                if (flashTitle.timer === null) {
                     flashTitle.show();
-                }                
-            }else{
+                }
+            } else {
                 $('#top-nav-count').hide();
                 flashTitle.clear();
             }
-        }else{
-            
+        } else {
+
         }
     })
 }
@@ -1109,7 +1142,7 @@ function share(dom) {
     var img = dom.attr("action-img");
     var title = dom.attr("action-title");
     var html = '<div class="float-share-holder"><div class="float-share-content"><span class="float-close"><i class="fa fa-close"></i></span><div class="row"><div class="col-xs-6 text-center"><img src="' + qr + '" class="img-responsive"/><p class="help-block">扫码分享到微信</p></div><div class="col-xs-6 float-btns"><a href="javascript:;" class="btn btn-default btn-block"><i class="fa fa-weibo"></i></a><a href="javascript:;" class="btn btn-default btn-block"><i class="fa fa-qq"></i></a><a href="javascript:;" class="btn btn-default btn-block">复制链接</a></div></div></div><div class="float-triangle"></div></div>';
-    var html = '<div class="share-body"><p><img src="' + qr + '" class="img-responsive"/></p><p class="help-block text-center">扫码分享到微信</p><div class="more-awesome"><span>或</span></div><p><a href="javascript:;" class="btn btn-default btn-block" action="shareToWeibo"><i class="fa fa-weibo"></i> 分享到微博</a><a href="javascript:;" class="btn btn-default btn-block" action="shareToQzone"><i class="fa fa-qq"></i> 分享到空间</a><a href="javascript:;" class="btn btn-default btn-block btn-copy" data-clipboard-text="'+url+'"><i class="fa fa-copy"></i> 复制此链接</a></p></div>';
+    var html = '<div class="share-body"><p><img src="' + qr + '" class="img-responsive"/></p><p class="help-block text-center">扫码分享到微信</p><div class="more-awesome"><span>或</span></div><p><a href="javascript:;" class="btn btn-default btn-block" action="shareToWeibo"><i class="fa fa-weibo"></i> 分享到微博</a><a href="javascript:;" class="btn btn-default btn-block" action="shareToQzone"><i class="fa fa-qq"></i> 分享到空间</a><a href="javascript:;" class="btn btn-default btn-block btn-copy" data-clipboard-text="' + url + '"><i class="fa fa-copy"></i> 复制此链接</a></p></div>';
     dialog({msg: html, title: '分享', modalSize: 'modal-sm'});
     $("a[action=shareToWeibo]").unbind('click').click(function () {
         window.open('http://service.weibo.com/share/share.php?title=' + title + '&url=' + url + '&appkey=' + zmf.weiboAppkey + '&pic=' + img + '&changweibo=yes&ralateUid=' + zmf.weiboRalateUid, '_newtab');
@@ -1118,32 +1151,32 @@ function share(dom) {
         window.open('http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?title=' + title + '&url=' + url + '&pics=' + img, '_newtab');
     });
 }
-function toggleChapters(){
-    var dom=$('#chapters-box');
-    var right=0;
-    if(dom.css('display')!=='none'){
+function toggleChapters() {
+    var dom = $('#chapters-box');
+    var right = 0;
+    if (dom.css('display') !== 'none') {
         dom.animate({
-            right:-450
-        },500).toggle();
-    }else{
+            right: -450
+        }, 500).toggle();
+    } else {
         dom.toggle().animate({
-            right:0
-        },500);
+            right: 0
+        }, 500);
     }
 }
-function playVideo(company, videoid, targetHolder, dom) {        
+function playVideo(company, videoid, targetHolder, dom) {
     if (!company || !videoid || !targetHolder) {
         return false;
     }
-    var w=$('#'+targetHolder).width();
-    var h=w*9/16;
+    var w = $('#' + targetHolder).width();
+    var h = w * 9 / 16;
     var html = '';
     if (company === 'youku') {
-        html = '<iframe src="http://player.youku.com/embed/' + videoid + '" height="'+h+'" width="'+w+'" allowtransparency="true" allowfullscreen="true" allowfullscreenInteractive="true" scrolling="no" border="0" frameborder="0"  height="'+h+'" width="'+w+'"></iframe>';
+        html = '<iframe src="http://player.youku.com/embed/' + videoid + '" height="' + h + '" width="' + w + '" allowtransparency="true" allowfullscreen="true" allowfullscreenInteractive="true" scrolling="no" border="0" frameborder="0"  height="' + h + '" width="' + w + '"></iframe>';
     } else if (company === 'tudou') {
-        html = '<iframe src="http://www.tudou.com/programs/view/html5embed.action?type=2&' + videoid + '" allowtransparency="true" allowfullscreen="true" allowfullscreenInteractive="true" scrolling="no" border="0" frameborder="0"  height="'+h+'" width="'+w+'"></iframe>';
+        html = '<iframe src="http://www.tudou.com/programs/view/html5embed.action?type=2&' + videoid + '" allowtransparency="true" allowfullscreen="true" allowfullscreenInteractive="true" scrolling="no" border="0" frameborder="0"  height="' + h + '" width="' + w + '"></iframe>';
     } else if (company === 'qq') {
-        html = '<iframe src="http://v.qq.com/iframe/player.html?vid=' + videoid + '&tiny=0&auto=1" allowtransparency="true" allowfullscreen="true" allowfullscreenInteractive="true" scrolling="no" border="0" frameborder="0"  height="'+h+'" width="'+w+'"></iframe>';
+        html = '<iframe src="http://v.qq.com/iframe/player.html?vid=' + videoid + '&tiny=0&auto=1" allowtransparency="true" allowfullscreen="true" allowfullscreenInteractive="true" scrolling="no" border="0" frameborder="0"  height="' + h + '" width="' + w + '"></iframe>';
     }
     $('#' + targetHolder).html(html);
     $(dom).remove();
@@ -1188,7 +1221,7 @@ function uploadByLimit(params) {
     } else {
         multi = params.multi;
     }
-    $("#"+params.placeHolder).uploadify({
+    $("#" + params.placeHolder).uploadify({
         height: params.height ? params.height : 100,
         width: params.width ? params.width : 300,
         swf: zmf.baseUrl + '/common/uploadify/uploadify.swf',
@@ -1205,7 +1238,7 @@ function uploadByLimit(params) {
         buttonClass: params.buttonClass ? params.buttonClass : 'btn btn-default',
         debug: false,
         formData: {'PHPSESSID': zmf.currentSessionId, 'YII_CSRF_TOKEN': zmf.csrfToken},
-        onSelect: function(fileObj){
+        onSelect: function (fileObj) {
 //            console.log(fileObj);
 //            alert(
 //                  "文件名：" + fileObj.name + "\r\n" +
@@ -1215,7 +1248,7 @@ function uploadByLimit(params) {
 //                  "文件类型：" + fileObj.type
 //            );
 //            $("#"+params.placeHolder).uploadify('cancel');
-        },        
+        },
         onUploadSuccess: function (file, data, response) {
             data = $.parseJSON(data);
             if (data['status'] == 1) {
@@ -1223,7 +1256,7 @@ function uploadByLimit(params) {
                     $('#' + params.inputId).val(data.imgsrc);
                 }
                 if (params.targetHolder) {
-                    $('#' + params.targetHolder).attr('src',data.thumbnail);
+                    $('#' + params.targetHolder).attr('src', data.thumbnail);
                 }
             } else {
                 dialog({msg: data.msg});
@@ -1284,7 +1317,7 @@ function singleUploadify(params) {
                         type: params.type,
                         action: 'saveUploadImg'
                     };
-                    $.post(zmf.ajaxUrl,passData, function (reJson) {
+                    $.post(zmf.ajaxUrl, passData, function (reJson) {
                         reJson = $.parseJSON(reJson);
                         if (reJson.status === 1) {
                             $("#fileSuccess").append(reJson.html);
@@ -1316,33 +1349,33 @@ function singleUploadify(params) {
         }
     });
 }
-function showChapters(){
-    var h=$(window).height();
-    var w=$(window).width();
-    var dom=$('#chapters-box');
-    if(!dom.width()){
+function showChapters() {
+    var h = $(window).height();
+    var w = $(window).width();
+    var dom = $('#chapters-box');
+    if (!dom.width()) {
         return false;
     }
-    var domBtn=$('#post-fixed-actions');
-    var left=$('.zazhi-page').width();
-    var btnWidth=domBtn.width();
-    if((w-left-btnWidth)<=0){
+    var domBtn = $('#post-fixed-actions');
+    var left = $('.zazhi-page').width();
+    var btnWidth = domBtn.width();
+    if ((w - left - btnWidth) <= 0) {
         domBtn.css({
-            'margin-left':480-btnWidth-5
+            'margin-left': 480 - btnWidth - 5
         }).fadeIn(300);
-    }else{
+    } else {
         domBtn.fadeIn(300);
     }
-    var _w=w-(w/2+left/2+btnWidth)-15;
-    if(_w<400){
-        _w=400;
+    var _w = w - (w / 2 + left / 2 + btnWidth) - 15;
+    if (_w < 400) {
+        _w = 400;
     }
     dom.css({
-        width:_w,
-        height:h
-    });   
+        width: _w,
+        height: h
+    });
     $('#chapters-holder').css({
-        height:h
+        height: h
     });
 }
 /*
@@ -1475,10 +1508,10 @@ function backToTop() {
     }
     $("#back-to-top").css('left', x3 + 'px');
     //让body至少为窗口高度
-    var wh=$(window).height();
-    var dh=$(document.body).height();
-    if(wh>dh){
-        $("body").css('height',wh);
+    var wh = $(window).height();
+    var dh = $(document.body).height();
+    if (wh > dh) {
+        $("body").css('height', wh);
     }
     $('#footer-bg').fadeIn(3000);
 }
@@ -1620,7 +1653,90 @@ function uuid(len, radix) {
 
 })(jQuery);
 /*! Lazy Load 1.9.7 - MIT license - Copyright 2010-2015 Mika Tuupola */
-!function(a,b,c,d){var e=a(b);a.fn.lazyload=function(f){function g(){var b=0;i.each(function(){var c=a(this);if(!j.skip_invisible||c.is(":visible"))if(a.abovethetop(this,j)||a.leftofbegin(this,j));else if(a.belowthefold(this,j)||a.rightoffold(this,j)){if(++b>j.failure_limit)return!1}else c.trigger("appear"),b=0})}var h,i=this,j={threshold:0,failure_limit:0,event:"scroll",effect:"show",container:b,data_attribute:"original",skip_invisible:!1,appear:null,load:null,placeholder:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAANSURBVBhXYzh8+PB/AAffA0nNPuCLAAAAAElFTkSuQmCC"};return f&&(d!==f.failurelimit&&(f.failure_limit=f.failurelimit,delete f.failurelimit),d!==f.effectspeed&&(f.effect_speed=f.effectspeed,delete f.effectspeed),a.extend(j,f)),h=j.container===d||j.container===b?e:a(j.container),0===j.event.indexOf("scroll")&&h.bind(j.event,function(){return g()}),this.each(function(){var b=this,c=a(b);b.loaded=!1,(c.attr("src")===d||c.attr("src")===!1)&&c.is("img")&&c.attr("src",j.placeholder),c.one("appear",function(){if(!this.loaded){if(j.appear){var d=i.length;j.appear.call(b,d,j)}a("<img />").bind("load",function(){var d=c.attr("data-"+j.data_attribute);c.hide(),c.is("img")?c.attr("src",d):c.css("background-image","url('"+d+"')"),c[j.effect](j.effect_speed),b.loaded=!0;var e=a.grep(i,function(a){return!a.loaded});if(i=a(e),j.load){var f=i.length;j.load.call(b,f,j)}}).attr("src",c.attr("data-"+j.data_attribute))}}),0!==j.event.indexOf("scroll")&&c.bind(j.event,function(){b.loaded||c.trigger("appear")})}),e.bind("resize",function(){g()}),/(?:iphone|ipod|ipad).*os 5/gi.test(navigator.appVersion)&&e.bind("pageshow",function(b){b.originalEvent&&b.originalEvent.persisted&&i.each(function(){a(this).trigger("appear")})}),a(c).ready(function(){g()}),this},a.belowthefold=function(c,f){var g;return g=f.container===d||f.container===b?(b.innerHeight?b.innerHeight:e.height())+e.scrollTop():a(f.container).offset().top+a(f.container).height(),g<=a(c).offset().top-f.threshold},a.rightoffold=function(c,f){var g;return g=f.container===d||f.container===b?e.width()+e.scrollLeft():a(f.container).offset().left+a(f.container).width(),g<=a(c).offset().left-f.threshold},a.abovethetop=function(c,f){var g;return g=f.container===d||f.container===b?e.scrollTop():a(f.container).offset().top,g>=a(c).offset().top+f.threshold+a(c).height()},a.leftofbegin=function(c,f){var g;return g=f.container===d||f.container===b?e.scrollLeft():a(f.container).offset().left,g>=a(c).offset().left+f.threshold+a(c).width()},a.inviewport=function(b,c){return!(a.rightoffold(b,c)||a.leftofbegin(b,c)||a.belowthefold(b,c)||a.abovethetop(b,c))},a.extend(a.expr[":"],{"below-the-fold":function(b){return a.belowthefold(b,{threshold:0})},"above-the-top":function(b){return!a.belowthefold(b,{threshold:0})},"right-of-screen":function(b){return a.rightoffold(b,{threshold:0})},"left-of-screen":function(b){return!a.rightoffold(b,{threshold:0})},"in-viewport":function(b){return a.inviewport(b,{threshold:0})},"above-the-fold":function(b){return!a.belowthefold(b,{threshold:0})},"right-of-fold":function(b){return a.rightoffold(b,{threshold:0})},"left-of-fold":function(b){return!a.rightoffold(b,{threshold:0})}})}(jQuery,window,document);
+!function (a, b, c, d) {
+    var e = a(b);
+    a.fn.lazyload = function (f) {
+        function g() {
+            var b = 0;
+            i.each(function () {
+                var c = a(this);
+                if (!j.skip_invisible || c.is(":visible"))
+                    if (a.abovethetop(this, j) || a.leftofbegin(this, j))
+                        ;
+                    else if (a.belowthefold(this, j) || a.rightoffold(this, j)) {
+                        if (++b > j.failure_limit)
+                            return!1
+                    } else
+                        c.trigger("appear"), b = 0
+            })
+        }
+        var h, i = this, j = {threshold: 0, failure_limit: 0, event: "scroll", effect: "show", container: b, data_attribute: "original", skip_invisible: !1, appear: null, load: null, placeholder: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAANSURBVBhXYzh8+PB/AAffA0nNPuCLAAAAAElFTkSuQmCC"};
+        return f && (d !== f.failurelimit && (f.failure_limit = f.failurelimit, delete f.failurelimit), d !== f.effectspeed && (f.effect_speed = f.effectspeed, delete f.effectspeed), a.extend(j, f)), h = j.container === d || j.container === b ? e : a(j.container), 0 === j.event.indexOf("scroll") && h.bind(j.event, function () {
+            return g()
+        }), this.each(function () {
+            var b = this, c = a(b);
+            b.loaded = !1, (c.attr("src") === d || c.attr("src") === !1) && c.is("img") && c.attr("src", j.placeholder), c.one("appear", function () {
+                if (!this.loaded) {
+                    if (j.appear) {
+                        var d = i.length;
+                        j.appear.call(b, d, j)
+                    }
+                    a("<img />").bind("load", function () {
+                        var d = c.attr("data-" + j.data_attribute);
+                        c.hide(), c.is("img") ? c.attr("src", d) : c.css("background-image", "url('" + d + "')"), c[j.effect](j.effect_speed), b.loaded = !0;
+                        var e = a.grep(i, function (a) {
+                            return!a.loaded
+                        });
+                        if (i = a(e), j.load) {
+                            var f = i.length;
+                            j.load.call(b, f, j)
+                        }
+                    }).attr("src", c.attr("data-" + j.data_attribute))
+                }
+            }), 0 !== j.event.indexOf("scroll") && c.bind(j.event, function () {
+                b.loaded || c.trigger("appear")
+            })
+        }), e.bind("resize", function () {
+            g()
+        }), /(?:iphone|ipod|ipad).*os 5/gi.test(navigator.appVersion) && e.bind("pageshow", function (b) {
+            b.originalEvent && b.originalEvent.persisted && i.each(function () {
+                a(this).trigger("appear")
+            })
+        }), a(c).ready(function () {
+            g()
+        }), this
+    }, a.belowthefold = function (c, f) {
+        var g;
+        return g = f.container === d || f.container === b ? (b.innerHeight ? b.innerHeight : e.height()) + e.scrollTop() : a(f.container).offset().top + a(f.container).height(), g <= a(c).offset().top - f.threshold
+    }, a.rightoffold = function (c, f) {
+        var g;
+        return g = f.container === d || f.container === b ? e.width() + e.scrollLeft() : a(f.container).offset().left + a(f.container).width(), g <= a(c).offset().left - f.threshold
+    }, a.abovethetop = function (c, f) {
+        var g;
+        return g = f.container === d || f.container === b ? e.scrollTop() : a(f.container).offset().top, g >= a(c).offset().top + f.threshold + a(c).height()
+    }, a.leftofbegin = function (c, f) {
+        var g;
+        return g = f.container === d || f.container === b ? e.scrollLeft() : a(f.container).offset().left, g >= a(c).offset().left + f.threshold + a(c).width()
+    }, a.inviewport = function (b, c) {
+        return!(a.rightoffold(b, c) || a.leftofbegin(b, c) || a.belowthefold(b, c) || a.abovethetop(b, c))
+    }, a.extend(a.expr[":"], {"below-the-fold": function (b) {
+            return a.belowthefold(b, {threshold: 0})
+        }, "above-the-top": function (b) {
+            return!a.belowthefold(b, {threshold: 0})
+        }, "right-of-screen": function (b) {
+            return a.rightoffold(b, {threshold: 0})
+        }, "left-of-screen": function (b) {
+            return!a.rightoffold(b, {threshold: 0})
+        }, "in-viewport": function (b) {
+            return a.inviewport(b, {threshold: 0})
+        }, "above-the-fold": function (b) {
+            return!a.belowthefold(b, {threshold: 0})
+        }, "right-of-fold": function (b) {
+            return a.rightoffold(b, {threshold: 0})
+        }, "left-of-fold": function (b) {
+            return!a.rightoffold(b, {threshold: 0})
+        }})
+}(jQuery, window, document);
 /*!
  * clipboard.js v1.5.5
  * https://zenorocha.github.io/clipboard.js

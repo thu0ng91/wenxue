@@ -3,7 +3,7 @@
 </loading>
 <scroll-view class="weui-panel weui-panel_access" style="height: {{windowHeight}}px; width: {{windowWidth}}px; " scroll-y="true" bindscrolltoupper="pullDownRefresh" bindscrolltolower="pullUpLoad">    
     <block wx:for="{{data.posts}}">
-        <view class="weui-media-box weui-media-box_appmsg" bindtap="bindViewTap" data-bid="{{item.id}}">
+        <view class="weui-media-box weui-media-box_appmsg" bindtap="threadTap" data-tid="{{item.id}}">
             <view class="weui-media-box__hd" wx:if="{{item.faceImg}}">
                 <image class="weui-media-box__thumb" src="{{item.faceImg}}"></image>
             </view>

@@ -3,8 +3,9 @@
 </loading>
 <view class="weui-article">
     <view class="h1">{{data.chapterInfo.title}}</view>
-    <view>
-    <text>{{data.chapterInfo.content}}</text>
+    <view><text>{{data.chapterInfo.content}}</text></view>
+    <view class="weui-loadmore weui-loadmore_line">
+        <view class="weui-loadmore__tips">还有话说</view>
     </view>
 </view>
 <view class="weui-panel">        

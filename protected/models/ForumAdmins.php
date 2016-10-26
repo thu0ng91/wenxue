@@ -140,7 +140,7 @@ class ForumAdmins extends CActiveRecord {
      * @return boolean
      */
     public static function checkForumPower($uid, $fid, $action, $totalLimit = false) {
-        $info = self::getOne($uid, $fid);
+        $info = self::getOne($uid, $fid);        
         if (!$info || !$info['powers']) {
             return false;
         }

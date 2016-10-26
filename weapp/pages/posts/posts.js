@@ -26,9 +26,9 @@ Page( {
       })
     })
   },
-  chapterTap:function(options){
+  threadTap:function(options){
       wx.navigateTo({
-        url: '../chapter/chapter?cid='+options.currentTarget.dataset.cid
+        url: '../pDetail/pDetail?tid='+options.currentTarget.dataset.tid
       })
   },
   pullDownRefresh: function(e) {

@@ -1,0 +1,93 @@
+<view class="weui-panel no-margin-top">
+    <view class="weui-media-box weui-media-box_appmsg">        
+        <view class="weui-media-box__hd">
+            <image class="weui-media-box__thumb" src="http://o7kv6kf92.bkt.clouddn.com//posts/2016/6/12/AFC2001F-54D7-4876-AF6A-6FC79C8999A3.jpeg/a120"></image>
+        </view>
+        <view class="weui-media-box__bd">
+            <view class="weui-media-box__title">用户名</view>
+            <view class="weui-media-box__desc">简介简介</view>
+        </view>
+    </view>
+
+<view class="weui-flex">
+    <view class="weui-flex__item"><view class="placeholder">经验</view></view>
+    <view class="weui-flex__item"><view class="placeholder">积分</view></view>
+    <view class="weui-flex__item"><view class="placeholder">粉丝</view></view>
+    <view class="weui-flex__item"><view class="placeholder">关注</view></view>
+</view>
+
+</view>
+
+<view class="weui-panel">    
+    <view class="weui-panel__bd">
+        <view class="weui-media-box weui-media-box_small-appmsg">
+            <view class="weui-cells">
+                <view class="weui-cell weui-cell_access">
+                    <view class="weui-cell__hd"><image src="" alt="" style="width:20px;height:20px;margin-right:5px;display:block"></image></view>
+                    <view class="weui-cell__bd weui-cell_primary">
+                        <text>我的主页</text>
+                    </view>
+                    <view class="weui-cell__ft"></view>
+                </view>
+                <view class="weui-cell weui-cell_access">
+                    <view class="weui-cell__hd"><image src="" alt="" style="width:20px;height:20px;margin-right:5px;display:block"></image></view>
+                    <view class="weui-cell__bd weui-cell_primary">
+                        <text>我的帖子</text>
+                    </view>
+                    <view class="weui-cell__ft"></view>
+                </view>
+                <view class="weui-cell weui-cell_access">
+                    <view class="weui-cell__hd"><image src="" alt="" style="width:20px;height:20px;margin-right:5px;display:block"></image></view>
+                    <view class="weui-cell__bd weui-cell_primary">
+                        <text>我的点评</text>
+                    </view>
+                    <view class="weui-cell__ft"></view>
+                </view>
+                <view class="weui-cell weui-cell_access">
+                    <view class="weui-cell__hd"><image src="" alt="" style="width:20px;height:20px;margin-right:5px;display:block"></image></view>
+                    <view class="weui-cell__bd weui-cell_primary">
+                        <text>我的收藏</text>
+                    </view>
+                    <view class="weui-cell__ft"></view>
+                </view>
+                <view class="weui-cell weui-cell_access">
+                    <view class="weui-cell__hd"><image src="" alt="" style="width:20px;height:20px;margin-right:5px;display:block"></image></view>
+                    <view class="weui-cell__bd weui-cell_primary">
+                        <text>我的背包</text>
+                    </view>
+                    <view class="weui-cell__ft"></view>
+                </view>
+                <view class="weui-cell weui-cell_access">
+                    <view class="weui-cell__hd"><image src="" alt="" style="width:20px;height:20px;margin-right:5px;display:block"></image></view>
+                    <view class="weui-cell__bd weui-cell_primary">
+                        <text>我的消息</text>
+                    </view>
+                    <view class="weui-cell__ft"></view>
+                </view>
+            </view>
+        </view>
+    </view>
+</view>
+
+<view class="weui-panel">    
+    <view class="weui-panel__bd">
+        <view class="weui-media-box weui-media-box_small-appmsg">
+            <view class="weui-cells">
+                <view class="weui-cell weui-cell_access">
+                    <view class="weui-cell__hd"><image src="" alt="" style="width:20px;height:20px;margin-right:5px;display:block"></image></view>
+                    <view class="weui-cell__bd weui-cell_primary">
+                        <text>基本资料</text>
+                    </view>
+                    <view class="weui-cell__ft"></view>
+                </view>
+                <view class="weui-cell weui-cell_access">
+                    <view class="weui-cell__hd"><image src="" alt="" style="width:20px;height:20px;margin-right:5px;display:block"></image></view>
+                    <view class="weui-cell__bd weui-cell_primary">
+                        <text>账号设置</text>
+                    </view>
+                    <view class="weui-cell__ft"></view>
+                </view>
+            </view>
+        </view>
+    </view>
+</view>

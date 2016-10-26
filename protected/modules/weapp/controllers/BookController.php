@@ -58,6 +58,7 @@ class BookController extends AppApi {
                 throw new CHttpException(404, '你所查看的小说不存在。');
             }
         }
+        $info['bookStatus']=  Books::exStatus($info['bookStatus']);
         $authorInfo = Authors::getOne($info['aid']);
         if (!$authorInfo || $authorInfo['status'] != Posts::STATUS_PASSED) {
             throw new CHttpException(404, 'The requested page does not exist.');

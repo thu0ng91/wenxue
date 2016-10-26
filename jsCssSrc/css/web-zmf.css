@@ -1276,6 +1276,9 @@ span.required,.errorMessage{
 .forum-page .post-item{
     border-bottom: 1px dashed #eee
 }
+.forum-page .post-item:hover{
+    background: #f8f8f8
+}
 .forum-page .last-toped{
     border-bottom: 2px solid #eee
 }

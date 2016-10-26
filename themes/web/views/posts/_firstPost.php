@@ -17,7 +17,7 @@
             <div class="dropdown">
                 <a class="dropdown-toggle" href="javascript:;" id="dropdownMenu-<?php echo $data['id'];?>" data-toggle="dropdown" aria-expanded="true">操作<span class="caret"></span></a>
                 <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu-<?php echo $data['id'];?>">
-                    <?php if (ForumAdmins::checkForumPower($this->uid, $info['fid'], 'setThreadStatus', true)) {?>                    
+                    <?php if (ForumAdmins::checkForumPower($this->uid, $info['fid'], 'setThreadStatus', false)) {?>                    
                     <li role="presentation"><?php echo CHtml::link($info['top'] ? '已置顶' : '置顶','javascript:;',array('action'=>'setStatus','data-type'=>'postPosts','data-action'=>'top','data-id'=>$info['id'],'role'=>'menuitem'));?></li>
                     <li role="presentation"><?php echo CHtml::link($info['styleStatus']==Posts::STATUS_BOLD ? '已加粗' : '加粗','javascript:;',array('action'=>'setStatus','data-type'=>'postPosts','data-action'=>'bold','data-id'=>$info['id'],'role'=>'menuitem'));?></li>
                     <li role="presentation"><?php echo CHtml::link($info['styleStatus']==Posts::STATUS_RED ? '已标红' : '标红','javascript:;',array('action'=>'setStatus','data-type'=>'postPosts','data-action'=>'red','data-id'=>$info['id'],'role'=>'menuitem'));?></li>

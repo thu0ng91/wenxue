@@ -17,7 +17,7 @@ class AjaxController extends Q {
 
     public function actionDo() {
         $action = zmf::val('action', 1);
-        if (!in_array($action, array('addTip', 'saveUploadImg', 'publishBook', 'publishChapter', 'saveDraft', 'report', 'sendSms', 'checkSms', 'setStatus', 'delContent', 'getNotice', 'getContents', 'delBook', 'delChapter', 'finishBook', 'dapipi', 'joinGroup', 'float', 'ajax', 'gotoBuy', 'confirmBuy', 'getProps', 'useProp'))) {
+        if (!in_array($action, array('addTip', 'saveUploadImg', 'publishBook', 'publishChapter', 'saveDraft', 'report', 'sendSms', 'checkSms', 'setStatus', 'delContent', 'getNotice', 'getContents', 'delBook', 'delChapter', 'finishBook', 'dapipi', 'joinGroup', 'float', 'ajax', 'gotoBuy', 'confirmBuy', 'getProps', 'useProp','getForums','doChangeForum'))) {
             $this->jsonOutPut(0, Yii::t('default', 'forbiddenaction'));
         }
         $this->$action();
@@ -1906,6 +1906,45 @@ class AjaxController extends Q {
             }
         } else {
             $this->jsonOutPut(0, '兑换失败，余额不足');
+        }
+    }
+    
+    private function getForums(){
+        $this->checkLogin();
+        $items = PostForums::model()->findAll();
+        $arr=  CHtml::listData($items, 'id', 'title');
+        $html='<div class="form-group"><label>选择版块</label>';
+        $html.=  CHtml::dropDownList('float-forumid', '', $arr, array('class'=>'form-control'));
+        $html.='</div>';
+        $this->jsonOutPut(1, $html);
+    }
+    
+    private function doChangeForum(){
+        $id=  zmf::val('id',2);
+        if(!$id){
+            $this->jsonOutPut(0, '缺少参数');
+        }
+        $fid=  zmf::val('fid',2);
+        if(!$fid){
+            $this->jsonOutPut(0, '缺少参数');
+        }
+        $info=  PostThreads::getOne($id);
+        if(!$info || $info['status']!=Posts::STATUS_PASSED){
+            $this->jsonOutPut(0, '操作的对象不存在');
+        }elseif($info['fid']==$fid){
+            $this->jsonOutPut(0, '未作改变');
+        }
+        $forumInfo=  PostForums::getOne($fid);
+        if(!$forumInfo){
+            $this->jsonOutPut(0, '操作的对象不存在');
+        }
+        if (ForumAdmins::checkForumPower($this->uid, $info['fid'], 'setThreadStatus', false)) {
+            if(PostThreads::model()->updateByPk($id, array('fid'=>$fid))){
+                $this->jsonOutPut(1, '已更改');
+            }
+            $this->jsonOutPut(0, '操作失败');
+        }else{
+            $this->jsonOutPut(0, '无权本操作');
         }
     }
 

@@ -31,7 +31,7 @@ class PostForums extends CActiveRecord {
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('title', 'required'),
+            array('title,faceImg,desc', 'required'),
             array('title', 'length', 'max' => 16),
             array('desc, faceImg', 'length', 'max' => 255),
             array('posts, favors', 'length', 'max' => 10),

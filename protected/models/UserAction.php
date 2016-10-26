@@ -196,7 +196,7 @@ class UserAction extends CActiveRecord {
             'feedback' => array(
                 'desc' => '意见反馈',
                 'items' => array(
-                    'feedback' => '举报',
+                    'feedback' => '意见反馈',
                 ),
             ),
             'user' => array(
