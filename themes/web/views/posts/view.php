@@ -11,7 +11,7 @@ $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
                 </div>
                 <div class="media-body">
                     <p class="title"><?php echo CHtml::link($forumInfo['title'],array('posts/index','forum'=>$forumInfo['id']));?></p>
-                    <p><?php echo $forumInfo['desc'];?></p>
+                    <p class="color-grey"><?php echo $forumInfo['desc'];?></p>
                 </div>
                 <div class="media-right">
                     <div class="" style="width: 80px">

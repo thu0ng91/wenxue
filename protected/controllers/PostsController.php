@@ -181,7 +181,6 @@ class PostsController extends Q {
         if ($this->uid) {
             $favoritedForum = Favorites::checkFavored($info['fid'], 'forum');
         }
-
         $data = array(
             'info' => $info,
             'forumInfo' => $forumInfo,
@@ -261,6 +260,7 @@ class PostsController extends Q {
             }
             $model = new PostThreads;
             $model->fid = $forumId;
+            $model->open = Posts::STATUS_OPEN;
             $isNew = true;
         }
         if (isset($_POST['PostThreads'])) {
@@ -372,6 +372,7 @@ class PostsController extends Q {
         } else {
             $model = new PostPosts;
             $model->tid = $tid;
+            $model->open = Posts::STATUS_OPEN;
         }
         //获取用户组的权限
         $powerInfo = GroupPowers::checkPower($this->userInfo, 'addPostReply');

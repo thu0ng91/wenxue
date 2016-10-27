@@ -17,7 +17,7 @@ class AjaxController extends Q {
 
     public function actionDo() {
         $action = zmf::val('action', 1);
-        if (!in_array($action, array('addTip', 'saveUploadImg', 'publishBook', 'publishChapter', 'saveDraft', 'report', 'sendSms', 'checkSms', 'setStatus', 'delContent', 'getNotice', 'getContents', 'delBook', 'delChapter', 'finishBook', 'dapipi', 'joinGroup', 'float', 'ajax', 'gotoBuy', 'confirmBuy', 'getProps', 'useProp','getForums','doChangeForum'))) {
+        if (!in_array($action, array('addTip', 'saveUploadImg', 'publishBook', 'publishChapter', 'saveDraft', 'report', 'sendSms', 'checkSms', 'setStatus', 'delContent', 'getNotice', 'getContents', 'delBook', 'delChapter', 'finishBook', 'dapipi', 'joinGroup', 'float', 'ajax', 'gotoBuy', 'confirmBuy', 'getProps', 'useProp', 'getForums', 'doChangeForum'))) {
             $this->jsonOutPut(0, Yii::t('default', 'forbiddenaction'));
         }
         $this->$action();
@@ -278,10 +278,10 @@ class AjaxController extends Q {
             $this->jsonOutPut(0, '你无权本操作');
         }
         //统计待完结的作品数
-        $booksLimitNum=  zmf::config('booksLimitNum');
-        if($booksLimitNum>0){
-            $booksNum=Books::model()->count('uid=:uid AND bookStatus=:status',array(':uid'=>  $this->uid,':status'=>  Books::STATUS_PUBLISHED));
-            if($booksNum>=$booksLimitNum){
+        $booksLimitNum = zmf::config('booksLimitNum');
+        if ($booksLimitNum > 0) {
+            $booksNum = Books::model()->count('uid=:uid AND bookStatus=:status', array(':uid' => $this->uid, ':status' => Books::STATUS_PUBLISHED));
+            if ($booksNum >= $booksLimitNum) {
                 $this->jsonOutPut(0, '你有太多未完结作品，请先完结');
             }
         }
@@ -645,7 +645,7 @@ class AjaxController extends Q {
         $desc = zmf::val('reason', 1);
         $contact = zmf::val('contact', 1);
         $url = zmf::val('url', 1);
-        $allowType = array('book', 'chapter', 'tip', 'comment', 'post', 'user', 'author','postPosts');
+        $allowType = array('book', 'chapter', 'tip', 'comment', 'post', 'user', 'author', 'postPosts');
         if (!in_array($type, $allowType)) {
             $this->jsonOutPut(0, '暂不允许的分类');
         }
@@ -656,7 +656,7 @@ class AjaxController extends Q {
         if (zmf::actionLimit('report', $type . '-' . $logid, 3, 3600)) {
             $this->jsonOutPut(0, '我们已收到你的举报，请勿频繁操作');
         }
-        
+
         $data['logid'] = $logid;
         $data['classify'] = $type;
         $info = false;
@@ -670,7 +670,7 @@ class AjaxController extends Q {
             $data['status'] = Posts::STATUS_STAYCHECK;
             $data['times'] = $info['times'] + 1;
             $data['cTime'] = zmf::now();
-            if (Reports::model()->updateByPk($info['id'], $data)) {                
+            if (Reports::model()->updateByPk($info['id'], $data)) {
                 $this->jsonOutPut(1, '感谢你的举报');
             }
             $this->jsonOutPut(1, '感谢你的举报');
@@ -1219,11 +1219,12 @@ class AjaxController extends Q {
                 $bookInfo = Books::getOne($postInfo['bid']);
                 if (!$bookInfo || $bookInfo['status'] != Posts::STATUS_PASSED) {
                     $this->jsonOutPut(0, '你所评论的小说不存在');
-                };
+                }
                 $posts = Comments::getCommentsByPage($id, $this->uid, 'tip', $page, $this->pageSize);
                 $view = '/posts/_comment';
                 $from = 'tip';
                 $showFormHtml = true;
+                $powerAction = 'commentChapterTip';
                 break;
             case 'postPosts':
                 $postInfo = PostPosts::model()->findByPk($id);
@@ -1234,6 +1235,7 @@ class AjaxController extends Q {
                 $view = '/posts/_comment';
                 $from = 'postPosts';
                 $showFormHtml = $postInfo['open'] == PostPosts::OPEN_COMMENT;
+                $powerAction = 'commentPost';
                 break;
             case 'postComments':
                 $postInfo = Posts::model()->findByPk($id);
@@ -1244,6 +1246,7 @@ class AjaxController extends Q {
                 $view = '/posts/_comment';
                 $from = 'post';
                 $showAvatar = true;
+                $powerAction = 'commentPost';
                 break;
             default:
                 $posts = array();
@@ -1253,6 +1256,9 @@ class AjaxController extends Q {
             foreach ($posts as $k => $row) {
                 $longHtml.=$this->renderPartial($view, array('data' => $row, 'k' => $k, 'postInfo' => $postInfo, 'bookInfo' => $bookInfo, 'from' => $from, 'showAvatar' => $showAvatar), true);
             }
+        }
+        if ($showFormHtml && $powerAction) {
+            $showFormHtml = GroupPowers::checkAction($this->userInfo, $powerAction);
         }
         $data = array(
             'html' => $longHtml,
@@ -1397,7 +1403,7 @@ class AjaxController extends Q {
         if (!$data || !$type) {
             $this->jsonOutPut(0, '数据不全，请核实');
         }
-        if (!in_array($type, array('comment', 'post', 'notice', 'tag', 'img', 'tip','postPosts'))) {
+        if (!in_array($type, array('comment', 'post', 'notice', 'tag', 'img', 'tip', 'postPosts'))) {
             $this->jsonOutPut(0, '暂不允许的分类');
         }
         $status = Posts::STATUS_DELED;
@@ -1491,21 +1497,21 @@ class AjaxController extends Q {
                 if (!$data || !is_numeric($data)) {
                     $this->jsonOutPut(0, '你所操作的内容不存在');
                 }
-                $info=  PostPosts::getOne($data);
-                if (!$info || $info['status']!=Posts::STATUS_PASSED) {
+                $info = PostPosts::getOne($data);
+                if (!$info || $info['status'] != Posts::STATUS_PASSED) {
                     $this->jsonOutPut(0, '你所操作的内容不存在');
                 }
-                $threadInfo=  PostThreads::getOne($info['tid']);
-                if($info['uid']!=$this->uid){
+                $threadInfo = PostThreads::getOne($info['tid']);
+                if ($info['uid'] != $this->uid) {
                     //不是本人，判断是否是版主                    
                     if (!ForumAdmins::checkForumPower($this->uid, $threadInfo['fid'], 'delPostReply', true)) {
                         //todo，后台管理员
                         $this->jsonOutPut(0, '你无权本操作');
                     }
-                }                
+                }
                 if (PostPosts::model()->updateByPk($data, array('status' => Posts::STATUS_DELED))) {
-                    if($info['isFirst']){//如果删除的是首层，则认为是删除帖子
-                        PostThreads::model()->updateByPk($info['tid'], array('status' => Posts::STATUS_DELED));                            
+                    if ($info['isFirst']) {//如果删除的是首层，则认为是删除帖子
+                        PostThreads::model()->updateByPk($info['tid'], array('status' => Posts::STATUS_DELED));
                     }
                 }
                 $this->jsonOutPut(1, '已删除');
@@ -1585,7 +1591,7 @@ class AjaxController extends Q {
         $ginfo = Group::getOne($gid);
         if (!$ginfo || $ginfo['status'] != 1) {
             $this->jsonOutPut(0, '暂不能选择该角色');
-        }elseif(!$ginfo['isAuthor'] && $this->userInfo['authorId']>0){
+        } elseif (!$ginfo['isAuthor'] && $this->userInfo['authorId'] > 0) {
             $this->jsonOutPut(0, '你已有作者信息，不能选择该角色');
         }
         if (Users::updateInfo($this->uid, 'groupid', $gid)) {
@@ -1607,16 +1613,16 @@ class AjaxController extends Q {
             );
             UserAction::simpleRecord($attr);
             //更新团队的成员数
-            Group::updateMemberCount($ginfo['id']);            
+            Group::updateMemberCount($ginfo['id']);
             //用户组初始化赠送的物品
-            GroupGifts::groupGiftsForUser($ginfo['id'], $this->userInfo);     
-            if($ginfo['isAuthor']){
-                if($this->userInfo['authorId']>0){
+            GroupGifts::groupGiftsForUser($ginfo['id'], $this->userInfo);
+            if ($ginfo['isAuthor']) {
+                if ($this->userInfo['authorId'] > 0) {
                     $url = Yii::app()->createUrl('user/index');
-                }else{
+                } else {
                     $url = Yii::app()->createUrl('user/author');
                 }
-            }else{
+            } else {
                 $url = Yii::app()->createUrl('user/index');
             }
             $this->jsonOutPut(1, $url);
@@ -1629,15 +1635,17 @@ class AjaxController extends Q {
         $this->checkLogin();
         $this->checkUserStatus();
         $tasks = Task::getUserTasks($this->userInfo);
-        $html='';
-        if(!empty($tasks)){foreach ($tasks as $data){
-            $html.= $this->renderPartial('/user/_task', array('data' => $data), true);
-        }}else{
-            $html='<p class="help-block text-center">暂无任务</p>';
+        $html = '';
+        if (!empty($tasks)) {
+            foreach ($tasks as $data) {
+                $html.= $this->renderPartial('/user/_task', array('data' => $data), true);
+            }
+        } else {
+            $html = '<p class="help-block text-center">暂无任务</p>';
         }
-        $data=array(
-            'html'=>$html,
-            'url'=>  Yii::app()->createUrl('user/tasks'),
+        $data = array(
+            'html' => $html,
+            'url' => Yii::app()->createUrl('user/tasks'),
         );
         $this->jsonOutPut(1, $data);
     }
@@ -1908,42 +1916,42 @@ class AjaxController extends Q {
             $this->jsonOutPut(0, '兑换失败，余额不足');
         }
     }
-    
-    private function getForums(){
+
+    private function getForums() {
         $this->checkLogin();
         $items = PostForums::model()->findAll();
-        $arr=  CHtml::listData($items, 'id', 'title');
-        $html='<div class="form-group"><label>选择版块</label>';
-        $html.=  CHtml::dropDownList('float-forumid', '', $arr, array('class'=>'form-control'));
+        $arr = CHtml::listData($items, 'id', 'title');
+        $html = '<div class="form-group"><label>选择版块</label>';
+        $html.= CHtml::dropDownList('float-forumid', '', $arr, array('class' => 'form-control'));
         $html.='</div>';
         $this->jsonOutPut(1, $html);
     }
-    
-    private function doChangeForum(){
-        $id=  zmf::val('id',2);
-        if(!$id){
+
+    private function doChangeForum() {
+        $id = zmf::val('id', 2);
+        if (!$id) {
             $this->jsonOutPut(0, '缺少参数');
         }
-        $fid=  zmf::val('fid',2);
-        if(!$fid){
+        $fid = zmf::val('fid', 2);
+        if (!$fid) {
             $this->jsonOutPut(0, '缺少参数');
         }
-        $info=  PostThreads::getOne($id);
-        if(!$info || $info['status']!=Posts::STATUS_PASSED){
+        $info = PostThreads::getOne($id);
+        if (!$info || $info['status'] != Posts::STATUS_PASSED) {
             $this->jsonOutPut(0, '操作的对象不存在');
-        }elseif($info['fid']==$fid){
+        } elseif ($info['fid'] == $fid) {
             $this->jsonOutPut(0, '未作改变');
         }
-        $forumInfo=  PostForums::getOne($fid);
-        if(!$forumInfo){
+        $forumInfo = PostForums::getOne($fid);
+        if (!$forumInfo) {
             $this->jsonOutPut(0, '操作的对象不存在');
         }
         if (ForumAdmins::checkForumPower($this->uid, $info['fid'], 'setThreadStatus', false)) {
-            if(PostThreads::model()->updateByPk($id, array('fid'=>$fid))){
+            if (PostThreads::model()->updateByPk($id, array('fid' => $fid))) {
                 $this->jsonOutPut(1, '已更改');
             }
             $this->jsonOutPut(0, '操作失败');
-        }else{
+        } else {
             $this->jsonOutPut(0, '无权本操作');
         }
     }

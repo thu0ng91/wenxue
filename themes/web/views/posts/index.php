@@ -18,7 +18,7 @@
                 </div>
                 <div class="media-body">
                     <h1><?php echo $forumInfo['title'];?></h1>
-                    <p><?php echo $forumInfo['desc'];?></p>
+                    <p class="color-grey"><?php echo $forumInfo['desc'];?></p>
                 </div>
                 <div class="media-right">
                     <div class="" style="width: 80px">
