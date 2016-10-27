@@ -32,6 +32,11 @@
         <?php echo $form->error($model,'desc'); ?>
     </div>
     <div class="form-group">
+        <?php echo $form->labelEx($model,'posterType'); ?>        
+        <?php echo $form->dropDownlist($model,'posterType',  PostForums::posterType('admin'),array('class'=>'form-control','empty'=>'--不限制--')); ?>
+        <?php echo $form->error($model,'posterType'); ?>
+    </div>
+    <div class="form-group">
         <?php echo CHtml::submitButton($model->isNewRecord ? '新增' : '更新',array('class'=>'btn btn-primary')); ?>
     </div>
 <?php $this->endWidget(); ?>

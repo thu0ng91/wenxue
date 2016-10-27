@@ -159,5 +159,5 @@ class ForumAdmins extends CActiveRecord {
             return true;
         }
     }
-
+    
 }

@@ -16,7 +16,7 @@ $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
                 <div class="media-right">
                     <div class="" style="width: 80px">
                         <p><?php echo !$favoritedForum ? GroupPowers::link('favoriteForum',$this->userInfo,'<i class="fa fa-plus"></i> 关注','javascript:;',array('class'=>'btn btn-'.'success'.' btn-xs btn-block','action'=>'favorite','action-data'=>$forumInfo['id'],'action-type'=>'forum')) : '';?></p>
-                        <p><?php echo GroupPowers::link('addPost',$this->userInfo,'<i class="fa fa-plus"></i> 发表新帖',array('posts/create','forum'=>$forumInfo['id']),array('class'=>'btn btn-default btn-xs btn-block'));?></p>
+                        <p><?php echo PostForums::addPostOrNot($forumInfo, $this->userInfo) ? GroupPowers::link('addPost',$this->userInfo,'<i class="fa fa-plus"></i> 发表新帖',array('posts/create','forum'=>$forumInfo['id']),array('class'=>'btn btn-default btn-xs btn-block')):'';?></p>
                     </div>
                 </div>
             </div>
@@ -33,7 +33,7 @@ $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
                         <p class="post-title-right">
                             <?php echo CHtml::link('只看楼主',array('posts/view','id'=>$info['id'],'see_lz'=>1),array('class'=>'btn btn-xs btn-default'));?>
                             <?php echo GroupPowers::link('favoritePost',$this->userInfo,'收藏','javascript:;',array('class'=>'btn btn-xs btn-default'));?>
-                            <?php echo GroupPowers::link('addPostReply',$this->userInfo,'回复',array('posts/reply','tid'=>$info['id']),array('class'=>'btn btn-xs btn-default'));?>
+                            <?php echo $replyPostOrNot ? GroupPowers::link('addPostReply',$this->userInfo,'回复',array('posts/reply','tid'=>$info['id']),array('class'=>'btn btn-xs btn-default')) : '';?>
                         </p>
                     </div>
                 </div>                
@@ -54,6 +54,7 @@ $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
             <div class="module-header">快速回复</div>
             <div class="module-body fast-reply">
                 <?php if($this->uid){?>
+                <?php if($replyPostOrNot){?>
                 <?php if(GroupPowers::checkAction($this->userInfo, 'addPostReply')){?>
                 <?php $form=$this->beginWidget('CActiveForm', array(
                     'id'=>'fast-reply-form',
@@ -75,6 +76,9 @@ $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
                 <?php $this->endWidget(); ?>
                 <?php }else{?>
                 <p class="help-block">你所在用户组暂不能进行本操作。</p>
+                <?php }?>
+                <?php }else{?>
+                <p class="help-block">仅<?php echo PostForums::posterType($info['posterType']);?>可回复。</p>
                 <?php }?>
                 <?php }else{?>
                 <p class="help-block">登录后享有更多功能，<?php echo CHtml::link('立即登录',array('site/login'));?>或<?php echo CHtml::link('注册',array('site/reg'));?>。</p>

@@ -373,3 +373,5 @@ alter TABLE pre_group_powers add totalLimit tinyint(1) unsigned not null COMMENT
 alter TABLE pre_group_powers add display tinyint(1) unsigned not null COMMENT '是否在动态里显示';
 
 alter TABLE pre_group add isAuthor tinyint(1) unsigned not null COMMENT '是否必须注册为作者';
+
+alter TABLE pre_post_threads add posterType char(6) not null COMMENT '发帖者类别';

@@ -47,10 +47,19 @@
             </div>
             <?php }?>
             <div class="module-header">文章设置</div>
-            <div class="module-body power-body">
+            <div class="module-body power-body">                
                 <div class="checkbox">
                     <label><?php echo CHtml::activeCheckBox($model, 'open');?> 开放评论和点赞</label>
                 </div>
+                <?php if(ForumAdmins::checkForumPower($this->uid, $forumInfo['id'], 'setThreadStatus')){?>
+                <div class="checkbox">
+                    <label><?php echo CHtml::activeCheckBox($model, 'display');?> 最新回帖显示在前面</label>
+                </div>
+                <div class="form-group">
+                    <label>哪些可回帖</label>
+                    <?php echo $form->dropDownlist($model,'posterType',  PostForums::posterType('admin'),array('class'=>'form-control','empty'=>'--不限--')); ?>
+                </div>
+                <?php }?>
             </div>
         </div>
         <?php $this->endWidget(); ?>

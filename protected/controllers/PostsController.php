@@ -181,6 +181,8 @@ class PostsController extends Q {
         if ($this->uid) {
             $favoritedForum = Favorites::checkFavored($info['fid'], 'forum');
         }
+        //判断是否可以回复
+        $replyPostOrNot=PostForums::replyPostOrNot($info,$this->userInfo);
         $data = array(
             'info' => $info,
             'forumInfo' => $forumInfo,
@@ -191,6 +193,7 @@ class PostsController extends Q {
             'topsPosts' => $topsPosts,
             'model' => $model,
             'favoritedForum' => $favoritedForum,
+            'replyPostOrNot' => $replyPostOrNot,
         );
         $this->selectNav = 'forum';
         $this->favorited = Favorites::checkFavored($id, 'thread');
@@ -248,6 +251,10 @@ class PostsController extends Q {
             if (!$forumInfo) {
                 $this->message(0, '你所查看的版块不存在');
             }
+            //判断角色
+            if(!PostForums::addPostOrNot($forumInfo, $this->userInfo)){
+                $this->message(0, '你不能在该版块发帖');
+            }            
             //获取用户组的权限
             $powerInfo = GroupPowers::checkPower($this->userInfo, 'addPost');
             if (!$powerInfo['status']) {
@@ -285,6 +292,15 @@ class PostsController extends Q {
             $attr['status'] = $filterTitle['status'] == Posts::STATUS_PASSED ? $filterContent['status'] : $filterTitle['status'];
             $attr['open'] = ($_POST['PostThreads']['open'] == Posts::STATUS_OPEN) ? 1 : 0;
             $attr['platform'] = $this->isMobile ? Posts::PLATFORM_MOBILE : Posts::PLATFORM_WEB;
+            //判断是否版主
+            if(ForumAdmins::checkForumPower($this->uid, $forumInfo['id'], 'setThreadStatus')){
+                $attr['display'] = ($_POST['PostThreads']['display'] == 1) ? 1 : 0;
+                $_pTLabel=PostForums::posterType($_POST['PostThreads']['posterType']);
+                $attr['posterType'] = $_pTLabel ? $_POST['PostThreads']['posterType'] : '';
+            }else{
+                $attr['display']=0;
+                $attr['posterType']='';
+            }
             $model->attributes = $attr;
             if ($model->save()) {
                 //保存第一楼内容

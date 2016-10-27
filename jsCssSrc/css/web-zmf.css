@@ -144,6 +144,12 @@ button, input, select, textarea,.form-control,.btn{
     color: #333333;
     background-color: #e6e6e6;
 }
+.navbar-topbar .navbar-brand{
+    height: 36px;
+    line-height: 36px;
+    font-size: 14px;
+    padding-top: 0
+}
 /*logo及搜索*/
 .header-logo{
     width: 205px;

@@ -23,7 +23,7 @@
                 <div class="media-right">
                     <div class="" style="width: 80px">
                         <p><?php echo !$favorited ? GroupPowers::link('favoriteForum',$this->userInfo,('<i class="fa fa-plus"></i> 关注'),'javascript:;',array('class'=>'btn btn-success btn-xs btn-block','action'=>'favorite','action-data'=>$forumInfo['id'],'action-type'=>'forum')) : '';?></p>
-                        <p><?php echo GroupPowers::link('addPost',$this->userInfo,'<i class="fa fa-plus"></i> 发表新帖',array('posts/create','forum'=>$forumInfo['id']),array('class'=>'btn btn-default btn-xs btn-block'));?></p>
+                        <p><?php echo PostForums::addPostOrNot($forumInfo, $this->userInfo) ? GroupPowers::link('addPost',$this->userInfo,'<i class="fa fa-plus"></i> 发表新帖',array('posts/create','forum'=>$forumInfo['id']),array('class'=>'btn btn-default btn-xs btn-block')) : '';?></p>
                     </div>
                 </div>
             </div>

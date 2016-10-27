@@ -51,6 +51,7 @@ class PostThreads extends CActiveRecord {
             array('styleStatus, digest, top, open, display,status', 'numerical', 'integerOnly' => true),
             array('fid, type, uid,aid, hits, posts, comments, favorites, lastpost, lastposter, cTime,props', 'length', 'max' => 10),
             array('title', 'length', 'max' => 80),
+            array('posterType', 'length', 'max' => 6),
             array('faceImg', 'length', 'max' => 255),
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
@@ -94,6 +95,7 @@ class PostThreads extends CActiveRecord {
             'cTime' => '发布时间',
             'status' => '帖子状态',
             'props' => '赞赏数',
+            'posterType' => '那些可以回帖',
         );
     }
 

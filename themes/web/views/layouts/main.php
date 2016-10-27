@@ -3,10 +3,8 @@ $this->beginContent('/layouts/common');
 ?>
 <div class="navbar navbar-topbar" role="navigation">
     <div class="container">
-        <div class="navbar-collapse collapse">
-            <ul class="nav navbar-nav">
-                <li><?php echo CHtml::link('欢迎来到初心创文网！', zmf::config('baseurl')); ?></li>
-            </ul>
+        <?php echo CHtml::link('欢迎来到初心创文基地！',  zmf::config('baseurl'),array('class'=>'navbar-brand'));?>
+        <div class="navbar-collapse collapse">            
             <?php $this->renderPartial('/layouts/_user');?>
         </div>
     </div> 

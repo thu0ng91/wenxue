@@ -33,6 +33,7 @@ class PostForums extends CActiveRecord {
         return array(
             array('title,faceImg,desc', 'required'),
             array('title', 'length', 'max' => 16),
+            array('posterType', 'length', 'max' => 6),
             array('desc, faceImg', 'length', 'max' => 255),
             array('posts, favors', 'length', 'max' => 10),
             // The following rule is used by search().
@@ -62,6 +63,7 @@ class PostForums extends CActiveRecord {
             'faceImg' => '封面图',
             'posts' => '作品数',
             'favors' => '关注数',
+            'posterType' => '谁可发帖',
         );
     }
 
@@ -104,54 +106,117 @@ class PostForums extends CActiveRecord {
         return parent::model($className);
     }
 
+    /**
+     * 返回发帖者类别
+     * @param string $type
+     * @return string
+     */
+    public static function posterType($type) {
+        $arr = array(
+            'banzhu' => '版主',
+            'reader' => '读者',
+            'author' => '作者',
+        );
+        if ($type == 'admin') {
+            return $arr;
+        }
+        return $arr[$type];
+    }
+
     public static function getOne($id) {
         return PostForums::model()->findByPk($id);
     }
-    
-    public static function getUserFavorites($uid){
-        if(!$uid){
+
+    public static function getUserFavorites($uid) {
+        if (!$uid) {
             return array();
         }
-        $sql="SELECT pf.id,pf.title FROM {{post_forums}} pf,{{favorites}} f WHERE f.uid=:uid AND f.classify='forum' AND f.logid=pf.id ORDER BY f.cTime DESC";
-        $res=  Yii::app()->db->createCommand($sql);
+        $sql = "SELECT pf.id,pf.title FROM {{post_forums}} pf,{{favorites}} f WHERE f.uid=:uid AND f.classify='forum' AND f.logid=pf.id ORDER BY f.cTime DESC";
+        $res = Yii::app()->db->createCommand($sql);
         $res->bindValue(':uid', $uid);
-        $items= $res->queryAll();
+        $items = $res->queryAll();
         return $items;
     }
-    
+
     /**
      * 更新并统计每个版块的帖子数
      * @return bool
      */
-    public static function updatePostsStat(){
-        $sql="UPDATE {{post_forums}} AS pf,(SELECT COUNT(id) AS total,fid FROM {{post_threads}} GROUP BY fid) AS tmp SET pf.posts=tmp.total WHERE pf.id=tmp.fid";
-        $res=  Yii::app()->db->createCommand($sql)->execute();
+    public static function updatePostsStat() {
+        $sql = "UPDATE {{post_forums}} AS pf,(SELECT COUNT(id) AS total,fid FROM {{post_threads}} GROUP BY fid) AS tmp SET pf.posts=tmp.total WHERE pf.id=tmp.fid";
+        $res = Yii::app()->db->createCommand($sql)->execute();
         return $res;
     }
-    
+
     /**
      * 获取板块下近24小时最活跃用户
      * @param int $fid
      * @param int $limit
      * @return array
      */
-    public static function getActivityUsers($fid,$limit=12){
+    public static function getActivityUsers($fid, $limit = 12) {
         //过去24小时
-        $now=  zmf::now();
-        $time=$now-86400;
-        $sql="SELECT u.id,u.truename,u.avatar,count(pp.id) AS total FROM {{users}} u INNER JOIN {{post_posts}} pp ON pp.uid=u.id INNER JOIN {{post_threads}} pt ON pp.tid=pt.id WHERE pt.fid=:fid AND pp.cTime>=:time GROUP BY pp.uid ORDER BY total DESC LIMIT $limit";
-        $res=  Yii::app()->db->createCommand($sql);
+        $now = zmf::now();
+        $time = $now - 86400;
+        $sql = "SELECT u.id,u.truename,u.avatar,count(pp.id) AS total FROM {{users}} u INNER JOIN {{post_posts}} pp ON pp.uid=u.id INNER JOIN {{post_threads}} pt ON pp.tid=pt.id WHERE pt.fid=:fid AND pp.cTime>=:time GROUP BY pp.uid ORDER BY total DESC LIMIT $limit";
+        $res = Yii::app()->db->createCommand($sql);
         $res->bindValues(array(
-            ':fid'=>$fid,
-            ':time'=>$time            
+            ':fid' => $fid,
+            ':time' => $time
         ));
-        $items=$res->queryAll();
-        return $items;        
+        $items = $res->queryAll();
+        return $items;
+    }
+
+    public static function listAll() {
+        $items = self::model()->findAll();
+        return CHtml::listData($items, 'id', 'title');
+    }
+
+    /**
+     * 判断用户是否可以在某版块发帖
+     * @param array $forumInfo
+     * @param array $userInfo
+     * @return boolean
+     */
+    public static function addPostOrNot($forumInfo, $userInfo) {
+        if (!$forumInfo || !$userInfo) {
+            return false;
+        }        
+        if (!$forumInfo['posterType']) {
+            return true;
+        }
+        if (($forumInfo['posterType'] == 'reader' && !$userInfo['authorId']) || ($forumInfo['posterType'] == 'author' && $userInfo['authorId'] > 0)) {
+            return true;
+        }
+        //判断是否版主     
+        if (ForumAdmins::checkForumPower($userInfo['id'], $forumInfo['id'], 'addPost')) {
+            return true;
+        }
+        return false;
     }
     
-    public static function listAll(){
-        $items=  self::model()->findAll();
-        return CHtml::listData($items, 'id', 'title');
+    /**
+     * 判断用户是否可以在某帖子回帖
+     * @param array $threadInfo
+     * @param array $userInfo
+     * @return boolean
+     */
+    public static function replyPostOrNot($threadInfo, $userInfo) {
+        if (!$threadInfo || !$userInfo) {
+            return false;
+        }        
+        if (!$threadInfo['posterType']) {
+            return true;
+        }
+        if (($threadInfo['posterType'] == 'reader' && !$userInfo['authorId']) || ($threadInfo['posterType'] == 'author' && $userInfo['authorId'] > 0)) {
+            return true;
+        }
+        //判断是否版主     
+        if (ForumAdmins::checkForumPower($userInfo['id'], $threadInfo['fid'], 'addPostReply')) {
+            return true;
+        }
+        return false;
     }
 
 }

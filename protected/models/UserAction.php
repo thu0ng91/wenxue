@@ -146,7 +146,7 @@ class UserAction extends CActiveRecord {
                     'delPostReply' => '删除楼层',
                     'favoriteForum' => '关注版块',
                     'changeForum' => '修改所属版块',
-                    'setThreadStatus' => '置顶帖子',
+                    'setThreadStatus' => '设置帖子',
                 ),
             ),
             'book' => array(
