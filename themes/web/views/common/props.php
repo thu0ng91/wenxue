@@ -9,23 +9,6 @@
  * @datetime 2016-9-22  15:16:20 
  */
 ?>
-<style>
-    .post-props{
-        background: #f8f8f8;
-        padding: 10px 5px;
-    }
-    .post-props p{
-        display: block;
-        box-sizing: border-box
-    }
-    .post-props p:last-child{
-        border: none
-    }
-    .post-props p span{
-        width: 32.8%;
-        display: inline-block
-    }
-</style>
 <?php if(!empty($props)){?>
 <div class="post-props" id="post-props-<?php echo $keyid;?>">    
     <?php foreach($props as $prop){?>            

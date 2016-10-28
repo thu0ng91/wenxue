@@ -46,21 +46,71 @@
                 <?php }?>
             </div>
             <?php }?>
-            <div class="module-header">文章设置</div>
+            <div class="module-header">帖子设置</div>
             <div class="module-body power-body">                
                 <div class="checkbox">
                     <label><?php echo CHtml::activeCheckBox($model, 'open');?> 开放评论和点赞</label>
                 </div>
-                <?php if(ForumAdmins::checkForumPower($this->uid, $forumInfo['id'], 'setThreadStatus')){?>
+                <?php if($setThreadStatus){?>
                 <div class="checkbox">
                     <label><?php echo CHtml::activeCheckBox($model, 'display');?> 最新回帖显示在前面</label>
                 </div>
-                <div class="form-group">
-                    <label>哪些可回帖</label>
-                    <?php echo $form->dropDownlist($model,'posterType',  PostForums::posterType('admin'),array('class'=>'form-control','empty'=>'--不限--')); ?>
-                </div>
                 <?php }?>
             </div>
+            <?php if($setThreadStatus){?>
+            <div class="module-header">回帖设置</div>
+            <div class="module-body power-body form-horizontal">
+                <div class="form-group" style="margin-top: 15px">
+                    <label class="col-sm-5 control-label">哪些可回帖</label>
+                    <div class="col-sm-7">
+                        <?php echo $form->dropDownlist($model,'posterType',  PostForums::posterType('admin'),array('class'=>'form-control','empty'=>'--不限--')); ?>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <?php echo $form->labelEx($model,'postExpiredTime',array('class'=>'col-sm-5 control-label')); ?>
+                    <div class="col-sm-7">
+                        <?php 
+                        $this->widget('zii.widgets.jui.CJuiDatePicker', array(
+                        'model'=>$model,
+                        'attribute'=>'postExpiredTime',
+                        'language'=>'zh-cn',
+                        'value'=>date('Y/m/d',$model->postExpiredTime),			    
+                                    'options'=>array(
+                                        'showAnim'=>'fadeIn',
+                                    ),	
+                                    'htmlOptions'=>array(
+                                        'readonly'=>'readonly',
+                                        'class'=>'form-control',
+                                        'value'=>date('Y/m/d',($model->postExpiredTime) ? $model->postExpiredTime :'')
+                                ),		    
+                                ));
+                        ?>
+                    </div>                    
+                </div>
+                <div class="form-group">
+                    <?php echo $form->labelEx($model,'voteExpiredTime',array('class'=>'col-sm-5 control-label')); ?>
+                    <div class="col-sm-7">
+                        <?php 
+                        $this->widget('zii.widgets.jui.CJuiDatePicker', array(
+                        'model'=>$model,
+                        'attribute'=>'voteExpiredTime',
+                        'language'=>'zh-cn',
+                        'value'=>date('Y/m/d',$model->voteExpiredTime),			    
+                                    'options'=>array(
+                                        'showAnim'=>'fadeIn',
+                                    ),	
+                                    'htmlOptions'=>array(
+                                        'readonly'=>'readonly',
+                                        'class'=>'form-control',
+                                        'value'=>date('Y/m/d',($model->voteExpiredTime) ? $model->voteExpiredTime :'')
+                                ),		    
+                                ));
+                        ?>
+                    </div>                    
+                </div>
+            </div>
+            <?php }?>
         </div>
         <?php $this->endWidget(); ?>
     </div>

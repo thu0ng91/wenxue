@@ -423,6 +423,10 @@ class Posts extends CActiveRecord {
             if(!$threadInfo || $threadInfo['status']!=Posts::STATUS_PASSED){
                 return array('status' => 0, 'msg' => '你所操作的帖子不存在');
             }
+            $now=  zmf::now();
+            if($threadInfo['voteExpiredTime']>0 && $threadInfo['voteExpiredTime']<=$now){
+                return array('status' => 0, 'msg' => '投票已结束');
+            }
             if($postInfo['isFirst']){
                 $content = "赞了你的帖子【{$threadInfo['title']}】，" . CHtml::link('查看详情', array('posts/view', 'id' => $postInfo['tid']));
             }else{

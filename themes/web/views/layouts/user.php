@@ -57,7 +57,7 @@ $this->beginContent('/layouts/common');
                         <?php echo GroupPowers::link('createAuthor',$this->userInfo,'成为作者',array('user/author'),array('class'=>'btn btn-primary'));?>                        
                         <?php }?>                        
                     </div>                
-                    <?php }else{?>
+                    <?php }elseif($this->uid){if(GroupPowers::checkAction($this->userInfo, 'favoriteUser')){?>                    
                     <div class="btn-group" role="group">
                         <?php if($this->favorited){?>
                         <?php echo CHtml::link('<i class="fa fa-star"></i> 已关注','javascript:;',array('class'=>'btn btn-default','action'=>'favorite','action-data'=>$this->toUserInfo['id'],'action-type'=>'user'));?>
@@ -65,7 +65,7 @@ $this->beginContent('/layouts/common');
                         <?php echo CHtml::link('<i class="fa fa-star-o"></i> 关注','javascript:;',array('class'=>'btn btn-danger','action'=>'favorite','action-data'=>$this->toUserInfo['id'],'action-type'=>'user'));?>
                         <?php }?>
                     </div>
-                    <?php }?>
+                    <?php }}?>
                 </div>
             </div>
             <div class="user-navbar">

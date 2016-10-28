@@ -1670,6 +1670,102 @@ span.required,.errorMessage{
 .prop-item:hover img{
     opacity: .8
 }
+/*道具*/
+.post-props{
+    background: #f8f8f8;
+    padding: 10px 5px;
+}
+.post-props p{
+    display: block;
+    box-sizing: border-box
+}
+.post-props p:last-child{
+    border: none
+}
+.post-props p span{
+    width: 32.8%;
+    display: inline-block
+}
+/*选择角色*/
+.groups-holder{
+    margin-top: 100px;
+    height: 400px;        
+    margin-left: -15px;
+    margin-right: -15px;
+}
+.groups-holder .thumbnail{
+    position: relative;
+    width: 300px;
+    float: left;
+    margin:0 15px;
+    display: inline-block
+}
+.groups-holder .thumbnail:hover{
+    border-color: #93ba5f
+}
+.groups-holder .thumbnail img{
+    width: 272px;
+    height: 204px;
+    margin-top: 10px
+}
+.groups-holder .thumbnail .fixed-icon{
+    position: absolute;
+    right: 50%;
+    margin-right: -24px;
+    top: 102px;
+    margin-top: -24px;
+    font-size: 48px;
+    color:  #93ba5f;
+    display: none;
+    z-index: 999
+}
+.groups-holder .thumbnail .caption{
+    padding: 5px 10px 15px
+}
+.groups-holder .thumbnail .caption .task-samples{
+    border-left: 4px solid #efefef;
+    padding-left: 5px;
+}
+.groups-holder .thumbnail .caption .level-info span{
+    margin-right: 15px;
+}
+/*站点推荐*/
+.recommend{
+    width: 680px;
+    margin: 80px auto
+}
+.recommend .module-body{
+    margin-left: -15px;
+    margin-right: -15px;
+    padding-bottom: 0
+}
+.recommend .thumbnail{
+    display: inline-block;
+    margin: 0 15px 30px;
+    width: 130px;
+    border: none
+}    
+.recommend .thumbnail img{
+    width: 120px;
+    height: 120px;
+}
+.recommend .thumbnail .author-desc{
+    height: 34px;
+    overflow: hidden
+}
+.recommend .thumbnail .author-btn{
+    height: 22px;
+    overflow: hidden
+}
+.recommend .thumbnail .btn{
+    display: none
+}
+.recommend .thumbnail:hover{
+    box-shadow: 0 0 10px rgba(0, 0, 0, .3);
+}
+.recommend .thumbnail:hover .btn{
+    display: block
+}
 /*页脚------*/
 .footer{
     width: 100%;

@@ -375,3 +375,7 @@ alter TABLE pre_group_powers add display tinyint(1) unsigned not null COMMENT '�
 alter TABLE pre_group add isAuthor tinyint(1) unsigned not null COMMENT '是否必须注册为作者';
 
 alter TABLE pre_post_threads add posterType char(6) not null COMMENT '发帖者类别';
+alter TABLE pre_post_forums add posterType char(6) not null COMMENT '发帖者类别';
+
+alter TABLE pre_post_threads add postExpiredTime int(10) unsigned not null COMMENT '投稿结束时间';
+alter TABLE pre_post_threads add voteExpiredTime int(10) unsigned not null COMMENT '投票结束时间';

@@ -78,7 +78,7 @@ $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
                 <p class="help-block">你所在用户组暂不能进行本操作。</p>
                 <?php }?>
                 <?php }else{?>
-                <p class="help-block">仅<?php echo PostForums::posterType($info['posterType']);?>可回复。</p>
+                <p class="help-block"><?php echo $replyPostOrNotLabel;?></p>
                 <?php }?>
                 <?php }else{?>
                 <p class="help-block">登录后享有更多功能，<?php echo CHtml::link('立即登录',array('site/login'));?>或<?php echo CHtml::link('注册',array('site/reg'));?>。</p>

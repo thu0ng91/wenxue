@@ -182,7 +182,19 @@ class PostsController extends Q {
             $favoritedForum = Favorites::checkFavored($info['fid'], 'forum');
         }
         //判断是否可以回复
-        $replyPostOrNot=PostForums::replyPostOrNot($info,$this->userInfo);
+        $now=  zmf::now();
+        $replyPostOrNot=true;
+        $replyPostOrNotLabel='';
+        if($info['postExpiredTime']>0 && $info['postExpiredTime']<=$now){
+            $replyPostOrNot=false;
+            $replyPostOrNotLabel='投稿已截止';
+        }
+        if($replyPostOrNot){
+            $replyPostOrNot=PostForums::replyPostOrNot($info,$this->userInfo);
+            if(!$replyPostOrNot){
+                $replyPostOrNotLabel='仅'.PostForums::posterType($info['posterType']).'可回复。';
+            }
+        }
         $data = array(
             'info' => $info,
             'forumInfo' => $forumInfo,
@@ -194,6 +206,7 @@ class PostsController extends Q {
             'model' => $model,
             'favoritedForum' => $favoritedForum,
             'replyPostOrNot' => $replyPostOrNot,
+            'replyPostOrNotLabel' => $replyPostOrNotLabel,
         );
         $this->selectNav = 'forum';
         $this->favorited = Favorites::checkFavored($id, 'thread');
@@ -270,6 +283,7 @@ class PostsController extends Q {
             $model->open = Posts::STATUS_OPEN;
             $isNew = true;
         }
+        $setThreadStatus=ForumAdmins::checkForumPower($this->uid, $forumInfo['id'], 'setThreadStatus');
         if (isset($_POST['PostThreads'])) {
             //处理文本
             $filterTitle = Posts::handleContent($_POST['PostThreads']['title'], FALSE);
@@ -293,13 +307,20 @@ class PostsController extends Q {
             $attr['open'] = ($_POST['PostThreads']['open'] == Posts::STATUS_OPEN) ? 1 : 0;
             $attr['platform'] = $this->isMobile ? Posts::PLATFORM_MOBILE : Posts::PLATFORM_WEB;
             //判断是否版主
-            if(ForumAdmins::checkForumPower($this->uid, $forumInfo['id'], 'setThreadStatus')){
+            if($setThreadStatus){
                 $attr['display'] = ($_POST['PostThreads']['display'] == 1) ? 1 : 0;
                 $_pTLabel=PostForums::posterType($_POST['PostThreads']['posterType']);
                 $attr['posterType'] = $_pTLabel ? $_POST['PostThreads']['posterType'] : '';
+                $now=  zmf::now();
+                if (isset($_POST['PostThreads']['postExpiredTime'])) {
+                    $attr['postExpiredTime'] = strtotime($_POST['PostThreads']['postExpiredTime'],$now);
+                }
+                if (isset($_POST['PostThreads']['voteExpiredTime'])) {
+                    $attr['voteExpiredTime'] = strtotime($_POST['PostThreads']['voteExpiredTime'],$now);
+                }
             }else{
                 $attr['display']=0;
-                $attr['posterType']='';
+                $attr['posterType']=$attr['postExpiredTime']=$attr['voteExpiredTime']='';
             }
             $model->attributes = $attr;
             if ($model->save()) {
@@ -359,6 +380,7 @@ class PostsController extends Q {
         $this->render('create', array(
             'model' => $model,
             'forumInfo' => $forumInfo,
+            'setThreadStatus' =>$setThreadStatus,
                 //'tags' => $tags,
         ));
     }

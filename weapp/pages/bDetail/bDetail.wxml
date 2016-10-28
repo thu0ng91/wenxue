@@ -13,7 +13,7 @@
             <view class="weui-media-box__desc">字数：{{data.info.words}}</view>
             <view class="weui-media-box__desc">状态：{{data.info.bookStatus}}</view>
         </view>
-    </view> 
+    </view>
     <view class="weui-panel__hd">介绍</view> 
     <view class="weui-panel__bd book-content">
         <text>{{data.info.content}}</text>

@@ -57,12 +57,12 @@ $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
         <?php }else{?>
         <div class="module-body padding-body"><p class="help-block">还没有人回复，快来抢沙发。</p></div>
         <?php }?>
-    </div>    
+    </div>
     <div class="module">
         <div class="module-header">快速回复</div>
         <div class="module-body padding-body">
         <?php if($this->uid){?>
-            <?php if(GroupPowers::checkAction($this->userInfo, 'addPostReply')){?>
+            <?php if($replyPostOrNot){if(GroupPowers::checkAction($this->userInfo, 'addPostReply')){?>
             <?php $form=$this->beginWidget('CActiveForm', array(
                 'id'=>'fast-reply-form',
                 'action'=>  Yii::app()->createUrl('posts/reply',array('tid'=>$info['id'])),
@@ -77,6 +77,8 @@ $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
             <?php $this->endWidget(); ?>
             <?php }else{?>
             <p class="help-block">你所在用户组暂不能进行本操作。</p>
+            <?php }}else{?>
+            <p class="help-block"><?php echo $replyPostOrNotLabel;?></p>
             <?php }?>
         <?php }else{?>
             <p class="help-block">登录后享有更多功能，<?php echo CHtml::link('立即登录',array('site/login'));?>或<?php echo CHtml::link('注册',array('site/reg'));?>。</p>

@@ -49,7 +49,7 @@ class PostThreads extends CActiveRecord {
             array('cTime', 'default', 'setOnEmpty' => true, 'value' => zmf::now()),
             array('fid,uid,title', 'required'),
             array('styleStatus, digest, top, open, display,status', 'numerical', 'integerOnly' => true),
-            array('fid, type, uid,aid, hits, posts, comments, favorites, lastpost, lastposter, cTime,props', 'length', 'max' => 10),
+            array('fid, type, uid,aid, hits, posts, comments, favorites, lastpost, lastposter, cTime,props,postExpiredTime,voteExpiredTime', 'length', 'max' => 10),
             array('title', 'length', 'max' => 80),
             array('posterType', 'length', 'max' => 6),
             array('faceImg', 'length', 'max' => 255),
@@ -96,6 +96,8 @@ class PostThreads extends CActiveRecord {
             'status' => '帖子状态',
             'props' => '赞赏数',
             'posterType' => '那些可以回帖',
+            'postExpiredTime' => '投稿结束时间',
+            'voteExpiredTime' => '投票结束时间',
         );
     }
 
@@ -190,8 +192,7 @@ class PostThreads extends CActiveRecord {
                 ':fid'=>$fid,
                 ':id'=>$id,
             )
-        ));
-        
+        ));        
         return $posts;
     }
     
