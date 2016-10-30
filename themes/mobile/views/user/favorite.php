@@ -10,7 +10,7 @@
  */
 ?>
 <div class="module">
-    <div class="module-header">他的收藏</div>
+    <div class="module-header">收藏</div>
     <div class="module-body">
         <?php if(!empty($posts)){?>
         <ul class="ui-list ui-list-link ui-border-t">

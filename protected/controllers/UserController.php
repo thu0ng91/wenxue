@@ -42,7 +42,7 @@ class UserController extends Q {
         if ($this->myself) {
             $sql = "SELECT ua.id,ua.uid,ua.classify,ua.`data`,ua.cTime FROM {{user_action}} ua,{{favorites}} f WHERE f.uid='{$this->uid}' AND f.classify='user' AND ua.display=1 AND (f.logid=ua.uid OR ua.uid='{$this->uid}') ORDER BY ua.cTime DESC";
         } else {
-            $sql = "SELECT classify,`data`,cTime FROM {{user_action}} WHERE uid='{$this->toUserInfo['id']}' AND display=1 ORDER BY cTime DESC";
+            $sql = "SELECT uid,classify,`data`,cTime FROM {{user_action}} WHERE uid='{$this->toUserInfo['id']}' AND display=1 ORDER BY cTime DESC";
         }
         Posts::getAll(array('sql' => $sql), $pages, $posts);
         if (!empty($posts)) {
@@ -412,7 +412,7 @@ class UserController extends Q {
         $groups = Yii::app()->db->createCommand($sql)->queryAll();
         foreach ($groups as $k => $val) {
             $groups[$k]['id'] = Posts::encode($val['id'], 'group');
-            $groups[$k]['faceImg'] = zmf::getThumbnailUrl($val['faceImg'], $this->isMobile ? 'c640' : 'c280', 'group');
+            $groups[$k]['faceImg'] = zmf::getThumbnailUrl($val['faceImg'], $this->isMobile ? 'c640' : 'a360', 'group');
             $groups[$k]['levels'] = GroupLevels::getByGroupid($val['id'],5);
         }
         $this->pageTitle = '角色选择 - ' . zmf::config('sitename');

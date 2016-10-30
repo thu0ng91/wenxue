@@ -7,7 +7,7 @@
             <div class="caption">
                 <p class="title"><?php echo $group['title'];?></p>
                 <p><?php echo $group['desc'];?></p>
-                <p class="color-grey level-info"><span>成长路线</span><span>成员：<?php echo $group['members'];?></span></p>
+                <p class="color-grey level-info"><span>成长路线</span><span class="hidden">成员：<?php echo $group['members'];?></span></p>
                 <?php if(!empty($group['levels'])){?>
                 <div class="task-samples">
                     <?php foreach ($group['levels'] as $level){?>
@@ -23,7 +23,7 @@
         <?php }?>
         <input type="hidden" id="selected-groupid" name="selected-groupid"/>
     </div>
-    <p class="text-center"><button type="button" class="btn btn-success displayNone" id="selected-groupid-btn">确认角色</button></p>
+    <p class="text-center" style="margin-top:15px;"><button type="button" class="btn btn-success displayNone" id="selected-groupid-btn">确认角色</button></p>
 </div>
 <div class="footer-bg" id="footer-bg"></div>
 <script>

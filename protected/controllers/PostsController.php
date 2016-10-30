@@ -7,7 +7,9 @@ class PostsController extends Q {
     public function actionTypes() {
         //更新版块帖子数
         PostForums::updatePostsStat();
-        $items = PostForums::model()->findAll();
+        $items = PostForums::model()->findAll(array(
+            'order'=>'id ASC'
+        ));
         foreach ($items as $k => $val) {
             $items[$k]['faceImg'] = zmf::getThumbnailUrl($val['faceImg'], 'a120', 'faceImg');
         }

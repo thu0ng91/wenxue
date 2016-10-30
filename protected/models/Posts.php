@@ -463,6 +463,7 @@ class Posts extends CActiveRecord {
                     Posts::updateCount($id, 'Books', -1, 'favorites');
                 } elseif ($type == 'author') {
                     Posts::updateCount($id, 'Authors', -1, 'favors');
+                    Posts::updateCount($uid, 'Users', -1, 'favorAuthors');
                 } elseif ($type == 'tip') {
                     Posts::updateCount($id, 'Tips', -1, 'favors');
                 } elseif ($type == 'user') {
@@ -491,6 +492,7 @@ class Posts extends CActiveRecord {
                     Posts::updateCount($id, 'Books', 1, 'favorites');
                 } elseif ($type == 'author') {
                     Posts::updateCount($id, 'Authors', 1, 'favors');
+                    Posts::updateCount($uid, 'Users', 1, 'favorAuthors');
                 } elseif ($type == 'tip') {
                     Posts::updateCount($id, 'Tips', 1, 'favors');
                 } elseif ($type == 'user') {

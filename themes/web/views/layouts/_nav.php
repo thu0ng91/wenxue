@@ -11,7 +11,7 @@
 //$cols=  Column::allCols();
 ?>
 <ul class="nav navbar-nav">
-    <li<?php echo $this->selectNav == 'zazhi' ? ' class="active"' : ''; ?>><?php echo CHtml::link('首页', zmf::config('baseurl')); ?></li>
+    <li<?php echo $this->selectNav == 'indexPage' ? ' class="active"' : ''; ?>><?php echo CHtml::link('首页', zmf::config('baseurl')); ?></li>
     <?php foreach ($cols as $colid=>$colTitle){?>
     <li<?php echo $this->selectNav == 'column'.$colid ? ' class="active"' : ''; ?>><?php echo CHtml::link($colTitle, array('showcase/index','cid'=>$colid)); ?></li>
     <?php }?>

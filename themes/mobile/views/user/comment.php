@@ -10,7 +10,7 @@
  */
 ?>
 <div class="module">
-    <div class="module-header">他的点评</div>
+    <div class="module-header">点评</div>
     <div class="module-body" id="more-content">        
         <?php if(!empty($tips)){?>
         <?php foreach ($tips as $tip){?> 

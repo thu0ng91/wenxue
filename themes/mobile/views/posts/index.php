@@ -31,6 +31,7 @@
     </div>
     <div class="module">
         <div class="module-body">
+            <?php if(!empty($posts)){?>
             <ul class="ui-list">
             <?php foreach ($posts as $k=>$_post){?>
                 <li class="ui-border-t <?php echo $_post['top'] && !$posts[$k+1]['top'] ? 'last-toped' : '';?>" data-href="<?php echo Yii::app()->createUrl('posts/view',array('id'=>$_post['id']));?>">
@@ -62,6 +63,9 @@
             <?php }?>
             </ul>  
             <?php $this->renderPartial('/common/pager',array('pages'=>$pages));?>  
+            <?php }else{?>
+            <p class="color-grey text-center">暂无帖子</p>
+            <?php }?>
         </div>
     </div>
 </div>

@@ -213,14 +213,29 @@ class SiteController extends Q {
         foreach ($users as $k => $val) {
             $users[$k]['avatar'] = zmf::getThumbnailUrl($val['avatar'], 'a120', 'author');
         }
+
         $favoriteAuthor = GroupPowers::checkAction($this->userInfo, 'favoriteAuthor');
         $favoriteUser = GroupPowers::checkAction($this->userInfo, 'favoriteUser');
-        $this->pageTitle='推荐 - '.zmf::config('sitename');
+        $url=  zmf::config('baseurl');
+        if ($this->uid) {
+            $ginfo = Group::getOne($this->userInfo['groupid']);
+            if ($ginfo['isAuthor']) {
+                if ($this->userInfo['authorId'] > 0) {
+                    $url = Yii::app()->createUrl('user/index');
+                } else {
+                    $url = Yii::app()->createUrl('user/author');
+                }
+            } else {
+                $url = Yii::app()->createUrl('user/index');
+            }
+        }
+        $this->pageTitle = '推荐 - ' . zmf::config('sitename');
         $data = array(
             'authors' => $authors,
             'users' => $users,
             'favoriteAuthor' => $favoriteAuthor,
             'favoriteUser' => $favoriteUser,
+            'url' => $url,
         );
         $this->render('recommend', $data);
     }

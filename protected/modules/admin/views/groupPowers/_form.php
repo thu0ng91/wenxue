@@ -5,7 +5,9 @@
  * @author 阿年飞少 <ph7pal@qq.com> 
  * @link http://www.newsoul.cn 
  * @copyright Copyright©2016 阿年飞少 
- * @datetime 2016-09-02 11:20:55 */
+ * @datetime 2016-09-02 11:20:55 
+ */
+$tids=GroupPowerTypes::listAll();
  ?>
 
 <div class="form">
@@ -21,7 +23,7 @@
     </div>
     <div class="form-group">
         <?php echo $form->labelEx($model,'tid'); ?>  
-        <?php echo $form->dropDownlist($model,'tid', GroupPowerTypes::listAll(),array('class'=>'form-control','empty'=>'--请选择--')); ?>
+        <?php echo $form->dropDownlist($model,'tid',$tids ,array('class'=>'form-control','empty'=>'--请选择--','size'=>count($tids)+1)); ?>
         <?php echo $form->error($model,'tid'); ?>
     </div>
     <div class="form-group">

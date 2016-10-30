@@ -4,7 +4,7 @@
         <?php foreach ($forums as $forum){$_favorited=in_array($forum['id'],$favorites);?>
             <li class="ui-border-t" data-href="<?php echo Yii::app()->createUrl('posts/index',array('forum'=>$forum['id']));?>">
                 <?php if($forum['faceImg']){?>
-                <div class="ui-list-img">
+                <div class="ui-avatar">
                     <span style="background-image:url(<?php echo $forum['faceImg'];?>)"></span>
                 </div>
                 <?php }?>

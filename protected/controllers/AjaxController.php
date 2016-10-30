@@ -1615,16 +1615,8 @@ class AjaxController extends Q {
             //更新团队的成员数
             Group::updateMemberCount($ginfo['id']);
             //用户组初始化赠送的物品
-            GroupGifts::groupGiftsForUser($ginfo['id'], $this->userInfo);
-            if ($ginfo['isAuthor']) {
-                if ($this->userInfo['authorId'] > 0) {
-                    $url = Yii::app()->createUrl('user/index');
-                } else {
-                    $url = Yii::app()->createUrl('user/author');
-                }
-            } else {
-                $url = Yii::app()->createUrl('user/index');
-            }
+            GroupGifts::groupGiftsForUser($ginfo['id'], $this->userInfo);            
+            $url = Yii::app()->createUrl('site/recommend');
             $this->jsonOutPut(1, $url);
         } else {
             $this->jsonOutPut(0, '未知错误，请稍后重试');

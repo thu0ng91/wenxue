@@ -44,9 +44,5 @@
             <?php }?>
         </div>
     </div>
-    <?php if($this->uid){?>
-    <p><?php echo CHtml::link('下一步',array('user/index','id'=>$this->uid),array('class'=>'btn btn-success btn-lg btn-block'));?></p>
-    <?php }else{?>
-    <p><?php echo CHtml::link('下一步',  zmf::config('baseurl'),array('class'=>'btn btn-success btn-lg btn-block'));?></p>
-    <?php }?>
+    <p><?php echo CHtml::link('下一步',  $url,array('class'=>'btn btn-success btn-lg btn-block'));?></p>
 </div>
