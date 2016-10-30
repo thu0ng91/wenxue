@@ -7,11 +7,16 @@
             <div class="caption">
                 <p class="title"><?php echo $group['title'];?></p>
                 <p class="color-grey"><?php echo $group['desc'];?></p> 
+                <?php if(!empty($group['levels'])){?>
                 <div class="task-samples">
-                    <p class="ui-nowrap color-grey">成长路线成长路线成长路线</p>
-                    <p class="ui-nowrap color-grey">成长路线成长路线成长路线</p>
-                    <p class="ui-nowrap color-grey">成长路线成长路线成长路线</p>
+                    <?php foreach ($group['levels'] as $level){?>
+                    <p class="ui-nowrap color-grey"><?php echo $level['title'];?></p>
+                    <?php }?>
+                    <?php if(count($group['levels'])==5){?>
+                    <p class="ui-nowrap color-grey">……更多</p>
+                    <?php }?>
                 </div>
+                <?php }?>
             </div>
         </div>        
         <?php }?>
