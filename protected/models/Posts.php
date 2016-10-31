@@ -470,7 +470,7 @@ class Posts extends CActiveRecord {
                     //更新被收藏的用户的粉丝数
                     Posts::updateCount($id, 'Users', -1, 'favors');
                     //增加我关注了的人数
-                    Posts::updateCount($this->uid, 'Users', -1, 'favord');
+                    Posts::updateCount($uid, 'Users', -1, 'favord');
                 } elseif ($type == 'post') {
                     Posts::updateCount($id, 'Posts', -1, 'favorite');
                 } elseif ($type == 'comment') {
