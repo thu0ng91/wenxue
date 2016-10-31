@@ -73,15 +73,9 @@ class ActivityController extends Admin {
                 $_POST['Activity']['voteStart'] = $_POST['Activity']['voteStart'] ? $_POST['Activity']['voteStart'] : $_POST['Activity']['startTime'];
                 //投票结束时间默认与活动结束时间一致
                 $_POST['Activity']['voteEnd'] = $_POST['Activity']['voteEnd'] ? $_POST['Activity']['voteEnd'] : $_POST['Activity']['expiredTime'];
-                $content = $_POST['Activity']['content'];
-                $content = strip_tags($content, '<b><strong><em><span><a><p><u><i><img><br><br/>');
-                $replace = array(
-                    "/style=\"[^\"]*?\"/i"
-                );
-                $to = array(
-                    ''
-                );
-                $content = preg_replace($replace, $to, $content);
+                //处理内容
+                $filterContent = Posts::handleContent($_POST['Activity']['content']);
+                $content = strip_tags($filterContent['content'], '<b><strong><em><span><a><p><u><i><img><br><br/>');
                 $_POST['Activity']['content'] = $content;
                 $model->attributes = $_POST['Activity'];
                 if ($model->save()) {
@@ -95,7 +89,10 @@ class ActivityController extends Admin {
         }
         $faceimg = '';
         if ($model->faceimg > 0) {
-            $faceimg = Attachments::faceImg($model, '650', 'activity');
+            $faceimg = Attachments::faceImg($model, 'w650', 'activity');
+        }
+        if(!$isNew){
+            $model->content=zmf::text(array('action'=>'edit'),$model->content,false,'w650');
         }
         $this->render($id ? 'update' : 'create', array(
             'model' => $model,

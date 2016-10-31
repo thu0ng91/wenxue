@@ -17,7 +17,7 @@ class AjaxController extends Q {
 
     public function actionDo() {
         $action = zmf::val('action', 1);
-        if (!in_array($action, array('addTip', 'saveUploadImg', 'publishBook', 'publishChapter', 'saveDraft', 'report', 'sendSms', 'checkSms', 'setStatus', 'delContent', 'getNotice', 'getContents', 'delBook', 'delChapter', 'finishBook', 'dapipi', 'joinGroup', 'float', 'ajax', 'gotoBuy', 'confirmBuy', 'getProps', 'useProp', 'getForums', 'doChangeForum'))) {
+        if (!in_array($action, array('addTip', 'saveUploadImg', 'publishBook', 'publishChapter', 'saveDraft', 'report', 'sendSms', 'checkSms', 'setStatus', 'delContent', 'getNotice', 'getContents', 'delBook', 'delChapter', 'finishBook', 'dapipi', 'joinGroup', 'float', 'ajax', 'gotoBuy', 'confirmBuy', 'getProps', 'useProp', 'getForums', 'doChangeForum','joinActivity'))) {
             $this->jsonOutPut(0, Yii::t('default', 'forbiddenaction'));
         }
         $this->$action();
@@ -597,6 +597,51 @@ class AjaxController extends Q {
             $this->jsonOutPut(1, '已删除');
         } else {
             $this->jsonOutPut(0, '删除失败');
+        }
+    }
+    
+    private function joinActivity(){
+        $this->checkLogin();
+        $aid=  zmf::val('aid',2);
+        $bid=  zmf::val('bid',2);
+        if(!$aid){
+            $this->jsonOutPut(0,'请选择活动');
+        }
+        if(!$bid){
+            $this->jsonOutPut(0,'缺少参数');
+        }
+        $activity=  Activity::getOne($aid);
+        if(!$activity || $activity['status']!=Activity::STATUS_PASSED){
+            $this->jsonOutPut(0,'活动不存在或已过期');
+        }
+        $bookInfo=  Books::getOne($bid);
+        $ckInfo = Activity::checkStatus($aid, 'vote', $activity);
+        if($ckInfo['status']!==1){
+            $this->jsonOutPut(0,$ckInfo['msg']);
+        }
+        if(!$bookInfo || $bookInfo['status']!=Posts::STATUS_PASSED){
+            $this->jsonOutPut(0,'参与活动的作品不存在');
+        }elseif($bookInfo['uid']!=$this->uid){
+            $this->jsonOutPut(0,'请操作自己的作品');
+        }else{
+            //todo,必须要已发表的作品才可以参与
+        }
+        $addInfo=  Activity::checkTypeActivity('books', $bid, $aid);
+        if($addInfo){
+            $this->jsonOutPut(0,'已参与，请勿重复操作');
+        }
+        //没找到，则说明没参与
+        $attr=array(
+            'activity' => $aid,
+            'logid' => $bid,
+            'classify' => 'books'
+        );
+        $model=new ActivityLink;
+        $model->attributes=$attr;
+        if($model->save()){
+            $this->jsonOutPut(1,'已参与');
+        }else{
+            $this->jsonOutPut(0,'参与失败，请稍后尝试');
         }
     }
 

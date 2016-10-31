@@ -15,7 +15,7 @@ $this->widget('zii.widgets.CDetailView', array(
         array(
             'label' => $model->getAttributeLabel('faceimg'),
             'type'=>'raw',
-            'value' => '<p><img src="'.Attachments::faceImg($model,650,'activity').'" class="img-responsive"/></p>'
+            'value' => '<p><img src="'.Attachments::faceImg($model,'w650','activity').'" class="img-responsive"/></p>'
         ),
         array(
             'label' => $model->getAttributeLabel('desc'),
@@ -25,7 +25,7 @@ $this->widget('zii.widgets.CDetailView', array(
         array(
             'label' => $model->getAttributeLabel('content'),
             'type'=>'raw',
-            'value' => nl2br($model->content)
+            'value' => zmf::text(array(),$model->content,true,'w600')
         ),
         array(
             'label' => $model->getAttributeLabel('startTime'),

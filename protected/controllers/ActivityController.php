@@ -16,8 +16,9 @@ class ActivityController extends Q {
         if (!$activityInfo || $activityInfo['status'] == Activity::STATUS_DELED) {
             throw new CHttpException(404, '您所查看的活动不存在');
         }
-        $faceimg = Attachments::faceImg($activityInfo, '', 'activity');
-        $activityInfo['faceimg'] = zmf::getThumbnailUrl($faceimg, '650', 'activity');
+        $faceimg = Attachments::faceImg($activityInfo, 'c640360', 'activity');
+        $activityInfo['faceimg'] = $faceimg;
+        $activityInfo['content']=zmf::text(array(),$activityInfo['content'],true,'w650');
         //判断
         $ckInfo = Activity::checkStatus($id, 'vote', $activityInfo);
         $btnStatus = $ckInfo['status'];

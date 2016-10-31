@@ -221,6 +221,28 @@ function rebind() {
             });
         });
     });
+    $("a[action=joinActivity]").unbind('click').click(function () {
+        var aid = $('#activityId').val();
+        var bid = $(this).attr("action-data");
+        if (!aid) {
+            dialog({msg: '请选择活动'});
+            return false;
+        }else if (!bid) {
+            dialog({msg: '缺少参数'});
+            return false;
+        }
+        $.post(zmf.ajaxUrl, {action: 'joinActivity', aid: aid,bid:bid, YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
+            result = $.parseJSON(result);
+            if (result.status === 1) {                
+                window.location.reload();
+                return false;
+            } else {
+                dialog({msg: result.msg});
+                return false;
+            }
+            return false;
+        });
+    });
     $("a[action=favorite]").unbind('click').click(function () {
         var dom = $(this);
         favorite(dom);

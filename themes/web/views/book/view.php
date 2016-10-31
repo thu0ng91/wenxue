@@ -50,6 +50,14 @@
                     <?php $this->renderPartial('/common/share',array('text'=>$this->pageTitle.'，'.$info['desc'],'pic'=>$info['faceImg']));?>
                 </div>
             </div>
+            <?php if(!empty($myActivity)){?>
+            <div class="module-header">参与活动</div>
+            <div class="module-body padding-body">
+                <?php foreach ($myActivity as $ac){?>
+                <p><?php echo CHtml::link($ac['title'],array('activity/view','id'=>$ac['id']),array('target'=>'_blank','class'=>'color-warning'));?></p>
+                <?php }?>
+            </div>
+            <?php }?>
             <div class="module-header">内容简介</div>
             <div class="module-body">
                 <p><?php echo nl2br($info['content']); ?></p>

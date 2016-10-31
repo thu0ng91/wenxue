@@ -35,6 +35,16 @@
             <?php }?>
         </div>
     </div>
+    <?php if(!empty($myActivity)){?>
+    <div class="module" id="book-desc-holder">
+        <div class="module-header">参与活动</div>
+        <div class="module-body padding-body">
+            <?php foreach ($myActivity as $ac){?>
+            <p><?php echo CHtml::link($ac['title'],array('activity/view','id'=>$ac['id']),array('target'=>'_blank','class'=>'color-warning'));?></p>
+            <?php }?>
+        </div>
+    </div>
+    <?php }?>
     <div class="module" id="book-desc-holder">
         <div class="module-header">作品简介</div>
         <div class="module-body padding-body">

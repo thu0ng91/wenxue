@@ -25,10 +25,26 @@
         <div class="media-body">
             <h4><?php echo $info['title'];?></h4>
             <p><?php echo Books::starCss($info['score']).$info['scorer'].'人评价';?></p>
-            <p class="help-block"><?php echo $info['favorites'].'收藏 '.$info['favorites'].'评论 '.$info['favorites'].'点击';?></p>
+            <p class="help-block"><?php echo $info['favorites'].'收藏 '.$info['comments'].'评论 '.$info['hits'].'点击';?></p>
             <p><b>简介：</b><span class="color-grey"><?php echo $info['desc'];?></span></p>
             <p><b>介绍：</b><span class="color-grey"><?php echo $info['content'];?></span></p>
-            <p><b>数据：</b></p>
+            <?php if(!empty($myActivity)){?>
+            <p><b>参与活动：</b></p>
+            <?php foreach ($myActivity as $ac){?>
+            <p><?php echo CHtml::link($ac['title'],array('activity/view','id'=>$ac['id']),array('target'=>'_blank','class'=>'color-warning'));?></p>
+            <?php }?>
+            <?php }else{?>
+            <p><b>参与活动：</b><span class="color-grey">暂未参加任何活动</span></p>
+            <?php }?>
+            <?php if(!empty($activity)){?>
+            <div class="input-group input-group-sm">
+                <span class="input-group-addon">可参与活动</span>
+                <?php echo CHtml::dropDownList('activityId', '', $activity,array('class'=>'form-control'));?>
+                <span class="input-group-btn">
+                    <?php echo CHtml::link('确认参与','javascript:;',array('class'=>'btn btn-default','action'=>'joinActivity','action-data'=>$info['id']));?>
+                </span>
+            </div><!-- /input-group -->
+            <?php }?>
         </div>
     </div>
     <div class="module-header">目录</div>

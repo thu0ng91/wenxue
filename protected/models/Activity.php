@@ -61,7 +61,6 @@ class Activity extends CActiveRecord {
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-            
         );
     }
 
@@ -137,16 +136,51 @@ class Activity extends CActiveRecord {
         return Activity::model()->findByPk($id);
     }
 
-    public static function getAllByUser($userInfo) {
-        if (!$userInfo) {
-            return false;
-        }
+    public static function getAllByType($type = 'books') {
         $now = zmf::now();
         $items = Activity::model()->findAll(array(
-            'condition' => "`type`='posts' AND (province=0 OR province='{$userInfo['province']}') AND (startTime<='{$now}' OR startTime=0) AND (expiredTime>='{$now}' OR expiredTime=0) AND `status`=" . Activity::STATUS_PASSED,
+            'condition' => "`type`=:type AND (startTime<='{$now}' OR startTime=0) AND (expiredTime>='{$now}' OR expiredTime=0) AND `status`=" . Activity::STATUS_PASSED,
+            'params' => array(
+                ':type' => $type
+            ),
             'select' => 'id,title'
         ));
         return CHtml::listData($items, 'id', 'title');
+    }
+
+    /**
+     * 获取某类型某对象的ID
+     * @param string $type
+     * @param string $id
+     * @return array $items
+     */
+    public static function getTypeActivity($type, $id) {
+        $sql = "SELECT a.id,a.faceimg,a.title,a.desc FROM {{activity}} a,{{activity_link}} al WHERE al.classify=:type AND al.logid=:id AND al.activity=a.id AND a.status!=" . Activity::STATUS_DELED;
+        $res = Yii::app()->db->createCommand($sql);
+        $res->bindValues(array(
+            ':type' => $type,
+            ':id' => $id
+        ));
+        $items = $res->queryAll();
+        return $items;
+    }
+    
+    /**
+     * 判断某类型是否参与了某活动
+     * @param string $type
+     * @param int $logid
+     * @param int $activity
+     */
+    public static function checkTypeActivity($type,$logid,$activity){
+        $info=  ActivityLink::model()->find(array(
+            'condition'=>'classify=:type AND logid=:logid AND activity=:id',
+            'params'=>array(
+                ':type'=>$type,
+                ':logid'=>$logid,
+                ':id'=>$activity
+            )
+        ));
+        return $info;
     }
 
     public static function checkStatus($id, $from = 'vote', $activityInfo = array()) {

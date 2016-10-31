@@ -1,7 +1,5 @@
 <?php
-/* @var $this ActivityController */
-/* @var $model Activity */
-/* @var $form CActiveForm */
+$uploadurl=Yii::app()->createUrl('attachments/upload',array('type'=>'activity','imgsize'=>'w600'));
 ?>
 <style>
     #ui-datepicker-div{
@@ -41,6 +39,7 @@
             </div>
             <div id="singleFileQueue" style="clear:both;"></div>
             <div id="noModelUpload"></div>
+            <p class="help-block text-center">建议尺寸640*360px</p>
             <?php echo $form->hiddenField($model,'faceimg'); ?>
         </div>
 
@@ -143,7 +142,7 @@
         <div class="form-group">
             <?php echo $form->labelEx($model,'desc'); ?>
             <?php echo $form->textArea($model,'desc',array('class'=>'form-control')); ?>
-            <p class="help-block">将用于微信分享的描述</p>
+            <p class="help-block">非常重要，各个地方的展示</p>
             <?php echo $form->error($model,'desc'); ?>
 	</div>
     

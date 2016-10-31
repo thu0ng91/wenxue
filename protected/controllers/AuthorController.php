@@ -165,10 +165,18 @@ class AuthorController extends Q {
             throw new CHttpException(404, 'The requested page does not exist.');
         }
         $chapters = Chapters::getByBook($bid, $this->adminLogin);
+        //更新作品信息
+        Books::updateBookStatInfo($bid);
+        //获取所有活动
+        $activity=  Activity::getAllByType('books');
+        //参与的活动
+        $myActivity=  Activity::getTypeActivity('books', $bid);
         $this->pageTitle = $info['title'] . '的章节 - ' . zmf::config('sitename');
         $data = array(
             'info' => $info,
             'chapters' => $chapters,
+            'activity' => $activity,
+            'myActivity' => $myActivity,
         );
         $this->render('book', $data);
     }

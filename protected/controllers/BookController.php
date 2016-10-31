@@ -120,6 +120,8 @@ class BookController extends Q {
         $props=Props::getClassifyProps('book', $id);   
         //是否已收藏
         $this->favorited = Favorites::checkFavored($id, 'book');
+        //参与活动
+        $myActivity=  Activity::getTypeActivity('books', $id);
         //标题
         $this->pageTitle = '【' . $authorInfo['authorName'] . '作品】' . $info['title'] . ' - ' . zmf::config('sitename');
         $this->mobileTitle='作品详情';
@@ -143,6 +145,7 @@ class BookController extends Q {
             'qrcode' => $qrcode,
             'props' => $props,
             'otherBooks' => $otherBooks,
+            'myActivity' => $myActivity,
         );
         $this->render('view', $data);
     }
