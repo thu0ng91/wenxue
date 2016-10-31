@@ -117,18 +117,22 @@ class SiteController extends Q {
             $password = $_POST['Users']['password'];
             $modelUser->attributes = $_POST['Users'];
             $validator = new CEmailValidator;
+            $isEmail=$validator->validateValue($email);
+            $isPhone=  zmf::checkPhoneNumber($email);
             if (!$truename) {
                 $modelUser->addError('truename', '用户昵称不能为空');
             } elseif (!$email) {
-                $modelUser->addError('email', '请输入常用邮箱地址');
-            } elseif (!$validator->validateValue($email)) {
-                $modelUser->addError('email', '请输入正确的邮箱地址');
+                $modelUser->addError('email', '请输入常用邮箱/手机号');
+            }elseif(!$isEmail && !$isPhone){
+                $modelUser->addError('email', '请输入正确的邮箱/手机号');
             } elseif (!$password || strlen($password) < 6) {
                 $modelUser->addError('password', '密码不能为空且不能小于6位');
             } elseif (Users::findByName($truename)) {
                 $modelUser->addError('truename', '该用户昵称已被注册');
-            } elseif (Users::findByEmail($email)) {
+            } elseif ($isEmail && Users::findByEmail($email)) {
                 $modelUser->addError('email', '该邮箱已被注册');
+            } elseif ($isPhone && Users::findByPhone($email)) {
+                $modelUser->addError('email', '该手机号已被注册');    
             } else {
                 $inputData = array(
                     'truename' => $truename,

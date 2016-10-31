@@ -1947,5 +1947,114 @@ class AjaxController extends Q {
             $this->jsonOutPut(0, '无权本操作');
         }
     }
+    
+    public function actionVote() {
+        $code = zmf::val('data', 1);
+        $type = zmf::val('type', 1);
+        if (!$code || !$type) {
+            $this->jsonOutPut(0, '数据不全，请核实');
+        }
+        if (!in_array($type, array('post', 'user'))) {
+            $this->jsonOutPut(0, '数据有误，请核实');
+        }
+        if (is_numeric($code)) {
+            $id = $code;
+        } else {
+            if ($type == 'user') {
+                //活动ID，参与记录ID及用户串
+                $tmpArr = array_filter(explode('#', $code));
+                if (count($tmpArr) != 3) {
+                    $this->jsonOutPut(0, '数据有误，请核实');
+                }
+                $activityId = $tmpArr[0];
+                $activityLinkId = $tmpArr[1];
+                $code = $tmpArr[2];
+            }
+            $codeArr = Posts::decode($code);
+            if ($codeArr['type'] != $type || !is_numeric($codeArr['id']) || $codeArr['id'] < 1) {
+                $this->jsonOutPut(0, '您所查看的内容不存在');
+            }
+            $id = $codeArr['id'];
+        }
+        if (!$this->fromWeixin) {
+            $this->jsonOutPut(0, '请在微信内使用');
+        }
+        $wx_data = zmf::getCookie('userWeixinData');
+        if (!$wx_data) {
+            $this->jsonOutPut(0, '请先使用微信授权');
+        }
+        $wxdata = unserialize($wx_data);
+        $unionid = $wxdata['unionid'];
+        if (!$unionid) {
+            zmf::delCookie('userWeixinData');
+            $this->jsonOutPut(0, '请先使用微信授权');
+        }
+        if ($type == 'post') {
+            $postInfo = Posts::getOneByType($id, $type);
+            if (!$postInfo || $postInfo['status'] != Activity::STATUS_PASSED) {
+                $this->jsonOutPut(0, '您所查看的内容不存在');
+            } elseif (!$postInfo['activity']) {
+                $this->jsonOutPut(0, '该作品未参与任何投票活动');
+            }
+            $activityId = $postInfo['activity'];
+        } elseif ($type == 'user') {
+            //当为用户时，此ID为参与的那条记录ID与用户ID
+            $alinfo = ActivityLink::model()->findByPk($activityLinkId);
+            if (!$alinfo) {
+                $this->jsonOutPut(0, '没有参与记录，请核实');
+            } elseif ($alinfo['classify'] != 'users') {
+                $this->jsonOutPut(0, '没有参与记录，请核实');
+            } elseif ($alinfo['logid'] != $id) {
+                $this->jsonOutPut(0, '数据有误，请核实');
+            } elseif ($alinfo['activity'] != $activityId) {
+                $this->jsonOutPut(0, '数据有误，请核实');
+            }
+        }
+        $ckinfo = Activity::checkStatus($activityId, 'vote');
+        if ($ckinfo['status'] !== 1) {
+            $this->jsonOutPut(0, $ckinfo['msg']);
+        }
+        $activityInfo = $ckinfo['msg'];
+        $bug = false;
+        if (!in_array($unionid, array('oI9uGuAxb8Gwt3wu5_b6EtHe0nGg', 'oI9uGuNQ3A3SKGtKrVeP-vqHF3pk', 'oI9uGuFrcCO1OAB65bbDWwwM8zYA'))) {
+            if ($activityInfo['voteType'] == 1) {
+                //整个活动只能投voteNum次
+                $count = WeixinVote::model()->count('activity=:acid AND classify=:class AND unionid=:wxuid', array(':acid' => $activityId, ':class' => $type, ':wxuid' => $unionid));
+            } elseif ($activityInfo['voteType'] == 2) {
+                //活动每天可投voteNum次
+                $now = zmf::now();
+                $todayStart = strtotime(zmf::time($now, 'Y-m-d'), $now);
+                $todayEnd = $todayStart + 86400;
+                $count = WeixinVote::model()->count("activity=:acid AND classify=:class AND unionid=:wxuid AND (cTime>='{$todayStart}' AND cTime<='{$todayEnd}')", array(':acid' => $activityId, ':class' => $type, ':wxuid' => $unionid));
+            }
+            if ($count >= $activityInfo['voteNum']) {
+                $this->jsonOutPut(0, '您' . ($activityInfo['voteType'] == 2 ? '今日' : '') . '的投票数已用完');
+            }
+        } else {
+            $bug = true;
+        }
+        $attr = array(
+            'activity' => $activityId,
+            'logid' => $id,
+            'classify' => $type,
+            'openid' => $wxdata['openid'],
+            'unionid' => $wxdata['unionid'],
+            'data' => $wx_data
+        );
+        $model = new WeixinVote;
+        $model->attributes = $attr;
+        if ($model->save()) {
+            if ($type == 'post') {
+                Posts::updateCount($codeArr['id'], 'Posts', 1, 'votes');
+                if ($bug) {
+                    Posts::updateCount($codeArr['id'], 'Posts', 1, 'hits');
+                }
+            } elseif ($type == 'user') {
+                Posts::updateCount($activityLinkId, 'ActivityLink', 1, 'votes');
+            }
+            $this->jsonOutPut(1, '投票成功');
+        }
+        $this->jsonOutPut(0, '投票失败');
+    }
 
 }

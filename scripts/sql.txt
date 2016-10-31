@@ -379,3 +379,39 @@ alter TABLE pre_post_forums add posterType char(6) not null COMMENT '发帖者�
 
 alter TABLE pre_post_threads add postExpiredTime int(10) unsigned not null COMMENT '投稿结束时间';
 alter TABLE pre_post_threads add voteExpiredTime int(10) unsigned not null COMMENT '投票结束时间';
+
+
+DROP TABLE IF EXISTS `pre_activity`;
+CREATE TABLE `pre_activity` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) NOT NULL COMMENT '活动标题',
+  `desc` varchar(255) NOT NULL COMMENT '活动简介',
+  `faceimg` int(11) unsigned NOT NULL COMMENT '活动封面图',
+  `content` text NOT NULL COMMENT '活动描述',
+  `startTime` int(10) unsigned NOT NULL COMMENT '活动开始时间',
+  `expiredTime` int(10) unsigned NOT NULL COMMENT '活动结束时间',
+  `voteStart` int(10) unsigned NOT NULL COMMENT '投票开始时间',
+  `voteEnd` int(10) unsigned NOT NULL COMMENT '投票结束时间',
+  `province` int(10) unsigned NOT NULL COMMENT '所在省份可见',
+  `status` tinyint(1) NOT NULL,
+  `cTime` int(10) unsigned NOT NULL,
+  `voteNum` tinyint(3) NOT NULL COMMENT '每人可投数',
+  `voteType` tinyint(1) NOT NULL COMMENT '参与投票方式',
+  `type` varchar(16) NOT NULL COMMENT '活动类型',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+
+DROP TABLE IF EXISTS `pre_activity_link`;
+CREATE TABLE `pre_activity_link` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `activity` int(10) unsigned NOT NULL COMMENT '参与的活动',
+  `logid` int(11) unsigned NOT NULL COMMENT '参与的对象',
+  `classify` char(32) NOT NULL COMMENT '参与的类型',
+  `votes` int(10) unsigned NOT NULL COMMENT '投票数',
+  `cTime` int(10) unsigned NOT NULL COMMENT '操作时间',
+  `voteOrder` int(10) NOT NULL COMMENT '作品号',
+  PRIMARY KEY (`id`),
+  KEY `activity` (`activity`),
+  KEY `logid` (`logid`,`classify`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;

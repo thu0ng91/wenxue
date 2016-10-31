@@ -46,7 +46,12 @@ class AdminCommon extends CActiveRecord {
                     'title' => '用户组任务',
                     'url' => Yii::app()->createUrl('admin/groupTasks/index'),
                     'active' => in_array($c, array('groupTasks'))
-                ),                
+                ),  
+                'activity' => array(
+                    'title' => '活动',
+                    'url' => Yii::app()->createUrl('admin/activity/index'),
+                    'active' => in_array($c, array('activity'))
+                ),  
                 'showcases' => array(
                     'title' => '首页版块',
                     'url' => Yii::app()->createUrl('admin/showcases/index'),

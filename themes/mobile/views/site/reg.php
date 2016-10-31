@@ -13,7 +13,7 @@
         </div>
         <div class="form-group">
             <span class="fixed-label"><i class="fa fa-envelope"></i></span>
-            <?php echo $form->textField($model,'email',array('class'=>'form-control','maxLength'=>255,'placeholder'=>'请输入常用邮箱地址')); ?>
+            <?php echo $form->textField($model,'email',array('class'=>'form-control','maxLength'=>255,'placeholder'=>'请输入常用邮箱/手机号')); ?>
             <?php echo $form->error($model,'email'); ?>
         </div>
         <div class="form-group">
