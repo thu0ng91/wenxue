@@ -31,6 +31,11 @@ class BookController extends Q {
             $posts[$k]['faceImg'] = zmf::getThumbnailUrl($val['faceImg'], 'w120', 'book');
         }
         $cols=  Column::allCols();
+        //获取所有活动
+        $activity=array();
+        if(!$this->isMobile){
+            $activity=  Activity::getAllByType('books','id,title,faceimg,`desc`',false);
+        }
         $this->selectNav = 'book';
         $this->showLeftBtn=false;
         $this->pageTitle = ($colInfo['title'] ? $colInfo['title'] : '作品集') . ' - ' . zmf::config('sitename');
@@ -41,6 +46,7 @@ class BookController extends Q {
             'pages' => $pages,
             'cols' => $cols,
             'order' => $order,
+            'activity' => $activity,
         );
         $this->render('index', $data);
     }

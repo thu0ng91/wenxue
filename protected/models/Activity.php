@@ -136,16 +136,28 @@ class Activity extends CActiveRecord {
         return Activity::model()->findByPk($id);
     }
 
-    public static function getAllByType($type = 'books') {
+    /**
+     * 获取某类型所有的活动
+     * @param string $type
+     * @param string $select
+     * @param bool $listData
+     * @return array
+     */
+    public static function getAllByType($type = 'books',$select='id,title',$listData=true) {
         $now = zmf::now();
         $items = Activity::model()->findAll(array(
             'condition' => "`type`=:type AND (startTime<='{$now}' OR startTime=0) AND (expiredTime>='{$now}' OR expiredTime=0) AND `status`=" . Activity::STATUS_PASSED,
             'params' => array(
                 ':type' => $type
             ),
-            'select' => 'id,title'
+            'select' => $select
         ));
-        return CHtml::listData($items, 'id', 'title');
+        if(strpos($select, 'faceimg')!==false){
+            foreach ($items as $k=>$val){
+                $items[$k]['faceimg']=  $val['faceimg']>0 ? Attachments::faceImg($val, 'c280', 'activity') : '';
+            }
+        }
+        return $listData ? CHtml::listData($items, 'id', 'title') : $items;
     }
 
     /**

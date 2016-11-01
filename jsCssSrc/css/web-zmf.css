@@ -97,6 +97,18 @@ p{
     width: 108px;
     height: 108px;
 }
+.c120{
+    width: 120px;
+    height: 93px;
+}
+.c66{
+    width: 66px;
+    height: 50px;
+}
+.c640{
+    width: 640px;
+    height: 360px;
+}
 /*头部*/
 .navbar-fixed-top ~ .container {
     border-top: 65px solid transparent;

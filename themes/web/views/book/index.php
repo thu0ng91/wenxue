@@ -16,6 +16,28 @@
         <?php }?>
         <li><?php echo $colInfo['title'].'作品库';?></li>
     </ol>
+    <?php if(!empty($activity)){?>
+    <div class="aside-part">
+        <div class="module">
+            <div class="module-header">官方活动</div>
+            <div class="module-body">                
+                <?php foreach ($activity as $ac){?>
+                <div class="media">
+                    <div class="media-left">
+                        <a href="<?php echo Yii::app()->createUrl('activity/view',array('id'=>$ac['id']));?>" title="<?php echo $ac['title'];?>">
+                            <img class="media-object lazy c66" src="<?php echo zmf::lazyImg();?>" data-original="<?php echo $ac['faceimg'];?>" alt="<?php echo $ac['title'];?>">
+                        </a>
+                    </div>
+                    <div class="media-body">
+                        <p class="title"><?php echo CHtml::link($ac['title'],array('activity/view','id'=>$ac['id']),array('target'=>'_blank'));?></p>
+                        <p class="ui-nowrap color-grey"><?php echo $ac['desc'];?></p>
+                    </div>
+                </div>
+                <?php }?>
+            </div>
+        </div>
+    </div>
+    <?php }?>
     <div class="main-part books-category">
         <ul class="nav nav-tabs">
             <li role="presentation" class="active">
@@ -50,21 +72,4 @@
             </div>
         </div>
     </div>
-    
-<!--    <div class="aside-part">
-        <div class="module">
-            <div class="module-header">推荐作者</div>
-            <div class="module-body">
-                
-            </div>
-        </div>
-        <div class="module">
-            <div class="module-header">推荐作品</div>
-            <div class="module-body">
-                
-            </div>
-        </div>
-    </div>-->
 </div>
-<?php
-

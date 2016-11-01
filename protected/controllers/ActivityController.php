@@ -23,8 +23,8 @@ class ActivityController extends Q {
         $ckInfo = Activity::checkStatus($id, 'vote', $activityInfo);
         $btnStatus = $ckInfo['status'];
         
-        $sql = "SELECT b.id,b.colid,b.title,b.faceImg,b.`desc`,b.words,b.cTime,b.score,b.scorer,b.bookStatus FROM {{books}} b,{{activity_link}} al WHERE al.activity='{$id}' AND al.classify='books' AND al.voteOrder>0 AND al.logid=b.id ORDER BY al.voteOrder ASC";
-        Posts::getAll(array('sql'=>$sql), $pages, $posts);
+        $sql = "SELECT b.id,b.colid,b.title,b.faceImg,b.`desc`,b.words,b.cTime,b.score,b.scorer,b.bookStatus,al.votes FROM {{books}} b,{{activity_link}} al WHERE al.activity='{$id}' AND al.classify='books' AND al.voteOrder>0 AND al.logid=b.id ORDER BY al.voteOrder ASC";
+        Posts::getAll(array('sql'=>$sql), $pages, $posts);        
         $this->pageTitle=$activityInfo['title'].' - '.zmf::config('sitename');
         $data = array(
             'activityInfo' => $activityInfo,

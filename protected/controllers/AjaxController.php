@@ -615,7 +615,7 @@ class AjaxController extends Q {
             $this->jsonOutPut(0,'活动不存在或已过期');
         }
         $bookInfo=  Books::getOne($bid);
-        $ckInfo = Activity::checkStatus($aid, 'vote', $activity);
+        $ckInfo = Activity::checkStatus($aid, 'add', $activity);
         if($ckInfo['status']!==1){
             $this->jsonOutPut(0,$ckInfo['msg']);
         }
