@@ -415,3 +415,18 @@ CREATE TABLE `pre_activity_link` (
   KEY `activity` (`activity`),
   KEY `logid` (`logid`,`classify`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `pre_activity_vote`;
+CREATE TABLE `pre_activity_vote` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `uid` int(10) unsigned NOT NULL,
+  `activity` int(10) unsigned NOT NULL,
+  `logid` int(11) unsigned NOT NULL,
+  `classify` char(8) NOT NULL,  
+  `cTime` int(10) unsigned NOT NULL,
+  `ip` int(10) NOT NULL COMMENT 'IP'
+  PRIMARY KEY (`id`),
+  KEY `postType` (`logid`,`classify`),
+  KEY `activity` (`activity`),
+  KEY `uid` (`uid`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
