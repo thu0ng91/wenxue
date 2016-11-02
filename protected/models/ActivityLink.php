@@ -102,4 +102,8 @@ class ActivityLink extends CActiveRecord {
         return parent::model($className);
     }
 
+    public static function getOne($id) {
+        return self::model()->findByPk($id);
+    }
+
 }

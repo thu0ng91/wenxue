@@ -207,6 +207,7 @@ class Activity extends CActiveRecord {
         } elseif ($activityInfo['status'] == Activity::STATUS_EXPIRED) {
             return array(
                 'status' => -2,
+                'label' =>'已结束',
                 'msg' => '活动已结束，下次早点来哦~'
             );
         }
@@ -214,6 +215,7 @@ class Activity extends CActiveRecord {
         if ($activityInfo['startTime'] > $now) {
             return array(
                 'status' => -1,
+                'label' =>'未开始',
                 'msg' => '活动未开始'
             );
         }
@@ -221,12 +223,14 @@ class Activity extends CActiveRecord {
             if ($activityInfo['voteStart'] > $now) {
                 return array(
                     'status' => -4,
+                    'label' =>'未开始',
                     'msg' => '投票未开始'
                 );
             } elseif ($activityInfo['voteEnd'] > 0 && $activityInfo['voteEnd'] < $now) {
                 Activity::model()->updateByPk($id, array('status' => Activity::STATUS_EXPIRED));
                 return array(
                     'status' => -2,
+                    'label' =>'已结束',
                     'msg' => '活动已结束，下次早点来哦~'
                 );
             }
@@ -234,6 +238,7 @@ class Activity extends CActiveRecord {
             if ($activityInfo['expiredTime'] > 0 && $activityInfo['expiredTime'] < $now) {
                 return array(
                     'status' => -3,
+                    'label' =>'已结束',
                     'msg' => '投稿已结束，下次早点来哦~'
                 );
             }

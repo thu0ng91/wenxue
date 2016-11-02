@@ -40,7 +40,7 @@
             <div class="module-header">参与作品</div>
             <div class="module-body">
                 <?php if(!empty($posts)){?>
-                    <?php foreach ($posts as $post){$this->renderPartial('/book/_activityItem',array('data'=>$post,'adminLogin'=>false));}?>
+                    <?php foreach ($posts as $post){$this->renderPartial('/book/_activityItem',array('data'=>$post,'btnInfo'=>$btnInfo));}?>
                     <?php $this->renderPartial('/common/pager',array('pages'=>$pages));?>
                 <?php }else{?>
                 <p class="help-block text-center">暂无作品</p>

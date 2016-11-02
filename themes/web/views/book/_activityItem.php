@@ -1,6 +1,9 @@
 <?php 
 $urlArr=array('book/view','id'=>$data['id']);
 $url=  Yii::app()->createUrl('book/view',array('id'=>$data['id']));
+
+$btnHtml=$btnInfo['status']!==1 ? CHtml::link('<i class="fa fa-heart-o"></i> '.$data['votes'],'javascript:;',array('class'=>'btn btn-xs btn-default btn-block','action-data'=>$data['encodeData'],'action'=>'ajax')) : CHtml::link('<i class="fa fa-heart-o"></i> '.$data['votes'],'javascript:;',array('class'=>'btn btn-xs btn-default btn-block disabled'));
+
 ?>
 <div class="media">
     <div class="media-left">
@@ -23,7 +26,7 @@ $url=  Yii::app()->createUrl('book/view',array('id'=>$data['id']));
     </div>
     <div class="media-right">
         <div class="ac-item-right">
-            <?php echo CHtml::link('<i class="fa fa-heart-o"></i> '.$data['votes'],array('book/view','id'=>$data['id']),array('class'=>'btn btn-xs btn-default btn-block'));?>    
+            <?php echo $btnHtml;?>    
         </div>
     </div>
 </div>
