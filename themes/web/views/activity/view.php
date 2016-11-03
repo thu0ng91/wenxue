@@ -8,16 +8,6 @@
  * @datetime 2015-12-10  10:11:44 
  */
 ?>
-<style>
-    .activity-header h1{
-        text-align: center;
-        padding: 15px 0 5px
-    }
-    .ac-item-right{
-        width: 80px;
-        margin-top: 50px
-    }
-</style>
 <div class="container">
     <div class="main-part">
         <div class="module">

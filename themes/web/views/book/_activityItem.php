@@ -1,9 +1,11 @@
 <?php 
 $urlArr=array('book/view','id'=>$data['id']);
 $url=  Yii::app()->createUrl('book/view',array('id'=>$data['id']));
-
-$btnHtml=$btnInfo['status']!==1 ? CHtml::link('<i class="fa fa-heart-o"></i> '.$data['votes'],'javascript:;',array('class'=>'btn btn-xs btn-default btn-block','action-data'=>$data['encodeData'],'action'=>'ajax')) : CHtml::link('<i class="fa fa-heart-o"></i> '.$data['votes'],'javascript:;',array('class'=>'btn btn-xs btn-default btn-block disabled'));
-
+if($btnInfo['status']===-4){
+    $btnHtml=CHtml::link('未开始','javascript:;',array('class'=>'btn btn-xs btn-default btn-block disabled'));
+}else{
+    $btnHtml=$btnInfo['status']===1 ? CHtml::link('<i class="fa fa-heart-o"></i> '.$data['votes'],'javascript:;',array('class'=>'btn btn-xs btn-default btn-block','action-data'=>$data['encodeData'],'action'=>'ajax')) : CHtml::link('<i class="fa fa-heart-o"></i> '.$data['votes'],'javascript:;',array('class'=>'btn btn-xs btn-default btn-block disabled'));
+}
 ?>
 <div class="media">
     <div class="media-left">

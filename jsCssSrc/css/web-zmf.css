@@ -1741,6 +1741,15 @@ span.required,.errorMessage{
 .groups-holder .thumbnail .caption .level-info span{
     margin-right: 15px;
 }
+/*活动*/
+.activity-header h1{
+    text-align: center;
+    padding: 15px 0 5px
+}
+.ac-item-right{
+    width: 80px;
+    margin-top: 50px
+}
 /*站点推荐*/
 .recommend{
     width: 680px;

@@ -1998,7 +1998,7 @@ class AjaxController extends Q {
         }
     }
     
-    private function voteActivity($arr) {        
+    private function voteActivity($arr) {
         if (!$arr['id'] || $arr['type'] != 'voteActivity') {
             $this->jsonOutPut(0, '参数有误，请核实');
         }
@@ -2030,36 +2030,27 @@ class AjaxController extends Q {
         }        
         if ($activityInfo['voteType'] == 1) {
             //整个活动只能投voteNum次
-            $count = WeixinVote::model()->count('activity=:acid AND classify=:class AND unionid=:wxuid', array(':acid' => $activityId, ':class' => $type, ':wxuid' => $unionid));
+            $count = ActivityVote::model()->count('activity=:acid AND classify=:class AND uid=:uid', array(':acid' => $activityId, ':class' => $type, ':uid' => $this->uid));
         } elseif ($activityInfo['voteType'] == 2) {
             //活动每天可投voteNum次
             $now = zmf::now();
             $todayStart = strtotime(zmf::time($now, 'Y-m-d'), $now);
             $todayEnd = $todayStart + 86400;
-            $count = WeixinVote::model()->count("activity=:acid AND classify=:class AND unionid=:wxuid AND (cTime>='{$todayStart}' AND cTime<='{$todayEnd}')", array(':acid' => $activityId, ':class' => $type, ':wxuid' => $unionid));
+            $count = WeixinVote::model()->count("activity=:acid AND classify=:class AND uid=:uid AND (cTime>='{$todayStart}' AND cTime<='{$todayEnd}')", array(':acid' => $activityId, ':class' => $type, ':uid' => $this->uid));
         }
         if ($count >= $activityInfo['voteNum']) {
             $this->jsonOutPut(0, '您' . ($activityInfo['voteType'] == 2 ? '今日' : '') . '的投票数已用完');
         }
         $attr = array(
             'activity' => $activityId,
-            'logid' => $id,
+            'logid' => $postInfo['id'],
             'classify' => $type,
-            'openid' => $wxdata['openid'],
-            'unionid' => $wxdata['unionid'],
-            'data' => $wx_data
+            'uid' => $this->uid,            
         );
-        $model = new WeixinVote;
+        $model = new ActivityVote;
         $model->attributes = $attr;
         if ($model->save()) {
-            if ($type == 'post') {
-                Posts::updateCount($codeArr['id'], 'Posts', 1, 'votes');
-                if ($bug) {
-                    Posts::updateCount($codeArr['id'], 'Posts', 1, 'hits');
-                }
-            } elseif ($type == 'user') {
-                Posts::updateCount($activityLinkId, 'ActivityLink', 1, 'votes');
-            }
+            ActivityLink::model()->updateCounters(array('votes'=>1),'id=:id',array(':id'=>$linkInfo['id']));
             $this->jsonOutPut(1, '投票成功');
         }
         $this->jsonOutPut(0, '投票失败');

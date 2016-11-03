@@ -11,6 +11,7 @@
 class ActivityController extends Q {
 
     public function actionView() {
+        $this->onlyOnPc();
         $id = zmf::val('id', 2);
         $activityInfo = Activity::getOne($id);
         if (!$activityInfo || $activityInfo['status'] == Activity::STATUS_DELED) {

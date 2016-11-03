@@ -828,9 +828,9 @@ function rebind() {
         $.post(zmf.ajaxUrl, passData, function (result) {
             result = eval('(' + result + ')');
             if (result['status'] === 1) {
-                dialog({msg: result['msg']});
+                simpleDialog({content: result['msg']});
             } else {
-                dialog({msg: result['msg']});
+                simpleDialog({content: result['msg']});
             }
         });
     });

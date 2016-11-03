@@ -19,6 +19,7 @@ return array(
         'updatePost/<id:\d+>' => 'posts/create',
         'replyPost/<tid:\d+>' => 'posts/reply',
         'post/<id:\d+>' => 'posts/view',
+        'activity/<id:\d+>' => 'activity/view',
         'siteInfo/<code:\w+>' => 'site/info',
         '<controller:\w+>/<action:\w+>' => '<controller>/<action>',
         '<module:\w+>/<controller:\w+>/<action:\w+>' => '<module>/<controller>/<action>',        

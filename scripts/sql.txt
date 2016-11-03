@@ -418,13 +418,13 @@ CREATE TABLE `pre_activity_link` (
 
 DROP TABLE IF EXISTS `pre_activity_vote`;
 CREATE TABLE `pre_activity_vote` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `uid` int(10) unsigned NOT NULL,
   `activity` int(10) unsigned NOT NULL,
   `logid` int(11) unsigned NOT NULL,
   `classify` char(8) NOT NULL,  
   `cTime` int(10) unsigned NOT NULL,
-  `ip` int(10) NOT NULL COMMENT 'IP'
+  `ip` int(10) NOT NULL COMMENT 'IP',
   PRIMARY KEY (`id`),
   KEY `postType` (`logid`,`classify`),
   KEY `activity` (`activity`),
