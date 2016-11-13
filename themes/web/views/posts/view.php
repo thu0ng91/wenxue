@@ -67,9 +67,17 @@ $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
                     </div>                    
                     <div class="media-body form-group">
                         <?php echo $form->textArea($model,'content',array('class'=>'form-control','rows'=>3,'placeholder'=>'说说你的看法'));?>
+                        <?php if($this->userInfo['authorId']>0){?>
+                        <div class="checkbox">
+                            <label class="pull-right">
+                                <?php echo $form->checkbox($model,'aid');?> 以作者身份回复
+                            </label>
+                        </div>
+                        <?php }?>
                     </div>
                     <div class="media-right">
                         <?php echo CHtml::submitButton($model->isNewRecord ? '回帖' : '更新',array('class'=>'btn btn-success','id'=>'add-post-btn')); ?>
+                        
                         <?php echo CHtml::link('高级回复',array('posts/reply','tid'=>$info['id']),array('target'=>'_blank'));?>
                     </div>
                 </div>
@@ -89,21 +97,27 @@ $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
     <div class="aside-part">
         <div class="module">
             <div class="module-body post-side-authorInfo">
-                <?php echo CHtml::link(CHtml::image(zmf::lazyImg(), $authorInfo['truename'], array('data-original' => $authorInfo['avatar'], 'class' => 'lazy img-circle a108')), array('user/index','id'=>$authorInfo['id'])); ?>
-                <p class="title"><?php echo CHtml::link($authorInfo['truename'],array('user/index','id'=>$authorInfo['id'])); ?></p>
-                <p class="color-grey"><?php echo CHtml::link($authorInfo['levelTitle'],array('site/level','id'=>$authorInfo['level'])); ?></p>
+                <?php echo CHtml::link(CHtml::image(zmf::lazyImg(), $authorInfo['title'], array('data-original' => $authorInfo['avatar'], 'class' => 'lazy img-circle a108')), $authorInfo['linkArr']); ?>
+                <p class="title"><?php echo CHtml::link($authorInfo['title'],$authorInfo['linkArr']); ?></p>
+                <p class="color-grey"><?php echo CHtml::link($authorInfo['levelTitle'],'javascript:;'); ?></p>
                 <ul class="color-grey">
+                    <?php if($authorInfo['isAuthor']){?>
+                    <li><?php echo $authorInfo['favors'];?><br/>粉丝</li>
+                    <li><?php echo $authorInfo['posts'];?><br/>作品</li>
+                    <li><?php echo $authorInfo['score'];?><br/>热度</li>
+                    <?php }else{?>
                     <li><?php echo $authorInfo['exp'];?><br/>经验</li>
                     <li><?php echo $authorInfo['favors'];?><br/>粉丝</li>
                     <li><?php echo $authorInfo['favord'];?><br/>关注</li>
+                    <?php }?>
                 </ul>
                 <p>
-                   <?php echo CHtml::link('TA的主页',array('user/index','id'=>$authorInfo['id']),array('class'=>'btn btn-xs btn-success')); ?> 
-                   <?php echo CHtml::link('关注TA',array('user/index','id'=>$authorInfo['id']),array('class'=>'btn btn-xs btn-danger')); ?> 
+                   <?php echo CHtml::link('TA的主页',$authorInfo['linkArr'],array('class'=>'btn btn-xs btn-success')); ?> 
+                   <?php echo CHtml::link('关注TA',$authorInfo['linkArr'],array('class'=>'btn btn-xs btn-danger')); ?> 
                 </p>
             </div>
             <?php if(!empty($relatePosts)){?>
-            <div class="module-header">「<?php echo $authorInfo['truename'];?>」近期发表</div>
+            <div class="module-header">「<?php echo $authorInfo['title'];?>」近期发表</div>
             <div class="module-body">
                 <?php foreach ($relatePosts as $relatePost){?>
                 <p class="ui-nowrap"><?php echo CHtml::link($relatePost['title'],array('posts/view','id'=>$relatePost['id']));?></p>

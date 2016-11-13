@@ -10,13 +10,13 @@
 ?>
 <div class="media" id="reply-<?php echo $data['id'];?>">
     <div class="media-left text-center">
-        <?php echo CHtml::link(CHtml::image(zmf::lazyImg(), $data['username'], array('data-original' => $data['avatar'], 'class' => 'lazy img-circle a48 media-object')), array('user/index','id'=>$data['uid'])); ?> 
-        <?php if($data['levelTitle']){?>
-        <p><?php echo CHtml::link($data['levelTitle'],'javascript:;',array('class'=>'btn btn-block btn-xs btn-default'));?></p>
+        <?php echo CHtml::link(CHtml::image(zmf::lazyImg(), $data['userInfo']['username'], array('data-original' => $data['userInfo']['avatar'], 'class' => 'lazy img-circle a48 media-object')), $data['userInfo']['linkArr']); ?> 
+        <?php if($data['userInfo']['levelTitle']){?>
+        <p><?php echo CHtml::link($data['userInfo']['levelTitle'],'javascript:;',array('class'=>'btn btn-block btn-xs btn-default'));?></p>
         <?php }?>
     </div>
     <div class="media-body">
-        <p class="help-block title"><?php echo CHtml::link($data['username'],array('user/index','id'=>$data['uid']));?></p>
+        <p class="help-block title"><?php echo CHtml::link($data['userInfo']['username'],$data['userInfo']['linkArr']).($data['userInfo']['type']=='user' ? '' : ' <i class="fa fa-user" title="作者"></i>');?></p>
         <div class="post-content-item"><?php echo $data['content'];?></div>
         <div class="post-footer-nav">
             <div class="post-time"><?php echo zmf::formatTime($data['cTime']);?></div>

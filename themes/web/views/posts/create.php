@@ -51,6 +51,13 @@
                 <div class="checkbox">
                     <label><?php echo CHtml::activeCheckBox($model, 'open');?> 开放评论和点赞</label>
                 </div>
+                <?php if($this->userInfo['authorId']>0){?>
+                <div class="checkbox">
+                    <label>
+                        <?php echo $form->checkbox($model,'aid');?> 以作者身份回复
+                    </label>
+                </div>
+                <?php }?>
                 <?php if($setThreadStatus){?>
                 <div class="checkbox">
                     <label><?php echo CHtml::activeCheckBox($model, 'display');?> 最新回帖显示在前面</label>

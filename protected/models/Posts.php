@@ -430,7 +430,7 @@ class Posts extends CActiveRecord {
             if($postInfo['isFirst']){
                 $content = "赞了你的帖子【{$threadInfo['title']}】，" . CHtml::link('查看详情', array('posts/view', 'id' => $postInfo['tid']));
             }else{
-                $content = "赞了你对【{$postInfo['title']}】的回帖，" . CHtml::link('查看详情', array('posts/view', 'id' => $postInfo['tid'],'#'=>'reply-'.$id));
+                $content = "赞了你对【{$threadInfo['title']}】的回帖，" . CHtml::link('查看详情', array('posts/view', 'id' => $postInfo['tid'],'#'=>'reply-'.$id));
             }
             $noticeUid = $postInfo['uid'];
             $powerAction = 'favorPostReply';
@@ -477,6 +477,8 @@ class Posts extends CActiveRecord {
                     Posts::updateCount($id, 'Comments', -1, 'favors');
                 } elseif ($type == 'forum') {
                     Posts::updateCount($id, 'PostForums', -1, 'favors');
+                } elseif ($type == 'postPosts') {
+                    Posts::updateCount($id, 'PostPosts', -1, 'favors');
                 }
                 //todo，取消的赞应扣除相应积分
                 return array('status' => 1, 'msg' => '取消点赞', 'state' => 3);
@@ -506,6 +508,8 @@ class Posts extends CActiveRecord {
                     Posts::updateCount($id, 'Comments', 1, 'favors');
                 } elseif ($type == 'forum') {
                     Posts::updateCount($id, 'PostForums', 1, 'favors');
+                } elseif ($type == 'postPosts') {
+                    Posts::updateCount($id, 'PostPosts', 1, 'favors');
                 }
                 //点赞后给对方发提醒
                 $_noticedata = array(
@@ -528,7 +532,7 @@ class Posts extends CActiveRecord {
                     'data' => $jsonData,
                     'action' => $powerAction,
                     'score' => $powerInfo['msg']['score'],
-                    'display' => 1,
+                    'display' => $powerInfo['msg']['display'],
                 );
                 if (UserAction::simpleRecord($attr)) {
                     //判断本操作是否同属任务

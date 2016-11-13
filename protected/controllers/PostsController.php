@@ -8,7 +8,7 @@ class PostsController extends Q {
         //更新版块帖子数
         PostForums::updatePostsStat();
         $items = PostForums::model()->findAll(array(
-            'order'=>'id ASC'
+            'order' => 'id ASC'
         ));
         foreach ($items as $k => $val) {
             $items[$k]['faceImg'] = zmf::getThumbnailUrl($val['faceImg'], 'a120', 'faceImg');
@@ -133,13 +133,40 @@ class PostsController extends Q {
         if (!$forumInfo) {
             $this->message(0, '你所查看的版块不存在');
         }
-
-        //作者信息
-        $authorInfo = Users::getOne($info['uid']);
-        if (!$authorInfo) {
-            throw new CHttpException(404, '所属用户不存在');
+        $authorInfo = array();
+        if ($info['aid'] > 0) {
+            //作者信息
+            $_info = Authors::getOne($info['aid'], 'a120');
+            if (!$_info) {
+                throw new CHttpException(404, '所属用户不存在');
+            }
+            $authorInfo = array(
+                'isAuthor' => true,
+                'avatar' => $_info['avatar'],
+                'title' => $_info['authorName'],
+                'linkArr' => array('author/view', 'id' => $_info['id']),
+                'linkUrl' => Yii::app()->createUrl('author/view', array('id' => $_info['id'])),
+                'favors' => $_info['favors'],
+                'posts' => $_info['posts'],
+                'score' => $_info['score'],
+            );
+        } else {
+            //用户信息
+            $_info = Users::getOne($info['uid']);
+            if (!$_info) {
+                throw new CHttpException(404, '所属用户不存在');
+            }
+            $authorInfo = array(
+                'isAuthor' => false,
+                'avatar' => zmf::getThumbnailUrl($_info['avatar'], 'a120', 'user'),
+                'title' => $_info['truename'],
+                'linkArr' => array('user/index', 'id' => $_info['id']),
+                'linkUrl' => Yii::app()->createUrl('user/index', array('id' => $_info['id'])),
+                'exp' => $_info['exp'],
+                'favors' => $_info['favors'],
+                'favord' => $_info['favord'],
+            );
         }
-        $authorInfo['avatar'] = zmf::getThumbnailUrl($authorInfo['avatar'], 'a120', 'user');
         if (!zmf::actionLimit('visit-Threads', $id, 5, 60)) {
             Posts::updateCount($id, 'PostThreads', 1, 'hits');
         }
@@ -154,25 +181,85 @@ class PostsController extends Q {
         $firstContent['content'] = zmf::text(array(), $firstContent['content'], true, $size);
         $firstContent['props'] = Props::getClassifyProps('postPosts', $firstContent['id']);
         $info['content'] = $firstContent;
-        
-        $seeLz=  zmf::val('see_lz',2);
+
+        $seeLz = zmf::val('see_lz', 2);
         //获取回帖列表
-        $where='';
-        if($seeLz==1){
-            $where=' AND p.uid='.$info['uid'];
+        $where = '';
+        if ($seeLz == 1) {
+            $where = ' AND p.uid=' . $info['uid'];
         }
-        $sql = "SELECT p.id,p.tid,p.uid,u.truename AS username,u.avatar,u.level,u.levelTitle,u.levelIcon,p.aid,p.cTime,p.updateTime,p.open,p.comments,p.favors,p.content,'' AS props FROM {{post_posts}} p,{{users}} u WHERE p.tid='{$id}' AND p.isFirst=0{$where} AND p.status=" . Posts::STATUS_PASSED . " AND p.uid=u.id AND u.status=" . Posts::STATUS_PASSED . " ORDER BY p.cTime ASC";
+        $sql = "SELECT p.id,p.tid,p.uid,p.aid,u.truename AS username,u.avatar,u.level,u.levelTitle,u.levelIcon,p.aid,p.cTime,p.updateTime,p.open,p.comments,p.favors,p.content,'' AS props FROM {{post_posts}} p,{{users}} u WHERE p.tid='{$id}' AND p.isFirst=0{$where} AND p.status=" . Posts::STATUS_PASSED . " AND p.uid=u.id AND u.status=" . Posts::STATUS_PASSED . " ORDER BY p.cTime ASC";
         Posts::getAll(array('sql' => $sql, 'pageSize' => $this->pageSize), $pages, $posts);
 
+        if (!empty($posts)) {
+            $uids = array_filter(array_keys(CHtml::listData($posts, 'aid', '')));
+            $uidsStr = join(',', $uids);
+            $usernames = array();
+            if ($uidsStr != '') {
+                $usernames = Yii::app()->db->createCommand("SELECT id,authorName,avatar FROM {{authors}} WHERE id IN($uidsStr)")->queryAll();
+            }
+            //取出我已赞过的评论
+            $favoredArr = array();
+            if ($this->uid) {
+                $comIds = array_filter(array_keys(CHtml::listData($posts, 'id', '')));
+                $comIdsStr = join(',', $comIds);
+                if ($comIdsStr != '') {
+                    $comTempArr = Yii::app()->db->createCommand("SELECT id,logid FROM {{favorites}} WHERE classify='postPosts' AND uid='{$this->uid}' AND logid IN($comIdsStr)")->queryAll();
+                    $favoredArr = array_values(CHtml::listData($comTempArr, 'id', 'logid'));
+                }
+            }
+            foreach ($posts as $k => $val) {
+                $items[$k]['favorited'] = 0;
+                if (in_array($val['id'], $favoredArr)) {
+                    $items[$k]['favorited'] = 1;
+                }
+                $find = false;
+                if (!empty($usernames)) {
+                    foreach ($usernames as $val2) {
+                        if ($val['aid'] > 0 && $val['aid'] == $val2['id']) {
+                            $posts[$k]['userInfo'] = array(
+                                'type' => 'author',
+                                'id' => $val2['id'],
+                                'username' => $val2['authorName'],
+                                'linkArr' => array('author/view', 'id' => $val2['id']),
+                                'avatar' => zmf::getThumbnailUrl($val2['avatar'], 'd120', 'author'),
+                            );
+                            $find = true;
+                            break;
+                        }
+                    }
+                }
+                if (!$find) {
+                    $posts[$k]['userInfo'] = array(
+                        'type' => 'user',
+                        'id' => $val['uid'],
+                        'username' => $val['username'],
+                        'level' => $val['level'],
+                        'levelTitle' => $val['levelTitle'],
+                        'levelIcon' => $val['levelIcon'],
+                        'linkArr' => array('user/index', 'id' => $val['uid']),
+                        'avatar' => zmf::getThumbnailUrl($val['avatar'], 'd120', 'user'),
+                    );
+                }
+                unset($posts[$k]['username']);
+                unset($posts[$k]['level']);
+                unset($posts[$k]['levelTitle']);
+                unset($posts[$k]['levelIcon']);
+            }
+        }
         foreach ($posts as $k => $val) {
-            $posts[$k]['avatar'] = zmf::getThumbnailUrl($val['avatar'], 'a120', 'avatar');
+            //$posts[$k]['avatar'] = zmf::getThumbnailUrl($val['avatar'], 'a120', 'avatar');
             $posts[$k]['content'] = zmf::text(array(), $val['content'], true, $size);
             //$posts[$k]['props'] = Props::getClassifyProps('postPosts', $val['id']);
         }
         //$comments = Comments::getCommentsByPage($id, $this->uid, 'posts', 1, $this->pageSize, "c.id,c.uid,u.truename,u.avatar,c.aid,c.logid,c.tocommentid,c.content,c.cTime,c.status,c.favors");
         //$tags = Tags::getByIds($info['tagids']);
         //取作者的其他帖子        
-        $relatePosts = PostThreads::getUserOtherPosts($info['uid'], $info['id'], $info['fid']);
+        if ($info['aid'] > 0) {
+            $relatePosts = PostThreads::getUserOtherPosts($info['aid'], $info['id'], $info['fid'], 10, true);
+        } else {
+            $relatePosts = PostThreads::getUserOtherPosts($info['uid'], $info['id'], $info['fid']);
+        }
         //获取板块热门帖子
         $topsPosts = PostThreads::getForumTops($info['fid'], $info['id']);
 
@@ -184,17 +271,17 @@ class PostsController extends Q {
             $favoritedForum = Favorites::checkFavored($info['fid'], 'forum');
         }
         //判断是否可以回复
-        $now=  zmf::now();
-        $replyPostOrNot=true;
-        $replyPostOrNotLabel='';
-        if($info['postExpiredTime']>0 && $info['postExpiredTime']<=$now){
-            $replyPostOrNot=false;
-            $replyPostOrNotLabel='投稿已截止';
+        $now = zmf::now();
+        $replyPostOrNot = true;
+        $replyPostOrNotLabel = '';
+        if ($info['postExpiredTime'] > 0 && $info['postExpiredTime'] <= $now) {
+            $replyPostOrNot = false;
+            $replyPostOrNotLabel = '投稿已截止';
         }
-        if($replyPostOrNot){
-            $replyPostOrNot=PostForums::replyPostOrNot($info,$this->userInfo);
-            if(!$replyPostOrNot){
-                $replyPostOrNotLabel='仅'.PostForums::posterType($info['posterType']).'可回复。';
+        if ($replyPostOrNot) {
+            $replyPostOrNot = PostForums::replyPostOrNot($info, $this->userInfo);
+            if (!$replyPostOrNot) {
+                $replyPostOrNotLabel = '仅' . PostForums::posterType($info['posterType']) . '可回复。';
             }
         }
         $data = array(
@@ -256,7 +343,7 @@ class PostsController extends Q {
                     $this->message(0, '你无权此操作');
                 }
             }
-            $model->content = zmf::text(array('action' => 'edit'), $firstContent['content'], false, 'w600');            
+            $model->content = zmf::text(array('action' => 'edit'), $firstContent['content'], false, 'w600');
         } else {
             $forumId = zmf::val('forum', 2);
             if (!$forumId) {
@@ -267,9 +354,9 @@ class PostsController extends Q {
                 $this->message(0, '你所查看的版块不存在');
             }
             //判断角色
-            if(!PostForums::addPostOrNot($forumInfo, $this->userInfo)){
+            if (!PostForums::addPostOrNot($forumInfo, $this->userInfo)) {
                 $this->message(0, '你不能在该版块发帖');
-            }            
+            }
             //获取用户组的权限
             $powerInfo = GroupPowers::checkPower($this->userInfo, 'addPost');
             if (!$powerInfo['status']) {
@@ -285,7 +372,7 @@ class PostsController extends Q {
             $model->open = Posts::STATUS_OPEN;
             $isNew = true;
         }
-        $setThreadStatus=ForumAdmins::checkForumPower($this->uid, $forumInfo['id'], 'setThreadStatus');
+        $setThreadStatus = ForumAdmins::checkForumPower($this->uid, $forumInfo['id'], 'setThreadStatus');
         if (isset($_POST['PostThreads'])) {
             //处理文本
             $filterTitle = Posts::handleContent($_POST['PostThreads']['title'], FALSE);
@@ -308,21 +395,22 @@ class PostsController extends Q {
             $attr['status'] = $filterTitle['status'] == Posts::STATUS_PASSED ? $filterContent['status'] : $filterTitle['status'];
             $attr['open'] = ($_POST['PostThreads']['open'] == Posts::STATUS_OPEN) ? 1 : 0;
             $attr['platform'] = $this->isMobile ? Posts::PLATFORM_MOBILE : Posts::PLATFORM_WEB;
+            $attr['aid'] = ($this->userInfo['authorId'] > 0 ? ($_POST['PostThreads']['aid'] > 0 ? $this->userInfo['authorId'] : 0) : 0);
             //判断是否版主
-            if($setThreadStatus){
+            if ($setThreadStatus) {
                 $attr['display'] = ($_POST['PostThreads']['display'] == 1) ? 1 : 0;
-                $_pTLabel=PostForums::posterType($_POST['PostThreads']['posterType']);
+                $_pTLabel = PostForums::posterType($_POST['PostThreads']['posterType']);
                 $attr['posterType'] = $_pTLabel ? $_POST['PostThreads']['posterType'] : '';
-                $now=  zmf::now();
+                $now = zmf::now();
                 if (isset($_POST['PostThreads']['postExpiredTime'])) {
-                    $attr['postExpiredTime'] = strtotime($_POST['PostThreads']['postExpiredTime'],$now);
+                    $attr['postExpiredTime'] = strtotime($_POST['PostThreads']['postExpiredTime'], $now);
                 }
                 if (isset($_POST['PostThreads']['voteExpiredTime'])) {
-                    $attr['voteExpiredTime'] = strtotime($_POST['PostThreads']['voteExpiredTime'],$now);
+                    $attr['voteExpiredTime'] = strtotime($_POST['PostThreads']['voteExpiredTime'], $now);
                 }
-            }else{
-                $attr['display']=0;
-                $attr['posterType']=$attr['postExpiredTime']=$attr['voteExpiredTime']='';
+            } else {
+                $attr['display'] = 0;
+                $attr['posterType'] = $attr['postExpiredTime'] = $attr['voteExpiredTime'] = '';
             }
             $model->attributes = $attr;
             if ($model->save()) {
@@ -335,7 +423,8 @@ class PostsController extends Q {
                 $postAttr = array(
                     'tid' => $model->id,
                     'content' => $content,
-                    'isFirst' => 1, //首层
+                    'isFirst' => 1, //首层[aid]
+                    'aid' => $model->aid
                 );
                 $modelPost->attributes = $postAttr;
                 if (!$modelPost->save()) {
@@ -382,7 +471,7 @@ class PostsController extends Q {
         $this->render('create', array(
             'model' => $model,
             'forumInfo' => $forumInfo,
-            'setThreadStatus' =>$setThreadStatus,
+            'setThreadStatus' => $setThreadStatus,
                 //'tags' => $tags,
         ));
     }
@@ -436,6 +525,7 @@ class PostsController extends Q {
             $attr['status'] = $filterContent['status'];
             $attr['open'] = ($_POST['PostPosts']['open'] == Posts::STATUS_OPEN) ? 1 : 0;
             $attr['platform'] = $this->isMobile ? Posts::PLATFORM_MOBILE : Posts::PLATFORM_WEB;
+            $attr['aid'] = ($this->userInfo['authorId'] > 0 ? ($_POST['PostPosts']['aid'] > 0 ? $this->userInfo['authorId'] : 0) : 0);
             $attkeys = array();
             if (!empty($filterContent['attachids'])) {
                 $attkeys = array_filter(array_unique($filterContent['attachids']));

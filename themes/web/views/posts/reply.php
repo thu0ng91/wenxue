@@ -49,6 +49,13 @@ $uploadurl=Yii::app()->createUrl('attachments/upload',array('type'=>'threads','i
                 <div class="checkbox">
                     <label><?php echo CHtml::activeCheckBox($model, 'open');?> 开放评论和点赞</label>
                 </div>
+                <?php if($this->userInfo['authorId']>0){?>
+                <div class="checkbox">
+                    <label>
+                        <?php echo $form->checkbox($model,'aid');?> 以作者身份回复
+                    </label>
+                </div>
+                <?php }?>
             </div>
         </div>
     </div>

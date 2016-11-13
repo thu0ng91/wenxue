@@ -28,12 +28,13 @@
  * @property string $cTime
  */
 class PostThreads extends CActiveRecord {
-    
-    public $content;//帖子第一楼正文
+
+    public $content; //帖子第一楼正文
 
     /**
      * @return string the associated database table name
      */
+
     public function tableName() {
         return '{{post_threads}}';
     }
@@ -151,29 +152,29 @@ class PostThreads extends CActiveRecord {
     public static function model($className = __CLASS__) {
         return parent::model($className);
     }
-    
-    public static function getOne($id){
+
+    public static function getOne($id) {
         return self::model()->findByPk($id);
     }
-    
+
     /**
      * 更新帖子的统计
      * @param int $id
      * @return boolean
      */
-    public static function updateStat($id){
-        if(!$id){
+    public static function updateStat($id) {
+        if (!$id) {
             return false;
         }
-        $posts=  PostPosts::model()->count('tid=:tid AND isFirst=0',array(
-            ':tid'=>$id
+        $posts = PostPosts::model()->count('tid=:tid AND isFirst=0', array(
+            ':tid' => $id
         ));
-        $attr=array(
-            'posts'=>$posts
+        $attr = array(
+            'posts' => $posts
         );
         return self::model()->updateByPk($id, $attr);
     }
-    
+
     /**
      * 返回用户的某板块的其他帖子
      * @param int $uid
@@ -181,33 +182,48 @@ class PostThreads extends CActiveRecord {
      * @param int $fid
      * @return array
      */
-    public static function getUserOtherPosts($uid,$id,$fid,$limit=10){
-        $posts=  PostThreads::model()->findAll(array(
-            'condition'=>'uid=:uid AND fid=:fid AND id!=:id',
-            'select'=>'id,title',
-            'order'=>'cTime DESC',
-            'limit'=>$limit,
-            'params'=>array(
-                ':uid'=>$uid,
-                ':fid'=>$fid,
-                ':id'=>$id,
-            )
-        ));        
+    public static function getUserOtherPosts($uid, $id, $fid, $limit = 10, $isAuthor = false) {
+        if ($isAuthor) {
+            $posts = PostThreads::model()->findAll(array(
+                'condition' => 'aid=:uid AND fid=:fid AND id!=:id',
+                'select' => 'id,title',
+                'order' => 'cTime DESC',
+                'limit' => $limit,
+                'params' => array(
+                    ':uid' => $uid,
+                    ':fid' => $fid,
+                    ':id' => $id,
+                )
+            ));
+        } else {
+            $posts = PostThreads::model()->findAll(array(
+                'condition' => 'uid=:uid AND fid=:fid AND id!=:id',
+                'select' => 'id,title',
+                'order' => 'cTime DESC',
+                'limit' => $limit,
+                'params' => array(
+                    ':uid' => $uid,
+                    ':fid' => $fid,
+                    ':id' => $id,
+                )
+            ));
+        }
+
         return $posts;
     }
-    
-    public static function getForumTops($fid,$id,$limit=10){
-        $posts=  PostThreads::model()->findAll(array(
-            'condition'=>'fid=:fid AND id!=:id',
-            'select'=>'id,title',
-            'order'=>'hits DESC',
-            'limit'=>$limit,
-            'params'=>array(
-                ':fid'=>$fid,
-                ':id'=>$id,
+
+    public static function getForumTops($fid, $id, $limit = 10) {
+        $posts = PostThreads::model()->findAll(array(
+            'condition' => 'fid=:fid AND id!=:id',
+            'select' => 'id,title',
+            'order' => 'hits DESC',
+            'limit' => $limit,
+            'params' => array(
+                ':fid' => $fid,
+                ':id' => $id,
             )
         ));
-        
+
         return $posts;
     }
 
