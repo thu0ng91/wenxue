@@ -70,6 +70,13 @@ $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
             )); ?>                                         
             <div class="form-group">
                 <?php echo $form->textArea($model,'content',array('class'=>'form-control','rows'=>3,'placeholder'=>'说说你的看法'));?>
+                <?php if($this->userInfo['authorId']>0){?>
+                <div class="checkbox">
+                    <label>
+                        <?php echo $form->checkbox($model,'aid');?> 以作者身份回复
+                    </label>
+                </div>
+                <?php }?>
             </div>
             <div class="form-group">
                 <?php echo CHtml::submitButton($model->isNewRecord ? '回帖' : '更新',array('class'=>'btn btn-success','id'=>'add-post-btn')); ?>
