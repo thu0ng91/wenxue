@@ -129,7 +129,7 @@ class Showcases extends CActiveRecord {
             'indexRight2'=>'首页右边2',
             'indexAd2'=>'首页小图2',            
             'indexLeft3'=>'首页左边3',
-            'indexRight3'=>'首页右边3',
+            //'indexRight3'=>'首页右边3',
             'indexAd3'=>'首页小图3',
             //跟版块绑定的栏目            
             'column11'=>'版块第一排1',

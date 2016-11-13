@@ -32,8 +32,10 @@
         <?php echo $form->error($model,'title'); ?>
     </div>
     <div class="form-group">
-        <?php echo $form->labelEx($model,'faceimg'); ?>
-        <?php echo $form->textField($model,'faceimg',array('size'=>60,'maxlength'=>255,'class'=>'form-control')); ?>
+        <?php echo $form->labelEx($model,'faceimg'); ?>     
+        <p><img src="<?php echo zmf::getThumbnailUrl($model->faceimg, 'a120', 'faceImg');?>" alt="修改头像" id="user-avatar" style="width: 120px;height: 120px;"></p>
+        <?php $this->renderPartial('/common/_singleUpload',array('model'=>$model,'fieldName'=>'faceimg','type'=>'faceImg','fileholder'=>'filedata','targetHolder'=>'user-avatar','imgsize'=>'a120','progress'=>true));?>
+        <?php echo $form->hiddenField($model,'faceimg',array('class'=>'form-control')); ?>
         <?php echo $form->error($model,'faceimg'); ?>
     </div>
     <div class="form-group">

@@ -243,10 +243,12 @@ class Books extends CActiveRecord {
             $comments+=$val['comments'];
             $hits+=$val['hits'];
         }
+        $now=  zmf::now();
         $attr=array(
             'words'=>$words,
             'comments'=>$comments,
             'hits'=>$hits,
+            'updateTime'=>$now,
         );
         return Books::model()->updateByPk($bid, $attr);
     }

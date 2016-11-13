@@ -10,6 +10,6 @@
     <div class="aside-part aside-tops">
         <?php $this->renderPartial('/index/sideModule',array('sideInfo'=>$posts['indexRight1']));?>
         <?php $this->renderPartial('/index/sideModule',array('sideInfo'=>$posts['indexRight2']));?>
-        <?php $this->renderPartial('/index/sideModule',array('sideInfo'=>$posts['indexRight3']));?>
+        <?php $this->renderPartial('/index/latest',array('sideInfo'=>$posts['indexRight3']));?>
     </div>
 </div>
