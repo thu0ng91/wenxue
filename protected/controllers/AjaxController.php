@@ -2036,7 +2036,7 @@ class AjaxController extends Q {
             $now = zmf::now();
             $todayStart = strtotime(zmf::time($now, 'Y-m-d'), $now);
             $todayEnd = $todayStart + 86400;
-            $count = WeixinVote::model()->count("activity=:acid AND classify=:class AND uid=:uid AND (cTime>='{$todayStart}' AND cTime<='{$todayEnd}')", array(':acid' => $activityId, ':class' => $type, ':uid' => $this->uid));
+            $count = ActivityVote::model()->count("activity=:acid AND classify=:class AND uid=:uid AND (cTime>='{$todayStart}' AND cTime<='{$todayEnd}')", array(':acid' => $activityId, ':class' => $type, ':uid' => $this->uid));
         }
         if ($count >= $activityInfo['voteNum']) {
             $this->jsonOutPut(0, '您' . ($activityInfo['voteType'] == 2 ? '今日' : '') . '的投票数已用完');
