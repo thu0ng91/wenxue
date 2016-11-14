@@ -229,7 +229,7 @@ class Books extends CActiveRecord {
         return Books::model()->updateByPk($bid, $attr);
     }
     
-    public static function updateBookStatInfo($bid){
+    public static function updateBookStatInfo($bid,$updateTime=true){
         $items=  Chapters::model()->findAll(array(
             'condition'=>'bid=:bid AND status='.Posts::STATUS_PASSED.' AND chapterStatus='.Books::STATUS_PUBLISHED,
             'select'=>'words,comments,hits',
@@ -250,6 +250,9 @@ class Books extends CActiveRecord {
             'hits'=>$hits,
             'updateTime'=>$now,
         );
+        if(!$updateTime){
+            unset($attr['updateTime']);
+        }
         return Books::model()->updateByPk($bid, $attr);
     }
 
