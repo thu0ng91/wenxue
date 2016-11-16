@@ -45,9 +45,7 @@
                         <?php }else{?>
                         <p class="color-grey">暂无评分</p>
                         <?php }?>
-                    </div>
-                    <div class="clearfix"></div>
-                    <?php $this->renderPartial('/common/share',array('text'=>$this->pageTitle.'，'.$info['desc'],'pic'=>$info['faceImg']));?>
+                    </div>                   
                 </div>
             </div>
             <?php if(!empty($myActivity)){?>
