@@ -119,7 +119,7 @@ class BookController extends Q {
         //更新小说数据,10分钟更新一次
         $upBookInfo = zmf::getFCache('stat-Books-' . $id);
         if (!$upBookInfo) {
-            Books::updateBookStatInfo($id);
+            Books::updateBookStatInfo($id,false);
             zmf::setFCache('stat-Books-' . $id, 1, 600);
         }
         //获取赞赏

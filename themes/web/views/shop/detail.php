@@ -123,9 +123,6 @@
     <div class="media">
         <div class="media-left">
             <img src="<?php echo zmf::lazyImg();?>" class="lazy" data-original="<?php echo $info['faceUrl'];?>"/>
-            <p>
-                <?php $this->renderPartial('/common/share',array('text'=>$info['title'].'，'.$info['desc'],'pic'=>$info['faceUrl']));?>
-            </p>
         </div>
         <div class="media-body">
             <h1><?php echo $info['title'];?></h1>

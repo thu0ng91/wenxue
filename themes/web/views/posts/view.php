@@ -133,11 +133,5 @@ $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
             </div>        
             <?php }?>
         </div>        
-        <div class="module">
-            <div class="module-header">分享</div>
-            <div class="module-body">
-                <?php $this->renderPartial('/common/share');?>
-            </div>
-        </div>        
     </div>
 </div>
