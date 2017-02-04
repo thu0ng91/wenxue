@@ -33,7 +33,7 @@ class Users extends CActiveRecord {
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('truename,email, password', 'required'),
+            array('truename,password', 'required'),
             array('cTime', 'default', 'setOnEmpty' => true, 'value' => zmf::now()),
             array('status', 'default', 'setOnEmpty' => true, 'value' => Posts::STATUS_PASSED),
             array('ip', 'default', 'setOnEmpty' => true, 'value' => ip2long(Yii::app()->request->userHostAddress)),
@@ -42,8 +42,7 @@ class Users extends CActiveRecord {
             array('cTime,authorId,favors,favord,favorAuthors,exp,level,groupid', 'length', 'max' => 10),
             array('phone', 'length', 'max' => 11),
             array('password', 'length', 'max' => 32),
-            array('contact,avatar,email,levelIcon', 'length', 'max' => 255),
-            array('email', 'email'),
+            array('contact,avatar,email,levelIcon', 'length', 'max' => 255),            
             array('content', 'safe'),
         );
     }
@@ -101,6 +100,13 @@ class Users extends CActiveRecord {
      */
     public static function model($className = __CLASS__) {
         return parent::model($className);
+    }
+    
+    public function beforeSave() {
+        if ($this->password != '') {
+            $this->password = md5($this->password);
+        }
+        return true;
     }
 
     public static function getOne($id) {
