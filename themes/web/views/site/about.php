@@ -9,15 +9,25 @@
  * @datetime 2016-1-5  15:04:55 
  */
 ?>
-<div class="main-part">
-    <div class="module">
-        <?php echo zmf::text(array(), $info['content']); ?>
+<div class="container">
+    <div class="main-part">
+        <div class="module">
+            <div class="module-header"><?php echo $info['title'];?></div>
+            <div class="module-body padding-body">
+                <?php echo zmf::text(array(), $info['content']); ?>
+            </div>
+        </div>
     </div>
     <?php if(!empty($allInfos)){?>
-    <div class="module">
-        <?php foreach ($allInfos as $val){?>
-        <p><?php echo CHtml::link($val['title'],array('site/info','code'=>$val['code']));?></p>
+    <div class="aside-part">
+        <div class="module">
+            <div class="module-header">更多文档</div>
+            <div class="module-body">
+                <?php foreach ($allInfos as $val){?>
+                <p><?php echo CHtml::link($val['title'],array('site/info','code'=>$val['code']));?></p>
+                <?php }?>
+            </div>
+        </div>
         <?php }?>
     </div>
-    <?php }?>
 </div>

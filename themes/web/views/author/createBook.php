@@ -59,12 +59,13 @@
                         <?php echo $form->error($model,'iAgree'); ?>
                     </div>
                     <div class="col-xs-8">
-                        <p>输入“<font style="color: red">我同意</font>”，即表示接受<?php echo CHtml::link('本站协议',array('site/info','code'=>'terms'));?>。</p>
+                        <p>输入“<font style="color: red">我同意</font>”，即表示接受<?php echo CHtml::link('本站协议',array('site/info','code'=>'terms'),array('target'=>'_blank'));?>。</p>
                     </div>
                 </div>
             </div>
             <div class="form-group">
                 <div class="checkbox"><label><?php echo CHtml::activeCheckBox($model, 'shoufa');?> 作品在本站首发</label></div>
+                <p class="help-block">首发作品将会获得更多展示和置顶。</p>
             </div>            
             <div class="form-group text-center">
                 <?php echo CHtml::button($model->isNewRecord ? '新增' : '更新',array('class'=>'btn btn-primary','id'=>'create-book-btn')); ?>

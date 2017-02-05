@@ -96,6 +96,7 @@ class SiteInfo extends CActiveRecord {
             'cooperation' => '合作',
             'appeal ' => '申诉',
             'terms ' => '本站协议',
+            'contact ' => '联系我们',
         );
         if ($type == 'admin') {
             return $arr;

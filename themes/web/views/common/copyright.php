@@ -15,10 +15,10 @@
 与本站立场无关。网站页面版权为初心创文所有，任何单位，个人未经授权不得转载、复制、分发，以及用作商业用途。</p>
         <p>
             <?php echo CHtml::link(zmf::config('sitename'), zmf::config('baseurl')); ?>&nbsp;•&nbsp;
-            <a href="#">关于我们</a>&nbsp;•&nbsp;
-            <a href="#">联系我们</a>&nbsp;•&nbsp;
-            <a href="#">隐私条款</a>&nbsp;•&nbsp;
-            <a href="#">版权说明</a>
+            <?php echo CHtml::link('关于我们',array('site/info','code'=>'about'),array('target'=>'_blank'));?>&nbsp;•&nbsp;
+            <?php echo CHtml::link('联系我们',array('site/info','code'=>'contact'),array('target'=>'_blank'));?>&nbsp;•&nbsp;
+            <?php echo CHtml::link('隐私条款',array('site/info','code'=>'about'),array('target'=>'terms'));?>&nbsp;•&nbsp;
+            <?php echo CHtml::link('版权说明',array('site/info','code'=>'copyright'),array('target'=>'_blank'));?>            
             <span class="pull-right">
                 Copyright&copy;<?php echo date('Y'); ?>
                 <?php echo CHtml::link(zmf::config('beian'),'http://www.miitbeian.gov.cn/',array('target'=>'_blank'));?>
