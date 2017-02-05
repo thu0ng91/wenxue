@@ -14,7 +14,7 @@
         <div class="module">
             <div class="module-header"><?php echo $info['title'];?></div>
             <div class="module-body padding-body">
-                <?php echo zmf::text(array(), $info['content']); ?>
+                <?php echo zmf::text(array(), $info['content'],true,'w600'); ?>
             </div>
         </div>
     </div>
