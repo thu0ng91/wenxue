@@ -19,7 +19,7 @@ class SiteInfoController extends Admin {
      */
     public function actionCreate($id = '') {
         if ($id) {
-            $this->checkPower('addSiteInfo');
+            $this->checkPower('siteInfo');
             $model = $this->loadModel($id);
         } else {
             $this->checkPower('siteInfo');
