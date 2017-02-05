@@ -38,7 +38,10 @@ class BookController extends Q {
         }
         $this->selectNav = 'book';
         $this->showLeftBtn=false;
-        $this->pageTitle = ($colInfo['title'] ? $colInfo['title'] : '作品集') . ' - ' . zmf::config('sitename');
+        $this->pageTitle = ($colInfo['title'] ? $colInfo['title'].'作品集_'.$colInfo['title'].'最近更新作品' : '作品集') . ' - ' . zmf::config('sitename');
+        if($colInfo){
+            $this->keywords=$colInfo['title'].','.$colInfo['title'].'阅读,'.','.$colInfo['title'].'小说,'.$colInfo['title'].'小说阅读,'.$colInfo['title'].'小说下载,'.$colInfo['title'].'小说大全';
+        }
         $this->mobileTitle='作品集';
         $data = array(
             'posts' => $posts,

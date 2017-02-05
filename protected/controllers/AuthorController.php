@@ -24,7 +24,7 @@ class AuthorController extends Q {
             $this->adminLogin = Authors::checkLogin($this->userInfo, $id);
             $this->favorited = Favorites::checkFavored($id, 'author');
         }
-        $this->pageTitle = $this->authorInfo['authorName'] . ' - ' . zmf::config('sitename');
+        $this->pageTitle = $this->authorInfo['authorName'] . '全部小说_'.$this->authorInfo['authorName'].'最新作品集 - ' . zmf::config('sitename');
         $this->keywords = "{$this->authorInfo['authorName']},{$this->authorInfo['authorName']}小说,{$this->authorInfo['authorName']}全部小说,{$this->authorInfo['authorName']}作品,{$this->authorInfo['authorName']}最新作品,{$this->authorInfo['authorName']}新书,{$this->authorInfo['authorName']}资料及介绍";
         $this->pageDescription = "{$this->authorInfo['authorName']}是" . zmf::config('sitename') . "网作家。这里你可以阅读{$this->authorInfo['authorName']}全部小说及{$this->authorInfo['authorName']}最新作品集，还可以和{$this->authorInfo['authorName']}互动，更多{$this->authorInfo['authorName']}新书及动态请关注" . zmf::config('sitename') . "网。";
     }

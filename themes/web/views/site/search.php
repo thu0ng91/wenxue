@@ -15,7 +15,7 @@
     }
 </style>
 <div class="container">
-    <div class="main-part search-page">
+    <div class="search-page">
         <ul class="nav nav-tabs">
             <?php $types=  SiteInfo::searchTypes('admin');foreach($types as $_type=>$_title){?>
             <li role="presentation" <?php if($_type==$this->searchType){?>class="active"<?php }?>><?php echo CHtml::link($_title,array('search/do','type'=>$_type,'keyword'=>$this->searchKeyword));?></li>

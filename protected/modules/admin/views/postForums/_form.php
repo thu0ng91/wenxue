@@ -32,6 +32,16 @@
         <?php echo $form->error($model,'desc'); ?>
     </div>
     <div class="form-group">
+        <?php echo $form->labelEx($model,'keywords'); ?>        
+        <?php echo $form->textField($model,'keywords',array('class'=>'form-control')); ?>
+        <?php echo $form->error($model,'keywords'); ?>
+    </div>
+    <div class="form-group">
+        <?php echo $form->labelEx($model,'description'); ?>        
+        <?php echo $form->textArea($model,'description',array('class'=>'form-control')); ?>
+        <?php echo $form->error($model,'description'); ?>
+    </div>
+    <div class="form-group">
         <?php echo $form->labelEx($model,'posterType'); ?>        
         <?php echo $form->dropDownlist($model,'posterType',  PostForums::posterType('admin'),array('class'=>'form-control','empty'=>'--不限制--')); ?>
         <?php echo $form->error($model,'posterType'); ?>

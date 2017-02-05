@@ -4,11 +4,17 @@
 </div>
 <?php } if (!$this->uid) { ?>
 <ul class="nav navbar-nav navbar-right">
+    <?php if(in_array($from, array('user','author'))){?>
+    <li><?php echo CHtml::link('<i class="fa fa-bell-o unread-bell"></i><span class="nav-title">搜索</span>', array('search/do'), array('role' => 'menuitem','title'=>'搜索')); ?></li>
+    <?php }?>
     <li><?php echo CHtml::link('登录', array('site/login')); ?></li>
     <li><?php echo CHtml::link('注册', array('site/reg')); ?></li>
 </ul>
 <?php } else {?>
 <ul class="nav navbar-nav navbar-right">
+    <?php if(in_array($from, array('user','author'))){?>
+    <li><?php echo CHtml::link('<i class="fa fa-search"></i><span class="nav-title">搜索</span>', array('search/do'), array('role' => 'menuitem','title'=>'搜索')); ?></li>
+    <?php }?>
     <?php if(!$this->userInfo['authorId']){if(GroupPowers::checkAction($this->userInfo, 'createAuthor')){?>
     <li class="color-warning"><?php echo GroupPowers::link('createAuthor',$this->userInfo,'<i class="fa fa-exclamation-circle"></i> 成为作者', array('user/author'), array('role' => 'menuitem')); ?></li>
     <?php }}?>    

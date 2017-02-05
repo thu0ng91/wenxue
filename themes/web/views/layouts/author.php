@@ -10,7 +10,7 @@ $this->beginContent('/layouts/common');
     <div class="container">
         <div class="navbar-collapse collapse">
             <?php $this->renderPartial('/layouts/_nav');?>
-            <?php $this->renderPartial('/layouts/_user');?>
+            <?php $this->renderPartial('/layouts/_user',array('from'=>'author'));?>
         </div>
     </div> 
 </div>

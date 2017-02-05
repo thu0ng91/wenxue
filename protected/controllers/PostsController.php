@@ -18,6 +18,7 @@ class PostsController extends Q {
         $favorites = $this->uid ? array_keys(CHtml::listData($this->userInfo['favoriteForums'], 'id', 'title')) : array();
         $this->pageTitle = '关注圈子 - ' . zmf::config('sitename');
         $this->mobileTitle = '关注圈子';
+        $this->keywords= $this->pageDescription='';
         $data = array(
             'forums' => $items,
             'favorites' => $favorites,
@@ -107,6 +108,8 @@ class PostsController extends Q {
         $this->showLeftBtn = true;
         $this->returnUrl = Yii::app()->createUrl('posts/types');
         $this->pageTitle = $forumInfo['title'] . ' - ' . zmf::config('sitename');
+        $this->keywords=$forumInfo['keywords'];
+        $this->pageDescription=$forumInfo['description'];
         $this->mobileTitle = $forumInfo['title'];
         $data = array(
             'posts' => $posts,

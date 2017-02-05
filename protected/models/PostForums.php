@@ -34,7 +34,7 @@ class PostForums extends CActiveRecord {
             array('title,faceImg,desc', 'required'),
             array('title', 'length', 'max' => 16),
             array('posterType', 'length', 'max' => 6),
-            array('desc, faceImg', 'length', 'max' => 255),
+            array('desc, faceImg,keywords,description', 'length', 'max' => 255),
             array('posts, favors', 'length', 'max' => 10),
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
@@ -64,6 +64,8 @@ class PostForums extends CActiveRecord {
             'posts' => '作品数',
             'favors' => '关注数',
             'posterType' => '谁可发帖',
+            'keywords' => '关键词',
+            'description' => '描述',
         );
     }
 

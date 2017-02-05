@@ -6,7 +6,7 @@ $this->beginContent('/layouts/common');
         <?php echo CHtml::link(zmf::config('sitename'),  zmf::config('baseurl'),array('class'=>'navbar-brand'));?>
         <div class="navbar-collapse collapse">
             <?php $this->renderPartial('/layouts/_nav');?>
-            <?php $this->renderPartial('/layouts/_user');?>
+            <?php $this->renderPartial('/layouts/_user',array('from'=>'user'));?>
         </div>
     </div> 
 </div>
