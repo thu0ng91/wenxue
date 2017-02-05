@@ -25,7 +25,7 @@ class BookController extends Q {
             Books::STATUS_PUBLISHED,
             Books::STATUS_FINISHED
         );
-        $sql = "SELECT id,colid,title,faceImg,`desc`,words,cTime,score,scorer,bookStatus FROM {{books}} WHERE ".($colid>0 ? "colid='{$colid}' AND " : "")." status=" . Posts::STATUS_PASSED . " AND bookStatus IN(" . join(',',$arr) . ") ORDER BY {$orderBy} DESC";
+        $sql = "SELECT b.id,b.colid,b.title,b.faceImg,b.`desc`,b.words,b.score,b.scorer,b.bookStatus,b.aid,a.authorName FROM {{books}} b,{{authors}} a WHERE ".($colid>0 ? "b.colid='{$colid}' AND " : "")." b.status=" . Posts::STATUS_PASSED . " AND b.bookStatus IN(" . join(',',$arr) . ") AND b.aid=a.id AND a.status=".Posts::STATUS_PASSED." ORDER BY b.{$orderBy} DESC";
         Posts::getAll(array('sql' => $sql), $pages, $posts);
         foreach ($posts as $k => $val) {
             $posts[$k]['faceImg'] = zmf::getThumbnailUrl($val['faceImg'], 'w120', 'book');
