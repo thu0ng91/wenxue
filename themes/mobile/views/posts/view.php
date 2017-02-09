@@ -76,6 +76,11 @@ $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
                         <?php echo $form->checkbox($model,'aid');?> 以作者身份回复
                     </label>
                 </div>
+                <div class="checkbox">
+                    <label>
+                        <?php echo $form->checkbox($model,'anonymous');?> 匿名回复
+                    </label>
+                </div>
                 <?php }?>
             </div>
             <div class="form-group">
