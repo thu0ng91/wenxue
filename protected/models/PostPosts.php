@@ -44,7 +44,7 @@ class PostPosts extends CActiveRecord {
             array('open', 'default', 'setOnEmpty' => true, 'value' => self::OPEN_COMMENT),
             
             array('uid, tid, content', 'required'),
-            array('uid, comments, cTime, updateTime, open, status,isFirst,platform', 'numerical', 'integerOnly' => true),
+            array('uid, comments, cTime, updateTime, open, status,isFirst,platform,anonymous', 'numerical', 'integerOnly' => true),
             array('aid, tid,props', 'length', 'max' => 10),
             array('favors', 'length', 'max' => 11),
             // The following rule is used by search().
@@ -82,6 +82,7 @@ class PostPosts extends CActiveRecord {
             'isFirst' => '是否首贴',
             'platform' => '来源',
             'props' => '赞赏数',
+            'anonymous' => '匿名',
         );
     }
 

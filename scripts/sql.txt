@@ -1,2 +1,1 @@
-alter table pre_post_forums add keywords varchar(255) not null;
-alter table pre_post_forums add description varchar(255) not null;
+alter table pre_post_posts add anonymous tinyint(1) unsigned not null;

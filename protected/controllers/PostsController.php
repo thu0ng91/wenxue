@@ -191,7 +191,7 @@ class PostsController extends Q {
         if ($seeLz == 1) {
             $where = ' AND p.uid=' . $info['uid'];
         }
-        $sql = "SELECT p.id,p.tid,p.uid,p.aid,u.truename AS username,u.avatar,u.level,u.levelTitle,u.levelIcon,p.aid,p.cTime,p.updateTime,p.open,p.comments,p.favors,p.content,'' AS props FROM {{post_posts}} p,{{users}} u WHERE p.tid='{$id}' AND p.isFirst=0{$where} AND p.status=" . Posts::STATUS_PASSED . " AND p.uid=u.id AND u.status=" . Posts::STATUS_PASSED . " ORDER BY p.cTime ASC";
+        $sql = "SELECT p.id,p.tid,p.uid,p.aid,p.anonymous,u.truename AS username,u.avatar,u.level,u.levelTitle,u.levelIcon,p.aid,p.cTime,p.updateTime,p.open,p.comments,p.favors,p.content,'' AS props FROM {{post_posts}} p,{{users}} u WHERE p.tid='{$id}' AND p.isFirst=0{$where} AND p.status=" . Posts::STATUS_PASSED . " AND p.uid=u.id AND u.status=" . Posts::STATUS_PASSED . " ORDER BY p.cTime ASC";
         Posts::getAll(array('sql' => $sql, 'pageSize' => $this->pageSize), $pages, $posts);
 
         if (!empty($posts)) {
@@ -526,9 +526,10 @@ class PostsController extends Q {
             );
             //如果标题包含敏感词则直接标记为未通过
             $attr['status'] = $filterContent['status'];
-            $attr['open'] = ($_POST['PostPosts']['open'] == Posts::STATUS_OPEN) ? 1 : 0;
+            $attr['open'] = $pid ? (($_POST['PostPosts']['open'] == Posts::STATUS_OPEN) ? 1 : 0) : Posts::STATUS_OPEN;
             $attr['platform'] = $this->isMobile ? Posts::PLATFORM_MOBILE : Posts::PLATFORM_WEB;
             $attr['aid'] = ($this->userInfo['authorId'] > 0 ? ($_POST['PostPosts']['aid'] > 0 ? $this->userInfo['authorId'] : 0) : 0);
+            $attr['anonymous'] = $_POST['PostPosts']['anonymous'];
             $attkeys = array();
             if (!empty($filterContent['attachids'])) {
                 $attkeys = array_filter(array_unique($filterContent['attachids']));
