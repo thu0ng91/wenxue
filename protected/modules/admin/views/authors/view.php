@@ -15,8 +15,6 @@ $this->widget('zii.widgets.CDetailView', array(
         'uid',
         'authorName',
         'avatar',
-        'password',
-        'hashCode',
         'content',
         'favors',
         'posts',

@@ -17,6 +17,11 @@
         <?php echo $form->error($model,'phone'); ?>
     </div>
     <div class="form-group">
+        <?php echo $form->labelEx($model,'email'); ?>
+        <?php echo $form->textField($model,'email',array('class'=>'form-control')); ?>
+        <?php echo $form->error($model,'email'); ?>
+    </div>
+    <div class="form-group">
         <?php echo $form->labelEx($model,'password'); ?>
         <?php echo $form->passwordField($model,'password',array('class'=>'form-control')); ?>
         <?php echo $form->error($model,'password'); ?>
@@ -41,6 +46,11 @@
         <?php echo $form->labelEx($model,'isAdmin'); ?>
         <?php echo $form->dropdownList($model,'isAdmin',  Users::isAdmin('admin'),array('class'=>'form-control')); ?>
         <?php echo $form->error($model,'isAdmin'); ?>
+    </div>
+    <div class="form-group">
+        <?php echo $form->labelEx($model,'phoneChecked'); ?>
+        <?php echo $form->dropdownList($model,'phoneChecked',  Users::isAdmin('admin'),array('class'=>'form-control')); ?>
+        <?php echo $form->error($model,'phoneChecked'); ?>
     </div>
     <div class="form-group">
         <?php echo $form->labelEx($model,'status'); ?>

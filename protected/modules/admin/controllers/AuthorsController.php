@@ -74,7 +74,7 @@ class AuthorsController extends Admin {
     }
 
     public function actionIndex() {
-        $select = "id,authorName,status";
+        $select = "id,authorName,favors,posts,hits,score,cTime,status";
         $model = new Authors();
         $criteria = new CDbCriteria();
         $criteria->select = $select;
