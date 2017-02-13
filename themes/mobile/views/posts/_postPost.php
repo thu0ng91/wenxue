@@ -26,6 +26,6 @@
         </li>
     </ul>
     <div class="media-body">
-        <div class="post-content"><?php echo $data['content'];?></div>
+        <div class="post-content"><?php echo nl2br(CHtml::decode($data['content']));?></div>
     </div>
 </div>
