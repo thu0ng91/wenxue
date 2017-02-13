@@ -27,7 +27,7 @@ $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
                 <span><?php echo zmf::formatTime($info['cTime']);?></span>
                 <span class="stat-info">
                     <span><i class="fa fa-eye" title="访问"></i> <?php echo $info['hits'];?></span>
-                    <span><i class="fa fa-comment"></i> <?php echo $info['comments'];?></span>
+                    <span><i class="fa fa-comment"></i> <?php echo $info['posts'];?></span>
                 </span>
             </div>
             <div class="post-content">
