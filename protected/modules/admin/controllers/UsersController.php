@@ -150,5 +150,32 @@ class UsersController extends Admin {
         }
         exit('well done');
     }
+    
+    public function actionUpdateUserActions() {
+        $items=  UserAction::model()->findAll(array(
+            'select'=>'id,data'
+        ));
+        $from=array(
+            'http://o7kv6kf92.bkt.clouddn.com',
+            'http://img1.chuxincw.com',
+        );
+        $to=array(
+            'https://img2.chuxincw.com'
+        );
+        foreach ($items as $val){
+            $_arr=  CJSON::decode($val['data'],true);
+            if(array_key_exists('bFaceImg', $_arr)){
+                $_arr['bFaceImg']=  str_replace($from, $to, $_arr['bFaceImg']);
+            }elseif(array_key_exists('avatar', $_arr)){
+                $_arr['avatar']=  str_replace($from, $to, $_arr['avatar']);
+            }elseif(array_key_exists('faceimg', $_arr)){
+                $_arr['faceimg']=  str_replace($from, $to, $_arr['faceimg']);
+            }
+            UserAction::model()->updateByPk($val['id'], array(
+                'data'=>  CJSON::encode($_arr)
+            ));
+        }
+        exit('well done');
+    }
 
 }

@@ -22,7 +22,7 @@
     </div>
     <?php }?>
     <div class="media-body">
-        <p class="help-block title"><?php echo !$data['anonymous'] ? CHtml::link($data['userInfo']['username'],$data['userInfo']['linkArr']).($data['userInfo']['type']=='user' ? '' : ' <i class="fa fa-user" title="作者"></i>') : '匿名者';?></p>
+        <p class="help-block title"><?php echo !$data['anonymous'] ? CHtml::link($data['userInfo']['username'],$data['userInfo']['linkArr']).($data['userInfo']['type']=='user' ? '' : ' <i class="fa fa-user color-grey" title="作者"></i>') : '匿名者';?></p>
         <div class="post-content-item"><?php echo nl2br(CHtml::decode($data['content']));?></div>
         <div class="post-footer-nav">
             <div class="post-time"><?php echo zmf::formatTime($data['cTime']);?></div>
