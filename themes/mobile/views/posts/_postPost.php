@@ -20,12 +20,15 @@
                 <?php }?>
             </div>
             <div class="ui-list-info">
-                <p class="ui-nowrap"><?php echo !$data['anonymous'] ? CHtml::link($data['userInfo']['username'],$data['userInfo']['linkArr']).($data['userInfo']['type']=='user' ? '' : ' <i class="fa fa-user" title="作者"></i>') : '匿名者';?></p>
+                <p class="ui-nowrap">
+                    <?php echo !$data['anonymous'] ? CHtml::link($data['userInfo']['username'],$data['userInfo']['linkArr']).($data['userInfo']['type']=='user' ? '' : ' <i class="fa fa-user color-grey" title="作者"></i>') : '匿名者';?>                    
+                    <span class="pull-right"><?php echo GroupPowers::link('favorPostReply',$this->userInfo,'<i class="fa '.($data['favorited'] ? 'fa-thumbs-up' : 'fa-thumbs-o-up').'"></i> '.$data['favors'],'javascript:;',array('action'=>'favorite','action-data'=>$data['id'],'action-type'=>'postPosts'),true);?></span>
+                </p>
                 <p class="color-grey">发表于<?php echo zmf::formatTime($data['cTime']);?></p>
             </div>
         </li>
     </ul>
     <div class="media-body">
-        <div class="post-content"><?php echo $data['content'];?></div>
+        <div class="post-content"><?php echo nl2br(CHtml::decode($data['content']));?></div>
     </div>
 </div>
