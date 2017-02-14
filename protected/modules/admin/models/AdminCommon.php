@@ -156,7 +156,29 @@ class AdminCommon extends CActiveRecord {
         $attr['system'] = array(
             'title' => '<i class="fa fa-cog"></i> 系统',
             'url' => Yii::app()->createUrl('admin/config/index'),
-            'active' => in_array($c, array('site', 'config'))
+            'active' => in_array($c, array('site', 'config')),
+            'seconds' => array(
+                'configBaseinfo' => array(
+                    'title' => '网站信息',
+                    'url' => Yii::app()->createUrl('admin/config/index',array('type'=>'baseinfo')),
+                    'active' => in_array($_GET['type'], array('baseinfo'))
+                ),
+                'configBase' => array(
+                    'title' => '全局配置',
+                    'url' => Yii::app()->createUrl('admin/config/index',array('type'=>'base')),
+                    'active' => in_array($_GET['type'], array('base'))
+                ),
+                'configEmail' => array(
+                    'title' => '邮件配置',
+                    'url' => Yii::app()->createUrl('admin/config/index',array('type'=>'email')),
+                    'active' => in_array($_GET['type'], array('email'))
+                ),
+                'configUpload' => array(
+                    'title' => '上传配置',
+                    'url' => Yii::app()->createUrl('admin/config/index',array('type'=>'upload')),
+                    'active' => in_array($_GET['type'], array('upload'))
+                ),
+            )
         );
         foreach ($attr as $k => $v) {
             if (!Controller::checkPower($k, '', true)) {
