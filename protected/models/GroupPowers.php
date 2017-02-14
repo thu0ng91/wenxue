@@ -200,7 +200,7 @@ class GroupPowers extends CActiveRecord {
 
     public static function link($action, $userInfo, $text, $url = '#', $htmlOptions = array(), $showText = false) {
         if (!$userInfo || !$userInfo['id'] || !$action || !$userInfo['groupid']) {
-            return '';
+            return $showText ? $text : '';
         }
         return self::checkAction($userInfo, $action) ? CHtml::link($text, $url, $htmlOptions) : ($showText ? $text : '');
     }
