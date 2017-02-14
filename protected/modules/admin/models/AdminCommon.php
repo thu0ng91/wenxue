@@ -6,12 +6,12 @@ class AdminCommon extends CActiveRecord {
         $c = Yii::app()->getController()->id;
         $a = Yii::app()->getController()->getAction()->id;
         $attr['login'] = array(
-            'title' => '首页',
+            'title' => '<i class="fa fa-tachometer"></i> 首页',
             'url' => Yii::app()->createUrl('admin/index/index'),
             'active' => in_array($c, array('index'))
         );
         $attr['content'] = array(
-            'title' => '内容',
+            'title' => '<i class="fa fa-align-justify"></i> 内容',
             'url' => '#',
             'active' => in_array($c, array('books','postThreads','comments')),
             'seconds' => array(
@@ -33,7 +33,7 @@ class AdminCommon extends CActiveRecord {
             )
         );
         $attr['yunying'] = array(
-            'title' => '运营',
+            'title' => '<i class="fa fa-line-chart"></i> 运营',
             'url' => '#',
             'active' => in_array($c, array('task','groupTasks','showcases','column','postForums','tags','words','feedback','reports')),
             'seconds' => array(
@@ -95,7 +95,7 @@ class AdminCommon extends CActiveRecord {
             )
         );
         $attr['shop'] = array(
-            'title' => '商城',
+            'title' => '<i class="fa fa-shopping-cart"></i> 商城',
             'url' => '#',
             'active' => in_array($c, array('goods','goodsClassify')),
             'seconds' => array(
@@ -112,7 +112,7 @@ class AdminCommon extends CActiveRecord {
             )
         );
         $attr['users'] = array(
-            'title' => '用户',
+            'title' => '<i class="fa fa-users"></i> 用户',
             'url' => '#',
             'active' => in_array($c, array('authors','users','group','groupPowerTypes','groupPowers')),
             'seconds' => array(
@@ -137,7 +137,7 @@ class AdminCommon extends CActiveRecord {
                     'active' => in_array($c, array('groupLevels'))
                 ),
                 'groupPowerTypes' => array(
-                    'title' => '用户组权限分类',
+                    'title' => '权限分类',
                     'url' => Yii::app()->createUrl('admin/groupPowerTypes/index'),
                     'active' => in_array($c, array('groupPowerTypes'))
                 ),
@@ -154,7 +154,7 @@ class AdminCommon extends CActiveRecord {
             )
         );
         $attr['system'] = array(
-            'title' => '系统',
+            'title' => '<i class="fa fa-cog"></i> 系统',
             'url' => Yii::app()->createUrl('admin/config/index'),
             'active' => in_array($c, array('site', 'config'))
         );

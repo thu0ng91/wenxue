@@ -173,28 +173,6 @@ class ActivityController extends Admin {
         ));
     }
 
-    public function actionUsers() {
-        $acid = zmf::val('id', 2);
-        $order = zmf::val('order', 1);
-        if ($order) {
-            $orderBy = $order;
-            $desc = 'DESC';
-        } else {
-            $orderBy = 'voteOrder';
-            $desc = 'ASC';
-        }
-        $activityInfo = $this->loadModel($acid);
-        $sql = "SELECT u.id,al.id AS alid,al.activity AS aid,u.username,u.jobid,al.voteOrder,al.votes FROM {{user}} u,{{activity_link}} al WHERE al.activity='{$acid}' AND al.classify='users' AND al.logid=u.id ORDER BY al.{$orderBy} {$desc}";
-        Posts::getAll(array('sql' => $sql, 'pageSize' => 30), $pages, $posts);
-
-        $this->render('users', array(
-            'pages' => $pages,
-            'posts' => $posts,
-            'acid' => $acid,
-            'activityInfo' => $activityInfo,
-        ));
-    }
-
     public function actionGetip() {
         $page = zmf::val('page');
         $id = zmf::val('id');

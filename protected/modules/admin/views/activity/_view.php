@@ -8,7 +8,7 @@
     </td>
     <td>
         <?php echo CHtml::link('预览',array('/activity/view','id'=>$data->id),array('target'=>'_blank'));?>
-        <?php echo $data->type=='posts' ? CHtml::link('参与作品',array('posts','id'=>$data->id)) : CHtml::link('参与用户',array('users','id'=>$data->id));?>
+        <?php echo CHtml::link('参与作品',array('posts','id'=>$data->id));?>
         <?php echo CHtml::link('详情',array('view','id'=>$data->id));?>
         <?php echo CHtml::link('编辑',array('update','id'=>$data->id));?>
         <?php echo CHtml::link('删除',array('delete','id'=>$data->id));?>

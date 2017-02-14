@@ -67,6 +67,8 @@ class PostThreads extends CActiveRecord {
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
+            'userInfo' => array(self::BELONGS_TO, 'Users', 'uid'),
+            'forumInfo' => array(self::BELONGS_TO, 'PostForums', 'fid'),
         );
     }
 
@@ -76,9 +78,9 @@ class PostThreads extends CActiveRecord {
     public function attributeLabels() {
         return array(
             'id' => 'ID',
-            'fid' => '所属版块',
+            'fid' => '版块',
             'type' => '文章分类',
-            'uid' => '用户ID',
+            'uid' => '用户',
             'aid' => '作者ID',
             'title' => '标题',
             'faceImg' => '封面图',

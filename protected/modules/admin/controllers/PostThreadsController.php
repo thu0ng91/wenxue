@@ -73,10 +73,11 @@ class PostThreadsController extends Admin {
      * Lists all models.
      */
     public function actionIndex() {
-        $select = "id,fid,type,uid,title,hits,posts,comments,favorites,styleStatus,digest,top,open,display,lastpost,lastposter,cTime";
+        $select = "id,fid,type,uid,title,hits,posts,comments,favorites,cTime";
         $model = new PostThreads;
         $criteria = new CDbCriteria();
         $criteria->select = $select;
+        $criteria->order = 'cTime DESC';
         $count = $model->count($criteria);
         $pager = new CPagination($count);
         $pager->pageSize = 30;
@@ -132,7 +133,7 @@ class PostThreadsController extends Admin {
         $posts = Posts::model()->findAll();
         foreach ($posts as $item) {
             $_title = mysql_escape_string($item['title']);
-            $_faceImg=  Attachments::faceImg(array('faceimg'=>$item['faceimg']),'');
+            $_faceImg = Attachments::faceImg(array('faceimg' => $item['faceimg']), '');
             $sqlStr = "INSERT INTO pre_post_threads SET id='{$item['id']}',fid=1,uid='{$item['uid']}',aid='{$item['aid']}',title='{$_title}',faceImg='{$_faceImg}',hits='{$item['hits']}',comments='{$item['comments']}',favorites='{$item['favorite']}',styleStatus='{$item['styleStatus']}',`top`='{$item['top']}',`open`='{$item['open']}',cTime='{$item['cTime']}',status='{$item['status']}';";
             if (Yii::app()->db->createCommand($sqlStr)->execute()) {
                 $_first = array(
@@ -170,7 +171,7 @@ class PostThreadsController extends Admin {
                     $_model->save();
                 }
                 //更新帖子的楼层数
-                PostThreads::model()->updateByPk($item['id'], array('posts'=>  count($comments)));                
+                PostThreads::model()->updateByPk($item['id'], array('posts' => count($comments)));
             }
         }
         exit('well done');
