@@ -11,7 +11,7 @@ $this->renderPartial('_nav');
 <table class="table table-hover table-striped">
     <tr>
         <th style="width: 60px"><?php echo $model->getAttributeLabel("id"); ?></th>
-        <th style="width: 60px"><?php echo $model->getAttributeLabel("fid"); ?></th>
+        <th style="width: 80px"><?php echo $model->getAttributeLabel("fid"); ?></th>
         <th style="width: 80px"><?php echo $model->getAttributeLabel("uid"); ?></th>
         <th><?php echo $model->getAttributeLabel("title"); ?></th>        
         <th style="width: 120px">点 / 回 / 藏</th>
