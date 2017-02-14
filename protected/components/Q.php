@@ -19,12 +19,12 @@ class Q extends Controller {
     public $page = 1;
     public $pageSize = 30;
     public $isAjax = false;
-    public $searchType='';
-    public $searchKeyword='';
-    public $rightBtns=array();//手机版导航条右侧按钮
-    public $returnUrl='';//左侧返回按钮的返回链接
-    public $showLeftBtn=true;//左侧返回按钮
-    public $showTopbar=true;
+    public $searchType = '';
+    public $searchKeyword = '';
+    public $rightBtns = array(); //手机版导航条右侧按钮
+    public $returnUrl = ''; //左侧返回按钮的返回链接
+    public $showLeftBtn = true; //左侧返回按钮
+    public $showTopbar = true;
     public $adminLogin = false;
 
     function init() {
@@ -35,7 +35,7 @@ class Q extends Controller {
                 Yii::app()->theme = 'mobile';
                 $this->isMobile = true;
             }
-        }        
+        }
         if (Yii::app()->request->isAjaxRequest && Yii::app()->request->isPostRequest) {
             $this->isAjax = true;
         }
@@ -50,13 +50,13 @@ class Q extends Controller {
                 Yii::app()->user->logout();
                 unset($this->uid);
                 unset($this->userInfo);
-            }elseif(!$this->userInfo['groupid']){
+            } elseif (!$this->userInfo['groupid']) {
                 $currentUrl = Yii::app()->request->url;
                 if (strpos($currentUrl, 'user/joinGroup') === false && !$this->isAjax) {
                     $this->redirect(array('user/joinGroup'));
                 }
             }
-            $this->userInfo['favoriteForums']=PostForums::getUserFavorites($this->uid);
+            $this->userInfo['favoriteForums'] = PostForums::getUserFavorites($this->uid);
         }
     }
 
@@ -88,13 +88,13 @@ class Q extends Controller {
         if ($set && Yii::app()->request->isAjaxRequest) {
             $set = false;
         }
-        $referer = zmf::getCookie('refererUrl');        
+        $referer = zmf::getCookie('refererUrl');
         if ($set) {
             zmf::setCookie('refererUrl', $currentUrl, 86400);
         }
         if ($referer != '') {
             $this->referer = $referer;
-        }        
+        }
     }
 
     public function onlyOnPc() {
@@ -111,12 +111,18 @@ class Q extends Controller {
             $msg = '请先登录';
             $url = Yii::app()->createUrl('site/login');
         } else {
-            if (!$this->userInfo['phoneChecked']) {
-                $msg = '请先验证你的手机号';
-                $url = Yii::app()->createUrl('user/setting',array('action'=>'checkPhone'));
-            }elseif(!$this->userInfo['groupid']){
+            if (!$this->userInfo['groupid']) {
                 $msg = '请先选择你的角色';
                 $url = Yii::app()->createUrl('user/joinGroup');
+            } elseif (!$this->userInfo['phoneChecked']) {
+                $_groupInfo = Group::getOne($this->userInfo['groupid']);
+                if (!$_groupInfo) {
+                    $msg = '请先选择你的角色';
+                    $url = Yii::app()->createUrl('user/joinGroup');
+                } elseif ($_groupInfo['isAuthor']) {
+                    $msg = '请先验证你的手机号';
+                    $url = Yii::app()->createUrl('user/setting', array('action' => 'checkPhone'));
+                }
             }
         }
         if ($return) {
