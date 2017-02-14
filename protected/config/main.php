@@ -42,17 +42,13 @@ return array(
             'enableCookieValidation' => true, //对cookie的值进行HMAC检查
         ),
         'user' => array(
-            'identityCookie' => array('domain' => '.newsoul.cn', 'path' => '/'),
+            'identityCookie' => array('domain' => '.chuxincw.com', 'path' => '/'),
             'allowAutoLogin' => true,
             'stateKeyPrefix' => 'ZMFCHUXIN',
             'loginUrl' => array(
                 'site/login'
             )
-        ),
-        'session' => array(
-        //'cookieParams' => array('domain' => '.newsoul.cn', 'lifetime' => 0), //配置会话ID作用域 生命期和超时  
-        //'timeout' => 3600, 
-        ),
+        ),        
         'statePersister' => array(
             'class' => 'system.base.CStatePersister',
             'stateFile' => dirname(__FILE__) . '/../runtime/state.bin',
