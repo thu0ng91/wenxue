@@ -37,12 +37,12 @@ return array(
     ),
     'defaultController' => 'index',
     'components' => array(
-        'request' => array(
-            'enableCsrfValidation' => false, //防范跨站请求伪造(简称CSRF)攻击              
-            'enableCookieValidation' => true, //对cookie的值进行HMAC检查
-        ),
+//        'request' => array(
+//            'enableCsrfValidation' => false, //防范跨站请求伪造(简称CSRF)攻击              
+//            'enableCookieValidation' => true, //对cookie的值进行HMAC检查
+//        ),
         'user' => array(
-            'identityCookie' => array('domain' => '.chuxincw.com', 'path' => '/'),
+            //'identityCookie' => array('domain' => '.chuxincw.com', 'path' => '/'),
             'allowAutoLogin' => true,
             'stateKeyPrefix' => 'ZMFCHUXIN',
             'loginUrl' => array(
