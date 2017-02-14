@@ -212,9 +212,9 @@ class PostsController extends Q {
                 }
             }
             foreach ($posts as $k => $val) {
-                $items[$k]['favorited'] = 0;
+                $posts[$k]['favorited'] = 0;
                 if (in_array($val['id'], $favoredArr)) {
-                    $items[$k]['favorited'] = 1;
+                    $posts[$k]['favorited'] = 1;
                 }
                 $find = false;
                 if (!empty($usernames)) {

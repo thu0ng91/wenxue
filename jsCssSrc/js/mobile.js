@@ -766,6 +766,12 @@ function favorite(dom) {
         }else{
             dom.html('<i class="fa fa-thumbs-up"></i> '+(++num));
         }
+    }else if(t==='postPosts'){
+        if(childDom.hasClass('fa-thumbs-up')){
+            dom.html('<i class="fa fa-thumbs-o-up"></i> '+(--num));
+        }else{
+            dom.html('<i class="fa fa-thumbs-up"></i> '+(++num));
+        }
     }
     $.post(zmf.favoriteUrl, {type: t, data: acdata, YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
         ajaxReturn = true;
