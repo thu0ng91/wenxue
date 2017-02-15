@@ -20,4 +20,14 @@
             </div>
         </div>
     </div>
+    <div class="aside-part">
+        <?php if(!empty($posts)){?>
+            <div class="module-header">近期发表</div>
+            <div class="module-body">
+                <?php foreach ($posts as $post){?>
+                <p class="ui-nowrap"><?php echo CHtml::link($post['title'],array('posts/view','id'=>$post['id']));?></p>
+                <?php }?>
+            </div>
+        <?php }?>
+    </div>
 </div>

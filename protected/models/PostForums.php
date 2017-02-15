@@ -145,8 +145,13 @@ class PostForums extends CActiveRecord {
      * @return bool
      */
     public static function updatePostsStat() {
+        $key = zmf::getFCache('updatePostsStat');
+        if (zmf::checkFCache($key)) {
+            return false;
+        }
         $sql = "UPDATE {{post_forums}} AS pf,(SELECT COUNT(id) AS total,fid FROM {{post_threads}} GROUP BY fid) AS tmp SET pf.posts=tmp.total WHERE pf.id=tmp.fid";
         $res = Yii::app()->db->createCommand($sql)->execute();
+        zmf::setFCache($key, '1', 3600);
         return $res;
     }
 
@@ -184,7 +189,7 @@ class PostForums extends CActiveRecord {
     public static function addPostOrNot($forumInfo, $userInfo) {
         if (!$forumInfo || !$userInfo) {
             return false;
-        }        
+        }
         if (!$forumInfo['posterType']) {
             return true;
         }
@@ -197,7 +202,7 @@ class PostForums extends CActiveRecord {
         }
         return false;
     }
-    
+
     /**
      * 判断用户是否可以在某帖子回帖
      * @param array $threadInfo
@@ -207,7 +212,7 @@ class PostForums extends CActiveRecord {
     public static function replyPostOrNot($threadInfo, $userInfo) {
         if (!$threadInfo || !$userInfo) {
             return false;
-        }        
+        }
         if (!$threadInfo['posterType']) {
             return true;
         }
