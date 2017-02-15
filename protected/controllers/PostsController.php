@@ -201,11 +201,17 @@ class PostsController extends Q {
         //获取回帖列表
         $where = '';
         if ($seeLz == 1) {
-            $where = ' AND p.uid=' . $info['uid'];
+            $where = ' AND p.uid=' . $info['uid'].' AND p.anonymous=0';
         }
-        $sql = "SELECT p.id,p.tid,p.uid,p.aid,p.anonymous,u.truename AS username,u.avatar,u.level,u.levelTitle,u.levelIcon,p.aid,p.cTime,p.updateTime,p.open,p.comments,p.favors,p.content,'' AS props FROM {{post_posts}} p,{{users}} u WHERE p.tid='{$id}' AND p.isFirst=0{$where} AND p.status=" . Posts::STATUS_PASSED . " AND p.uid=u.id AND u.status=" . Posts::STATUS_PASSED . " ORDER BY p.cTime ASC";
-        Posts::getAll(array('sql' => $sql, 'pageSize' => $this->pageSize), $pages, $posts);
-
+        //回帖排序
+        $postOrder=  zmf::val('order',2);
+        if($postOrder==2){
+            $_postOrder='p.favors DESC';
+        }else{
+            $_postOrder='p.cTime ASC';
+            $postOrder=1;
+        }
+        $sql = "SELECT p.id,p.tid,p.uid,p.aid,p.anonymous,u.truename AS username,u.avatar,u.level,u.levelTitle,u.levelIcon,p.aid,p.cTime,p.updateTime,p.open,p.comments,p.favors,p.content,'' AS props FROM {{post_posts}} p,{{users}} u WHERE p.tid='{$id}' AND p.isFirst=0{$where} AND p.status=" . Posts::STATUS_PASSED . " AND p.uid=u.id AND u.status=" . Posts::STATUS_PASSED . " ORDER BY ".$_postOrder;        Posts::getAll(array('sql' => $sql, 'pageSize' => $this->pageSize), $pages, $posts);
         if (!empty($posts)) {
             $uids = array_filter(array_keys(CHtml::listData($posts, 'aid', '')));
             $uidsStr = join(',', $uids);
@@ -236,6 +242,9 @@ class PostsController extends Q {
                                 'type' => 'author',
                                 'id' => $val2['id'],
                                 'username' => $val2['authorName'],
+                                'level' => $val2['level'],
+                                'levelTitle' => $val2['levelTitle'],
+                                'levelIcon' => $val2['levelIcon'],
                                 'linkArr' => array('author/view', 'id' => $val2['id']),
                                 'avatar' => zmf::getThumbnailUrl($val2['avatar'], 'd120', 'author'),
                             );
@@ -311,6 +320,7 @@ class PostsController extends Q {
             'favoritedForum' => $favoritedForum,
             'replyPostOrNot' => $replyPostOrNot,
             'replyPostOrNotLabel' => $replyPostOrNotLabel,
+            'postOrder' => $postOrder,
         );
         $this->selectNav = 'forum';
         $this->favorited = Favorites::checkFavored($id, 'thread');

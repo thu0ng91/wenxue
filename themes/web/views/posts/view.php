@@ -44,7 +44,13 @@ $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
         </div>
         <div class="module">
             <?php if(!empty($posts)){?>
-            <div class="module-header">最新跟帖</div>            
+            <div class="module-header">
+                最新跟帖
+                <span class="pull-right">
+                    <?php echo $postOrder==1 ? '默认' : CHtml::link('默认',array('view','id'=>$info['id'],'order'=>1));?> | 
+                    <?php echo $postOrder==2 ? '点赞' : CHtml::link('点赞',array('view','id'=>$info['id'],'order'=>2));?>
+                </span>
+            </div>
             <div class="module-body post-content">                
                 <?php foreach ($posts as $post){?>
                 <?php $this->renderPartial('/posts/_postPost',array('data'=>$post));?>                    
