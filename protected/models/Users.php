@@ -102,13 +102,6 @@ class Users extends CActiveRecord {
     public static function model($className = __CLASS__) {
         return parent::model($className);
     }
-    
-    public function beforeSave() {
-        if ($this->password != '') {
-            $this->password = md5($this->password);
-        }
-        return true;
-    }
 
     public static function getOne($id) {
         $sql="SELECT * FROM {{users}} WHERE id=:id";
