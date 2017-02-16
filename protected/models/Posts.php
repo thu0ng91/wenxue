@@ -262,7 +262,7 @@ class Posts extends CActiveRecord {
                 ''
             );
             $content = preg_replace($replace, $to, $content);
-            $content = zmf::removeEmoji($content);
+            $content = zmf::removeEmoji($content);            
         } else {
             $content = strip_tags($content);
             $content = zmf::removeEmoji($content);

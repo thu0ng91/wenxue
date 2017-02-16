@@ -845,7 +845,9 @@ class zmf {
             $width = $size;
         }
         if ($action != 'edit') {
-            $content = zmf::addcontentlink($content);
+            //加链接
+            $content = Keywords::linkWords($content);
+            $content = zmf::addcontentlink($content);            
         } else {
             $lazyload = false;
         }
@@ -915,6 +917,7 @@ class zmf {
                 }
             }
         }
+        
         return $content;
     }
     

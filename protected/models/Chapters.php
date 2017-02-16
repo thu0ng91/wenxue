@@ -219,6 +219,7 @@ class Chapters extends CActiveRecord {
         $content=  nl2br($content);
         $content=str_replace('<br />', '</p><p>', $content);
         $content='<p>'.$content.'</p>';
+        $content = Keywords::linkWords($content);
         return $content;
     }
     public static function mobileText($content){       
@@ -234,6 +235,7 @@ class Chapters extends CActiveRecord {
             '',
         );
         $content = preg_replace($replace, $to, $content);       
+        $content = Keywords::linkWords($content);
         return $content;
     }
     
