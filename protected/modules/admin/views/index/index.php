@@ -1,6 +1,6 @@
 <?php $this->renderPartial('_nav');?>
 <table class="table table-striped">    
-    <tr><td style="width: 120px">待审核帖子</td><td><?php echo CHtml::link($siteinfo['posts'],array('posts/index','type'=>'stayCheck'));?></td></tr>
+    <tr><td style="width: 120px">待审核跟帖</td><td><?php echo CHtml::link($siteinfo['posts'],array('postPosts/index','type'=>'stayCheck'));?></td></tr>
     <tr><td>待审核评论</td><td><?php echo CHtml::link($siteinfo['comments'],array('comments/index','type'=>'stayCheck'));?></td></tr>
     <tr><td>待审核小说</td><td><?php echo CHtml::link($siteinfo['books'],array('books/index','type'=>'stayCheck'));?></td></tr>
     <tr><td>待审核章节</td><td><?php echo CHtml::link($siteinfo['chapters'],array('chapters/index','type'=>'stayCheck'));?></td></tr>

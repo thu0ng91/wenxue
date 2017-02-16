@@ -60,6 +60,8 @@ class Tips extends CActiveRecord {
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
+            'bookInfo' => array(self::BELONGS_TO, 'Books', 'bid'),
+            'userInfo' => array(self::BELONGS_TO, 'Users', 'uid'),
         );
     }
 

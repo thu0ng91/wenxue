@@ -32,6 +32,9 @@ class PostPostsController extends Admin {
         // Uncomment the following line if AJAX validation is needed
         // $this->performAjaxValidation($model);
         if (isset($_POST['PostPosts'])) {
+            $filterContent = Posts::handleContent($_POST['PostPosts']['content']);
+            $content = strip_tags($filterContent['content'], '<p><br><strong><em><u>');
+            $_POST['PostPosts']['content'] = $content;
             $model->attributes = $_POST['PostPosts'];
             if ($model->save()) {
                 if (!$id) {
@@ -73,10 +76,17 @@ class PostPostsController extends Admin {
      * Lists all models.
      */
     public function actionIndex() {
-        $select = "id,uid,aid,tid,comments,favors,cTime,updateTime,open,status";
+        $select = "id,uid,tid,comments,favors,updateTime,status";
         $model = new PostPosts;
         $criteria = new CDbCriteria();
+        $type = zmf::val('type', 1);
+        if ($type == 'stayCheck') {
+            $criteria->addCondition('status=' . Posts::STATUS_STAYCHECK);
+        } else {
+            $criteria->addCondition('status=' . Posts::STATUS_PASSED);
+        }
         $criteria->select = $select;
+        $criteria->order = 'cTime DESC';
         $count = $model->count($criteria);
         $pager = new CPagination($count);
         $pager->pageSize = 30;

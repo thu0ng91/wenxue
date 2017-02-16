@@ -130,8 +130,8 @@ class Posts extends CActiveRecord {
     public static function exStatus($type) {
         $arr = array(
             self::STATUS_NOTPASSED => '存草稿',
-            self::STATUS_PASSED => '正式发布',
-            self::STATUS_STAYCHECK => '投稿',
+            self::STATUS_PASSED => '正常',
+            self::STATUS_STAYCHECK => '待审核',
         );
         if ($type == 'admin') {
             return $arr;

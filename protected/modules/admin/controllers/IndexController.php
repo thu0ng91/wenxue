@@ -28,7 +28,7 @@ class IndexController extends Admin {
         $arr['excuteUseMemory'] = function_exists('memory_get_usage') ? zmf::formatBytes(memory_get_usage()) : '未知';
 
         //获取待审核
-        $arr['posts'] = Posts::model()->count('status=:status', array(':status' => Posts::STATUS_STAYCHECK));
+        $arr['posts'] = PostPosts::model()->count('status=:status', array(':status' => Posts::STATUS_STAYCHECK));
         $arr['comments'] = Comments::model()->count('status=:status', array(':status' => Posts::STATUS_STAYCHECK));
         $arr['books'] = Books::model()->count('status=:status', array(':status' => Posts::STATUS_STAYCHECK));
         $arr['chapters'] = Chapters::model()->count('status=:status AND chapterStatus=:chapterStatus', array(':status' => Posts::STATUS_PASSED,':chapterStatus' => Posts::STATUS_STAYCHECK));

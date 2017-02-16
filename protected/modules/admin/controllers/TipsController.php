@@ -73,6 +73,8 @@ class TipsController extends Admin {
      * Lists all models.
      */
     public function actionIndex() {
+        $select = "id,bid,uid,favors,cTime";
+        $model = new Tips;
         $criteria = new CDbCriteria();
         $type = zmf::val('type', 1);
         if($type=='stayCheck'){
@@ -80,14 +82,24 @@ class TipsController extends Admin {
         }else{
             $criteria->addCondition('status!='.Posts::STATUS_DELED);
         }
-        $count = Tips::model()->count($criteria);
+        $uid=  zmf::val('uid',2);
+        if($uid){
+            $criteria->addCondition('uid='.$uid);
+        }
+        $bid=  zmf::val('bid',2);
+        if($bid){
+            $criteria->addCondition('bid='.$bid);
+        }
+        $count = $model->count($criteria);
         $pager = new CPagination($count);
+        $criteria->select = $select;
         $pager->pageSize = 30;
         $pager->applyLimit($criteria);
-        $posts = Tips::model()->findAll($criteria);
+        $posts = $model->findAll($criteria);
         $this->render('index', array(
             'pages' => $pager,
             'posts' => $posts,
+            'model' => $model,
         ));
     }
 

@@ -1,13 +1,15 @@
 <?php
 
 class CommentsController extends Admin {
-public function init() {
+
+    public function init() {
         parent::init();
         $this->checkPower('comments');
     }
+
     public function actionIndex() {
         $type = zmf::val('type', 1);
-        if (!$type || $type == 'staycheck') {
+        if ($type == 'stayCheck') {
             $status = Posts::STATUS_STAYCHECK;
         } else {
             $status = Posts::STATUS_PASSED;
@@ -35,14 +37,30 @@ public function init() {
             'posts' => $items,
         ));
     }
-    
-    public function actionStayCheck($id){
-        $info=  $this->loadModel($id);
-        $info['content']=  Words::highLight($info['content']);
-        $data=array(
-            'info'=>$info
+
+    public function actionStayCheck($id) {
+        $info = $this->loadModel($id);
+        $info['content'] = Words::highLight($info['content']);
+        $data = array(
+            'info' => $info
         );
-        $this->render('stayCheck',$data);
+        $this->render('stayCheck', $data);
+    }
+
+    public function actionUpdate($id) {
+        $model = $this->loadModel($id);
+        if (isset($_POST['Comments'])) {
+            $filterContent = Posts::handleContent($_POST['Comments']['content']);
+            $content = strip_tags($filterContent['content'], '<p><br><strong><em><u>');
+            $_POST['Comments']['content'] = $content;
+            $model->attributes = $_POST['Comments'];
+            if ($model->save()) {
+                $this->redirect(array('index'));
+            }
+        }
+        $this->render('create', array(
+            'model' => $model,
+        ));
     }
 
     public function loadModel($id) {
