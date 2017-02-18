@@ -18,7 +18,7 @@
     </div>
     <?php }else{?>
     <div class="media-left text-center">
-        <img src="<?php echo zmf::config('baseurl').'common/images/default.png';?>" class="img-circle a48 media-object" alt="匿名者"/>
+        <img src="https://img2.chuxincw.com/siteinfo/2017/02/18/32DD3F5E-18B2-DA78-549C-9E7F89731A1B.png/a120" class="img-circle a48 media-object" alt="匿名者"/>
     </div>
     <?php }?>
     <div class="media-body">

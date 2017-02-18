@@ -223,7 +223,7 @@ class zmf {
     }
 
     public static function lazyImg() {
-        return zmf::config('baseurl') . 'common/images/grey.gif';
+        return 'https://img2.chuxincw.com/siteinfo/2017/02/18/E0258BCB-6A87-8595-580C-8C1BACC3C32F.gif';
     }
 
     public static function getThumbnailUrl($url, $size = '', $type = '') {

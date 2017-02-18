@@ -101,11 +101,11 @@
             <div class="module-body">
                 <div class="row">
                     <div class="col-xs-6">
-                        <img src="<?php echo zmf::lazyImg();?>" data-original="<?php echo zmf::config('baseurl').'common/images/weibo.png';?>" class="img-responsive lazy"/>
+                        <img src="<?php echo zmf::lazyImg();?>" data-original="https://img2.chuxincw.com/siteinfo/2017/02/18/B46BF6E6-CC2D-A93E-1217-547B852B85E1.png/a120" class="a108 lazy" alt="初心创文官方微博"/>
                         <p class="text-center">官方微博</p>
                     </div>
                     <div class="col-xs-6">
-                        <img src="<?php echo zmf::lazyImg();?>" data-original="<?php echo zmf::config('baseurl').'common/images/weixin.jpg';?>" class="img-responsive lazy"/>
+                        <img src="<?php echo zmf::lazyImg();?>" data-original="https://img2.chuxincw.com/siteinfo/2017/02/18/78FC4DC2-0627-66F0-E5A3-8AEDA399BAC0.jpg/a120" class="a108 lazy" alt="初心创文官方微信"/>
                         <p class="text-center">官方微信</p>
                     </div>
                 </div>                

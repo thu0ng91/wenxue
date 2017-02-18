@@ -16,7 +16,7 @@
                 <?php if(!$data['anonymous']){?>
                 <img class="lazy a36" src="<?php echo zmf::lazyImg();?>" data-original="<?php echo $data['userInfo']['avatar'];?>" alt="<?php echo $data['userInfo']['username'];?>">   
                 <?php }else{?>
-                <img src="<?php echo zmf::config('baseurl').'common/images/default.png';?>" class="img-circle a36" alt="匿名者"/>
+                <img src="https://img2.chuxincw.com/siteinfo/2017/02/18/32DD3F5E-18B2-DA78-549C-9E7F89731A1B.png/a120" class="img-circle a36" alt="匿名者"/>
                 <?php }?>
             </div>
             <div class="ui-list-info">
