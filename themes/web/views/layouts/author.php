@@ -1,20 +1,9 @@
-<?php 
-$this->beginContent('/layouts/common'); 
-?>
+<?php $this->beginContent('/layouts/main'); ?>
 <style>
     .change-skin{
         background: url(<?php echo zmf::config('baseurl').'common/images/skin.gif';?>) no-repeat center
     }
 </style>
-<div class="navbar navbar-default" role="navigation">
-    <div class="container">
-        <div class="navbar-collapse collapse">
-            <?php $this->renderPartial('/layouts/_nav');?>
-            <?php $this->renderPartial('/layouts/_user',array('from'=>'author'));?>
-        </div>
-    </div> 
-</div>
-
 <div class="container">
     <div class="author-bg-container" style="background-image: url(<?php echo zmf::getThumbnailUrl($this->authorInfo['skinUrl']);?>);">
         <?php if($this->adminLogin){?>

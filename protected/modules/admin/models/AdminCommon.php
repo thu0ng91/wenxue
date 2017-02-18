@@ -183,6 +183,11 @@ class AdminCommon extends CActiveRecord {
                     'url' => Yii::app()->createUrl('admin/config/index',array('type'=>'upload')),
                     'active' => in_array($_GET['type'], array('upload'))
                 ),
+                'siteFiles' => array(
+                    'title' => '站点文件',
+                    'url' => Yii::app()->createUrl('admin/siteFiles/index'),
+                    'active' => in_array($c, array('siteFiles'))
+                ),
             )
         );
         foreach ($attr as $k => $v) {

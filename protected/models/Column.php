@@ -47,12 +47,12 @@ class Column extends CActiveRecord {
             'criteria' => $criteria,
         ));
     }
-    
-    public static function classify($type){
-        $arr=array(
-            '1'=>'小说分类'
+
+    public static function classify($type) {
+        $arr = array(
+            '1' => '小说分类'
         );
-        if($type=='admin'){
+        if ($type == 'admin') {
             return $arr;
         }
         return $arr[$type];
@@ -63,10 +63,15 @@ class Column extends CActiveRecord {
     }
 
     public static function allCols($type = 1, $second = 0, $col0 = true, $classify = 1) {
+        $key = 'allCols-' . $type . '-' . $second . '-' . $col0 . '-' . $classify;
+        $cols = zmf::getFCache($key);
+        if ($cols) {
+            return $cols;
+        }
         if ($type == 1) {
-            $arr = array('belongid' => 0, 'classify' => $classify,'status'=>  Posts::STATUS_PASSED);
+            $arr = array('belongid' => 0, 'classify' => $classify, 'status' => Posts::STATUS_PASSED);
         } else {
-            $arr = array('belongid' => $second, 'classify' => $classify,'status'=>  Posts::STATUS_PASSED);
+            $arr = array('belongid' => $second, 'classify' => $classify, 'status' => Posts::STATUS_PASSED);
         }
         if ($classify === NULL || !$classify) {
             unset($arr['classify']);
@@ -83,6 +88,7 @@ class Column extends CActiveRecord {
                 $cols = CHtml::listData($cols, 'id', 'title');
             }
         }
+        zmf::setFCache($key, $cols, 86400);
         return $cols;
     }
 
