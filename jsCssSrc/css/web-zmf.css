@@ -316,7 +316,8 @@ button, input, select, textarea,.form-control,.btn{
 }
 .main-tops .top-book-item{
     font-size: 12px;
-    text-align: center
+    text-align: center;
+    display: inline-block
 }
 .main-tops .top-book-item a{
     color: #333

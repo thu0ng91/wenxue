@@ -25,12 +25,12 @@ $_sidePosts=$sideInfo['posts'];
                 </a>
             </div>
             <div class="media-body">
-                <p class="ui-nowrap title"><?php echo CHtml::link(($_post['colTitle']!='' ? '['.$_post['colTitle'].']' : '').$_post['title'],array('book/view','id'=>$_post['id']));?></p>
+                <p class="ui-nowrap title"><?php echo ($_post['colTitle']!='' ? CHtml::link('['.$_post['colTitle'].']',array('book/index','colid'=>$_post['colid'])) : '').CHtml::link($_post['title'],array('book/view','id'=>$_post['id']));?></p>
                 <p class="color-grey"><?php echo zmf::subStr($_post['desc'],40);?></p>
             </div>
         </div>
         <?php continue;}?>
-        <p class="ui-nowrap item"><span class="dot"><?php echo ($k+1);?></span><?php echo CHtml::link(($_post['colTitle']!='' ? '['.$_post['colTitle'].']' : '').$_post['title'],array('book/view','id'=>$_post['id']));?></p>
+        <p class="ui-nowrap item"><span class="dot"><?php echo ($k+1);?></span><?php echo ($_post['colTitle']!='' ? CHtml::link('['.$_post['colTitle'].']',array('book/index','colid'=>$_post['colid'])) : '').CHtml::link($_post['title'],array('book/view','id'=>$_post['id']));?></p>
         <?php }?>
         <?php }?>  
         <?php if($this->userInfo['isAdmin']){?><div class="column-fixed-btn"><?php echo CHtml::link('<i class="fa fa-edit"></i>',array('admin/showcaseLink/index','sid'=>$sideInfo['id']),array('target'=>'_blank'));?></div><?php }?>
