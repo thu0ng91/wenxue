@@ -149,11 +149,26 @@ class Keywords extends CActiveRecord {
         return $items;
     }
 
-    public static function linkWords($content) {
-        $keywords = self::getWords();
-        if (empty($keywords) || !$content) {
+    /**
+     * 内容加链接
+     * @param string $content
+     * @param string $from 来源，keywords：实时链接；wenku：不变的链接
+     * @return string
+     */
+    public static function linkWords($content,$from='keywords') {
+        $keywords = self::getWords();  
+        if(empty($keywords) || !$keywords){
             return $content;
         }
+        //处理link
+        $replace = array(
+            "/\[link=([^\]]+?)\](.+?)\[\/link\]/i",
+        );
+        $to = array(
+            '<a href="\\1" target="_blank" class="_auto">\\2</a>',
+        );
+        $content = preg_replace($replace, $to, $content);
+        //取所有链接
         preg_match_all('/<a.*?href=".*?".*?>.*?<\/a>/i', $content, $linkList);
         $content = preg_replace('/<a.*?href=".*?".*?>.*?<\/a>/i', '<{link}>', $content);
         preg_match_all('/<img[^>]+>/im', $content, $imgList);

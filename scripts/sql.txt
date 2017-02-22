@@ -17,3 +17,6 @@ CREATE TABLE `pre_site_files` (
   `updateTime` int(10) NOT NULL,  
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+alter table pre_wenku_posts add len tinyint(3) unsigned not null;
+update pre_wenku_posts set `status`=0;

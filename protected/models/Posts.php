@@ -45,11 +45,12 @@ class Posts extends CActiveRecord {
     const PLATFORM_MOBILE = 2;
     const PLATFORM_ANDROID = 3;
     const PLATFORM_IOS = 4;
-    const PLATFORM_WEAPP = 5;//微信小程序
+    const PLATFORM_WEAPP = 5; //微信小程序
 
     /**
      * @return string the associated database table name
      */
+
     public function tableName() {
         return '{{posts}}';
     }
@@ -213,7 +214,7 @@ class Posts extends CActiveRecord {
      * @return boolean
      */
     public static function updateCount($keyid, $type, $num = 1, $field = 'hits') {
-        if (!$keyid || !$type || !in_array($type, array('Books', 'Authors', 'Chapters', 'Tips', 'Users', 'Posts', 'Comments', 'GroupTasks', 'Task','PostPosts','PostForums','PostThreads'))) {
+        if (!$keyid || !$type || !in_array($type, array('Books', 'Authors', 'Chapters', 'Tips', 'Users', 'Posts', 'Comments', 'GroupTasks', 'Task', 'PostPosts', 'PostForums', 'PostThreads'))) {
             return false;
         }
         $model = new $type;
@@ -262,7 +263,9 @@ class Posts extends CActiveRecord {
                 ''
             );
             $content = preg_replace($replace, $to, $content);
-            $content = zmf::removeEmoji($content);            
+            $content = zmf::removeEmoji($content);
+            //加关键词
+            $content = KeywordIndexer::linkContent($content);
         } else {
             $content = strip_tags($content);
             $content = zmf::removeEmoji($content);
@@ -333,7 +336,7 @@ class Posts extends CActiveRecord {
         if (!$code || !$type) {
             return array('status' => 0, 'msg' => '数据不全，请核实');
         }
-        if (!in_array($type, array('book', 'author', 'tip', 'user', 'post', 'comment','postPosts','forum'))) {
+        if (!in_array($type, array('book', 'author', 'tip', 'user', 'post', 'comment', 'postPosts', 'forum'))) {
             return array('status' => 0, 'msg' => '暂不允许的分类');
         }
         if (is_numeric($code)) {
@@ -347,7 +350,7 @@ class Posts extends CActiveRecord {
         }
         if (!$userInfo['id']) {
             $uid = zmf::uid();
-            $userInfo=  Users::getOne($uid);
+            $userInfo = Users::getOne($uid);
         } else {
             $uid = $userInfo['id'];
         }
@@ -419,18 +422,18 @@ class Posts extends CActiveRecord {
             if (!$postInfo || $postInfo['status'] != Posts::STATUS_PASSED) {
                 return array('status' => 0, 'msg' => '你所操作的内容不存在');
             }
-            $threadInfo=  PostThreads::getOne($postInfo['tid']);
-            if(!$threadInfo || $threadInfo['status']!=Posts::STATUS_PASSED){
+            $threadInfo = PostThreads::getOne($postInfo['tid']);
+            if (!$threadInfo || $threadInfo['status'] != Posts::STATUS_PASSED) {
                 return array('status' => 0, 'msg' => '你所操作的帖子不存在');
             }
-            $now=  zmf::now();
-            if($threadInfo['voteExpiredTime']>0 && $threadInfo['voteExpiredTime']<=$now){
+            $now = zmf::now();
+            if ($threadInfo['voteExpiredTime'] > 0 && $threadInfo['voteExpiredTime'] <= $now) {
                 return array('status' => 0, 'msg' => '投票已结束');
             }
-            if($postInfo['isFirst']){
+            if ($postInfo['isFirst']) {
                 $content = "赞了你的帖子【{$threadInfo['title']}】，" . CHtml::link('查看详情', array('posts/view', 'id' => $postInfo['tid']));
-            }else{
-                $content = "赞了你对【{$threadInfo['title']}】的回帖，" . CHtml::link('查看详情', array('posts/view', 'id' => $postInfo['tid'],'#'=>'reply-'.$id));
+            } else {
+                $content = "赞了你对【{$threadInfo['title']}】的回帖，" . CHtml::link('查看详情', array('posts/view', 'id' => $postInfo['tid'], '#' => 'reply-' . $id));
             }
             $noticeUid = $postInfo['uid'];
             $powerAction = 'favorPostReply';

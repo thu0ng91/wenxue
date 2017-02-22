@@ -227,6 +227,20 @@ legend{
 .settings-main-box .passwd-form label{
     font-weight: normal
 }
+.zmf-input-group{
+    display: flex;
+    box-sizing: border-box;
+    padding-right: 0;
+    margin-bottom: 15px;
+}
+.zmf-input-group .form-control{
+    -webkit-box-flex: 1;
+    -webkit-flex: 1;
+    flex: 1;
+}
+.search-form .input-group-btn{
+    padding-right: 5px
+}
 /**
 *重写分页样式
 */

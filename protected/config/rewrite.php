@@ -21,6 +21,13 @@ return array(
         'post/<id:\d+>' => 'posts/view',
         'activity/<id:\d+>' => 'activity/view',
         'siteInfo/<code:\w+>' => 'site/info',
+        //文库
+        'wenku/p<id:\d+>' => 'wenku/post',
+        'wenku/a<id:\d+>' => 'wenku/author',
+        'wenku/b<id:\d+>' => 'wenku/book',
+        'wenku' => 'wenku/index',
+        
+        
         '<controller:\w+>/<action:\w+>' => '<controller>/<action>',
         '<module:\w+>/<controller:\w+>/<action:\w+>' => '<module>/<controller>/<action>',        
     )

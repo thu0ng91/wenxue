@@ -158,6 +158,32 @@ class AdminCommon extends CActiveRecord {
                 ),
             )
         );
+        $attr['wenku'] = array(
+            'title' => '<i class="fa fa-book"></i> 文库',
+            'url' => '#',
+            'seconds' => array(
+                'wenkuColumns' => array(
+                    'title' => '朝代',
+                    'url' => Yii::app()->createUrl('admin/wenkuColumns/index'),
+                    'active' => in_array($c, array('wenkuColumns'))
+                ),
+                'wenkuAuthor' => array(
+                    'title' => '作者',
+                    'url' => Yii::app()->createUrl('admin/wenkuAuthor/index'),
+                    'active' => in_array($c, array('wenkuAuthor'))
+                ),
+                'wenkuBook' => array(
+                    'title' => '文学合集',
+                    'url' => Yii::app()->createUrl('admin/wenkuBook/index'),
+                    'active' => in_array($c, array('wenkuBook'))
+                ),
+                'wenkuPosts' => array(
+                    'title' => '诗词歌赋',
+                    'url' => Yii::app()->createUrl('admin/wenkuPosts/index'),
+                    'active' => in_array($c, array('wenkuPosts'))
+                ),
+            )
+        );
         $attr['system'] = array(
             'title' => '<i class="fa fa-cog"></i> 系统',
             'url' => Yii::app()->createUrl('admin/config/index'),
