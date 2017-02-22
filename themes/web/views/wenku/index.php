@@ -9,21 +9,11 @@
  * @datetime 2017-2-21  14:15:08 
  */
 ?>
-<style>
-    .module .list-group-noborder{
-        margin-bottom: 0;
-        padding-top: 0;
-        padding-right: 0
-    }
-    .list-group-noborder .list-group-item:first-child{
-        border-radius: 0;
-        border-top: none
-    }
-    .list-group-noborder .list-group-item{
-        border: 0;
-        border-top: 1px solid #ddd
-    }
-</style>
+<div class="container-fluid jumbotron-post wenku-head-box">
+    <div class="container">
+        <h1 class="sologn">生活不只眼前<br/>应有诗和远方</h1>        
+    </div>
+</div>
 <div class="container">            
     <div class="module main-part">
         <div class="module-header">列表</div>

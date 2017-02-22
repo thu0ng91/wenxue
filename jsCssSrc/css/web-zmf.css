@@ -1791,6 +1791,43 @@ span.required,.errorMessage{
 .recommend .thumbnail:hover .btn{
     display: block
 }
+/*文库*/
+.jumbotron-post{
+    background: rgba(147, 186, 95,.2);
+    margin-top: -20px;
+    padding: 100px 0;
+    margin-bottom: 10px;    
+}
+.wenku-head-box{
+    background: url(http://hbfile.b0.upaiyun.com/img/home/banner/cab76fa56300bee0fa4f4d908f8d7981766065a6137c81) no-repeat center;
+    background-size: cover
+}
+.jumbotron-post .container{
+    color: #333;
+    text-align: center;
+    font-size: 16px
+}
+.jumbotron-post h1{
+    font-size: 36px;
+}
+.jumbotron-post h1.sologn{
+    line-height: 1.2;
+    font-size: 64px;
+    color: #fff;
+}
+.module .list-group-noborder{
+    margin-bottom: 0;
+    padding-top: 0;
+    padding-right: 0
+}
+.list-group-noborder .list-group-item:first-child{
+    border-radius: 0;
+    border-top: none
+}
+.list-group-noborder .list-group-item{
+    border: 0;
+    border-top: 1px solid #ddd
+}
 /*页脚------*/
 .footer{
     width: 100%;

@@ -9,17 +9,6 @@
  * @datetime 2017-2-21  14:15:31 
  */
 ?>
-<style>
-    .jumbotron-post{
-        background: #666;
-        margin-top: -20px;
-        padding: 80px 0;
-        margin-bottom: 10px;
-    }
-    .jumbotron-post .container{
-        color: #fff;
-    }
-</style>
 <div class="container-fluid jumbotron-post">
     <div class="container">
         <h1><?php echo $info['title'];?></h1>
