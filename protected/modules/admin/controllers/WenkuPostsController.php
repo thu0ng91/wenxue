@@ -192,6 +192,57 @@ class WenkuPostsController extends Admin {
         KeywordIndexer::createWordsCache();
         exit('well done');
     }
+    
+    public function actionClearLink(){
+        $action = zmf::val('action', 1);
+        ini_set('memory_limit', '512M');
+        ini_set('max_execution_time', '1800');
+        $page = isset($_GET['page']) ? $_GET['page'] : 1;
+        $classify = isset($_GET['classify']) ? $_GET['classify'] : 'author';
+        $num = 10;
+        $start = ($page - 1) * $num;
+        if ($classify == 'author') {
+            $sql = "SELECT id,content FROM {{wenku_author_info}} WHERE status=1 ORDER BY id ASC LIMIT $start,$num";
+        } elseif ($classify == 'posts') {
+            $sql = "SELECT id,content FROM {{wenku_post_info}} WHERE status=1 ORDER BY id ASC LIMIT $start,$num";
+        } else {
+            exit('no such classify');
+        }
+        $items = Yii::app()->db->createCommand($sql)->queryAll();
+        if (empty($items)) {
+            if ($classify == 'posts') {
+                exit('well done');
+            } elseif ($classify == 'author') {
+                $url = Yii::app()->createUrl('admin/wenkuPosts/clearLink', array('classify' => 'posts'));
+                $this->message(1, "即将处理古文", $url, 1);
+            }
+        }
+        foreach ($items as $val) {
+            $replace = array(
+                "/\[link=([^\]]+?)\](.+?)\[\/link\]/i",
+            );
+            $to = array(
+                '\\2',
+            );
+            $content = preg_replace($replace, $to, $val['content']);
+            if(strpos($content, '[/link]')!==false){
+                $replace = array(
+                    "/\[link=([^\]]+?)\](.+?)\[\/link\]/i",
+                );
+                $to = array(
+                    '\\2',
+                );
+                $content = preg_replace($replace, $to, $content);
+            }
+            if ($classify == 'author') {
+                WenkuAuthorInfo::model()->updateByPk($val['id'], array('content' => $content));
+            } elseif ($classify == 'posts') {
+                WenkuPostInfo::model()->updateByPk($val['id'], array('content' => $content));
+            }
+        }
+        $url = Yii::app()->createUrl('admin/wenkuPosts/clearLink', array('page' => ($page + 1), 'classify' => $classify));
+        $this->message(1, "正在处理{$page}页", $url, 1);
+    }
 
     public function actionLink() {
         $action = zmf::val('action', 1);

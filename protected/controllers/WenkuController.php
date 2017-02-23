@@ -49,7 +49,6 @@ class WenkuController extends Q {
 
     public function actionAuthor() {
         $id = zmf::val('id', 2);
-        $id = zmf::val('id', 2);
         if (!$id) {
             throw new CHttpException(404, '您所查看的页面不存在');
         }
@@ -106,9 +105,12 @@ class WenkuController extends Q {
             }
         }
         $authorInfo = array();
-
+        if ($info['author'] > 0) {
+            $authorInfo = WenkuAuthor::getOne($info['author']);
+        }
         $data = array(
-            'info' => $info
+            'info' => $info,
+            'authorInfo' => $authorInfo
         );
         $this->render('post', $data);
     }

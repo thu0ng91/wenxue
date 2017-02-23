@@ -11,7 +11,7 @@
 ?>
 <div class="container-fluid jumbotron-post wenku-head-box">
     <div class="container">
-        <h1 class="sologn">生活不只眼前<br/>应有诗和远方</h1>        
+        <h1 class="sologn">生活不止眼前<br/>应有诗和远方</h1>        
     </div>
 </div>
 <div class="container">            

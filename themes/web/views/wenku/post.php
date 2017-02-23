@@ -12,7 +12,7 @@
 <div class="container-fluid jumbotron-post">
     <div class="container">
         <h1><?php echo $info['title'];?></h1>
-        <p class="author"><?php echo CHtml::link($info['author'],array('wenku/author','id'=>$info['author']));?></p>
+        <p class="author"><?php echo $info['author'] ? CHtml::link($info['author'],array('wenku/author','id'=>$info['author'])) : '佚名';?></p>
         <div class="content">
             <?php echo $info['content'];?>
         </div>
