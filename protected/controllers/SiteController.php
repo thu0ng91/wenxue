@@ -136,7 +136,7 @@ class SiteController extends Q {
             } else {
                 $inputData = array(
                     'truename' => $truename,
-                    'password' => $password,
+                    'password' => md5($password),
                 );
                 if ($isEmail) {
                     $inputData['email'] = $email;
