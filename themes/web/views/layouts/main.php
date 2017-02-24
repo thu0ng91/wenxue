@@ -14,15 +14,20 @@ $forums=  PostForums::listAll();
 </div>
 <div class="navbar navbar-topbar" role="navigation">
     <div class="container">
-        <div class="navbar-collapse collapse">
-            <ul class="nav navbar-nav" id="digest-subnavs">
+        <div class="navbar-collapse collapse" id="navbar-extra">
+            <ul class="nav navbar-nav" id="nav-bookStore">
                 <?php foreach ($cols as $colid=>$colTitle){?>
                 <li><?php echo zmf::urls($colTitle,'book/index',array('key'=>'colid','value'=>$colid),array('title'=>$colTitle.'小说'));?></li>
                 <?php }?>
             </ul>
-            <ul class="nav navbar-nav displayNone" id="forumns-subnavs">
+            <ul class="nav navbar-nav displayNone" id="nav-forumns">
                 <?php foreach ($forums as $fid=>$fTitle){?>
                 <li><?php echo CHtml::link($fTitle,array('posts/index','forum'=>$fid));?></li>
+                <?php }?>
+            </ul>
+            <ul class="nav navbar-nav displayNone" id="nav-wenku">
+                <?php $dyArr=WenkuColumns::getNavItems();foreach ($dyArr as $did=>$dTitle){?>
+                <li><?php echo CHtml::link($dTitle,array('wenku/index','dynasty'=>$did),array('title'=>$dTitle.'诗词'));?></li>
                 <?php }?>
             </ul>
             <div class="navbar-form navbar-right">

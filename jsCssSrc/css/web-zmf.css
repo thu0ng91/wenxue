@@ -1792,19 +1792,33 @@ span.required,.errorMessage{
     display: block
 }
 /*文库*/
-/*
-@font-face {
-	font-family: 'FZZhengHeiS';
-	src: url('https://img2.chuxincw.com/FZZXHJW--GB1-0.eot');
-	src: url('https://img2.chuxincw.com/FZZXHJW--GB1-0.eot?#iefix') format('embedded-opentype'),
-		url('https://img2.chuxincw.com/FZZXHJW--GB1-0.woff2') format('woff2'),
-		url('https://img2.chuxincw.com/FZZXHJW--GB1-0.woff') format('woff'),
-		url('https://img2.chuxincw.com/FZZXHJW--GB1-0.ttf') format('truetype'),
-		url('https://img2.chuxincw.com/FZZXHJW--GB1-0.svg#FZZXHJW--GB1-0') format('svg');
-	font-weight: normal;
-	font-style: normal;
+/*条件筛选*/
+.conditions-holder:first-child{
+    margin-top: 10px
 }
-*/
+.conditions-holder .holder-title{
+    width: 60px;
+    float: left;
+    font-size: 14px;
+    line-height: 28px;
+    text-align: right
+}
+.conditions-holder .holder-body{
+    padding-left: 70px;
+    border-bottom: 1px solid #D7D7D7;
+    padding-bottom: 5px;
+    margin-bottom: 5px;
+}
+.conditions-holder .holder-body ._item{
+    display: inline-block;
+    padding: 5px
+}
+.conditions-holder .holder-body ._item input{
+    padding-top: 3px
+}
+.conditions-holder .holder-body ._item label{
+    font-weight: normal;        
+}
 .jumbotron-post{
     background: rgba(147, 186, 95,.2);
     margin-top: -20px;

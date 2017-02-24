@@ -514,30 +514,41 @@ class PostsController extends Q {
         $addScoreExp = true;
         $threadInfo = $this->loadModel($tid);
         if ($pid) {
-            $model = PostPosts::model()->findByPk($pid);
-            if (!$model || $model->uid != $this->uid) {
+            $model = PostPosts::getOne($pid);
+            if (!$model || $model->status!=Posts::STATUS_PASSED) {
                 throw new CHttpException(404, '你编辑的页面不存在或已被删除！');
             } elseif ($model->tid != $tid) {
                 throw new CHttpException(404, '数据有误，请核实！');
             } elseif ($model->isFirst) {//不能编辑首层
                 $this->redirect(array('posts/create', 'id' => $model->tid));
-            }
-            $model->content = zmf::text(array(), $model['content'], true, 'w600');
+            }            
         } else {
             $model = new PostPosts;
             $model->tid = $tid;
             $model->open = Posts::STATUS_OPEN;
         }
         //获取用户组的权限
-        $powerInfo = GroupPowers::checkPower($this->userInfo, 'addPostReply');
-        if (!$powerInfo['status']) {
-            //用户本身的权限已用完，再判断对方是否是版主
-            if (!ForumAdmins::checkForumPower($this->uid, $threadInfo['fid'], 'addPostReply', true)) {
-                $this->message($powerInfo['status'], $powerInfo['msg']);
-            } else {
-                $addScoreExp = false;
+        if($pid){
+            if($model->uid != $this->uid){
+                //用户本身的权限已用完，再判断对方是否是版主
+                if (!ForumAdmins::checkForumPower($this->uid, $threadInfo['fid'], 'editPostReply', true)) {
+                    throw new CHttpException(403, '你无权此操作！');
+                } else {
+                    $addScoreExp = false;
+                }
             }
-        }
+            $model->content = zmf::text(array('action'=>'edit'), $model['content'], true, 'w600');
+        }else{
+            $powerInfo = GroupPowers::checkPower($this->userInfo, 'addPostReply');
+            if (!$powerInfo['status']) {
+                //用户本身的权限已用完，再判断对方是否是版主
+                if (!ForumAdmins::checkForumPower($this->uid, $threadInfo['fid'], 'addPostReply', true)) {
+                    $this->message($powerInfo['status'], $powerInfo['msg']);
+                } else {
+                    $addScoreExp = false;
+                }
+            }
+        }        
         if (isset($_POST['PostPosts'])) {
             //处理文本
             $filterContent = Posts::handleContent($_POST['PostPosts']['content']);

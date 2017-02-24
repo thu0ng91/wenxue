@@ -10,17 +10,17 @@
  */
 //$cols=  Column::allCols();
 ?>
-<ul class="nav navbar-nav">
-    <li<?php echo $this->selectNav == 'indexPage' ? ' class="active"' : ''; ?>><?php echo CHtml::link('首页', zmf::config('baseurl')); ?></li>
+<ul class="nav navbar-nav" id="main-navbar">
+    <li<?php echo $this->selectNav == 'indexPage' ? ' class="active"' : ''; ?> data-target="nav-bookStore"><?php echo CHtml::link('首页', zmf::config('baseurl')); ?></li>
     <?php foreach ($cols as $colid=>$colTitle){?>
     <li<?php echo $this->selectNav == 'column'.$colid ? ' class="active"' : ''; ?>><?php echo CHtml::link($colTitle, array('showcase/index','cid'=>$colid)); ?></li>
     <?php }?>
-    <li<?php echo $this->selectNav == 'book' ? ' class="active"' : ''; ?>><?php echo CHtml::link('书城', array('book/index')); ?></li>
+    <li<?php echo $this->selectNav == 'book' ? ' class="active"' : ''; ?> data-target="nav-bookStore"><?php echo CHtml::link('书城', array('book/index')); ?></li>
 <!--    <li<?php echo $this->selectNav == 'shop' ? ' class="active"' : ''; ?>><?php echo CHtml::link('商城', array('shop/index')); ?></li>-->
     <?php if(!$this->uid || empty($this->userInfo['favoriteForums'])){?>
-    <li<?php echo $this->selectNav == 'forum' ? ' class="active"' : ''; ?>><?php echo CHtml::link('基地', array('posts/types')); ?></li>
+    <li<?php echo $this->selectNav == 'forum' ? ' class="active"' : ''; ?> data-target="nav-forumns"><?php echo CHtml::link('基地', array('posts/types')); ?></li>
     <?php }else{?>
-    <li class="dropdown">
+    <li class="dropdown" data-target="nav-forumns">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown">基地 <span class="caret"></span></a>               
         <ul class="dropdown-menu">
             <li role="presentation" class="dropdown-header">我的关注</li>
@@ -33,5 +33,5 @@
         </ul>
     </li>
     <?php }?>
-    
+    <li<?php echo $this->selectNav == 'wenku' ? ' class="active"' : ''; ?> data-target="nav-wenku"><?php echo CHtml::link('诗词文库', array('wenku/index')); ?></li>
 </ul>

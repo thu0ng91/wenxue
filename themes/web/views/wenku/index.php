@@ -16,7 +16,22 @@
 </div>
 <div class="container">            
     <div class="module main-part">
-        <div class="module-header">列表</div>
+        <div class="conditions-holder">
+            <div class="holder-title">朝代：</div>
+            <div class="holder-body">
+                <?php foreach($dyArr as $_did=>$_dtitle){?>
+                <span class="_item"><?php echo CHtml::link($_dtitle,array('wenku/index','dynasty'=>$_did),array('title'=>$_dtitle));?></span>
+                <?php }?>          
+            </div>
+        </div>
+        <div class="conditions-holder">
+            <div class="holder-title">形式：</div>
+            <div class="holder-body">
+                <?php foreach($typeArr as $_tid=>$_ttitle){?>
+                <span class="_item"><?php echo CHtml::link($_ttitle,array('wenku/index','type'=>$_tid),array('title'=>$_ttitle));?></span>
+                <?php }?>          
+            </div>
+        </div>
         <div class="module-body">
             <?php foreach($posts as $post){?>
             <div class="media ui-border-b">

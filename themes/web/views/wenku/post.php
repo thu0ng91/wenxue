@@ -12,22 +12,51 @@
 <div class="container-fluid jumbotron-post">
     <div class="container">
         <h1><?php echo $info['title'];?></h1>
-        <p class="author"><?php echo $info['author'] ? CHtml::link($info['author'],array('wenku/author','id'=>$info['author'])) : '佚名';?></p>
+        <p class="author"><?php echo $authorInfo ? '- '.CHtml::link($authorInfo['title'],array('wenku/author','id'=>$authorInfo['id']),array('target'=>'_blank')) : '佚名';?></p>
         <div class="content">
-            <?php echo $info['content'];?>
+            <?php echo nl2br($info['content']);?>
         </div>
     </div>
 </div>
 <div class="container">
     <div class="main-part module">
-        <?php $aboutInfos=$info->aboutInfos; foreach ($aboutInfos as $abInfo){?>
+        <?php foreach ($aboutInfos as $abInfo){?>
         <div class="module-header"><?php echo WenkuPostInfo::exClassify($abInfo['classify']);?></div>
         <div class="module-body">
-            <?php echo $abInfo['content'];?>
+            <div class="displayNone" id="content-info-<?php echo $abInfo['id'];?>"><?php echo $abInfo['content'];?><p class="text-right"><?php echo CHtml::link('收起','javascript:;',array('data-id'=>'info-'.$abInfo['id'],'class'=>'toggle'));?></p></div>
+            <div id="substr-info-<?php echo $abInfo['id'];?>"><?php echo zmf::subStr($abInfo['content'], 200,'...'.CHtml::link('展开','javascript:;',array('data-id'=>'info-'.$abInfo['id'],'class'=>'toggle')));?></div>
         </div>
         <?php }?>
     </div>
     <div class="aside-part module">
         <div class="module-header">关于作者</div>
+        <div class="module-body media">
+            <div class="media-left">
+                <img src="<?php echo zmf::lazyImg();?>" class="lazy w78"/>
+            </div>
+            <div class="media-body">
+                <p class="title"><?php echo CHtml::link($authorInfo['title'],array('wenku/author','id'=>$authorInfo['id']),array('target'=>'_blank'));?></p>
+            </div>
+        </div>
     </div>
 </div>
+<script>
+    $(document).ready(function(){
+        $('a.toggle').unbind('click').click(function(){
+            var dom=$(this);
+            var tar=dom.attr('data-id');
+            if(!tar){
+                return false;
+            }
+            var cdom=$('#content-'+tar);
+            var sdom=$('#substr-'+tar);
+            if(cdom.css('display')==='none'){
+                cdom.show();
+                sdom.hide();
+            }else{
+                cdom.hide();
+                sdom.show();
+            }
+        });
+    })
+</script>

@@ -115,7 +115,8 @@ class zmf {
         return $string;
     }
 
-    public static function subStr($string, $sublen = 20, $start = 0, $separater = '...') {
+    public static function subStr($string, $sublen = 20, $separater = '...') {
+        $start = 0;
         $string = self::stripStr($string);
         $code = 'UTF-8';
         if ($code == 'UTF-8') {

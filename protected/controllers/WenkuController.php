@@ -10,6 +10,11 @@
  */
 class WenkuController extends Q {
 
+    public function init() {
+        parent::init();
+        $this->selectNav = 'wenku';
+    }
+
     public function actionIndex() {
         $criteria = new CDbCriteria();
         $criteria->order = 't.hits DESC';
@@ -19,10 +24,15 @@ class WenkuController extends Q {
         if ($author) {
             $criteria->addCondition("t.author='{$author}'");
         }
-        //所属朝代或类型
-        $colid = zmf::val('colid', 2);
-        if ($colid) {
-            $criteria->addCondition("t.dynasty='{$colid}'");
+        //所属朝代
+        $dynasty = zmf::val('dynasty', 2);
+        if ($dynasty) {
+            $criteria->addCondition("t.dynasty='{$dynasty}'");
+        }
+        //类型
+        $type = zmf::val('type', 2);
+        if ($type) {
+            $criteria->addCondition("t.colid='{$type}'");
         }
         $criteria->select = 't.id,t.author,t.title,t.content,wa.title AS authorName';
         $criteria->join = 'LEFT JOIN {{wenku_author}} wa ON t.author=wa.id';
@@ -33,17 +43,21 @@ class WenkuController extends Q {
         $pager->pageSize = 30;
         $pager->applyLimit($criteria);
         $posts = $model->findAll($criteria);
-        $this->pageTitle = '古文列表 - ' . zmf::config('sitename');
+        $this->pageTitle = '诗词文库 - ' . zmf::config('sitename');
         //热门作者
         $topAuthors = WenkuAuthor::getTops(10);
         //热门作品
         $topPosts = WenkuPosts::getTops(10);
-
+        //朝代
+        $dyArr = WenkuColumns::getAll();
+        $typeArr = WenkuColumns::getAll(WenkuColumns::CLASSIFY_TYPES);
         $this->render('index', array(
             'pages' => $pager,
             'posts' => $posts,
             'topAuthors' => $topAuthors,
             'topPosts' => $topPosts,
+            'dyArr' => $dyArr,
+            'typeArr' => $typeArr
         ));
     }
 
@@ -104,12 +118,18 @@ class WenkuController extends Q {
                 throw new CHttpException(404, '您所查看的页面不存在或已删除');
             }
         }
+        $aboutInfos=$info->aboutInfos; 
+        foreach ($aboutInfos as $k => $aboutInfo) {
+            $aboutInfos[$k]['content'] = zmf::text(array(), $aboutInfo['content'], true);
+        }
         $authorInfo = array();
         if ($info['author'] > 0) {
             $authorInfo = WenkuAuthor::getOne($info['author']);
         }
+        $this->pageTitle=$info['title'].'注释、翻译及原创改编 - 初心诗词文库';
         $data = array(
             'info' => $info,
+            'aboutInfos' => $aboutInfos,
             'authorInfo' => $authorInfo
         );
         $this->render('post', $data);

@@ -127,7 +127,7 @@ $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
             <div class="module-header">「<?php echo $authorInfo['title'];?>」近期发表</div>
             <div class="module-body">
                 <?php foreach ($relatePosts as $relatePost){?>
-                <p class="ui-nowrap"><?php echo CHtml::link($relatePost['title'],array('posts/view','id'=>$relatePost['id']));?></p>
+                <p class="ui-nowrap"><?php echo CHtml::link($relatePost['title'],array('posts/view','id'=>$relatePost['id']),array('title'=>$relatePost['title']));?></p>
                 <?php }?>
             </div>
             <?php }?>
@@ -135,7 +135,7 @@ $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
             <div class="module-header">「<?php echo $forumInfo['title'];?>」近期热门</div>
             <div class="module-body">
                 <?php foreach ($topsPosts as $topsPost){?>
-                <p class="ui-nowrap"><?php echo CHtml::link($topsPost['title'],array('posts/view','id'=>$topsPost['id']));?></p>
+                <p class="ui-nowrap"><?php echo CHtml::link($topsPost['title'],array('posts/view','id'=>$topsPost['id']),array('title'=>$topsPost['title']));?></p>
                 <?php }?>
             </div>        
             <?php }?>

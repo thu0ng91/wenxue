@@ -139,4 +139,16 @@ class WenkuColumns extends CActiveRecord {
         return CHtml::listData($items, 'id', 'title');
     }
 
+    /**
+     * 获取导航上朝代
+     * @return type
+     */
+    public static function getNavItems() {
+        $items = self::model()->findAll(array(
+            'condition' => "classify='" . self::CLASSIFY_DYNASTY . "' AND position='topbar' AND status=" . Posts::STATUS_PASSED,
+            'select' => 'id,title'
+        ));
+        return CHtml::listData($items, 'id', 'title');
+    }
+
 }

@@ -23,6 +23,20 @@ function rebind() {
     $("img.lazy").lazyload({
         threshold: 600
     });
+    $("#main-navbar li").mouseover(function() {
+        var dom=$(this);
+        var _tar=dom.attr('data-target');
+        if(_tar){            
+            $("#main-navbar li").each(function(){
+                $(this).removeClass('active');
+            });
+            $(dom).addClass('active');
+            $('#navbar-extra .navbar-nav').each(function(){
+                $(this).hide();
+            });
+            $('#'+_tar).show();
+        }
+    });
     /**
      * 获取内容
      * @param {type} dom
