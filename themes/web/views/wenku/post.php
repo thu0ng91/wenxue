@@ -27,6 +27,10 @@
             <div id="substr-info-<?php echo $abInfo['id'];?>"><?php echo zmf::subStr($abInfo['content'], 200,'...'.CHtml::link('展开','javascript:;',array('data-id'=>'info-'.$abInfo['id'],'class'=>'toggle')));?></div>
         </div>
         <?php }?>
+        <div class="module-header">原创改编</div>
+        <div class="module-body">
+            
+        </div>
     </div>
     <div class="aside-part module">
         <div class="module-header">关于作者</div>
@@ -40,23 +44,3 @@
         </div>
     </div>
 </div>
-<script>
-    $(document).ready(function(){
-        $('a.toggle').unbind('click').click(function(){
-            var dom=$(this);
-            var tar=dom.attr('data-id');
-            if(!tar){
-                return false;
-            }
-            var cdom=$('#content-'+tar);
-            var sdom=$('#substr-'+tar);
-            if(cdom.css('display')==='none'){
-                cdom.show();
-                sdom.hide();
-            }else{
-                cdom.hide();
-                sdom.show();
-            }
-        });
-    })
-</script>

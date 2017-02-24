@@ -911,7 +911,22 @@ function rebind() {
             }
         });
     });
-
+    $('a.toggle').unbind('click').click(function(){
+        var dom=$(this);
+        var tar=dom.attr('data-id');
+        if(!tar){
+            return false;
+        }
+        var cdom=$('#content-'+tar);
+        var sdom=$('#substr-'+tar);
+        if(cdom.css('display')==='none'){
+            cdom.show();
+            sdom.hide();
+        }else{
+            cdom.hide();
+            sdom.show();
+        }
+    });
     //调用复制
     var clipboard = new Clipboard('.btn-copy');
     clipboard.on('success', function (e) {

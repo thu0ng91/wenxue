@@ -257,7 +257,7 @@ button, input, select, textarea,.form-control,.btn{
     font-weight: 700;    
 }
 .main-tops .module{
-    height: 420px;
+    height: 540px;
     overflow: hidden;
     padding: 0
 }
@@ -285,10 +285,10 @@ button, input, select, textarea,.form-control,.btn{
 }
 /*首页*/
 .showcase{
-    width: 640px;
+    width: 960px;
     height: 100px;
     background: #fff;
-    margin-bottom: 40px;
+    margin-bottom: 20px;
     overflow: hidden;
     border: none;
     position: relative
@@ -297,27 +297,16 @@ button, input, select, textarea,.form-control,.btn{
     width: 100%;
     height: 100%
 }
-.main-tops .carousel-body{
-    padding: 10px
-}
-.main-tops .carousel{
-    height: 380px;
-}
-.main-tops .carousel-indicators{
-    position: absolute;
-    right: 10px;
-    top: -45px;
-    width: auto;
-    margin-left: 0;
-    left: auto
-}
-.main-tops .carousel-indicators li{
-    border-color: #000
+.main-tops .module-body{
+    margin-left: -9px;
+    margin-right: -9px;
 }
 .main-tops .top-book-item{
     font-size: 12px;
     text-align: center;
-    display: inline-block
+    display: inline-block;
+    width: 80px;
+    margin: 0 9px 10px;
 }
 .main-tops .top-book-item a{
     color: #333
@@ -332,7 +321,7 @@ button, input, select, textarea,.form-control,.btn{
 }
 .aside-tops .module{
     height: 540px;
-    margin-bottom: 40px;
+    margin-bottom: 20px;
     overflow: hidden
 }
 .aside-tops .module .top-item{

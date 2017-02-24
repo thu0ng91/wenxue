@@ -31,5 +31,15 @@
             </div>
         </div>    
         <?php }?>
+        <?php if(!empty($topPosts)){?>
+        <div class="module">
+            <div class="module-header">近期热帖</div>
+            <div class="module-body">
+                <?php foreach ($topPosts as $post){?>
+                <p class="ui-nowrap"><?php echo CHtml::link($post['title'],array('posts/view','id'=>$post['id']));?></p>
+                <?php }?>
+            </div>
+        </div>    
+        <?php }?>
     </div>
 </div>

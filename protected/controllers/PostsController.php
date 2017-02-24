@@ -14,13 +14,19 @@ class PostsController extends Q {
             $items[$k]['faceImg'] = zmf::getThumbnailUrl($val['faceImg'], 'a120', 'faceImg');
         }
         //最新帖子
-        $posts=array();
+        $posts=$topPosts=array();
         if(!$this->isMobile){
             $now=  zmf::now()-86400*7;
             $posts = PostThreads::model()->findAll(array(
-                'condition' => 'cTime>'.$now,
+                'condition' => 'cTime>'.$now.' AND status=1',
                 'select' => 'id,title',
                 'order' => 'id DESC',
+                'limit' => 10
+            ));
+            $topPosts = PostThreads::model()->findAll(array(
+                'condition' => 'cTime>'.$now.' AND status=1',
+                'select' => 'id,title',
+                'order' => 'hits DESC',
                 'limit' => 10
             ));
         }
@@ -34,6 +40,7 @@ class PostsController extends Q {
             'forums' => $items,
             'favorites' => $favorites,
             'posts' => $posts,
+            'topPosts' => $topPosts,
         );
         $this->render('forums', $data);
     }

@@ -10,17 +10,18 @@
  */
 ?>
 <div class="container-fluid jumbotron-post">
-    <div class="container">
+    <div class="container text-center">
         <img src="<?php echo zmf::lazyImg();?>" class="lazy img-circle a108" data-original='https://img2.chuxincw.com/siteinfo/2017/02/18/32DD3F5E-18B2-DA78-549C-9E7F89731A1B.png/a120'/>
         <h1><?php echo $info['title'];?></h1>        
     </div>
 </div>
 <div class="container">            
     <div class="module main-part">
-        <?php foreach($aboutInfos as $aboutInfo){?>
-        <div class="module-header"><?php echo $info['title']. WenkuAuthorInfo::exClassify($aboutInfo['classify']);?></div>
+        <?php foreach($aboutInfos as $abInfo){?>
+        <div class="module-header"><?php echo $info['title']. WenkuAuthorInfo::exClassify($abInfo['classify']);?></div>
         <div class="module-body">
-            <?php echo $aboutInfo['content'];?>
+            <div class="displayNone" id="content-info-<?php echo $abInfo['id'];?>"><?php echo $abInfo['content'];?><p class="text-right"><?php echo CHtml::link('收起','javascript:;',array('data-id'=>'info-'.$abInfo['id'],'class'=>'toggle'));?></p></div>
+            <div id="substr-info-<?php echo $abInfo['id'];?>"><?php echo zmf::subStr($abInfo['content'], 200,'...'.CHtml::link('展开','javascript:;',array('data-id'=>'info-'.$abInfo['id'],'class'=>'toggle')));?></div>
         </div>
         <?php }?>
     </div>
