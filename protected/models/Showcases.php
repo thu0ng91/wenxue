@@ -125,10 +125,10 @@ class Showcases extends CActiveRecord {
             'indexLeft1'=>'首页左边1',
             'indexRight1'=>'首页右边1',
             'indexAd1'=>'首页小图1',            
-            'indexLeft2'=>'首页左边2',
+            //'indexLeft2'=>'首页左边2',
             //'indexRight2'=>'首页右边2',
             'indexAd2'=>'首页小图2',            
-            //'indexLeft3'=>'首页左边3',
+            'indexLeft3'=>'首页左边3',
             //'indexRight3'=>'首页右边3',
             //'indexAd3'=>'首页小图3',
             //跟版块绑定的栏目            

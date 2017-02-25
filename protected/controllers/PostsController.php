@@ -33,8 +33,8 @@ class PostsController extends Q {
         $this->showLeftBtn = false;
         $this->selectNav = 'forum';
         $favorites = $this->uid ? array_keys(CHtml::listData($this->userInfo['favoriteForums'], 'id', 'title')) : array();
-        $this->pageTitle = '关注圈子 - ' . zmf::config('sitename');
-        $this->mobileTitle = '关注圈子';
+        $this->pageTitle = '小说创作基地 - ' . zmf::config('sitename');
+        $this->mobileTitle = '小说创作基地';
         $this->keywords= $this->pageDescription='';
         $data = array(
             'forums' => $items,

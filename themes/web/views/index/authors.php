@@ -1,5 +1,5 @@
 <div class="module">
-    <div class="module-header">热门作者</div>
+    <h2 class="module-header">热门作者</h2>
     <div class="module-body">
         <?php if(!empty($authors)){?>
         <?php foreach ($authors as $k=>$author){?>

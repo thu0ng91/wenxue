@@ -33,5 +33,5 @@
         </ul>
     </li>
     <?php }?>
-    <li<?php echo $this->selectNav == 'wenku' ? ' class="active"' : ''; ?> data-target="nav-wenku"><?php echo CHtml::link('诗词文库', array('wenku/index')); ?></li>
+<!--    <li<?php echo $this->selectNav == 'wenku' ? ' class="active"' : ''; ?> data-target="nav-wenku"><?php echo CHtml::link('诗词文库', array('wenku/index')); ?></li>-->
 </ul>

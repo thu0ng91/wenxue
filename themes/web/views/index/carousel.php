@@ -12,9 +12,7 @@ $uuid=  uniqid();
 $carouselPerSize=12;
 ?>
 <div class="module">
-    <div class="module-header">
-        <?php echo $moduleInfo['title'];$_posts1=$moduleInfo['posts'];?>
-    </div>
+    <h2 class="module-header"><?php echo $moduleInfo['title'];$_posts1=$moduleInfo['posts'];?></h2>
     <div class="module-body">
         <?php foreach ($_posts1 as $_post){?>
             <div class="top-book-item">

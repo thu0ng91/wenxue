@@ -19,7 +19,11 @@ class IndexController extends Q {
             $authors[$k]['avatar']= zmf::getThumbnailUrl($val['avatar'],'w120');
         }
         //首页图文
-        
+        $_sql="SELECT id,title,url,content,faceImg FROM {{digest}} WHERE status=".Posts::STATUS_PASSED." ORDER BY id DESC LIMIT 8";
+        $digestes=  Yii::app()->db->createCommand($_sql)->queryAll();
+        foreach ($digestes as $k=>$val){
+            $digestes[$k]['faceImg']= zmf::getThumbnailUrl($val['faceImg'],'c120');
+        }
         
         $this->pageTitle=  zmf::config('sitename').' - '.zmf::config('shortTitle');
         $this->mobileTitle=zmf::config('sitename');
@@ -28,6 +32,7 @@ class IndexController extends Q {
         $data = array(
             'posts' => $posts,
             'authors' => $authors,
+            'digestes' => $digestes,
         );
         $this->render('index', $data);
     }

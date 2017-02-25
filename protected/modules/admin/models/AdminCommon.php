@@ -25,6 +25,11 @@ class AdminCommon extends CActiveRecord {
                     'url' => Yii::app()->createUrl('admin/postThreads/index'),
                     'active' => in_array($c, array('postThreads'))
                 ),
+                'digest' => array(
+                    'title' => '首页图文',
+                    'url' => Yii::app()->createUrl('admin/digest/index'),
+                    'active' => in_array($c, array('digest'))
+                ),
                 'comments' => array(
                     'title' => '评论',
                     'url' => Yii::app()->createUrl('admin/comments/index'),
