@@ -17,7 +17,7 @@ if(!empty($authors)){?>
         <?php if($k==0){?>
             <li class="ui-border-t" data-href="<?php echo Yii::app()->createUrl('author/view',array('id'=>$author['id']));?>">
                 <div class="ui-list-img">
-                    <img class="lazy w78" src="<?php echo zmf::lazyImg(); ?>" data-original="<?php echo $author['faceImg']; ?>" alt="<?php echo $author['authorName']; ?>">                    
+                    <img class="lazy w78" src="<?php echo zmf::lazyImg(); ?>" data-original="<?php echo $author['avatar']; ?>" alt="<?php echo $author['authorName']; ?>">                    
                 </div>
                 <div class="ui-list-info">
                     <h4 class="ui-nowrap"><?php echo $author['authorName'];?></h4>
