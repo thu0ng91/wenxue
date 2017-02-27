@@ -3,7 +3,7 @@
 class IndexController extends Q {
 
     public function actionIndex() {
-        $posts=  Showcases::getPagePosts('returnIndexColumns',NULL,FALSE,'c640100',  $this->isMobile ? 'w240' : 'w120');        
+        $posts=  Showcases::getPagePosts('returnIndexColumns',NULL,FALSE,'c960100',  $this->isMobile ? 'w240' : 'w120');        
         //取最近更新
         $_sql="SELECT b.id,b.aid,b.colid,'' AS colTitle,b.title,b.faceImg,b.desc,'' AS authorName FROM {{books}} b WHERE b.status=".Posts::STATUS_PASSED." ORDER BY b.updateTime DESC LIMIT 10";
         $_posts=  Yii::app()->db->createCommand($_sql)->queryAll();        
