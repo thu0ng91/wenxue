@@ -63,7 +63,7 @@ class GroupPowers extends CActiveRecord {
             'score' => '积分值',
             'exp' => '经验值',
             'totalLimit' => '总数限制',
-            'totalLimit' => '是否在动态里显示',
+            'display' => '是否在动态里显示',
         );
     }
 

@@ -45,6 +45,11 @@ $tids=GroupPowerTypes::listAll();
         <?php echo $form->error($model,'exp'); ?>
     </div>
     <div class="form-group">
+        <?php echo $form->labelEx($model,'display'); ?>        
+        <?php echo $form->dropDownlist($model,'display', zmf::yesOrNo('admin'),array('class'=>'form-control')); ?>
+        <?php echo $form->error($model,'display'); ?>
+    </div>
+    <div class="form-group">
         <?php echo CHtml::submitButton($model->isNewRecord ? '新增' : '更新',array('class'=>'btn btn-primary')); ?>
     </div>
 <?php $this->endWidget(); ?>
