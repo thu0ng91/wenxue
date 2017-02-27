@@ -144,6 +144,7 @@ class Showcases extends CActiveRecord {
             //其他
             'reg'=>'登录注册轮播图',
             'author'=>'作者、读者专区右侧广告',
+            'shop'=>'商城主页',
             //专区            
             'authorTop'=>'作者专区右侧推荐',
             'readerTop'=>'读者专区右侧推荐',

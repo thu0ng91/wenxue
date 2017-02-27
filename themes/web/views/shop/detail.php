@@ -17,16 +17,13 @@
         font-size: 24px;
         margin-top: 10px;
     }
-    .goods-detail-container .media{
+    .goods-detail-container .goods-info{
         background: #fff;
         margin-bottom: 10px;
         margin-top: 0;
         padding-top: 0
     }
-    .goods-detail-container .media .bdsharebuttonbox{
-        float: left
-    }
-    .goods-detail-container .media-left img{
+    .goods-detail-container .goods-info .media-left img{
         width: 240px;
         height: 240px;
     }
@@ -120,7 +117,7 @@
         <li><?php echo CHtml::link($_nav['title'],array('shop/all','id'=>$_nav['id']));?></li>        
         <?php }?>
     </ol>
-    <div class="media">
+    <div class="media goods-info">
         <div class="media-left">
             <img src="<?php echo zmf::lazyImg();?>" class="lazy" data-original="<?php echo $info['faceUrl'];?>"/>
         </div>
@@ -129,9 +126,9 @@
             <p><?php echo $info['desc'];?></p>
             <div class="price-holder">
                 <?php if($info['scorePrice']!=0){?>
-                <p>积分价格：<span class="price"><?php echo $info['scorePrice'];?> <i class="fa fa-rmb"></i></span></p>
+                <p>积分价格：<span class="price"><?php echo $info['scorePrice'];?></span></p>
                 <?php }if($info['goldPrice']!=0){?>
-                <p>金币价格：<span class="price"><?php echo $info['goldPrice'];?> <i class="fa fa-diamond"></i></span></p>
+                <p>金币价格：<span class="price"><?php echo $info['goldPrice'];?></span></p>
                 <?php }?>
             </div>
             <p>用途：道具，从纯读者转换成任务作者</p>            
@@ -159,7 +156,23 @@
         <div class="content-aside module">
             <div class="module-header">相关推荐</div>
             <div class="module-body">
-                
+                <?php foreach($posts as $post){?>
+                <div class="media">
+                    <div class="media-left">
+                        <a href="<?php echo Yii::app()->createUrl('shop/detail',array('id'=>$post['id']));?>" target="_blank">
+                            <img src="<?php echo zmf::lazyImg();?>" class="lazy a64" data-original="<?php echo $post['faceUrl'];?>" alt="<?php echo $post['title'];?>"/>
+                        </a>
+                    </div>
+                    <div class="media-body">
+                        <p><?php echo CHtml::link($post['title'],array('shop/detail','id'=>$post['id']),array('target'=>'_blank'));?></p>
+                        <?php if($post['scorePrice']!=0){?>
+                        <p>积分：<span class="price"><?php echo $post['scorePrice'];?></span></p>
+                        <?php }if($post['goldPrice']!=0){?>
+                        <p>金币：<span class="price"><?php echo $post['goldPrice'];?></span></p>
+                        <?php }?>
+                    </div>
+                </div>
+                <?php }?>
             </div>
         </div>
         <div class="content-main module">
@@ -167,10 +180,10 @@
             <div class="module-body">
                 <?php echo $info['content'];?>
             </div>
-            <div class="module-header">评价</div>
+<!--            <div class="module-header">评价</div>
             <div class="module-body">
                 
-            </div>
+            </div>-->
         </div>
     </div>
 </div>

@@ -1328,7 +1328,7 @@ class AjaxController extends Q {
         if (!in_array($type, array('postPosts', 'user', 'chapter'))) {
             $this->jsonOutPut(0, '暂不允许的分类');
         }
-        $sql = "SELECT p.id,o.title,o.faceUrl,p.classify,p.action,p.from,p.to,p.num FROM {{orders}} o,{{props}} p WHERE p.uid='{$this->userInfo['id']}' AND o.uid='{$this->userInfo['id']}' AND p.gid=o.gid ORDER BY p.updateTime DESC";
+        $sql = "SELECT p.id,g.title,g.faceUrl,p.classify,p.action,p.from,p.to,p.num FROM {{goods}} g,{{props}} p WHERE p.uid='{$this->userInfo['id']}' AND p.uid='{$this->userInfo['id']}' AND p.num>0 AND p.gid=g.id ORDER BY p.updateTime DESC";
         $posts = Posts::getByPage(array(
                     'sql' => $sql,
                     'page' => $this->page,
@@ -1338,11 +1338,14 @@ class AjaxController extends Q {
             $posts[$k]['faceUrl'] = zmf::getThumbnailUrl($val['faceUrl'], 'a120', 'goods');
         }
         $now = zmf::now();
+        $longHtml='';
         if (!empty($posts)) {
             foreach ($posts as $k => $row) {
                 $_passdata = zmf::jiaMi($row['id'] . '#' . $id . '#' . $type . '#' . $now);
-                $longHtml.=$this->renderPartial('/user/_prop', array('data' => $row, 'k' => $k, 'passdata' => $_passdata), true);
+                $longHtml.=$this->renderPartial('/user/_prop', array('data' => $row, 'k' => $k, 'passdata' => $_passdata,'type'=>$type), true);
             }
+        }else{
+            $longHtml='<p class="help-block text-center">暂无道具，'.CHtml::link('前往选购',array('shop/index'),array('target'=>'_blank')).'</p>';
         }
         $data = array(
             'html' => $longHtml,

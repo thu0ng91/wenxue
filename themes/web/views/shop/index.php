@@ -22,7 +22,7 @@
             <?php }?>
         </div>
         <div class="goods-carousel">
-            <?php $this->renderPartial('/site/login-carousel');?>
+            <?php $this->renderPartial('/shop/carousel');?>
         </div>
     </div>    
     <?php if(!empty($posts)){?>

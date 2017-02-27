@@ -22,6 +22,13 @@ $uploadurl=Yii::app()->createUrl('/attachments/upload',array('type'=>'goods','im
         <?php echo $form->error($model,'title'); ?>
     </div>
     <div class="form-group">
+        <?php echo $form->labelEx($model,'faceUrl'); ?>     
+        <p><img src="<?php echo zmf::getThumbnailUrl($model->faceUrl, 'a120', 'faceImg');?>" alt="修改封面图" id="user-avatar" style="width: 120px;height: 120px;"></p>
+        <?php $this->renderPartial('/common/_singleUpload',array('model'=>$model,'fieldName'=>'faceUrl','type'=>'faceImg','fileholder'=>'filedata','targetHolder'=>'user-avatar','imgsize'=>'a120','progress'=>true));?>
+        <?php echo $form->hiddenField($model,'faceUrl',array('class'=>'form-control')); ?>
+        <?php echo $form->error($model,'faceUrl'); ?>
+    </div>
+    <div class="form-group">
         <?php echo $form->labelEx($model,'classify'); ?>
         <p id="selected-classify"></p>
         <?php echo $form->hiddenField($model,'classify',array('class'=>'form-control')); ?>
@@ -94,7 +101,7 @@ $uploadurl=Yii::app()->createUrl('/attachments/upload',array('type'=>'goods','im
     </div>    
     <div class="form-group">
         <?php echo $form->labelEx($model,'topTime');?>        
-        <?php echo $form->checkBox($model,'topTime'); ?>
+        <?php echo $form->checkBox($model,'topTime',array('checked'=>$model->topTime>0 ? true : false)); ?>
         <p class="help-block">勾选后将在商城首页显示</p>
         <?php echo $form->error($model,'topTime'); ?>
     </div>    

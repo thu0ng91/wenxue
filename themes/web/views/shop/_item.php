@@ -16,9 +16,9 @@
     <div class="caption">
         <p class="price">
             <?php if($data['scorePrice']!=0){?>
-            <span><i class="fa fa-rmb"></i><?php echo $data['scorePrice'];?></span>
+            <span><?php echo $data['scorePrice'];?>积分</span>
             <?php }if($data['goldPrice']!=0){?>
-            <span><i class="fa fa-diamond"></i><?php echo $data['goldPrice'];?></span>
+            <span><?php echo $data['goldPrice'];?>金币</span>
             <?php }?>
         </p>
         <h3><?php echo CHtml::link($data['title'],array('shop/detail','id'=>$data['id']));?></h3>

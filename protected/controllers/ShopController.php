@@ -76,9 +76,19 @@ class ShopController extends Q {
         }
         $info = $return['msg'];
         $info['faceUrl'] = zmf::getThumbnailUrl($info['faceUrl'], 'a360', 'goods');
+        //相关推荐
+        if($info['classify']){
+            $_classifyArr=end($info['classify']);
+            $_classify=$_classifyArr['id'];
+            if($_classify){
+                $sql='SELECT id,title,faceUrl,scorePrice,goldPrice FROM {{goods}} WHERE classify='.$_classify.' AND id='.$info['id'];
+                $posts=Yii::app()->db->createCommand($sql)->queryAll();
+            }
+        }
         $this->pageTitle = $info['title'] . ' - ' . zmf::config('sitename');
         $data = array(
-            'info' => $info
+            'info' => $info,
+            'posts' => $posts,
         );
         $this->render('detail', $data);
     }

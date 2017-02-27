@@ -40,8 +40,7 @@ class GoodsController extends Admin {
             $attachids = $handleInfo['attachids'];
             $now=  zmf::now();
             $_POST['Goods']['content'] = 0;
-            $_POST['Goods']['faceimg'] = $attachids[0];
-            $_POST['Goods']['faceUrl'] = Attachments::faceImg(array('faceimg' => $attachids[0]), '', 'goods');
+            $_POST['Goods']['faceUrl'] = $_POST['Goods']['faceUrl'];
             $_POST['Goods']['content'] = $_POST['Goods']['scorePrice'] <= 1 ? 1 : $_POST['Goods']['scorePrice'];
             $_POST['Goods']['topTime'] = $_POST['Goods']['topTime'] ? $now : 0;
             
@@ -128,6 +127,11 @@ class GoodsController extends Admin {
                 }
             }
         }
+        //正文
+        if($model->content){
+            $model->content= zmf::text(array('action'=>'edit'), $model->contentInfo->content);
+        }
+        
         //获取商品关联操作的分类
         $actions = GoodsAction::exClassify('all');
         $actionClassifyHtml = '<select class="form-control" onchange="selectActionClassify()" name="actionClassify" id="actionClassify">';
