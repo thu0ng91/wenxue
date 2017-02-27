@@ -53,7 +53,6 @@
             <div class="author-side-navbar">
                 <?php echo CHtml::link('<i class="fa fa-list"></i> 作品<span></span>',array('author/view','id'=>$this->authorInfo['id']),array('class'=>'item'.($this->selectNav == 'index' ? ' active' : '')));?>
                 <?php echo CHtml::link('<i class="fa fa-star"></i> 追随者',array('author/fans','id'=>$this->authorInfo['id']),array('class'=>'item'.($this->selectNav == 'fans' ? ' active' : '')));?>
-                <?php echo CHtml::link('<i class="fa fa-comments"></i> 作者专区',array('posts/index','type'=>'author','aid'=>$this->authorInfo['id']),array('class'=>'item'));?>
                 <?php if($this->adminLogin){?>
                 <?php echo CHtml::link('<i class="fa fa-plus"></i> 新作品',array('author/createBook'),array('class'=>'item'.($this->selectNav == 'createBook' ? ' active' : '')));?>
                 <?php echo CHtml::link('<i class="fa fa-file"></i> 草稿箱',array('author/drafts'),array('class'=>'item'.($this->selectNav == 'drafts' ? ' active' : '')));?>

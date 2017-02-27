@@ -15,17 +15,17 @@ $forums=  PostForums::listAll();
 <div class="navbar navbar-topbar" role="navigation">
     <div class="container">
         <div class="navbar-collapse collapse" id="navbar-extra">
-            <ul class="nav navbar-nav" id="nav-bookStore">
+            <ul class="nav navbar-nav<?php echo (in_array($this->selectNav,array('indexPage','book','index','fans')) || !$this->selectNav) ? '' : ' displayNone'; ?>" id="nav-bookStore">
                 <?php foreach ($cols as $colid=>$colTitle){?>
                 <li><?php echo zmf::urls($colTitle,'book/index',array('key'=>'colid','value'=>$colid),array('title'=>$colTitle.'小说'));?></li>
                 <?php }?>
             </ul>
-            <ul class="nav navbar-nav displayNone" id="nav-forumns">
+            <ul class="nav navbar-nav<?php echo $this->selectNav != 'forum' ? ' displayNone' : ''; ?>" id="nav-forumns">
                 <?php foreach ($forums as $fid=>$fTitle){?>
                 <li><?php echo CHtml::link($fTitle,array('posts/index','forum'=>$fid));?></li>
                 <?php }?>
             </ul>
-            <ul class="nav navbar-nav displayNone" id="nav-wenku">
+            <ul class="nav navbar-nav<?php echo $this->selectNav != 'wenku' ? ' displayNone' : ''; ?>" id="nav-wenku">
                 <?php $dyArr=WenkuColumns::getNavItems();foreach ($dyArr as $did=>$dTitle){?>
                 <li><?php echo CHtml::link($dTitle,array('wenku/index','dynasty'=>$did),array('title'=>$dTitle.'诗词'));?></li>
                 <?php }?>
