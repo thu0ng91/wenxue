@@ -24,7 +24,7 @@ var tipImgUploadUrl="<?php echo $upurl;?>";
        <?php if($hiddenToolbar){?>
            toolbar: [],
        <?php }elseif($mini){?>
-           toolbar: ["bold","italic","underline","|","image"],
+           toolbar: ["bold","italic","underline"],
        <?php }else{?>
            toolbar: ["bold","italic","underline","|","paragraph","|","insertorderedlist","insertunorderedlist","justifyleft","justifycenter","justifyright","justifyjustify","horizontal","|","link","unlink","image"],
        <?php }?>       

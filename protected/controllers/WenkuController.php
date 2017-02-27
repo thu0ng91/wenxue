@@ -74,7 +74,16 @@ class WenkuController extends Q {
                 throw new CHttpException(404, '您所查看的页面不存在或已删除');
             }
         }
-        $aboutInfos = $info->aboutInfos;
+        if(!$info['faceImg']){
+            $info['faceImg']='https://img2.chuxincw.com/siteinfo/2017/02/18/32DD3F5E-18B2-DA78-549C-9E7F89731A1B.png';
+        }
+        $aboutInfos = WenkuAuthorInfo::model()->findAll(array(
+            'condition'=>'author=:author AND status='.Posts::STATUS_PASSED,
+            'params'=>array(
+                ':author'=>$id
+            ),
+            'order'=>'classify ASC'
+        ));
         foreach ($aboutInfos as $k => $aboutInfo) {
             $aboutInfos[$k]['content'] = zmf::text(array(), $aboutInfo['content'], true);
         }
@@ -88,6 +97,7 @@ class WenkuController extends Q {
                 ':author' => $id
             )
         ));
+        $this->pageTitle=$info['title'].'简介、故事、作品 - 诗词文库 - '.zmf::config('sitename');
         $data = array(
             'info' => $info,
             'aboutInfos' => $aboutInfos,
@@ -126,7 +136,7 @@ class WenkuController extends Q {
         if ($info['author'] > 0) {
             $authorInfo = WenkuAuthor::getOne($info['author']);
         }
-        $this->pageTitle=$info['title'].'注释、翻译及原创改编 - 初心诗词文库';
+        $this->pageTitle=$info['title'].'注释、翻译及原创改编 - 诗词文库 - '.zmf::config('sitename');
         $data = array(
             'info' => $info,
             'aboutInfos' => $aboutInfos,

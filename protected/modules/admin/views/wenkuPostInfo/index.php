@@ -8,36 +8,6 @@
  * @datetime 2017-02-21 11:16:54 */
  $this->renderPartial('_nav'); 
  ?>
-  <?php $form=$this->beginWidget('CActiveForm', array(
-	'id'=>'search-form',
-        'htmlOptions' => array(
-            'class'=>'search-form'
-        ),
-        'action'=>Yii::app()->createUrl('/zmf/wenkupostinfo/index'),
-	'enableAjaxValidation'=>false,
-        'method'=>'GET'
-)); ?>
-<div class="input-group zmf-input-group">
-          <?php echo CHtml::textField("id",$_GET["id"],array("class"=>"form-control","placeholder"=>$model->getAttributeLabel("id")));?>     
-         <?php echo CHtml::textField("uid",$_GET["uid"],array("class"=>"form-control","placeholder"=>$model->getAttributeLabel("uid")));?>     
-         <?php echo CHtml::textField("pid",$_GET["pid"],array("class"=>"form-control","placeholder"=>$model->getAttributeLabel("pid")));?>     
-         <?php echo CHtml::textField("classify",$_GET["classify"],array("class"=>"form-control","placeholder"=>$model->getAttributeLabel("classify")));?>     
-         <?php echo CHtml::textField("content",$_GET["content"],array("class"=>"form-control","placeholder"=>$model->getAttributeLabel("content")));?>     
-         <?php echo CHtml::textField("comments",$_GET["comments"],array("class"=>"form-control","placeholder"=>$model->getAttributeLabel("comments")));?>     
-         <?php echo CHtml::textField("hits",$_GET["hits"],array("class"=>"form-control","placeholder"=>$model->getAttributeLabel("hits")));?>     
-         <?php echo CHtml::textField("cTime",$_GET["cTime"],array("class"=>"form-control","placeholder"=>$model->getAttributeLabel("cTime")));?>     
-         <?php echo CHtml::textField("status",$_GET["status"],array("class"=>"form-control","placeholder"=>$model->getAttributeLabel("status")));?>     
-         <?php echo CHtml::textField("likes",$_GET["likes"],array("class"=>"form-control","placeholder"=>$model->getAttributeLabel("likes")));?>     
-         <?php echo CHtml::textField("dislikes",$_GET["dislikes"],array("class"=>"form-control","placeholder"=>$model->getAttributeLabel("dislikes")));?>     
-    </div><!-- /input-group -->
-<div class="form-group text-right">
-    <span class="input-group-btn">
-        <?php echo CHtml::link('新增',array('create'),array('class'=>'btn btn-danger'));?>        
-        <button class="btn btn-default" type="submit">搜索</button>
-    </span>
-</div>
-<?php $this->endWidget(); ?>
- 
  <table class="table table-hover table-striped">
     <tr>    
                 <th style="width: 80px"><?php echo $model->getAttributeLabel("id");?></th>

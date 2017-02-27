@@ -45,7 +45,7 @@ class WenkuAuthorController extends Admin {
                     Yii::app()->user->setFlash('addWenkuAuthorSuccess', "保存成功！您可以继续添加。");
                     $this->redirect(array('create'));
                 } else {
-                    $this->redirect(array('index'));
+                    $this->redirect(array('view','id'=>$model->id));
                 }
             }
         }
@@ -84,48 +84,20 @@ class WenkuAuthorController extends Admin {
      * Lists all models.
      */
     public function actionIndex() {
-        $select = "id,uid,title,pinyin,dynasty,attachid,hits,cTime,status,firstChar";
+        $select = "id,uid,title,pinyin,dynasty,attachid,hits,cTime,status,firstChar,status";
         $model = new WenkuAuthor;
         $criteria = new CDbCriteria();
-        $id = zmf::val("id", 1);
-        if ($id) {
-            $criteria->addSearchCondition("id", $id);
-        }
-        $uid = zmf::val("uid", 1);
-        if ($uid) {
-            $criteria->addSearchCondition("uid", $uid);
-        }
         $title = zmf::val("title", 1);
         if ($title) {
             $criteria->addSearchCondition("title", $title);
         }
-        $pinyin = zmf::val("pinyin", 1);
-        if ($pinyin) {
-            $criteria->addSearchCondition("pinyin", $pinyin);
-        }
         $dynasty = zmf::val("dynasty", 1);
         if ($dynasty) {
-            $criteria->addSearchCondition("dynasty", $dynasty);
-        }
-        $attachid = zmf::val("attachid", 1);
-        if ($attachid) {
-            $criteria->addSearchCondition("attachid", $attachid);
-        }
-        $hits = zmf::val("hits", 1);
-        if ($hits) {
-            $criteria->addSearchCondition("hits", $hits);
-        }
-        $cTime = zmf::val("cTime", 1);
-        if ($cTime) {
-            $criteria->addSearchCondition("cTime", $cTime);
+            $criteria->addCondition("dynasty=" . $dynasty);
         }
         $status = zmf::val("status", 1);
-        if ($status) {
-            $criteria->addSearchCondition("status", $status);
-        }
-        $firstChar = zmf::val("firstChar", 1);
-        if ($firstChar) {
-            $criteria->addSearchCondition("firstChar", $firstChar);
+        if ($status!=='') {
+            $criteria->addCondition("status=" . intval($status));
         }
         $criteria->select = $select;
         $count = $model->count($criteria);
@@ -153,7 +125,7 @@ class WenkuAuthorController extends Admin {
             'model' => $model,
         ));
     }
-    
+
     /**
      * 所属作者
      */
@@ -161,7 +133,7 @@ class WenkuAuthorController extends Admin {
         if (Yii::app()->request->isAjaxRequest && isset($_GET['q'])) {
             $name = $_GET['q'];
             $criteria = new CDbCriteria;
-            $criteria->condition = "(title LIKE :keyword OR pinyin LIKE :keyword) AND status=".  Posts::STATUS_PASSED;
+            $criteria->condition = "(title LIKE :keyword OR pinyin LIKE :keyword) AND status=" . Posts::STATUS_PASSED;
             $criteria->params = array(':keyword' => '%' . strtr($name, array('%' => '\%', '_' => '\_', '\\' => '\\\\')) . '%');
             $criteria->limit = 10;
             $criteria->select = 'id,title';
@@ -172,6 +144,13 @@ class WenkuAuthorController extends Admin {
             }
             echo $returnVal;
         }
+    }
+    
+    public function actionShowOne($id){
+        $id=  zmf::val('id',2);
+        $info=  $this->loadModel($id);
+        WenkuPosts::model()->updateAll(array('status'=>  Posts::STATUS_PASSED),'author=:author',array(':author'=>$id));
+        header('location: ' . $_SERVER['HTTP_REFERER']);
     }
 
     /**

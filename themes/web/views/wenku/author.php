@@ -9,9 +9,12 @@
  * @datetime 2017-2-21  14:15:13 
  */
 ?>
+<?php if($info['bgImg']){?>
+<style>.jumbotron-post{background: url(<?php echo $info['bgImg'];?>) no-repeat center;background-size: cover}</style>
+<?php }?>
 <div class="container-fluid jumbotron-post">
     <div class="container text-center">
-        <img src="<?php echo zmf::lazyImg();?>" class="lazy img-circle a108" data-original='https://img2.chuxincw.com/siteinfo/2017/02/18/32DD3F5E-18B2-DA78-549C-9E7F89731A1B.png/a120'/>
+        <img src="<?php echo zmf::lazyImg();?>" class="lazy img-circle a108" data-original='<?php echo zmf::getThumbnailUrl($info['faceImg'],'a120');?>'/>
         <h1><?php echo $info['title'];?></h1>        
     </div>
 </div>

@@ -109,8 +109,5 @@
             </div>
         </div>        
     </div>
-    <div class="clearfix"></div>
-    <?php $this->renderPartial('/common/copyright');?>
 </div>
-<div class="footer-bg" id="footer-bg"></div>
 <?php $this->endContent(); ?>

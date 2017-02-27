@@ -35,6 +35,7 @@ $form = $this->beginWidget('CActiveForm', array(
     <?php echo CHtml::hiddenField('author', $_GET["author"]); ?>
     <?php echo CHtml::textField("title", $_GET["title"], array("class" => "form-control", "placeholder" => $model->getAttributeLabel("title"))); ?>     
     <?php echo CHtml::dropDownList("order", $_GET["order"], array('len' => '标题长度'), array("class" => "form-control", "empty" => '--排序方式--')); ?> 
+    <?php echo CHtml::dropDownList("status", $_GET["status"], Posts::exStatus('admin'), array("class" => "form-control", "empty" => '--请选择--')); ?>
 </div><!-- /input-group -->
 <div class="form-group text-right">
     <span class="input-group-btn">     
@@ -53,14 +54,14 @@ $form = $this->beginWidget('CActiveForm', array(
     </tr>    
     <?php foreach ($posts as $data): ?> 
         <tr>
-            <td><?php echo CHtml::link($data->id, array('view', 'id' => $data->id)); ?></td>
+            <td><?php echo CHtml::link($data->id, array('view', 'id' => $data->id), array('target' => '_blank')); ?></td>
             <td><?php echo CHtml::link($data->dynastyInfo->title, array('index', 'dynasty' => $data->dynasty)); ?></td>
             <td><?php echo CHtml::link($data->authorInfo->title, array('index', 'author' => $data->author)); ?></td>
             <td><?php echo $data->title; ?></td>            
             <td class="<?php echo $data->status==Posts::STATUS_PASSED ? '' : 'text-danger';?>"><?php echo Posts::exStatus($data->status); ?></td>            
             <td>
                 <?php echo CHtml::link('预览', array('/wenku/post', 'id' => $data->id), array('target' => '_blank')); ?>
-                <?php echo CHtml::link('编辑', array('update', 'id' => $data->id)); ?>        
+                <?php echo CHtml::link('编辑', array('update', 'id' => $data->id), array('target' => '_blank')); ?>        
                 <?php echo CHtml::link('删除', array('delete', 'id' => $data->id)); ?>
             </td>
         </tr>

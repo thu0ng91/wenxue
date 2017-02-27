@@ -19,6 +19,8 @@
 class WenkuPostInfo extends CActiveRecord {
 
     const CLASSIFY_FFANYI = 1; //古诗的翻译
+    const CLASSIFY_ZHUSHI = 2; //古诗的注释
+    const CLASSIFY_TRANSLATE = 3; //中英翻译
 
     /**
      * @return string the associated database table name
@@ -35,10 +37,11 @@ class WenkuPostInfo extends CActiveRecord {
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('pid, classify, content', 'required'),
+            array('title,pid, classify, content', 'required'),
             array('classify, comments, status, likes, dislikes', 'numerical', 'integerOnly' => true),
             array('cTime', 'default', 'setOnEmpty' => true, 'value' => zmf::now()),
             array('uid, pid, hits, cTime', 'length', 'max' => 11),
+            array('title', 'length', 'max' => 255),
         );
     }
 
@@ -69,6 +72,7 @@ class WenkuPostInfo extends CActiveRecord {
             'status' => '状态',
             'likes' => '点赞数',
             'dislikes' => '点踩数',
+            'title' => '分类标题',
         );
     }
 
@@ -89,7 +93,9 @@ class WenkuPostInfo extends CActiveRecord {
      */
     public static function exClassify($type = '') {
         $arr = array(
-            self::CLASSIFY_FFANYI => '翻译',
+            self::CLASSIFY_FFANYI => '古文翻译',
+            self::CLASSIFY_ZHUSHI => '古文注释',
+            self::CLASSIFY_TRANSLATE => '中英翻译',
         );
         if ($type == 'admin') {
             return $arr;

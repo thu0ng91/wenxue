@@ -41,12 +41,7 @@ class WenkuAuthorInfoController extends Admin {
         if (isset($_POST['WenkuAuthorInfo'])) {
             $model->attributes = $_POST['WenkuAuthorInfo'];
             if ($model->save()) {
-                if (!$id) {
-                    Yii::app()->user->setFlash('addWenkuAuthorInfoSuccess', "保存成功！您可以继续添加。");
-                    $this->redirect(array('create'));
-                } else {
-                    $this->redirect(array('index'));
-                }
+                $this->redirect(array('wenkuAuthor/view','id'=>$model->author));
             }
         }
         $replace = array(
@@ -91,53 +86,9 @@ class WenkuAuthorInfoController extends Admin {
      * Lists all models.
      */
     public function actionIndex() {
-        $select = "id,uid,author,classify,content,comments,hits,cTime,status,likes,dislikes";
+        $select = "id,uid,author,classify";
         $model = new WenkuAuthorInfo;
-        $criteria = new CDbCriteria();
-        $id = zmf::val("id", 1);
-        if ($id) {
-            $criteria->addSearchCondition("id", $id);
-        }
-        $uid = zmf::val("uid", 1);
-        if ($uid) {
-            $criteria->addSearchCondition("uid", $uid);
-        }
-        $author = zmf::val("author", 1);
-        if ($author) {
-            $criteria->addSearchCondition("author", $author);
-        }
-        $classify = zmf::val("classify", 1);
-        if ($classify) {
-            $criteria->addSearchCondition("classify", $classify);
-        }
-        $content = zmf::val("content", 1);
-        if ($content) {
-            $criteria->addSearchCondition("content", $content);
-        }
-        $comments = zmf::val("comments", 1);
-        if ($comments) {
-            $criteria->addSearchCondition("comments", $comments);
-        }
-        $hits = zmf::val("hits", 1);
-        if ($hits) {
-            $criteria->addSearchCondition("hits", $hits);
-        }
-        $cTime = zmf::val("cTime", 1);
-        if ($cTime) {
-            $criteria->addSearchCondition("cTime", $cTime);
-        }
-        $status = zmf::val("status", 1);
-        if ($status) {
-            $criteria->addSearchCondition("status", $status);
-        }
-        $likes = zmf::val("likes", 1);
-        if ($likes) {
-            $criteria->addSearchCondition("likes", $likes);
-        }
-        $dislikes = zmf::val("dislikes", 1);
-        if ($dislikes) {
-            $criteria->addSearchCondition("dislikes", $dislikes);
-        }
+        $criteria = new CDbCriteria();        
         $criteria->select = $select;
         $count = $model->count($criteria);
         $pager = new CPagination($count);

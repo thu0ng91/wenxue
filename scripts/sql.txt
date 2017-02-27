@@ -1,16 +1,10 @@
+alter table pre_wenku_author_info add title varchar(255) not null;
+alter table pre_wenku_post_info add title varchar(255) not null;
+update pre_wenku_author_info set `status`=0;
+update pre_wenku_post_info set `status`=0;
 
-alter table pre_wenku_posts add len tinyint(3) unsigned not null;
-update pre_wenku_posts set `status`=0;
-update pre_wenku_author set `status`=0;
+alter table pre_wenku_author add faceImg varchar(255) not null;
+alter table pre_wenku_author add bgImg varchar(255) not null;
 
-CREATE TABLE `pre_digest` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `uid` int(10) unsigned NOT NULL,
-  `title` varchar(255) NOT NULL COMMENT '标题',
-  `url` varchar(255) NOT NULL COMMENT '链接',
-  `faceImg` varchar(255) NOT NULL COMMENT '封面',
-  `content` varchar(255) NOT NULL COMMENT '内容',
-  `cTime` int(10) unsigned NOT NULL COMMENT '创建时间',
-  `status` tinyint(1) unsigned NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+alter table pre_wenku_posts add faceImg varchar(255) not null;
+alter table pre_wenku_posts add bgImg varchar(255) not null;

@@ -241,6 +241,30 @@ legend{
 .search-form .input-group-btn{
     padding-right: 5px
 }
+/*执行详情*/
+.module{
+    border: 1px solid #D7D7D7;
+    border-radius: 3px;
+    padding-top: 35px;
+    position: relative;
+    margin-top: 50px
+}
+.module .module-header{
+    position: absolute;
+    padding: 0 20px;
+    height: 40px;
+    line-height: 40px;
+    left: 15px;
+    top: -20px;
+    border: 1px solid #D7D7D7;
+    border-radius: 3px;
+    background: #fff;
+    font-weight: 700;
+    font-size: 18px
+}
+.module .module-body{
+    padding: 0 15px;
+}
 /**
 *重写分页样式
 */

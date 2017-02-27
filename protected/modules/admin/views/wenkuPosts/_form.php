@@ -47,8 +47,27 @@
             <?php echo $form->error($model,'title'); ?>
 	</div>
 	<div class="form-group">
+            <?php echo $form->labelEx($model,'second_title'); ?>
+            <?php echo $form->textField($model,'second_title',array('class'=>'form-control')); ?>
+            <?php echo $form->error($model,'second_title'); ?>
+	</div>
+        <div class="form-group">
+            <?php echo $form->labelEx($model,'faceImg'); ?>     
+            <p><img src="<?php echo zmf::getThumbnailUrl($model->faceImg, 'a120', 'faceImg');?>" alt="修改头像" id="user-avatar" style="width: 120px;height: 120px;"></p>
+            <?php $this->renderPartial('/common/_singleUpload',array('model'=>$model,'fieldName'=>'faceImg','type'=>'faceImg','fileholder'=>'filedata','targetHolder'=>'user-avatar','imgsize'=>'a120','progress'=>true));?>
+            <?php echo $form->hiddenField($model,'faceImg',array('class'=>'form-control')); ?>
+            <?php echo $form->error($model,'faceImg'); ?>
+        </div>
+        <div class="form-group">
+            <?php echo $form->labelEx($model,'bgImg'); ?>     
+            <p><img src="<?php echo zmf::getThumbnailUrl($model->bgImg, 'a120', 'faceImg');?>" alt="修改背景图" id="user-bgImg" style="width: 120px;height: 120px;"></p>
+            <?php $this->renderPartial('/common/_singleUpload',array('model'=>$model,'fieldName'=>'bgImg','type'=>'faceImg','fileholder'=>'filedata','targetHolder'=>'user-bgImg','imgsize'=>'a120','progress'=>true));?>
+            <?php echo $form->hiddenField($model,'bgImg',array('class'=>'form-control')); ?>
+            <?php echo $form->error($model,'bgImg'); ?>
+        </div>
+	<div class="form-group">
             <?php echo $form->labelEx($model,'content'); ?>
-            <?php $this->renderPartial('//common/editor_um', array('model' => $model,'content' => $model->content,'hiddenToolbar'=>true)); ?>
+            <?php $this->renderPartial('//common/editor_um', array('model' => $model,'content' => $model->content,'mini'=>true)); ?>
             <?php echo $form->error($model,'content'); ?>
 	</div>	    
         <div class="form-group">

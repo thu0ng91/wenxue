@@ -38,6 +38,7 @@ class WenkuAuthor extends CActiveRecord {
             array('uid, dynasty, hits, cTime', 'length', 'max' => 11),
             array('firstChar', 'length', 'max' => 1),
             array('title, pinyin', 'length', 'max' => 100),
+            array('faceImg,bgImg', 'length', 'max' => 255),
             array('attachid', 'length', 'max' => 10),
         );
     }
@@ -58,6 +59,7 @@ class WenkuAuthor extends CActiveRecord {
             'aboutInfos' => array(self::HAS_MANY, 'WenkuAuthorInfo', 'author', 'order' => 'classify ASC'),
             'aboutInfo' => array(self::HAS_ONE, 'WenkuAuthorInfo', 'author', 'order' => 'classify ASC'),
             'dynastyInfo' => array(self::BELONGS_TO, 'WenkuColumns', 'dynasty'),
+            'postsInfo' => array(self::HAS_MANY, 'WenkuPosts', 'author'),
         );
     }
 
@@ -76,6 +78,8 @@ class WenkuAuthor extends CActiveRecord {
             'cTime' => 'C Time',
             'status' => '状态',
             'firstChar' => '首字母',
+            'faceImg' => '封面图',
+            'bgImg' => '背景图',
         );
     }
 
@@ -129,7 +133,17 @@ class WenkuAuthor extends CActiveRecord {
         if ($return != '') {
             return $item[$return];
         }
-        return $item;
+        
+        $return=array(
+            'id'=>$keyid,
+            'title'=>$item['title'],
+            'dynasty'=>$item['dynasty'],
+            'faceImg'=>$item['faceImg'],
+            'dynastyName'=>$item->dynastyInfo->title,
+            'content'=>$item->aboutInfo->content,
+        );
+        
+        return $return;
     }
 
     /**
@@ -146,5 +160,7 @@ class WenkuAuthor extends CActiveRecord {
         ));
         return $items;
     }
+    
+    
 
 }

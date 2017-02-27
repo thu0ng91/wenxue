@@ -41,11 +41,12 @@ class WenkuAuthorInfo extends CActiveRecord {
             array('cTime', 'default', 'setOnEmpty' => true, 'value' => zmf::now()),
             array('status', 'default', 'setOnEmpty' => true, 'value' => Posts::STATUS_PASSED),
             array('classify', 'default', 'setOnEmpty' => true, 'value' => WenkuAuthorInfo::CLASSIFY_INFO),
-            array('author, classify, content', 'required'),
-            array('status,comments', 'numerical', 'integerOnly' => true),
+            array('title,author, classify, content', 'required'),
+            array('status,comments,classify', 'numerical', 'integerOnly' => true),
             array('uid, author, hits, cTime,likes,dislikes', 'length', 'max' => 11),
-            array('classify', 'length', 'max' => 32),
+            array('classify', 'length', 'max' => 3),
             array('comments', 'length', 'max' => 8),
+            array('title', 'length', 'max' => 255),
         );
     }
 
@@ -75,7 +76,8 @@ class WenkuAuthorInfo extends CActiveRecord {
             'status' => '状态',
             'comments' => '评论数',
             'likes' => '赞',
-            'dislikes' => '踩'
+            'dislikes' => '踩',
+            'title' => '分类标题',
         );
     }
 

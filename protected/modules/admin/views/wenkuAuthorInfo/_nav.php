@@ -20,7 +20,7 @@ $this->menu = array(
 );
 $this->breadcrumbs=array(
     '管理中心',
-    'label'=>array($c.'/index')
+    '作者信息'=>array($c.'/index')
 );
 if($a=='create'){
     $this->breadcrumbs[]='新增';

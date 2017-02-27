@@ -1831,17 +1831,22 @@ span.required,.errorMessage{
     font-weight: normal;        
 }
 .jumbotron-post{
-    background: rgba(147, 186, 95,.2);
+    text-shadow: 0 1px 3px rgba(0,0,0,.4), 0 0 30px rgba(0,0,0,.075);
+    background: #424242;
+    -webkit-box-shadow: inset 0 3px 7px rgba(0,0,0,.2), inset 0 -3px 7px rgba(0,0,0,.2);
+    -moz-box-shadow: inset 0 3px 7px rgba(0,0,0,.2),inset 0 -3px 7px rgba(0,0,0,.2);
+    box-shadow: inset 0 3px 7px rgba(0,0,0,.2), inset 0 -3px 7px rgba(0,0,0,.2);
     margin-top: -20px;
     padding: 100px 0;
     margin-bottom: 10px;    
+    background-size: cover
 }
 .wenku-head-box{
     background: url(http://hbfile.b0.upaiyun.com/img/home/banner/cab76fa56300bee0fa4f4d908f8d7981766065a6137c81) no-repeat center;
     background-size: cover
 }
 .jumbotron-post .container{
-    color: #333;
+    color: #fff;
     font-size: 16px
 }
 .jumbotron-post h1{
@@ -1852,6 +1857,13 @@ span.required,.errorMessage{
     font-size: 64px;
     color: #fff;
     text-align: center
+}
+.jumbotron-post a {
+    color: #fff;
+    color: rgba(255,255,255,.5);
+    -webkit-transition: all .2s ease-in-out;
+    -moz-transition: all .2s ease-in-out;
+    transition: all .2s ease-in-out;
 }
 .module .list-group-noborder{
     margin-bottom: 0;

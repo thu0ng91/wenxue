@@ -151,4 +151,15 @@ class WenkuColumns extends CActiveRecord {
         return CHtml::listData($items, 'id', 'title');
     }
 
+    public static function exClassify($type) {
+        $arr = array(
+            self::CLASSIFY_TYPES => '古文分类',
+            self::CLASSIFY_DYNASTY => '古文朝代',
+        );
+        if ($type == 'admin') {
+            return $arr;
+        }
+        return $arr[$type];
+    }
+
 }

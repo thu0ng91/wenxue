@@ -8,6 +8,7 @@
  * @datetime 2017-02-21 11:16:42 */
  $this->renderPartial('_nav'); 
  ?>
+<p><?php echo CHtml::link('新增',array('create'),array('class'=>'btn btn-danger'));?></p>
  <table class="table table-hover table-striped">
     <tr>    
         <th style="width: 80px"><?php echo $model->getAttributeLabel("id");?></th>        

@@ -35,18 +35,17 @@ class WenkuPostsController extends Admin {
         } else {
             //$this->checkPower('addWenkuPosts');
             $model = new WenkuPosts;
+            $author = zmf::val('author', 2);
+            if ($author) {
+                $model->author = $author;
+            }
         }
         // Uncomment the following line if AJAX validation is needed
         // $this->performAjaxValidation($model);
         if (isset($_POST['WenkuPosts'])) {
             $model->attributes = $_POST['WenkuPosts'];
             if ($model->save()) {
-                if (!$id) {
-                    Yii::app()->user->setFlash('addWenkuPostsSuccess', "保存成功！您可以继续添加。");
-                    $this->redirect(array('create'));
-                } else {
-                    $this->redirect(array('index'));
-                }
+                $this->redirect(array('wenkuAuthor/view', 'id' => $model->author));
             }
         }
         $this->render('create', array(
@@ -101,7 +100,10 @@ class WenkuPostsController extends Admin {
         if ($from != 'tashbin') {
             $criteria->addCondition('status!=' . Posts::STATUS_DELED);
         }
-
+        $status = zmf::val("status", 1);
+        if ($status!=='') {
+            $criteria->addCondition("status=" . intval($status));
+        }
         $criteria->select = $select;
         $count = $model->count($criteria);
         $pager = new CPagination($count);
@@ -192,8 +194,8 @@ class WenkuPostsController extends Admin {
         KeywordIndexer::createWordsCache();
         exit('well done');
     }
-    
-    public function actionClearLink(){
+
+    public function actionClearLink() {
         $action = zmf::val('action', 1);
         ini_set('memory_limit', '512M');
         ini_set('max_execution_time', '1800');
@@ -225,7 +227,7 @@ class WenkuPostsController extends Admin {
                 '\\2',
             );
             $content = preg_replace($replace, $to, $val['content']);
-            if(strpos($content, '[/link]')!==false){
+            if (strpos($content, '[/link]') !== false) {
                 $replace = array(
                     "/\[link=([^\]]+?)\](.+?)\[\/link\]/i",
                 );

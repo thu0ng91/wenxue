@@ -26,6 +26,11 @@
         <?php echo $form->error($model,'classify'); ?>
     </div>
     <div class="form-group">
+        <?php echo $form->labelEx($model,'title'); ?>        
+        <?php echo $form->textField($model,'title',array('class'=>'form-control')); ?>
+        <?php echo $form->error($model,'title'); ?>
+    </div>
+    <div class="form-group">
         <?php echo $form->labelEx($model,'content'); ?>        
         <?php $this->renderPartial('//common/editor_um', array('model' => $model,'content' => $model->content,'hiddenToolbar'=>true)); ?>
         <?php echo $form->error($model,'content'); ?>
