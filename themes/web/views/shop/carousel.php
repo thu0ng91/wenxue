@@ -9,7 +9,7 @@
  * @datetime 2016-5-26  14:57:36 
  */
 $showcases=  Showcases::getPagePosts('shop', NUll, true,'c640360');
-$posts=$showcases['reg']['post'];
+$posts=$showcases['shop']['post'];
 ?>
 <?php if(!empty($posts)){?>
 <div id="carousel-example-generic" class="carousel slide" data-ride="carousel" style="">
