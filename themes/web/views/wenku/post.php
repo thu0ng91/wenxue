@@ -11,7 +11,7 @@
 ?>
 <div class="container-fluid jumbotron-post">
     <div class="container">
-        <h1><?php echo $info['title'];?></h1>
+        <h1><?php echo $info['title'];?><?php if($info['second_title']){?><small>——<?php echo $info['second_title'];?></small><?php }?></h1>
         <p class="author"><?php echo $authorInfo ? '——'.($authorInfo['dynastyName'] ? '（'.CHtml::link($authorInfo['dynastyName'],array('wenku/author','id'=>$authorInfo['id']),array('target'=>'_blank')).'）' : '').CHtml::link($authorInfo['title'],array('wenku/author','id'=>$authorInfo['id']),array('target'=>'_blank')) : '佚名';?></p>
         <div class="content">
             <?php echo nl2br($info['content']);?>
@@ -21,16 +21,16 @@
 <div class="container">
     <div class="main-part module">
         <?php foreach ($aboutInfos as $abInfo){?>
-        <h2 class="module-header"><?php echo WenkuPostInfo::exClassify($abInfo['classify']);?></h2>
+        <h2 class="module-header"><?php echo $abInfo['title'] ? $abInfo['title'] : WenkuPostInfo::exClassify($abInfo['classify']);?></h2>
         <div class="module-body">
             <div class="displayNone" id="content-info-<?php echo $abInfo['id'];?>"><?php echo $abInfo['content'];?><p class="text-right"><?php echo CHtml::link('收起','javascript:;',array('data-id'=>'info-'.$abInfo['id'],'class'=>'toggle'));?></p></div>
             <div id="substr-info-<?php echo $abInfo['id'];?>"><?php echo zmf::subStr($abInfo['content'], 200,'...'.CHtml::link('展开','javascript:;',array('data-id'=>'info-'.$abInfo['id'],'class'=>'toggle')));?></div>
         </div>
         <?php }?>
-        <h2 class="module-header">原创改编</h2>
+<!--        <h2 class="module-header">原创改编</h2>
         <div class="module-body">
             
-        </div>
+        </div>-->
     </div>
     <div class="aside-part module">
         <h2 class="module-header">关于【<?php echo $authorInfo['title'];?>】</h2>
