@@ -38,6 +38,7 @@ class WenkuPostsController extends Admin {
             $author = zmf::val('author', 2);
             if ($author) {
                 $model->author = $author;
+                $model->dynasty=$model->authorInfo->dynasty;
             }
         }
         // Uncomment the following line if AJAX validation is needed
