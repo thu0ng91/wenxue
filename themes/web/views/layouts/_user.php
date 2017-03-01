@@ -19,7 +19,7 @@
     <li class="color-warning"><?php echo GroupPowers::link('createAuthor',$this->userInfo,'<i class="fa fa-exclamation-circle"></i> 成为作者', array('user/author'), array('role' => 'menuitem')); ?></li>
     <?php }}?>    
     <li><?php echo CHtml::link('<i class="fa fa-bell-o unread-bell"></i><span class="top-nav-count" id="top-nav-count">100</span><span class="nav-title">提醒</span>', array('user/notice'), array('role' => 'menuitem','title'=>'提醒')); ?></li>
-    <li><?php echo CHtml::link('<i class="fa fa-tasks"></i><span class="nav-title">任务</span>', 'javascript:;', array('role' => 'menuitem','action'=>'float','action-data'=> Posts::encode($this->uid,'tasks'),'title'=>'任务')); ?></li>
+    <li><?php echo CHtml::link('<i class="fa fa-tasks"></i><span class="top-nav-count" id="top-task-count">100</span><span class="nav-title">任务</span>', 'javascript:;', array('role' => 'menuitem','action'=>'float','action-data'=> Posts::encode($this->uid,'tasks'),'title'=>'任务')); ?></li>
     <li><?php echo CHtml::link('<i class="fa fa-magic"></i><span class="nav-title">背包</span>', array('user/props'), array('role' => 'menuitem','title'=>'背包')); ?></li>
     <li class="dropdown">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php echo $this->userInfo['truename']; ?> <span class="caret"></span></a>               

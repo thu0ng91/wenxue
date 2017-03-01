@@ -220,7 +220,7 @@ button, input, select, textarea,.form-control,.btn{
 }
 /* Let's get this party started */
 ::-webkit-scrollbar {
-    width: 12px;
+    width: 8px;
 }
 
 /* Track */
@@ -1860,10 +1860,6 @@ span.required,.errorMessage{
 }
 .jumbotron-post a {
     color: #fff;
-    color: rgba(255,255,255,.5);
-    -webkit-transition: all .2s ease-in-out;
-    -moz-transition: all .2s ease-in-out;
-    transition: all .2s ease-in-out;
 }
 .module .list-group-noborder{
     margin-bottom: 0;

@@ -34,11 +34,11 @@ class WenkuAuthor extends CActiveRecord {
             array('cTime', 'default', 'setOnEmpty' => true, 'value' => zmf::now()),
             array('status', 'default', 'setOnEmpty' => true, 'value' => Posts::STATUS_PASSED),
             array('title', 'required'),
-            array('status', 'numerical', 'integerOnly' => true),
+            array('status,sex', 'numerical', 'integerOnly' => true),
             array('uid, dynasty, hits, cTime', 'length', 'max' => 11),
             array('firstChar', 'length', 'max' => 1),
             array('title, pinyin', 'length', 'max' => 100),
-            array('faceImg,bgImg', 'length', 'max' => 255),
+            array('faceImg,bgImg,title_en,title_pinyin,', 'length', 'max' => 255),
             array('attachid', 'length', 'max' => 10),
         );
     }
@@ -71,7 +71,7 @@ class WenkuAuthor extends CActiveRecord {
             'id' => 'ID',
             'uid' => 'Uid',
             'title' => '名称',
-            'pinyin' => 'Name',
+            'pinyin' => '索引标题',
             'dynasty' => '所属朝代',
             'attachid' => 'Attachid',
             'hits' => 'Hits',
@@ -80,6 +80,9 @@ class WenkuAuthor extends CActiveRecord {
             'firstChar' => '首字母',
             'faceImg' => '封面图',
             'bgImg' => '背景图',
+            'title_en' => '英文标题',
+            'title_pinyin' => '拼音',
+            'sex' => '性别',
         );
     }
 
@@ -134,16 +137,15 @@ class WenkuAuthor extends CActiveRecord {
             return $item[$return];
         }
         
-        $return=array(
+        return array(
             'id'=>$keyid,
             'title'=>$item['title'],
+            'title_en'=>$item['title_en'],
             'dynasty'=>$item['dynasty'],
             'faceImg'=>$item['faceImg'],
             'dynastyName'=>$item->dynastyInfo->title,
             'content'=>$item->aboutInfo->content,
         );
-        
-        return $return;
     }
 
     /**

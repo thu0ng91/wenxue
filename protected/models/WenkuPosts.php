@@ -44,7 +44,7 @@ class WenkuPosts extends CActiveRecord {
             array('dynasty, colid, status,len', 'numerical', 'integerOnly' => true),
             array('uid, author, hits, order, updateTime, cTime', 'length', 'max' => 10),
             array('len', 'length', 'max' => 3),
-            array('title, second_title, pinyin,faceImg,bgImg', 'length', 'max' => 255),
+            array('title, second_title, pinyin,faceImg,bgImg,title_en', 'length', 'max' => 255),
         );
     }
 
@@ -90,6 +90,7 @@ class WenkuPosts extends CActiveRecord {
             'len' => '长度',
             'faceImg' => '封面图',
             'bgImg' => '背景图',
+            'title_en' => '英文标题',
         );
     }
 

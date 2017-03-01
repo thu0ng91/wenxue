@@ -1158,9 +1158,9 @@ function doGetNotice() {
     $.post(zmf.ajaxUrl, {action: 'getNotice', YII_CSRF_TOKEN: zmf.csrfToken}, function (result) {
         result = $.parseJSON(result);
         if (result.status === 1) {
-            var _num = parseInt(result.msg);
-            if (_num > 0) {
-                $('#top-nav-count').html(_num).css('display', 'inline-block');
+            var notices = parseInt(result.notices);
+            if (notices > 0) {
+                $('#top-nav-count').html(notices).css('display', 'inline-block');
                 if (flashTitle.timer === null) {
                     flashTitle.show();
                 }
@@ -1168,8 +1168,12 @@ function doGetNotice() {
                 $('#top-nav-count').hide();
                 flashTitle.clear();
             }
-        } else {
-
+            var tasks = parseInt(result.tasks);
+            if (tasks > 0) {
+                $('#top-task-count').html(tasks).css('display', 'inline-block');
+            }else{
+                $('#top-task-count').hide();
+            }
         }
     })
 }

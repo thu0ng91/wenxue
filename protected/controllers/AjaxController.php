@@ -17,7 +17,7 @@ class AjaxController extends Q {
 
     public function actionDo() {
         $action = zmf::val('action', 1);
-        if (!in_array($action, array('addTip', 'saveUploadImg', 'publishBook', 'publishChapter', 'saveDraft', 'report', 'sendSms', 'checkSms', 'setStatus', 'delContent', 'getNotice', 'getContents', 'delBook', 'delChapter', 'finishBook', 'dapipi', 'joinGroup', 'float', 'ajax', 'gotoBuy', 'confirmBuy', 'getProps', 'useProp', 'getForums', 'doChangeForum','joinActivity'))) {
+        if (!in_array($action, array('addTip', 'saveUploadImg', 'publishBook', 'publishChapter', 'saveDraft', 'report', 'sendSms', 'checkSms', 'setStatus', 'delContent', 'getNotice', 'getContents', 'delBook', 'delChapter', 'finishBook', 'dapipi', 'joinGroup', 'float', 'ajax', 'gotoBuy', 'confirmBuy', 'getProps', 'useProp', 'getForums', 'doChangeForum', 'joinActivity'))) {
             $this->jsonOutPut(0, Yii::t('default', 'forbiddenaction'));
         }
         $this->$action();
@@ -604,49 +604,49 @@ class AjaxController extends Q {
             $this->jsonOutPut(0, '删除失败');
         }
     }
-    
-    private function joinActivity(){
+
+    private function joinActivity() {
         $this->checkLogin();
-        $aid=  zmf::val('aid',2);
-        $bid=  zmf::val('bid',2);
-        if(!$aid){
-            $this->jsonOutPut(0,'请选择活动');
+        $aid = zmf::val('aid', 2);
+        $bid = zmf::val('bid', 2);
+        if (!$aid) {
+            $this->jsonOutPut(0, '请选择活动');
         }
-        if(!$bid){
-            $this->jsonOutPut(0,'缺少参数');
+        if (!$bid) {
+            $this->jsonOutPut(0, '缺少参数');
         }
-        $activity=  Activity::getOne($aid);
-        if(!$activity || $activity['status']!=Activity::STATUS_PASSED){
-            $this->jsonOutPut(0,'活动不存在或已过期');
+        $activity = Activity::getOne($aid);
+        if (!$activity || $activity['status'] != Activity::STATUS_PASSED) {
+            $this->jsonOutPut(0, '活动不存在或已过期');
         }
-        $bookInfo=  Books::getOne($bid);
+        $bookInfo = Books::getOne($bid);
         $ckInfo = Activity::checkStatus($aid, 'add', $activity);
-        if($ckInfo['status']!==1){
-            $this->jsonOutPut(0,$ckInfo['msg']);
+        if ($ckInfo['status'] !== 1) {
+            $this->jsonOutPut(0, $ckInfo['msg']);
         }
-        if(!$bookInfo || $bookInfo['status']!=Posts::STATUS_PASSED){
-            $this->jsonOutPut(0,'参与活动的作品不存在');
-        }elseif($bookInfo['uid']!=$this->uid){
-            $this->jsonOutPut(0,'请操作自己的作品');
-        }else{
+        if (!$bookInfo || $bookInfo['status'] != Posts::STATUS_PASSED) {
+            $this->jsonOutPut(0, '参与活动的作品不存在');
+        } elseif ($bookInfo['uid'] != $this->uid) {
+            $this->jsonOutPut(0, '请操作自己的作品');
+        } else {
             //todo,必须要已发表的作品才可以参与
         }
-        $addInfo=  Activity::checkTypeActivity('books', $bid, $aid);
-        if($addInfo){
-            $this->jsonOutPut(0,'已参与，请勿重复操作');
+        $addInfo = Activity::checkTypeActivity('books', $bid, $aid);
+        if ($addInfo) {
+            $this->jsonOutPut(0, '已参与，请勿重复操作');
         }
         //没找到，则说明没参与
-        $attr=array(
+        $attr = array(
             'activity' => $aid,
             'logid' => $bid,
             'classify' => 'books'
         );
-        $model=new ActivityLink;
-        $model->attributes=$attr;
-        if($model->save()){
-            $this->jsonOutPut(1,'已参与');
-        }else{
-            $this->jsonOutPut(0,'参与失败，请稍后尝试');
+        $model = new ActivityLink;
+        $model->attributes = $attr;
+        if ($model->save()) {
+            $this->jsonOutPut(1, '已参与');
+        } else {
+            $this->jsonOutPut(0, '参与失败，请稍后尝试');
         }
     }
 
@@ -985,7 +985,14 @@ class AjaxController extends Q {
     private function getNotice() {
         $this->checkLogin();
         $noticeNum = Notification::getNum();
-        $this->jsonOutPut(1, $noticeNum);
+        $tasks = Task::statUserTasks($this->userInfo);
+        $arr = array(
+            'status' => 1,
+            'notices' => $noticeNum,
+            'tasks' => $tasks,
+        );
+        echo CJSON::encode($arr);
+        Yii::app()->end();
     }
 
     private function dapipi() {
@@ -1338,14 +1345,14 @@ class AjaxController extends Q {
             $posts[$k]['faceUrl'] = zmf::getThumbnailUrl($val['faceUrl'], 'a120', 'goods');
         }
         $now = zmf::now();
-        $longHtml='';
+        $longHtml = '';
         if (!empty($posts)) {
             foreach ($posts as $k => $row) {
                 $_passdata = zmf::jiaMi($row['id'] . '#' . $id . '#' . $type . '#' . $now);
-                $longHtml.=$this->renderPartial('/user/_prop', array('data' => $row, 'k' => $k, 'passdata' => $_passdata,'type'=>$type), true);
+                $longHtml.=$this->renderPartial('/user/_prop', array('data' => $row, 'k' => $k, 'passdata' => $_passdata, 'type' => $type), true);
             }
-        }else{
-            $longHtml='<p class="help-block text-center">暂无道具，'.CHtml::link('前往选购',array('shop/index'),array('target'=>'_blank')).'</p>';
+        } else {
+            $longHtml = '<p class="help-block text-center">暂无道具，' . CHtml::link('前往选购', array('shop/index'), array('target' => '_blank')) . '</p>';
         }
         $data = array(
             'html' => $longHtml,
@@ -1668,7 +1675,7 @@ class AjaxController extends Q {
             //更新团队的成员数
             Group::updateMemberCount($ginfo['id']);
             //用户组初始化赠送的物品
-            GroupGifts::groupGiftsForUser($ginfo['id'], $this->userInfo);            
+            GroupGifts::groupGiftsForUser($ginfo['id'], $this->userInfo);
             $url = Yii::app()->createUrl('site/recommend');
             $this->jsonOutPut(1, $url);
         } else {
@@ -2000,37 +2007,37 @@ class AjaxController extends Q {
             $this->jsonOutPut(0, '无权本操作');
         }
     }
-    
+
     private function voteActivity($arr) {
         if (!$arr['id'] || $arr['type'] != 'voteActivity') {
             $this->jsonOutPut(0, '参数有误，请核实');
         }
-        $dataArr= array_filter(explode('@', $arr['id']));
-        if(count($dataArr)!=4 || (!$dataArr[0] || !$dataArr[1] || !$dataArr[2])){
+        $dataArr = array_filter(explode('@', $arr['id']));
+        if (count($dataArr) != 4 || (!$dataArr[0] || !$dataArr[1] || !$dataArr[2])) {
             $this->jsonOutPut(0, '参数有误，请核实');
         }
-        $activityId=$dataArr[0];
-        $linkId=$dataArr[1];
-        $bookId=$dataArr[2];
-        $type='books';
-        
-        $activityInfo=  Activity::getOne($activityId);
-        $ckinfo = Activity::checkStatus($activityId, 'vote',$activityInfo);
+        $activityId = $dataArr[0];
+        $linkId = $dataArr[1];
+        $bookId = $dataArr[2];
+        $type = 'books';
+
+        $activityInfo = Activity::getOne($activityId);
+        $ckinfo = Activity::checkStatus($activityId, 'vote', $activityInfo);
         if ($ckinfo['status'] !== 1) {
             $this->jsonOutPut(0, $ckinfo['msg']);
         }
         //作品
-        $postInfo=  Books::getOne($bookId);
+        $postInfo = Books::getOne($bookId);
         if (!$postInfo || $postInfo['status'] != Posts::STATUS_PASSED) {
             $this->jsonOutPut(0, '您所查看的内容不存在');
         }
         //参与记录
-        $linkInfo= ActivityLink::getOne($linkId);
-        if(!$linkInfo){
+        $linkInfo = ActivityLink::getOne($linkId);
+        if (!$linkInfo) {
             $this->jsonOutPut(0, '该作品未参与任何投票活动');
-        }elseif($linkInfo['classify']!=$type || $linkInfo['logid']!=$bookId){
+        } elseif ($linkInfo['classify'] != $type || $linkInfo['logid'] != $bookId) {
             $this->jsonOutPut(0, '参数有误，请核实');
-        }        
+        }
         if ($activityInfo['voteType'] == 1) {
             //整个活动只能投voteNum次
             $count = ActivityVote::model()->count('activity=:acid AND classify=:class AND uid=:uid', array(':acid' => $activityId, ':class' => $type, ':uid' => $this->uid));
@@ -2048,12 +2055,12 @@ class AjaxController extends Q {
             'activity' => $activityId,
             'logid' => $postInfo['id'],
             'classify' => $type,
-            'uid' => $this->uid,            
+            'uid' => $this->uid,
         );
         $model = new ActivityVote;
         $model->attributes = $attr;
         if ($model->save()) {
-            ActivityLink::model()->updateCounters(array('votes'=>1),'id=:id',array(':id'=>$linkInfo['id']));
+            ActivityLink::model()->updateCounters(array('votes' => 1), 'id=:id', array(':id' => $linkInfo['id']));
             $this->jsonOutPut(1, '投票成功');
         }
         $this->jsonOutPut(0, '投票失败');

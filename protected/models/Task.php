@@ -233,7 +233,7 @@ class Task extends CActiveRecord {
             'select' => 'id,tid,status'
         ));
         foreach ($tasks as $k => $val) {
-            $tasks[$k]['action'] = Posts::encode($val['id'], 'joinTask');            
+            $tasks[$k]['action'] = Posts::encode($val['id'], 'joinTask');
             foreach ($logs as $log) {
                 if ($log['tid'] == $val['id']) {
                     //排除已完成的任务
@@ -247,22 +247,51 @@ class Task extends CActiveRecord {
             }
             if ($tasks[$k]) {
                 if ($val['type'] == 1) {//一次性任务
-                    if($val['score']>0 || $val['exp']>0){
-                        $_txt='奖励';
-                        $_txtArr=array();
-                        $_txtArr[]=$val['score']>0 ? $val['score'] . '积分':'';
-                        $_txtArr[]=$val['exp']>0 ? $val['exp'] . '经验':'';
-                        $_txt.=join('、',array_filter($_txtArr));
-                    }else{
-                        $_txt='';
-                    }                    
-                    $tasks[$k]['extraDesc'] = '一天内进行' . $val['num'] . '次，'.$_txt . ($val['endTime'] > 0 ? '，' . zmf::time($val['endTime'], 'm月d日') . '结束' : '');
+                    if ($val['score'] > 0 || $val['exp'] > 0) {
+                        $_txt = '奖励';
+                        $_txtArr = array();
+                        $_txtArr[] = $val['score'] > 0 ? $val['score'] . '积分' : '';
+                        $_txtArr[] = $val['exp'] > 0 ? $val['exp'] . '经验' : '';
+                        $_txt.=join('、', array_filter($_txtArr));
+                    } else {
+                        $_txt = '';
+                    }
+                    $tasks[$k]['extraDesc'] = '一天内进行' . $val['num'] . '次，' . $_txt . ($val['endTime'] > 0 ? '，' . zmf::time($val['endTime'], 'm月d日') . '结束' : '');
                 } else {
                     
                 }
             }
         }
         return $tasks;
+    }
+
+    /**
+     * 统计我的可接受任务
+     * @param array $userInfo
+     * @return int
+     */
+    public static function statUserTasks($userInfo) {
+        if (!$userInfo['id'] || !$userInfo['groupid']) {
+            return array();
+        }        
+        $sql = "SELECT COUNT(t.id) AS total FROM {{task}} t,{{group_tasks}} gt WHERE ((gt.startTime=0 OR gt.startTime<=:cTime) AND (gt.endTime=0 OR gt.endTime>=:cTime)) AND gt.gid=:gid AND gt.tid=t.id";
+        $res = Yii::app()->db->createCommand($sql);
+        $now = zmf::now();
+        $res->bindValues(array(
+            ':gid' => $userInfo['groupid'],
+            ':cTime' => $now,
+        ));
+        $info = $res->queryRow();
+        //取出已经参与的任务        
+        $logs = TaskLogs::model()->findAll(array(
+            'condition' => 'uid=:uid',
+            'params' => array(
+                ':uid' => $userInfo['id']
+            ),
+            'select' => 'id'
+        ));
+        $_num = $info['total'] - count($logs);
+        return $_num>0 ? $_num : 0;
     }
 
 }
