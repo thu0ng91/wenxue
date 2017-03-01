@@ -138,7 +138,7 @@ class WenkuController extends Q {
             $authorInfo = WenkuAuthor::getOne($info['author']);
         }
         $this->pageTitle = $info['title'] . ($info['title_en'] ? '（' . $info['title_en'] . '）' : '') . ' - 诗词文库 - ' . zmf::config('sitename');
-        $this->pageDescription = $info['title'] . ($info['title_en'] ? '（' . $info['title_en'] . '）' : '') . '的注释、故事、翻译、'.($info['title_en'] ? '、英文原文、中英翻译' : '');
+        $this->pageDescription = $info['title'] . ($info['title_en'] ? '（' . $info['title_en'] . '）' : '') . '的注释、故事、翻译'.($info['title_en'] ? '、英文原文、中英翻译' : '');
         $data = array(
             'info' => $info,
             'aboutInfos' => $aboutInfos,
