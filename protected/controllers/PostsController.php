@@ -35,7 +35,8 @@ class PostsController extends Q {
         $favorites = $this->uid ? array_keys(CHtml::listData($this->userInfo['favoriteForums'], 'id', 'title')) : array();
         $this->pageTitle = '小说创作基地 - ' . zmf::config('sitename');
         $this->mobileTitle = '小说创作基地';
-        $this->keywords= $this->pageDescription='';
+        $this->keywords= '小说写作,写小说,小说写作技巧,小说写作素材,写作交流';
+        $this->pageDescription='';
         $data = array(
             'forums' => $items,
             'favorites' => $favorites,

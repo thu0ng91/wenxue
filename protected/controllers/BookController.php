@@ -30,17 +30,21 @@ class BookController extends Q {
         foreach ($posts as $k => $val) {
             $posts[$k]['faceImg'] = zmf::getThumbnailUrl($val['faceImg'], 'w120', 'book');
         }
-        $cols=  Column::allCols();
+        $cols=  Column::allCols();        
         //获取所有活动
         $activity=array();
         if(!$this->isMobile){
             $activity=  Activity::getAllByType('books','id,title,faceimg,`desc`',false);
         }
         $this->selectNav = 'book';
-        $this->showLeftBtn=false;
-        $this->pageTitle = ($colInfo['title'] ? $colInfo['title'].'作品集_'.$colInfo['title'].'最近更新作品' : '作品集') . ' - ' . zmf::config('sitename');
+        $this->showLeftBtn=false;        
         if($colInfo){
+            $this->pageTitle = ($colInfo['title'] ? $colInfo['title'].'作品集_'.$colInfo['title'].'最近更新作品' : '作品集') . ' - ' . zmf::config('sitename');
             $this->keywords=$colInfo['title'].','.$colInfo['title'].'阅读,'.','.$colInfo['title'].'小说,'.$colInfo['title'].'小说阅读,'.$colInfo['title'].'小说下载,'.$colInfo['title'].'小说大全';
+        }else{
+            $this->pageTitle = '小说阅读_初心小说 - ' . zmf::config('sitename');
+            $this->keywords=  join(',', $cols);
+            $this->pageDescription='初心作品库，初心小说在线阅读，免费小说阅读，包含'.$this->keywords.'等小说';
         }
         $this->mobileTitle='作品集';
         $data = array(
