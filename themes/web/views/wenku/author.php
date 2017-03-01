@@ -21,7 +21,7 @@
 <div class="container">            
     <div class="module main-part">
         <?php foreach($aboutInfos as $abInfo){?>
-        <div class="module-header"><?php echo $info['title']. WenkuAuthorInfo::exClassify($abInfo['classify']);?></div>
+        <div class="module-header"><?php echo $abInfo['title'] ? $abInfo['title'] : ($info['title']. WenkuAuthorInfo::exClassify($abInfo['classify']));?></div>
         <div class="module-body">
             <div class="displayNone" id="content-info-<?php echo $abInfo['id'];?>"><?php echo $abInfo['content'];?><p class="text-right"><?php echo CHtml::link('收起','javascript:;',array('data-id'=>'info-'.$abInfo['id'],'class'=>'toggle'));?></p></div>
             <div id="substr-info-<?php echo $abInfo['id'];?>"><?php echo zmf::subStr($abInfo['content'], 200,'...'.CHtml::link('展开','javascript:;',array('data-id'=>'info-'.$abInfo['id'],'class'=>'toggle')));?></div>
