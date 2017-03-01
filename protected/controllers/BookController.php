@@ -47,6 +47,9 @@ class BookController extends Q {
             $this->pageDescription='初心作品库，初心小说在线阅读，免费小说阅读，包含'.$this->keywords.'等小说';
         }
         $this->mobileTitle='作品集';
+        if(!$this->isMobile){
+            $this->links = Links::getLinks($this->isMobile, 'books', 0);
+        }
         $data = array(
             'posts' => $posts,
             'colInfo' => $colInfo,

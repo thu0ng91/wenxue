@@ -11,8 +11,9 @@
 ?>
 <div class="footer">
     <div class="wrapper">
-        <p class="text-center">本站全部作品（包括小说、书评和帖子）版权为原创作者所有 本网站仅为网友写作提供上传空间储存平台。本站所收录作品、互动话题、书库评论及本站所做之广告均属其个人行为
-与本站立场无关。网站页面版权为初心创文所有，任何单位，个人未经授权不得转载、复制、分发，以及用作商业用途。</p>
+        <?php if(!empty($this->links)){?>
+        <div class="friend-links"><span class="_item">友情链接：</span><?php foreach($this->links as $link){echo CHtml::link($link['title'],$link['url'],array('target'=>'_blank','class'=>'_item'));}?></div>
+        <?php }?>        
         <p>
             <?php echo CHtml::link(zmf::config('sitename'), zmf::config('baseurl')); ?>&nbsp;•&nbsp;
             <?php echo CHtml::link('关于我们',array('site/info','code'=>'about'),array('target'=>'_blank'));?>&nbsp;•&nbsp;

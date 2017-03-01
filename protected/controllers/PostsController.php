@@ -37,6 +37,9 @@ class PostsController extends Q {
         $this->mobileTitle = '小说创作基地';
         $this->keywords= '小说写作,写小说,小说写作技巧,小说写作素材,写作交流';
         $this->pageDescription='';
+        if(!$this->isMobile){
+            $this->links = Links::getLinks($this->isMobile, 'forums', 0);
+        }
         $data = array(
             'forums' => $items,
             'favorites' => $favorites,

@@ -41,18 +41,31 @@ $this->renderPartial('_nav');?>
                 <p><span class="<?php echo $aboutInfo->status==Posts::STATUS_PASSED ? 'text-success' : 'text-danger';?>"><?php echo Posts::exStatus($aboutInfo->status);?></span>，<?php echo CHtml::link('编辑',array('wenkuAuthorInfo/update','id'=>$aboutInfo['id']),array('target'=>'_blank'));?></p>
             </div>
         </div>
-        <?php } ?>
-        <p><?php echo CHtml::link('添加翻译',array('wenkuAuthorInfo/create','pid'=>$model->id),array('class'=>'btn btn-primary'));?></p>
+        <?php } ?>        
+        <p><?php echo CHtml::link('添加内容',array('wenkuAuthorInfo/create','pid'=>$model->id),array('class'=>'btn btn-primary'));?></p>
     </div>
     <div class="col-xs-6 com-sm-6">
         <div class="module">
             <div class="module-header">相关作品</div>
             <div class="module-body">
-                <div class="list-group">
-                <?php $posts=$model->postsInfo;foreach($posts as $post){?>
-                <?php echo CHtml::link($post['title'].'<span class="pull-right '.($post['status']==Posts::STATUS_PASSED ? 'text-success' : 'text-danger').'">'.Posts::exStatus($post['status']).'</span>',array('wenkuPosts/update','id'=>$post['id']),array('target'=>'_blank','class'=>'list-group-item'));?>
-                <?php }?>
-                </div>
+                <table class="table table-hover">
+                    <tr>
+                        <th>标题</th>
+                        <th style="width:60px"></th>
+                        <th style="width:120px"></th>
+                    </tr>                        
+                    <?php $posts=$model->postsInfo;foreach($posts as $post){?>
+                    <tr>
+                        <td><?php echo $post['title'];?></td>
+                        <td><?php echo '<span class="'.($post['status']==Posts::STATUS_PASSED ? 'text-success' : 'text-danger').'">'.Posts::exStatus($post['status']).'</span>';?></td>
+                        <td>
+                            <?php echo CHtml::link('详情',array('wenkuPosts/view','id'=>$post['id']),array('target'=>'_blank'));?>
+                            <?php echo CHtml::link('编辑',array('wenkuPosts/update','id'=>$post['id']),array('target'=>'_blank'));?>
+                            <?php echo CHtml::link('删除',array('wenkuPosts/delete','id'=>$post['id']));?>
+                        </td>
+                    </tr>
+                    <?php }?>
+                </table>
                 <p class="text-center">
                     <span class="input-group-btn">     
                         <?php echo CHtml::link('新增作品',array('wenkuPosts/create','author'=>$model->id),array('target'=>'_blank','class'=>'btn btn-primary'));?>

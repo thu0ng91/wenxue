@@ -26,6 +26,7 @@ class Q extends Controller {
     public $showLeftBtn = true; //左侧返回按钮
     public $showTopbar = true;
     public $adminLogin = false;
+    public $links; //友链
 
     function init() {
         parent::init();

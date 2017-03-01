@@ -14,7 +14,7 @@ $qrcode=zmf::qrcode($url, 'book', $data['id']);
         </a>
     </div>
     <div class="media-body">
-        <h4><?php echo CHtml::link($data['title'],$urlArr,array('target'=>'_blank')).($data['shoufa'] ? '<span class="shoufa" title="此作品在初心首发">首</span>' : '');?></h4>
+        <h4><?php echo ($data['shoufa'] ? '<span class="shoufa" title="此作品在初心首发">首</span>&nbsp;' : '').CHtml::link($data['title'],$urlArr,array('target'=>'_blank'));?></h4>
         <p><?php if($data['scorer']>0){echo Books::starCss($data['score']);?> （<?php echo $data['scorer'];?>人评价）<?php }else{?><span class="color-grey">暂无评分</span><?php }?></p>
         <p class="help-block"><?php echo zmf::subStr($data['desc'],100);?></p>
         <p class="help-block">

@@ -45,7 +45,7 @@ class WenkuPostsController extends Admin {
         if (isset($_POST['WenkuPosts'])) {
             $model->attributes = $_POST['WenkuPosts'];
             if ($model->save()) {
-                $this->redirect(array('wenkuAuthor/view', 'id' => $model->author));
+                $this->redirect(array('view', 'id' => $model->id));
             }
         }
         $this->render('create', array(

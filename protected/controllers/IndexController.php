@@ -29,6 +29,9 @@ class IndexController extends Q {
         $this->mobileTitle=zmf::config('sitename');
         $this->selectNav='indexPage';
         $this->showLeftBtn=false;
+        if(!$this->isMobile){
+            $this->links = Links::getLinks($this->isMobile, 'index', 0);
+        }
         $data = array(
             'posts' => $posts,
             'authors' => $authors,
