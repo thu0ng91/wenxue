@@ -38,7 +38,8 @@ class WenkuPostsController extends Admin {
             $author = zmf::val('author', 2);
             if ($author) {
                 $model->author = $author;
-                $model->dynasty=$model->authorInfo->dynasty;
+                $model->dynasty = $model->authorInfo->dynasty;
+                $model->status = Posts::STATUS_PASSED;
             }
         }
         // Uncomment the following line if AJAX validation is needed
@@ -102,7 +103,7 @@ class WenkuPostsController extends Admin {
             $criteria->addCondition('status!=' . Posts::STATUS_DELED);
         }
         $status = zmf::val("status", 1);
-        if ($status!=='') {
+        if ($status !== '') {
             $criteria->addCondition("status=" . intval($status));
         }
         $criteria->select = $select;
