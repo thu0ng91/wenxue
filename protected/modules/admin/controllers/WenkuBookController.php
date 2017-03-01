@@ -39,6 +39,8 @@ class WenkuBookController extends Admin {
         // Uncomment the following line if AJAX validation is needed
         // $this->performAjaxValidation($model);
         if (isset($_POST['WenkuBook'])) {
+            $filter = Posts::handleContent($_POST['WenkuBook']['content']);
+            $_POST['WenkuBook']['content'] = $filter['content'];
             $model->attributes = $_POST['WenkuBook'];
             if ($model->save()) {
                 if (!$id) {

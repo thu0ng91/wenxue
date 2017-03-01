@@ -44,6 +44,8 @@ class WenkuPostInfoController extends Admin {
         // Uncomment the following line if AJAX validation is needed
         // $this->performAjaxValidation($model);
         if (isset($_POST['WenkuPostInfo'])) {
+            $filter = Posts::handleContent($_POST['WenkuPostInfo']['content']);
+            $_POST['WenkuPostInfo']['content'] = $filter['content'];
             $model->attributes = $_POST['WenkuPostInfo'];
             if ($model->save()) {
                 $this->redirect(array('wenkuPosts/view','id'=>$model->pid));                
