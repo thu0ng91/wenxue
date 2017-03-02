@@ -17,7 +17,7 @@ class PostsController extends Q {
                     'condition' => 'fid='.$val['id'].' AND status=1',
                     'select' => 'id,title',
                     'order' => 'id DESC',
-                    'limit' => 3
+                    'limit' => 5
                 ));
                 $items[$k]['newPosts']=$_posts;
             }
