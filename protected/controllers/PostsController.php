@@ -524,6 +524,10 @@ class PostsController extends Q {
         }
         $addScoreExp = true;
         $threadInfo = $this->loadModel($tid);
+        $forumInfo = PostForums::getOne($threadInfo['fid']);
+        if (!$forumInfo) {
+            $this->message(0, '你所查看的版块不存在');
+        }
         if ($pid) {
             $model = PostPosts::getOne($pid);
             if (!$model || $model->status!=Posts::STATUS_PASSED) {
@@ -537,7 +541,7 @@ class PostsController extends Q {
             $model = new PostPosts;
             $model->tid = $tid;
             $model->open = Posts::STATUS_OPEN;
-        }
+        }        
         //获取用户组的权限
         if($pid){
             if($model->uid != $this->uid){
@@ -573,7 +577,7 @@ class PostsController extends Q {
             $attr['open'] = $pid ? (($_POST['PostPosts']['open'] == Posts::STATUS_OPEN) ? 1 : 0) : Posts::STATUS_OPEN;
             $attr['platform'] = $this->isMobile ? Posts::PLATFORM_MOBILE : Posts::PLATFORM_WEB;
             $attr['aid'] = ($this->userInfo['authorId'] > 0 ? ($_POST['PostPosts']['aid'] > 0 ? $this->userInfo['authorId'] : 0) : 0);
-            $attr['anonymous'] = $_POST['PostPosts']['anonymous'];
+            $attr['anonymous'] = $forumInfo['anonymous'] ? $_POST['PostPosts']['anonymous'] : 0;
             $attkeys = array();
             if (!empty($filterContent['attachids'])) {
                 $attkeys = array_filter(array_unique($filterContent['attachids']));
@@ -618,6 +622,7 @@ class PostsController extends Q {
         $this->render('reply', array(
             'model' => $model,
             'threadInfo' => $threadInfo,
+            'forumInfo' => $forumInfo,
         ));
     }
 

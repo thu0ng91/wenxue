@@ -32,6 +32,7 @@ class PostForums extends CActiveRecord {
         // will receive user inputs.
         return array(
             array('title,faceImg,desc', 'required'),
+            array('anonymous', 'numerical', 'integerOnly' => true),
             array('title', 'length', 'max' => 16),
             array('posterType', 'length', 'max' => 6),
             array('desc, faceImg,keywords,description', 'length', 'max' => 255),
@@ -66,6 +67,7 @@ class PostForums extends CActiveRecord {
             'posterType' => '谁可发帖',
             'keywords' => '关键词',
             'description' => '描述',
+            'anonymous' => '是否可匿名',
         );
     }
 

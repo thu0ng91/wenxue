@@ -14,3 +14,5 @@ alter table pre_wenku_author add title_pinyin varchar(255) not null;
 alter table pre_wenku_author add sex tinyint(1) unsigned not null;
 
 alter table pre_wenku_posts add title_en varchar(255) not null;
+
+alter table pre_post_forums add anonymous tinyint(1) unsigned not null;

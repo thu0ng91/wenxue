@@ -16,7 +16,7 @@
         'enableAjaxValidation'=>false,
     )); ?>
     <ol class="breadcrumb">
-        <li><a href="#">初心创文首页</a></li>
+        <li><?php echo CHtml::link('初心创文首页',zmf::config('baseurl'));?></li>
         <li><?php echo CHtml::link($forumInfo['title'],array('posts/index','forum'=>$forumInfo['id']));?></li>        
         <li class="active">新增文章</li>
     </ol>

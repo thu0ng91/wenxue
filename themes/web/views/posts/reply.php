@@ -16,7 +16,7 @@ $uploadurl=Yii::app()->createUrl('attachments/upload',array('type'=>'threads','i
 	'enableAjaxValidation'=>false,
 )); ?>
     <ol class="breadcrumb">
-        <li><a href="#">初心创文首页</a></li>
+        <li><?php echo CHtml::link('初心创文首页',zmf::config('baseurl'));?></li>
         <li><?php echo CHtml::link($threadInfo['title'],array('posts/view','id'=>$threadInfo['id']));?></li>        
         <li class="active">回帖</li>
     </ol>
@@ -49,9 +49,11 @@ $uploadurl=Yii::app()->createUrl('attachments/upload',array('type'=>'threads','i
                 <div class="checkbox">
                     <label><?php echo CHtml::activeCheckBox($model, 'open');?> 开放评论和点赞</label>
                 </div>
+                <?php if($forumInfo['anonymous']){?>
                 <div class="checkbox">
                     <label><?php echo CHtml::activeCheckBox($model, 'anonymous');?> 匿名回复</label>
                 </div>
+                <?php }?>
                 <?php if($this->userInfo['authorId']>0){?>
                 <div class="checkbox">
                     <label>

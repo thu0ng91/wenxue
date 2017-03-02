@@ -72,16 +72,14 @@ $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
                 <?php echo $form->textArea($model,'content',array('class'=>'form-control','rows'=>3,'placeholder'=>'说说你的看法'));?>
                 <?php if($this->userInfo['authorId']>0){?>
                 <div class="checkbox">
-                    <label>
-                        <?php echo $form->checkbox($model,'aid');?> 以作者身份回复
-                    </label>
+                    <label><?php echo $form->checkbox($model,'aid');?> 以作者身份回复</label>
                 </div>
+                <?php }?>   
+                <?php if($forumInfo['anonymous']){?>
                 <div class="checkbox">
-                    <label>
-                        <?php echo $form->checkbox($model,'anonymous');?> 匿名回复
-                    </label>
+                    <label><?php echo $form->checkbox($model,'anonymous');?> 匿名回复</label>
                 </div>
-                <?php }?>
+                <?php }?>   
             </div>
             <div class="form-group">
                 <?php echo CHtml::submitButton($model->isNewRecord ? '回帖' : '更新',array('class'=>'btn btn-success','id'=>'add-post-btn')); ?>
