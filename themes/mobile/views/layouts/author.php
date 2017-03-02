@@ -32,9 +32,21 @@ $this->beginContent('/layouts/common');
 </div>
 <div class="clearfix"></div>
 <div class="author-content ui-container header-hack">
-    <div class="ui-row-flex author-content-nav" style="clear:both">
-        <div class="ui-col<?php echo $this->selectNav == 'index' ? ' active' : ''; ?> ui-border-r" data-href="<?php echo Yii::app()->createUrl('author/view',array('id'=>$this->authorInfo['id']));?>">作品</div>
-        <div class="ui-col<?php echo $this->selectNav == 'fans' ? ' active' : ''; ?>" data-href="<?php echo Yii::app()->createUrl('author/fans',array('id'=>$this->authorInfo['id']));?>">追随者</div>
+    <div class="module-body">
+        <ul class="ui-list ui-list-pure ui-border-tb">   
+            <li class="ui-border-t">
+                <p><span>热度：</span><?php echo $this->authorInfo['score'];?></p>
+            </li>
+            <li class="ui-border-t">
+                <p><span>粉丝：</span><?php echo $this->authorInfo['favors'];?></p>
+            </li>
+            <li class="ui-border-t">
+                <p><span>作品：</span><?php echo $this->authorInfo['posts'];?></p>
+            </li>        
+            <li class="ui-border-t">
+                <p><span>简介：</span><?php echo $this->authorInfo['content']!='' ? $this->authorInfo['content'] : '未设置';?></p>
+            </li>
+        </ul>    
     </div>
     <?php echo $content; ?>    
 </div> 
