@@ -81,7 +81,7 @@ class ShopController extends Q {
             $_classifyArr=end($info['classify']);
             $_classify=$_classifyArr['id'];
             if($_classify){
-                $sql='SELECT id,title,faceUrl,scorePrice,goldPrice FROM {{goods}} WHERE classify='.$_classify.' AND id='.$info['id'];
+                $sql='SELECT id,title,faceUrl,scorePrice,goldPrice FROM {{goods}} WHERE classify='.$_classify;//.' AND id!='.$info['id']
                 $posts=Yii::app()->db->createCommand($sql)->queryAll();
             }
         }
