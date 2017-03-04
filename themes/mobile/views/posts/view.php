@@ -98,7 +98,7 @@ $qrcode=  zmf::qrcode($url, 'posts', $info['id']);
     <!--相关文章-->
     <?php if(!empty($relatePosts)){?>
     <div class="module">
-        <div class="module-header">「<?php echo $authorInfo['truename'];?>」近期发表</div>
+        <div class="module-header">「<?php echo $authorInfo['title'];?>」近期发表</div>
         <div class="module-body padding-body">            
             <?php foreach ($relatePosts as $relatePost){?>                
                 <p class="ui-nowrap"><?php echo CHtml::link($relatePost['title'],array('posts/view','id'=>$relatePost['id']));?></p>                       

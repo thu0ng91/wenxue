@@ -205,7 +205,7 @@ class PostsController extends Q {
         if (!zmf::actionLimit('visit-Threads', $id, 5, 60)) {
             Posts::updateCount($id, 'PostThreads', 1, 'hits');
         }
-        $size = 'w600';
+        $size = 'c640';
         if ($this->isMobile) {
             $size = 'w650';
             //$this->layout = 'post';

@@ -85,10 +85,16 @@ class ShopController extends Q {
                 $posts=Yii::app()->db->createCommand($sql)->queryAll();
             }
         }
+        //取使用指南
+        $useInfo = SiteInfo::model()->find('code=:code', array(':code' => 'goodsUse'));
+        if($useInfo){
+            $useInfo['content']=zmf::text(array(), $useInfo['content'],true,'c640');
+        }        
         $this->pageTitle = $info['title'] . ' - ' . zmf::config('sitename');
         $data = array(
             'info' => $info,
             'posts' => $posts,
+            'useInfo' => $useInfo,
         );
         $this->render('detail', $data);
     }

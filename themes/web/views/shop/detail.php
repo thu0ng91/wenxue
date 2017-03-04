@@ -130,8 +130,7 @@
                 <?php }if($info['goldPrice']!=0){?>
                 <p>金币价格：<span class="price"><?php echo $info['goldPrice'];?></span></p>
                 <?php }?>
-            </div>
-            <p>用途：道具，从纯读者转换成任务作者</p>            
+            </div>             
             <dl class="tb-amount tm-clear">
                 <dt class="tb-metatit">数量</dt>
                 <dd id="J_Amount"><span class="tb-amount-widget mui-amount-wrap">
@@ -157,7 +156,7 @@
             <div class="module-header">相关推荐</div>
             <div class="module-body">
                 <?php foreach($posts as $post){?>
-                <div class="media">
+                <div class="media ui-border-b">
                     <div class="media-left">
                         <a href="<?php echo Yii::app()->createUrl('shop/detail',array('id'=>$post['id']));?>" target="_blank">
                             <img src="<?php echo zmf::lazyImg();?>" class="lazy a64" data-original="<?php echo $post['faceUrl'];?>" alt="<?php echo $post['title'];?>"/>
@@ -176,14 +175,17 @@
             </div>
         </div>
         <div class="content-main module">
+            <?php if($info['content']){?>
             <div class="module-header">详情</div>
             <div class="module-body">
                 <?php echo $info['content'];?>
             </div>
-<!--            <div class="module-header">评价</div>
+            <?php }if($useInfo){?>
+            <div class="module-header">如何使用</div>
             <div class="module-body">
-                
-            </div>-->
+                <?php echo $useInfo['content'];?>
+            </div>
+            <?php }?>
         </div>
     </div>
 </div>
