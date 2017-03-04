@@ -7,11 +7,20 @@ class PostsController extends Q {
     public function actionTypes() {
         //更新版块帖子数
         PostForums::updatePostsStat();
-        $items = PostForums::model()->findAll(array(
-            'order' => 'id ASC'
-        ));
+        $sql="SELECT id,title,`desc`,faceImg,posts,favors,'' AS newPosts FROM {{post_forums}} ORDER BY id ASC";
+        $items=Yii::app()->db->createCommand($sql)->queryAll();        
         foreach ($items as $k => $val) {
             $items[$k]['faceImg'] = zmf::getThumbnailUrl($val['faceImg'], 'a120', 'faceImg');
+            //new posts
+            if(!$this->isMobile){
+                $_posts = PostThreads::model()->findAll(array(
+                    'condition' => 'fid='.$val['id'].' AND status=1',
+                    'select' => 'id,title',
+                    'order' => 'id DESC',
+                    'limit' => 5
+                ));
+                $items[$k]['newPosts']=$_posts;
+            }
         }
         //最新帖子
         $posts=$topPosts=array();
