@@ -23,7 +23,7 @@ $this->renderPartial('/users/_nav');
 <?php foreach($posts as $data):?> 
     <tr>
         <td><?php echo CHtml::encode($data->id);?></td>
-	<td><?php echo CHtml::link(CHtml::encode($data->truename),array('update','id'=>$data->id));?></td>
+	<td><?php echo CHtml::link(CHtml::encode($data->truename),array('view','id'=>$data->id));?></td>
 	<td><?php echo CHtml::encode($data->groupInfo->title);?></td>
 	<td><?php echo CHtml::encode($data->phone);?></td>
 	<td><?php echo CHtml::encode($data->email);?></td>

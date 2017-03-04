@@ -166,7 +166,7 @@ class AuthorController extends Q {
         }
         $chapters = Chapters::getByBook($bid, $this->adminLogin);
         //更新作品信息
-        Books::updateBookStatInfo($bid);
+        Books::updateBookStatInfo($info);
         //获取所有活动
         $activity=  Activity::getAllByType('books');
         //参与的活动
@@ -240,7 +240,7 @@ class AuthorController extends Q {
             );
             $model->attributes = $attr;
             if ($model->save()) {
-                Books::updateBookStatInfo($model->bid);
+                Books::updateBookStatInfo($bookInfo);
                 $this->redirect(array('author/book', 'bid' => $model->bid));
             }
         }

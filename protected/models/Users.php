@@ -55,6 +55,7 @@ class Users extends CActiveRecord {
         // class name for the relations automatically generated below.
         return array(
             'groupInfo' => array(self::BELONGS_TO, 'Group', 'groupid'),
+            'authorInfo' => array(self::BELONGS_TO, 'Authors', 'authorId'),
         );
     }
 

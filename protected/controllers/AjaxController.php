@@ -297,7 +297,7 @@ class AjaxController extends Q {
         }
         if (Books::model()->updateByPk($id, array('bookStatus' => Books::STATUS_PUBLISHED))) {
             //更新小说信息
-            Books::updateBookStatInfo($id);
+            Books::updateBookStatInfo($bookInfo,true);
             //更新作者信息
             Authors::updateStatInfo($authorInfo);
             //记录用户操作
@@ -374,7 +374,7 @@ class AjaxController extends Q {
         }
         if (Books::model()->updateByPk($id, array('bookStatus' => Books::STATUS_FINISHED))) {
             //更新小说信息
-            Books::updateBookStatInfo($id);
+            Books::updateBookStatInfo($bookInfo,true);
             //更新作者信息
             Authors::updateStatInfo($authorInfo);
             //记录用户操作
@@ -443,7 +443,7 @@ class AjaxController extends Q {
         }
         if (Books::model()->updateByPk($id, array('status' => Posts::STATUS_DELED))) {
             //更新小说信息
-            Books::updateBookStatInfo($id);
+            Books::updateBookStatInfo($bookInfo,true);
             //更新作者信息
             Authors::updateStatInfo($authorInfo);
             //记录用户操作
@@ -515,7 +515,7 @@ class AjaxController extends Q {
             $this->jsonOutPut(0, '你无权本操作');
         }
         if (Chapters::model()->updateByPk($id, array('chapterStatus' => Books::STATUS_PUBLISHED))) {
-            Books::updateBookStatInfo($chapterInfo['bid']);
+            Books::updateBookStatInfo($bookInfo,true);
             Authors::updateStatInfo($authorInfo);
             //记录用户操作
             $jsonData = CJSON::encode(array(
@@ -567,6 +567,12 @@ class AjaxController extends Q {
         } elseif ($chapterInfo['status'] == Posts::STATUS_DELED) {
             $this->jsonOutPut(1, '已删除');
         }
+        $bookInfo = Books::getOne($chapterInfo['bid']);
+        if (!$bookInfo || $bookInfo['status'] != Posts::STATUS_PASSED) {
+            $this->jsonOutPut(0, '小说不存在或已删除！');
+        } elseif ($bookInfo['uid'] != $this->uid || $bookInfo['aid'] != $this->userInfo['authorId']) {
+            $this->jsonOutPut(0, '你无权本操作！');
+        }
         $authorInfo = Authors::getOne($this->userInfo['authorId']);
         if (!$authorInfo || $authorInfo['status'] != Posts::STATUS_PASSED) {
             $this->jsonOutPut(0, '你无权本操作');
@@ -577,7 +583,7 @@ class AjaxController extends Q {
             $this->jsonOutPut(0, '密码错误，请重试');
         }
         if (Chapters::model()->updateByPk($id, array('status' => Posts::STATUS_DELED))) {
-            Books::updateBookStatInfo($chapterInfo['bid']);
+            Books::updateBookStatInfo($bookInfo,true);
             Authors::updateStatInfo($authorInfo);
             //记录用户操作
             $jsonData = CJSON::encode(array(

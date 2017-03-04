@@ -126,10 +126,14 @@ class BookController extends Q {
         $otherBooks=  Books::getColBooks($info['colid']);        
         //获取分类
         $colInfo = Column::getSimpleInfo($info['colid']);
+        //更新统计
+        if (!zmf::actionLimit('visit-Books', $id, 3, 60)) {
+            Posts::updateCount($id, 'Books', 1, 'bHits');
+        }
         //更新小说数据,10分钟更新一次
         $upBookInfo = zmf::getFCache('stat-Books-' . $id);
         if (!$upBookInfo) {
-            Books::updateBookStatInfo($id,false);
+            Books::updateBookStatInfo($info,false);
             zmf::setFCache('stat-Books-' . $id, 1, 600);
         }
         //获取赞赏
@@ -212,7 +216,7 @@ class BookController extends Q {
         //更新小说数据,10分钟更新一次
         $upBookInfo = zmf::getFCache('stat-Books-' . $bookInfo['id']);
         if (!$upBookInfo) {
-            Books::updateBookStatInfo($bookInfo['id']);
+            Books::updateBookStatInfo($bookInfo);
             zmf::setFCache('stat-Books-' . $bookInfo['id'], 1, 600);
         }
         //获取分类

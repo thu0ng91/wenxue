@@ -59,8 +59,21 @@ class UsersController extends Admin {
         ));
     }
 
+    public function actionView($id) {
+        $this->render('view', array(
+            'model' => $this->loadModel($id),
+        ));
+    }
+
     public function actionUpdate($id) {
         $this->actionCreate($id);
+    }
+
+    public function loadModel($id) {
+        $model = Users::model()->findByPk($id);
+        if ($model === null)
+            throw new CHttpException(404, 'The requested page does not exist.');
+        return $model;
     }
 
     public function actionAdmins() {

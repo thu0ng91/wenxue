@@ -52,7 +52,7 @@ class Books extends CActiveRecord {
             array('uid, aid,colid, title,content,desc,iAgree', 'required'),
             array('faceImg', 'checkUrl'),
             array('vip, bookStatus, status,top,shoufa', 'numerical', 'integerOnly' => true),
-            array('uid, aid,colid,favorites, hits, chapters, comments, words,topTime,scorer,score1,score2,score3,score4,score5,props', 'length', 'max' => 10),
+            array('uid, aid,colid,favorites, hits,bHits,chapters, comments, words,topTime,scorer,score1,score2,score3,score4,score5,props', 'length', 'max' => 10),
             array('title, faceImg, desc', 'length', 'max' => 255),
             array('score,iAgree', 'length', 'max' => 3),
             array('content', 'safe'),
@@ -89,6 +89,7 @@ class Books extends CActiveRecord {
             'content' => '简介',
             'favorites' => '收藏次数',
             'hits' => '点击次数',
+            'bHits' => '作品主页查看次数',
             'chapters' => '章节数',
             'comments' => '评论数',
             'words' => '总字数',
@@ -229,15 +230,16 @@ class Books extends CActiveRecord {
         return Books::model()->updateByPk($bid, $attr);
     }
     
-    public static function updateBookStatInfo($bid,$updateTime=true){
+    public static function updateBookStatInfo($bookInfo,$updateTime=false){
         $items=  Chapters::model()->findAll(array(
             'condition'=>'bid=:bid AND status='.Posts::STATUS_PASSED.' AND chapterStatus='.Books::STATUS_PUBLISHED,
             'select'=>'words,comments,hits',
             'params'=>array(
-                ':bid'=>$bid
+                ':bid'=>$bookInfo['id']
             )
         ));
-        $words=$comments=$hits=0;
+        $words=$comments=0;
+        $hits=$bookInfo['bHits'];
         foreach ($items as $val){
             $words+=$val['words'];
             $comments+=$val['comments'];
@@ -253,7 +255,7 @@ class Books extends CActiveRecord {
         if(!$updateTime){
             unset($attr['updateTime']);
         }
-        return Books::model()->updateByPk($bid, $attr);
+        return Books::model()->updateByPk($bookInfo['id'], $attr);
     }
 
     /**
