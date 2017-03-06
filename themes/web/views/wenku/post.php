@@ -11,7 +11,7 @@
 ?>
 <div class="container-fluid jumbotron-post">
     <div class="container">
-        <h1><?php echo $info['title'];?><?php if($info['second_title']){?><small>——<?php echo $info['second_title'];?></small><?php }?></h1>
+        <h1><?php echo $info['title'] ? $info['title'] : $info['title_en'];?><?php if($info['second_title']){?><small>——<?php echo $info['second_title'];?></small><?php }?></h1>
         <p class="author"><?php echo $authorInfo ? '——'.($authorInfo['dynastyName'] ? '（'.CHtml::link($authorInfo['dynastyName'],array('wenku/author','id'=>$authorInfo['id']),array('target'=>'_blank')).'）' : '').CHtml::link($authorInfo['title'],array('wenku/author','id'=>$authorInfo['id']),array('target'=>'_blank')) : '佚名';?></p>
         <div class="content">
             <?php echo nl2br($info['content']);?>

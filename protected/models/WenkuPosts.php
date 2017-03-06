@@ -22,6 +22,7 @@
 class WenkuPosts extends CActiveRecord {
 
     public $authorName;
+    public $authorNameEn;
 
     /**
      * @return string the associated database table name
@@ -40,7 +41,7 @@ class WenkuPosts extends CActiveRecord {
             array('uid', 'default', 'setOnEmpty' => true, 'value' => zmf::uid()),
             array('cTime,updateTime', 'default', 'setOnEmpty' => true, 'value' => zmf::now()),
             array('status', 'default', 'setOnEmpty' => true, 'value' => Posts::STATUS_PASSED),
-            array('title, content', 'required'),
+            array('content', 'required'),
             array('dynasty, colid, status,len', 'numerical', 'integerOnly' => true),
             array('uid, author, hits, order, updateTime, cTime', 'length', 'max' => 10),
             array('len', 'length', 'max' => 3),
@@ -114,8 +115,11 @@ class WenkuPosts extends CActiveRecord {
             'condition' => 'status=' . Posts::STATUS_PASSED,
             'order' => 'hits DESC',
             'limit' => $limit,
-            'select' => 'id,title'
+            'select' => 'id,title,title_en'
         ));
+        foreach ($items as $k => $val) {
+            $items[$k]['title'] = $val['title'] ? $val['title'] : $val['title_en'];
+        }
         return $items;
     }
 

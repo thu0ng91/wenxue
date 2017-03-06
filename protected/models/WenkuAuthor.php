@@ -33,7 +33,6 @@ class WenkuAuthor extends CActiveRecord {
             array('uid', 'default', 'setOnEmpty' => true, 'value' => zmf::uid()),
             array('cTime', 'default', 'setOnEmpty' => true, 'value' => zmf::now()),
             array('status', 'default', 'setOnEmpty' => true, 'value' => Posts::STATUS_PASSED),
-            array('title', 'required'),
             array('status,sex', 'numerical', 'integerOnly' => true),
             array('uid, dynasty, hits, cTime', 'length', 'max' => 11),
             array('firstChar', 'length', 'max' => 1),
@@ -102,7 +101,7 @@ class WenkuAuthor extends CActiveRecord {
      * @return type
      */
     public static function findByName($name) {
-        $info = WenkuAuthor::model()->find('title=:title', array(':title' => $name));
+        $info = WenkuAuthor::model()->find('title=:title OR title_en=:title', array(':title' => $name));
         return $info;
     }
 
@@ -158,8 +157,11 @@ class WenkuAuthor extends CActiveRecord {
             'condition' => 'status=' . Posts::STATUS_PASSED,
             'order' => 'hits DESC',
             'limit' => $limit,
-            'select' => 'id,title'
+            'select' => 'id,title,title_en'
         ));
+        foreach ($items as $k => $val) {
+            $items[$k]['title'] = $val['title'] ? $val['title'] : $val['title_en'];
+        }
         return $items;
     }
     

@@ -34,7 +34,7 @@ class WenkuController extends Q {
         if ($type) {
             $criteria->addCondition("t.colid='{$type}'");
         }
-        $criteria->select = 't.id,t.author,t.title,t.content,wa.title AS authorName';
+        $criteria->select = 't.id,t.author,t.title,t.title_en,t.content,wa.title AS authorName,wa.title_en AS authorNameEn';
         $criteria->join = 'LEFT JOIN {{wenku_author}} wa ON t.author=wa.id';
         $criteria->addCondition('t.status=1');
         $model = new WenkuPosts;
@@ -43,6 +43,12 @@ class WenkuController extends Q {
         $pager->pageSize = 30;
         $pager->applyLimit($criteria);
         $posts = $model->findAll($criteria);
+        if (!empty($posts)) {
+            foreach ($posts as $k => $val) {
+                $posts[$k]['title'] = $val['title'] ? $val['title'] : $val['title_en'];
+                $posts[$k]['authorName'] = $val['authorName'] ? $val['authorName'] : $val['authorNameEn'];
+            }
+        }
         $this->pageTitle = '诗词文库 - ' . zmf::config('sitename');
         //热门作者
         $topAuthors = WenkuAuthor::getTops(10);
@@ -129,6 +135,7 @@ class WenkuController extends Q {
                 throw new CHttpException(404, '您所查看的页面不存在或已删除');
             }
         }
+        $info['title'] = $info['title'] ? $info['title'] : $info['title_en'];
         $aboutInfos = $info->aboutInfos;
         foreach ($aboutInfos as $k => $aboutInfo) {
             $aboutInfos[$k]['content'] = zmf::text(array(), $aboutInfo['content'], true);
@@ -136,9 +143,10 @@ class WenkuController extends Q {
         $authorInfo = array();
         if ($info['author'] > 0) {
             $authorInfo = WenkuAuthor::getOne($info['author']);
+            $authorInfo['title'] = $authorInfo['title'] ? $authorInfo['title'] : $authorInfo['title_en'];
         }
         $this->pageTitle = $info['title'] . ($info['title_en'] ? '（' . $info['title_en'] . '）' : '') . ' - 诗词文库 - ' . zmf::config('sitename');
-        $this->pageDescription = $info['title'] . ($info['title_en'] ? '（' . $info['title_en'] . '）' : '') . '的注释、故事、翻译'.($info['title_en'] ? '、英文原文、中英翻译' : '');
+        $this->pageDescription = $info['title'] . ($info['title_en'] ? '（' . $info['title_en'] . '）' : '') . '的注释、故事、翻译' . ($info['title_en'] ? '、英文原文、中英翻译' : '');
         $data = array(
             'info' => $info,
             'aboutInfos' => $aboutInfos,
