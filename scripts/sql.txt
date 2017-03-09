@@ -1,21 +1,2 @@
-alter table pre_wenku_author_info add title varchar(255) not null;
-alter table pre_wenku_post_info add title varchar(255) not null;
-update pre_wenku_author_info set `status`=0;
-update pre_wenku_post_info set `status`=0;
-
-alter table pre_wenku_author add faceImg varchar(255) not null;
-alter table pre_wenku_author add bgImg varchar(255) not null;
-
-alter table pre_wenku_posts add faceImg varchar(255) not null;
-alter table pre_wenku_posts add bgImg varchar(255) not null;
-
-alter table pre_wenku_author add title_en varchar(255) not null;
-alter table pre_wenku_author add title_pinyin varchar(255) not null;
-alter table pre_wenku_author add sex tinyint(1) unsigned not null;
-
-alter table pre_wenku_posts add title_en varchar(255) not null;
-
-alter table pre_post_forums add anonymous tinyint(1) unsigned not null;
-
-alter table pre_books add bHits int(10) unsigned not null;
-update pre_books set bHits=hits;
+rewrite ^([^\.]*)/sitemap/all.xml$ $1/index.php?r=sitemap/all last;
+rewrite ^([^\.]*)/sitemap/(\w+)-([0-9]+).xml$ $1/index.php?r=sitemap/list&type=$2&page=$3 last;

@@ -26,8 +26,15 @@ return array(
         'wenku/a<id:\d+>' => 'wenku/author',
         'wenku/b<id:\d+>' => 'wenku/book',
         'wenku' => 'wenku/index',
-        
-        
+        //站点地图
+        'sitemap/all' => array(
+            'sitemap/all',
+            'urlSuffix' => '.xml'
+        ),
+        'sitemap/<type:\w+>-<page:\d+>' => array(
+            'sitemap/list',
+            'urlSuffix' => '.xml'
+        ),
         '<controller:\w+>/<action:\w+>' => '<controller>/<action>',
         '<module:\w+>/<controller:\w+>/<action:\w+>' => '<module>/<controller>/<action>',        
     )

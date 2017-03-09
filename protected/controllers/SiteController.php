@@ -248,26 +248,4 @@ class SiteController extends Q {
         $this->render('recommend', $data);
     }
 
-    public function actionSitemap() {
-        $page = $_GET['id'];
-        $page = isset($page) ? $page : 1;
-        $dir = Yii::app()->basePath . '/runtime/site/sitemap' . $page . '.xml';
-        $a = $_GET['a'];
-        $obj = new Sitemap();
-        if ($a == 'update' || !file_exists($dir)) {
-            $limit = 10000;
-            $start = ($page - 1) * $limit;
-            $rss = $obj->show(Posts::CLASSIFY_POST, $start, $limit);
-            if ($rss) {
-                $obj->saveToFile($dir);
-            } else {
-                exit($page . '-->empty');
-            }
-        } else {
-            $rss = $obj->getFile($dir);
-        }
-        //rss创建
-        $this->render('//site/sitemap', array('rss' => $rss));
-    }
-
 }

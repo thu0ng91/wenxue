@@ -1,0 +1,12 @@
+User-agent: *
+
+Disallow: /static/
+Disallow: /attachments/
+Disallow: /common/
+Disallow: /protected/
+Disallow: /scripts/
+Disallow: /taobao/
+Disallow: /themes/
+
+# Sitemap files
+Sitemap: https://www.chuxincw.com/sitemap/all.xml
