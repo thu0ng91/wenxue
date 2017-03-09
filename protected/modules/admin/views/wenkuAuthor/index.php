@@ -33,6 +33,7 @@ $form = $this->beginWidget('CActiveForm', array(
     <tr>    
         <th style="width: 80px"><?php echo $model->getAttributeLabel("id");?></th>        
         <th ><?php echo $model->getAttributeLabel("title");?></th>
+        <th ><?php echo $model->getAttributeLabel("title_en");?></th>
         <th ><?php echo $model->getAttributeLabel("dynasty");?></th>      
         <th style="width: 80px"><?php echo $model->getAttributeLabel("status"); ?></th>
         <th style="width: 160px">操作</th>
@@ -42,6 +43,7 @@ $form = $this->beginWidget('CActiveForm', array(
     <tr>
         <td><?php echo CHtml::link($data->id,array('view','id'=>$data->id),array('target'=>'_blank'));?></td>        
         <td><?php echo $data->title;?></td>
+        <td><?php echo $data->title_en;?></td>
         <td><?php echo CHtml::link($data->dynastyInfo->title,array('index','dynasty'=>$data->dynasty));?></td>
         <td class="<?php echo $data->status==Posts::STATUS_PASSED ? '' : 'text-danger';?>"><?php echo Posts::exStatus($data->status); ?></td>          
         <td>

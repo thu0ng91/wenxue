@@ -45,7 +45,7 @@ class WenkuAuthorController extends Admin {
                     Yii::app()->user->setFlash('addWenkuAuthorSuccess', "保存成功！您可以继续添加。");
                     $this->redirect(array('create'));
                 } else {
-                    $this->redirect(array('view','id'=>$model->id));
+                    $this->redirect(array('view', 'id' => $model->id));
                 }
             }
         }
@@ -84,19 +84,20 @@ class WenkuAuthorController extends Admin {
      * Lists all models.
      */
     public function actionIndex() {
-        $select = "id,uid,title,pinyin,dynasty,attachid,hits,cTime,status,firstChar,status";
+        $select = "id,uid,title,dynasty,title_en,status";
         $model = new WenkuAuthor;
         $criteria = new CDbCriteria();
         $title = zmf::val("title", 1);
         if ($title) {
-            $criteria->addSearchCondition("title", $title);
+            $criteria->addSearchCondition("title", $title, true, 'OR');
+            $criteria->addSearchCondition("title_en", $title, true, 'OR');
         }
         $dynasty = zmf::val("dynasty", 1);
         if ($dynasty) {
             $criteria->addCondition("dynasty=" . $dynasty);
         }
         $status = zmf::val("status", 1);
-        if ($status!=='') {
+        if ($status !== '') {
             $criteria->addCondition("status=" . intval($status));
         }
         $criteria->select = $select;
@@ -145,11 +146,11 @@ class WenkuAuthorController extends Admin {
             echo $returnVal;
         }
     }
-    
-    public function actionShowOne($id){
-        $id=  zmf::val('id',2);
-        $info=  $this->loadModel($id);
-        WenkuPosts::model()->updateAll(array('status'=>  Posts::STATUS_PASSED),'author=:author',array(':author'=>$id));
+
+    public function actionShowOne($id) {
+        $id = zmf::val('id', 2);
+        $info = $this->loadModel($id);
+        WenkuPosts::model()->updateAll(array('status' => Posts::STATUS_PASSED), 'author=:author', array(':author' => $id));
         header('location: ' . $_SERVER['HTTP_REFERER']);
     }
 
