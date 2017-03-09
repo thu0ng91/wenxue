@@ -140,7 +140,7 @@ class ForumAdmins extends CActiveRecord {
      * @return boolean
      */
     public static function checkForumPower($uid, $fid, $action, $totalLimit = false) {
-        $info = self::getOne($uid, $fid);        
+        $info = self::getOne($uid, $fid);  
         if (!$info || !$info['powers']) {
             return false;
         }
@@ -149,6 +149,10 @@ class ForumAdmins extends CActiveRecord {
             return false;
         }
         if ($totalLimit) {
+            //0表示不限制
+            if($info['num']==0){
+                return true;
+            }
             $num = UserAction::statAction($uid, $action);
             if ($num >= $info['num']) {
                 return false;
