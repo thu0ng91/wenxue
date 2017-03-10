@@ -96,7 +96,7 @@ class WenkuController extends Q {
         //相关作品
         $posts = WenkuPosts::model()->findAll(array(
             'condition' => 'author=:author AND status=' . Posts::STATUS_PASSED,
-            'select' => 'id,title',
+            'select' => 'id,title,title_en',
             'order' => 'hits DESC',
             'limit' => 10,
             'params' => array(

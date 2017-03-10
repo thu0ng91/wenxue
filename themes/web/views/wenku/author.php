@@ -34,7 +34,7 @@
         <h2 class="module-header"><?php echo $info['title'];?>热门作品</h2>
         <div class="module-body list-group list-group-noborder">
             <?php foreach($posts as $topPost){?>
-            <?php echo CHtml::link($topPost['title'],array('/wenku/post','id'=>$topPost['id']),array('target'=>'_blank','class'=>'list-group-item'));?>
+            <?php echo CHtml::link($topPost['title'] ? $topPost['title'] : $topPost['title_en'],array('/wenku/post','id'=>$topPost['id']),array('target'=>'_blank','class'=>'list-group-item'));?>
             <?php }?>
         </div>
         
