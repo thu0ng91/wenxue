@@ -56,7 +56,7 @@ $this->renderPartial('_nav');?>
                     </tr>                        
                     <?php $posts=$model->postsInfo;foreach($posts as $post){?>
                     <tr>
-                        <td><?php echo $post['title'];?></td>
+                        <td><?php echo $post['title'] ? $post['title'] : $post['title_en'];?></td>
                         <td><?php echo '<span class="'.($post['status']==Posts::STATUS_PASSED ? 'text-success' : 'text-danger').'">'.Posts::exStatus($post['status']).'</span>';?></td>
                         <td>
                             <?php echo CHtml::link('详情',array('wenkuPosts/view','id'=>$post['id']),array('target'=>'_blank'));?>
