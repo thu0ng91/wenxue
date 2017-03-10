@@ -81,7 +81,7 @@ class WenkuPostsController extends Admin {
      * Lists all models.
      */
     public function actionIndex() {
-        $select = "id,dynasty,colid,author,title,`status`";
+        $select = "id,dynasty,colid,author,title,title_en,`status`";
         $model = new WenkuPosts;
         $criteria = new CDbCriteria();
         $dynasty = zmf::val("dynasty", 1);
@@ -94,7 +94,8 @@ class WenkuPostsController extends Admin {
         }
         $title = zmf::val("title", 1);
         if ($title) {
-            $criteria->addSearchCondition("title", $title);
+            $criteria->addSearchCondition("title", $title, true, 'OR');
+            $criteria->addSearchCondition("title_en", $title, true, 'OR');
         }
         $order = zmf::val("order", 1);
         if ($order == 'len') {

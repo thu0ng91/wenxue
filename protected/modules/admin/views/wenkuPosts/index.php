@@ -49,6 +49,7 @@ $form = $this->beginWidget('CActiveForm', array(
         <th style="width: 80px"><?php echo $model->getAttributeLabel("dynasty"); ?></th>
         <th style="width: 80px"><?php echo $model->getAttributeLabel("author"); ?></th>
         <th ><?php echo $model->getAttributeLabel("title"); ?></th>
+        <th ><?php echo $model->getAttributeLabel("title_en"); ?></th>
         <th style="width: 80px"><?php echo $model->getAttributeLabel("status"); ?></th>
         <th style="width: 160px">操作</th>
     </tr>    
@@ -58,6 +59,7 @@ $form = $this->beginWidget('CActiveForm', array(
             <td><?php echo CHtml::link($data->dynastyInfo->title, array('index', 'dynasty' => $data->dynasty)); ?></td>
             <td><?php echo CHtml::link($data->authorInfo->title, array('index', 'author' => $data->author)); ?></td>
             <td><?php echo $data->title; ?></td>            
+            <td><?php echo $data->title_en; ?></td>            
             <td class="<?php echo $data->status==Posts::STATUS_PASSED ? '' : 'text-danger';?>"><?php echo Posts::exStatus($data->status); ?></td>            
             <td>
                 <?php echo CHtml::link('预览', array('/wenku/post', 'id' => $data->id), array('target' => '_blank')); ?>
